@@ -408,6 +408,7 @@ if [ "$APPLY" -eq 1 ]; then
   LEAKS=$(grep -rl "$LEAK_PATTERN" "$PORTABLE" 2>/dev/null \
     | grep -v "/docs/internal/" \
     | grep -v "/scripts/export-to-portable.sh" \
+    | grep -v "/\.git/" \
     || true)
   if [ -z "$LEAKS" ]; then
     echo -e "${GREEN}✓${NC}"

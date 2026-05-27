@@ -76,6 +76,8 @@ Après CHAQUE retour de subagent :
 
 Bienvenue ! Je suis ton Directeur de Création.
 
+**Reprendre un pipeline existant ?** Si tu as déjà une session sur le disque et tu veux reprendre à une phase précise (pipeline planté en cours, envie d'itérer sur le style-tile sans refaire le brief, etc.), lance `/test-big` au lieu de continuer ici.
+
 **Première fois ?** Je t'ouvre le guide complet du pipeline (11 étapes détaillées).
 **Déjà familier ?** On passe direct aux options ci-dessous.
 
@@ -85,7 +87,7 @@ Bienvenue ! Je suis ton Directeur de Création.
   · **C** — On construit ensemble (mode conversationnel)
   · **D** — J'ai une brand existante à aspirer (aspiration de brand)
 
-*PS — D'autres skills sont disponibles : `/brand-book`, `/landing-page`, `/visual-brief`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
+*PS — D'autres skills sont disponibles : `/test-big` (reprise mi-pipeline), `/brand-book`, `/landing-page`, `/visual-brief`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
 
 ---
 
@@ -102,6 +104,146 @@ Bienvenue ! Je suis ton Directeur de Création.
 2. **Attendre la réponse** de l'utilisateur (A, B, C ou D) avant de continuer.
 
 **Note** : Le fichier `ref/pipeline-overview.md` contient l'explication détaillée des étapes avec les infos "sous le capot". L'utilisateur peut le consulter pendant qu'il réfléchit à son choix.
+
+---
+
+## PHASE 0 — PREFLIGHT CHECK
+
+**RÈGLE** : Cette phase tourne UNE FOIS au démarrage, juste après l'onboarding et AVANT que l'utilisateur ne choisisse son option A/B/C/D. Elle vérifie les dépendances installées sur la machine, informe l'utilisateur de ce qui peut lui manquer, et lui permet de skipper certaines phases s'il ne veut pas installer les deps correspondantes.
+
+**Skip pour le mainteneur** : Si la variable d'environnement `BIG_SKIP_PREFLIGHT=1` est définie (`BIG_SKIP_PREFLIGHT=1 claude`), la Phase 0 est sautée. Utile pour les itérations rapides en dev/debug. Par défaut, la Phase 0 tourne toujours.
+
+### Étape 0.1 — Détection auto des dépendances
+
+Lancer ce bloc bash UNE seule fois et capturer le résultat :
+
+```bash
+# Skip via env var ?
+if [ "${BIG_SKIP_PREFLIGHT:-0}" = "1" ]; then
+  echo "PHASE_0_SKIPPED=1"
+  exit 0
+fi
+
+# OS
+OS=$(uname -s)
+
+# Outils CLI
+NODE_VER=$(node --version 2>/dev/null || echo "absent")
+PYTHON_VER=$(python3 --version 2>/dev/null | head -1 || echo "absent")
+VTRACER_VER=$(pip3 show vtracer 2>/dev/null | grep "^Version:" | awk '{print $2}' || echo "absent")
+GIT_VER=$(git --version 2>/dev/null || echo "absent")
+
+# Check git update si on est dans un repo git avec un remote
+GIT_BEHIND=""
+if [ -d ".git" ] && git remote get-url origin >/dev/null 2>&1; then
+  git fetch origin main --quiet 2>/dev/null || true
+  LOCAL=$(git rev-parse HEAD 2>/dev/null || echo "")
+  REMOTE=$(git rev-parse origin/main 2>/dev/null || echo "")
+  if [ -n "$LOCAL" ] && [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
+    GIT_BEHIND=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "?")
+  fi
+fi
+
+# Check présence SPG-portable au chemin attendu (../SPG-portable/ relatif au repo)
+SPG_STATUS="absent"
+for candidate in "../SPG-portable" "$HOME/repos/SPG-portable"; do
+  if [ -d "$candidate" ]; then
+    SPG_STATUS="présent ($candidate)"
+    break
+  fi
+done
+
+# Output structuré (un kvp par ligne)
+echo "PHASE_0_SKIPPED=0"
+echo "OS=$OS"
+echo "NODE=$NODE_VER"
+echo "PYTHON=$PYTHON_VER"
+echo "VTRACER=$VTRACER_VER"
+echo "GIT=$GIT_VER"
+echo "GIT_BEHIND=$GIT_BEHIND"
+echo "SPG=$SPG_STATUS"
+```
+
+Stocker les résultats dans les variables : `{node_ok}`, `{python_ok}`, `{vtracer_ok}`, `{git_ok}`, `{spg_available}`, `{git_behind}`.
+
+**Si `PHASE_0_SKIPPED=1`** → afficher juste "(Phase 0 sautée — BIG_SKIP_PREFLIGHT=1)" et passer directement à l'IDENTIFIANT DE SESSION.
+
+### Étape 0.2 — Affichage de la checklist à l'utilisateur
+
+Composer et afficher exactement ce format (en remplaçant les `<placeholders>` par les valeurs détectées) :
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  PHASE 0 — PREFLIGHT CHECK                                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Avant de démarrer, voici ce qui est installé sur ta machine et ce qui te
+manquerait pour certaines phases. Tu peux skipper des phases si tu ne
+veux pas installer les deps correspondantes.
+
+── BLOQUANT (sans ça, pipeline impossible) ─────────────────────────────────
+  [✓] macOS                  — <Darwin détecté>
+  [✓] Claude Code            — Tu y es
+  [<✓/✗>] Git                — <version ou "absent — brew install git">
+  [<✓/✗>] Node.js            — <version ou "absent — brew install node">
+  [<✓/✗>] Python 3           — <version ou "absent — brew install python">
+
+── OPTIONNEL (skip la phase associée si tu n'installes pas) ────────────────
+  [<✓/✗>] vtracer            — Phase Logo (vectorisation PNG → SVG)
+                                <version ou "pip3 install vtracer">
+  [?]    Abo MidJourney      — Phase 3C visuels + Phase Logo
+                                (je ne peux pas détecter — à toi de dire)
+  [?]    Abo Recraft V4      — Phase 3C illustrations flat
+  [?]    Abo Perplexity Pro  — Phase 3B-7c image-pivot stylistique
+  [?]    Abo Nano Banana 2   — Édition d'images (Phase 3C, brand book)
+  [<✓/✗>] SPG-portable       — Phase 8 brand book (section pitch deck)
+                                <SPG_STATUS ou "git clone .../SPG-portable.git ~/repos/SPG-portable">
+
+── ÉTAT DU REPO ────────────────────────────────────────────────────────────
+  <Si GIT_BEHIND non vide :>
+  ⚠ Mise à jour disponible : <N> commits sur GitHub.
+    Lance 'git pull' pour récupérer les dernières améliorations avant de continuer.
+  <Sinon :>
+  ✓ Repo à jour avec GitHub (ou pas de remote configuré).
+```
+
+Puis poser la question :
+
+```
+Tu veux :
+  · Continuer tel quel (je skipperai automatiquement les phases dont les deps manquent)
+  · Skipper des phases spécifiques (dis-moi lesquelles : "skip logo", "skip visuels", etc.)
+  · Mettre à jour le repo d'abord (lance 'git pull' puis relance /brand-identity)
+
+→ Ta réponse :
+```
+
+### Étape 0.3 — Collecte de la réponse + stockage
+
+1. Si réponse "continue" / "go" / "tel quel" ou équivalent → `{skipped_phases}` = liste auto-déduite des deps absentes (ex: si vtracer absent → `{skipped_phases}` = "logo")
+2. Si l'utilisateur liste explicitement des phases à skipper → parser la réponse et stocker dans `{skipped_phases}` (mots-clés acceptés : `logo`, `visuels`, `visuels-mj`, `visuels-recraft`, `image-pivot`, `brand-book`, `animation`)
+3. Si réponse "git pull" / "mettre à jour" → STOP. Afficher "OK, lance `git pull` dans le dossier du repo, puis relance `/brand-identity`." et terminer.
+
+### Variables stockées (utilisées plus loin dans le pipeline)
+- `{skipped_phases}` → liste des phases skippées (ex: "logo,visuels-mj,brand-book")
+- `{node_ok}`, `{python_ok}`, `{vtracer_ok}`, `{git_ok}` → booléens (1/0)
+- `{spg_available}` → "présent" / "absent"
+- `{git_behind}` → nombre de commits de retard (vide si à jour)
+
+### Règles de respect des skips dans les phases aval
+
+Les phases qui dépendent d'une dep optionnelle DOIVENT checker `{skipped_phases}` avant de tourner. Mapping de référence :
+
+| Phase | Skip key | Effet du skip |
+|---|---|---|
+| Phase 3B-7c (image-pivot Perplexity) | `image-pivot` | Le penseur visuel saute l'étape Perplexity, dérive directement depuis la fiche styliste |
+| Phase 3C — visuels MidJourney | `visuels-mj` ou `visuels` | Style-tiles générés sans visuel base64 (texture/gradient uniquement) |
+| Phase 3C — illustrations Recraft | `visuels-recraft` ou `visuels` | Pas d'illustration flat, le pipeline continue |
+| Étape 5D (Animation) | `animation` | On saute la couche d'animation, le style-tile statique est conservé |
+| Phase Logo (L1-L5) | `logo` | Pipeline continue sans logo, `{logo_available}` = false |
+| Phase 8 (Brand Book) | `brand-book` ou `{spg_available}` = "absent" | Pas de brand book généré, packaging final allégé |
+
+**Si une phase est skippée, l'orchestrateur l'annonce explicitement à l'utilisateur** ("Phase Logo skippée comme demandé en Phase 0, on passe à Batch 2") et continue.
 
 ---
 
