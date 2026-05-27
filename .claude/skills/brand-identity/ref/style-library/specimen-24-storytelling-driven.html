@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 24. Storytelling-Driven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-ink: #0b0a08;          /* noir cinéma profond, légèrement chaud */
+      --color-ivory: #f1ebde;        /* crème pellicule */
+      --color-paper: #e6dfcd;        /* paper warm */
+      --color-amber: #d77a2c;        /* ambre projection / signal narratif */
+      --color-rust: #6b2e1a;         /* rouge-brun camera roll */
+      --color-fog: #4a463f;          /* gris fumée */
+      --color-line: #2a2622;         /* lignes très sombres */
+
+      --font-display: "Fraunces", "Times New Roman", serif;
+      --font-body: "Inter", system-ui, sans-serif;
+
+      --measure-narrow: 38rem;
+      --grain-opacity: 0.06;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-ink);
+      color: var(--color-ivory);
+      font-weight: 300;
+      line-height: 1.55;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Grain pellicule subtil — texture cinéma */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: var(--grain-opacity);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      mix-blend-mode: overlay;
+    }
+
+    /* ================ HERO — frame d'ouverture ================ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr auto;
+      padding: 2.5rem 5vw 3rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(215, 122, 44, 0.18), transparent 55%),
+        radial-gradient(ellipse at 80% 90%, rgba(107, 46, 26, 0.22), transparent 60%),
+        linear-gradient(180deg, #0b0a08 0%, #14110d 100%);
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-paper);
+      opacity: 0.55;
+      border-top: 1px solid rgba(241, 235, 222, 0.18);
+      padding-top: 1.2rem;
+    }
+
+    .hero-meta span:nth-child(2) { font-variant-numeric: tabular-nums; }
+
+    .hero-stage {
+      display: grid;
+      align-content: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 6vh 0;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--color-amber);
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-eyebrow::before {
+      content: "— ";
+      opacity: 0.6;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(3.4rem, 9vw, 7.6rem);
+      line-height: 0.96;
+      letter-spacing: -0.025em;
+      color: var(--color-ivory);
+      margin-bottom: 2.2rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-amber);
+      font-variation-settings: "opsz" 144;
+    }
+
+    .lede {
+      max-width: var(--measure-narrow);
+      font-size: 1.18rem;
+      line-height: 1.6;
+      color: var(--color-paper);
+      font-weight: 300;
+    }
+
+    .hero-foot {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 2rem;
+      border-top: 1px solid rgba(241, 235, 222, 0.18);
+      padding-top: 1.2rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      letter-spacing: 0;
+      text-transform: none;
+      opacity: 1;
+    }
+
+    /* ================ COMPOSANTS SIGNATURE ================ */
+
+    section.chapter {
+      position: relative;
+      padding: 12vh 5vw;
+      border-top: 1px solid var(--color-line);
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .chapter-marker {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 0.92rem;
+      letter-spacing: 0.05em;
+      color: var(--color-amber);
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+    }
+
+    .chapter-marker::after {
+      content: "";
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--color-amber);
+      margin-top: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .chapter-num {
+      display: block;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 0.66rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--color-paper);
+      opacity: 0.55;
+      margin-bottom: 0.6rem;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(2rem, 4.2vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--color-ivory);
+      margin-bottom: 1.8rem;
+      max-width: 18ch;
+    }
+
+    h2 em {
+      font-style: italic;
+      color: var(--color-amber);
+    }
+
+    .chapter-body p {
+      max-width: var(--measure-narrow);
+      color: var(--color-paper);
+      margin-bottom: 1.1rem;
+      font-size: 1.05rem;
+    }
+
+    .chapter-body p:first-of-type::first-letter {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 3.6rem;
+      line-height: 0.85;
+      float: left;
+      margin: 0.18em 0.18em 0 0;
+      color: var(--color-amber);
+      font-weight: 400;
+    }
+
+    /* --- Chapitre I : Pacing intentionnel — frames étagées --- */
+
+    .pacing-frames {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0;
+      align-items: end;
+      padding-top: 2rem;
+      border-top: 1px dashed rgba(241, 235, 222, 0.18);
+    }
+
+    .frame {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0 0.5rem;
+      border-left: 1px solid rgba(241, 235, 222, 0.12);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-paper);
+      opacity: 0.65;
+    }
+
+    .frame-bar {
+      width: 100%;
+      background: var(--color-amber);
+      margin-bottom: 0.6rem;
+      opacity: 0.85;
+    }
+
+    .frame:nth-child(1) .frame-bar { height: 14px; opacity: 0.35; }
+    .frame:nth-child(2) .frame-bar { height: 28px; opacity: 0.45; }
+    .frame:nth-child(3) .frame-bar { height: 12px; opacity: 0.30; }
+    .frame:nth-child(4) .frame-bar { height: 92px; opacity: 0.95; background: var(--color-ivory); }
+    .frame:nth-child(5) .frame-bar { height: 22px; opacity: 0.40; }
+    .frame:nth-child(6) .frame-bar { height: 64px; opacity: 0.80; background: var(--color-rust); }
+    .frame:nth-child(7) .frame-bar { height: 18px; opacity: 0.35; }
+    .frame:nth-child(8) .frame-bar { height: 48px; opacity: 0.70; }
+
+    .frame-label {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .frame-caption {
+      grid-column: 1 / -1;
+      margin-top: 1.4rem;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--color-paper);
+      opacity: 0.7;
+      max-width: 50ch;
+    }
+
+    /* --- Chapitre II : Reveal cinématique — bandes empilées --- */
+
+    .reveal-stack {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--color-line);
+      border: 1px solid var(--color-line);
+    }
+
+    .reveal-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 130px;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem 1.8rem;
+      background: #100e0b;
+    }
+
+    .reveal-row:nth-child(2) { background: #14110d; }
+    .reveal-row:nth-child(3) { background: #18140f; }
+    .reveal-row:nth-child(4) { background: #1c1811; }
+    .reveal-row:nth-child(5) { background: #211c14; }
+
+    .reveal-time {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--color-amber);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal-text {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: 1.25rem;
+      line-height: 1.3;
+      color: var(--color-ivory);
+    }
+
+    .reveal-text em { font-style: italic; color: var(--color-paper); }
+
+    .reveal-tag {
+      font-size: 0.66rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-paper);
+      opacity: 0.55;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* --- Chapitre III : Transitions camera-like — diagramme --- */
+
+    .camera-diagram {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--color-line);
+    }
+
+    .camera-frame {
+      aspect-ratio: 4 / 3;
+      position: relative;
+      border-right: 1px solid var(--color-line);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+    }
+
+    .camera-frame:last-child { border-right: none; }
+
+    .camera-frame:nth-child(1) {
+      background:
+        radial-gradient(circle at 50% 60%, rgba(215, 122, 44, 0.55), transparent 45%),
+        linear-gradient(180deg, #1a160f 0%, #0b0a08 100%);
+    }
+    .camera-frame:nth-child(2) {
+      background:
+        radial-gradient(circle at 30% 50%, rgba(215, 122, 44, 0.85), transparent 35%),
+        linear-gradient(180deg, #221a10 0%, #14110d 100%);
+    }
+    .camera-frame:nth-child(3) {
+      background:
+        radial-gradient(circle at 70% 40%, rgba(241, 235, 222, 0.92), transparent 25%),
+        linear-gradient(180deg, #2a1f12 0%, #1a160f 100%);
+    }
+
+    .camera-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 60px rgba(0,0,0,0.6);
+    }
+
+    .camera-label {
+      position: relative;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-ivory);
+      opacity: 0.85;
+      font-variant-numeric: tabular-nums;
+      z-index: 2;
+    }
+
+    .camera-label strong {
+      display: block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.1rem;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--color-amber);
+      margin-top: 0.3rem;
+    }
+
+    /* ================ ATMOSPHÈRE — bloc final ================ */
+
+    .atmosphere {
+      position: relative;
+      padding: 14vh 5vw;
+      border-top: 1px solid var(--color-line);
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(215, 122, 44, 0.22), transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(107, 46, 26, 0.30), transparent 55%),
+        linear-gradient(180deg, #0b0a08 0%, #050402 100%);
+      overflow: hidden;
+    }
+
+    .atmosphere-visual {
+      max-width: 1100px;
+      margin: 0 auto 4rem;
+      aspect-ratio: 21 / 9;
+      position: relative;
+      border: 1px solid rgba(241, 235, 222, 0.12);
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 70%, rgba(215, 122, 44, 0.45), transparent),
+        linear-gradient(180deg, #1f160d 0%, #0b0a08 60%, #0b0a08 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .atmosphere-visual::before,
+    .atmosphere-visual::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 8%;
+      background: var(--color-ink);
+      z-index: 3;
+    }
+    .atmosphere-visual::before { top: 0; }
+    .atmosphere-visual::after { bottom: 0; }
+
+    .horizon {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 62%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(241, 235, 222, 0.5), transparent);
+      z-index: 2;
+    }
+
+    .silhouette {
+      position: relative;
+      width: 8px;
+      height: 90px;
+      background: var(--color-ink);
+      border-radius: 4px 4px 0 0;
+      transform: translateY(28%);
+      z-index: 2;
+    }
+
+    .silhouette::after {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -2px;
+      width: 12px;
+      height: 12px;
+      background: var(--color-ink);
+      border-radius: 50%;
+    }
+
+    .timecode {
+      position: absolute;
+      bottom: 14%;
+      right: 3%;
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: var(--color-amber);
+      font-variant-numeric: tabular-nums;
+      opacity: 0.85;
+      z-index: 4;
+    }
+
+    .atmosphere-text {
+      max-width: 720px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.1rem;
+      color: var(--color-amber);
+      margin-bottom: 0.8rem;
+    }
+
+    .atmosphere-text p {
+      color: var(--color-paper);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .atmosphere-text .avoid h3 { color: var(--color-fog); opacity: 0.85; }
+    .atmosphere-text .avoid p { color: var(--color-paper); opacity: 0.65; }
+
+    /* ================ FOOTER ================ */
+    footer {
+      padding: 2rem 5vw;
+      border-top: 1px solid var(--color-line);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-paper);
+      opacity: 0.5;
+    }
+
+    /* ================ RESPONSIVE ================ */
+    @media (max-width: 760px) {
+      .chapter-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .chapter-marker { position: static; }
+      .pacing-frames { grid-template-columns: repeat(8, 1fr); }
+      .reveal-row { grid-template-columns: 60px 1fr; }
+      .reveal-tag { display: none; }
+      .camera-diagram { grid-template-columns: 1fr; }
+      .camera-frame { border-right: none; border-bottom: 1px solid var(--color-line); }
+      .atmosphere-text { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-meta { font-size: 0.62rem; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal-text {
+        animation: fade-frame linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 35%;
+      }
+      @keyframes fade-frame {
+        from { opacity: 0.25; letter-spacing: 0.02em; }
+        to   { opacity: 1; letter-spacing: 0; }
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HERO — Opening frame ========== -->
+  <section class="hero">
+    <div class="hero-meta">
+      <span>Style Library — N° 24</span>
+      <span>REEL 01 / 03</span>
+      <span>Cinétique · Cinématographique</span>
+    </div>
+
+    <div class="hero-stage">
+      <p class="hero-eyebrow">Open on a wide shot.</p>
+      <h1>Storytelling-<em>Driven</em></h1>
+      <p class="lede">
+        Le scroll devient caméra. Chaque section se révèle comme un plan,
+        avec un pacing intentionnel — silences longs, accélérations brèves,
+        coupes franches — pour que la marque ne soit pas lue, mais traversée.
+      </p>
+    </div>
+
+    <div class="hero-foot">
+      <span class="brand">Helio Pictures — Studio narratif &amp; expériences scrollées</span>
+      <span>FADE IN —</span>
+    </div>
+  </section>
+
+  <!-- ========== CHAPITRE I — Pacing intentionnel ========== -->
+  <section class="chapter">
+    <div class="chapter-grid">
+      <aside class="chapter-marker">
+        <span class="chapter-num">Chapter I</span>
+        Pacing
+      </aside>
+      <div class="chapter-body">
+        <h2>Le rythme n'est pas régulier — il <em>respire</em>.</h2>
+        <p>
+          Un site storytelling refuse la cadence uniforme du scroll-to-fade.
+          Il alterne plans tenus et plans courts, longs silences et brefs
+          éclats. Cette signature distingue le style des landings cinétiques
+          génériques où chaque section dure exactement une fenêtre.
+        </p>
+        <p>
+          Le diagramme ci-dessous montre la durée perçue de huit plans
+          successifs : trois courts, un très long, deux courts, un moyen,
+          un court. C'est cette irrégularité qui crée la tension.
+        </p>
+
+        <div class="pacing-frames" aria-label="Pacing diagram">
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">01</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">02</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">03</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">04</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">05</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">06</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">07</span></div>
+          <div class="frame"><div class="frame-bar"></div><span class="frame-label">08</span></div>
+          <p class="frame-caption">Durée perçue de huit plans successifs — la 4ᵉ section porte le climax narratif.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CHAPITRE II — Reveal cinématique ========== -->
+  <section class="chapter">
+    <div class="chapter-grid">
+      <aside class="chapter-marker">
+        <span class="chapter-num">Chapter II</span>
+        Reveal
+      </aside>
+      <div class="chapter-body">
+        <h2>Les sections se révèlent — elles n'<em>apparaissent</em> pas.</h2>
+        <p>
+          Le pattern cinématographique remplace le fade-up générique par une
+          révélation progressive : une phrase qui se construit, un décor qui
+          s'installe, un sujet qui entre dans le cadre. Le scroll devient
+          dispositif narratif, pas mécanique d'affichage.
+        </p>
+        <p>
+          La timeline ci-dessous joue le rôle de découpage technique : chaque
+          ligne porte un timecode et un événement narratif. Le styliste
+          pense en plans, pas en sections.
+        </p>
+
+        <div class="reveal-stack">
+          <div class="reveal-row">
+            <span class="reveal-time">00:04</span>
+            <span class="reveal-text">Une lumière s'allume. <em>Le titre n'est pas encore lu.</em></span>
+            <span class="reveal-tag">Establish</span>
+          </div>
+          <div class="reveal-row">
+            <span class="reveal-time">00:11</span>
+            <span class="reveal-text">Le sujet entre dans le cadre, silencieusement.</span>
+            <span class="reveal-tag">Entrance</span>
+          </div>
+          <div class="reveal-row">
+            <span class="reveal-time">00:23</span>
+            <span class="reveal-text">Pause. <em>On laisse le silence travailler.</em></span>
+            <span class="reveal-tag">Hold</span>
+          </div>
+          <div class="reveal-row">
+            <span class="reveal-time">00:34</span>
+            <span class="reveal-text">La proposition se révèle, mot après mot.</span>
+            <span class="reveal-tag">Reveal</span>
+          </div>
+          <div class="reveal-row">
+            <span class="reveal-time">00:48</span>
+            <span class="reveal-text">Coupe nette vers la séquence suivante.</span>
+            <span class="reveal-tag">Cut</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CHAPITRE III — Transitions camera-like ========== -->
+  <section class="chapter">
+    <div class="chapter-grid">
+      <aside class="chapter-marker">
+        <span class="chapter-num">Chapter III</span>
+        Transitions
+      </aside>
+      <div class="chapter-body">
+        <h2>Les transitions imitent la caméra, pas l'<em>interface</em>.</h2>
+        <p>
+          Trois mouvements signent le style : le wide shot établit la scène,
+          le medium shot rapproche le sujet, le close-up révèle le détail
+          décisif. Chaque passage entre sections est un changement de focale
+          — pas un fondu CSS générique.
+        </p>
+
+        <div class="camera-diagram">
+          <div class="camera-frame">
+            <div class="camera-label">PLAN 01<strong>Wide shot</strong></div>
+          </div>
+          <div class="camera-frame">
+            <div class="camera-label">PLAN 02<strong>Medium</strong></div>
+          </div>
+          <div class="camera-frame">
+            <div class="camera-label">PLAN 03<strong>Close-up</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ATMOSPHERE — usage notes ========== -->
+  <section class="atmosphere">
+    <div class="atmosphere-visual">
+      <div class="horizon"></div>
+      <div class="silhouette"></div>
+      <span class="timecode">TC 01:42:08</span>
+    </div>
+
+    <div class="atmosphere-text">
+      <div class="use">
+        <h3>Quand utiliser ce style</h3>
+        <p>
+          Marques qui portent un récit fort : studios créatifs, agences,
+          artisans d'exception, lancements produit à charge symbolique,
+          films, documentaires, projets d'auteur. Tout contexte où la
+          temporalité du visiteur fait partie du message.
+        </p>
+      </div>
+      <div class="avoid">
+        <h3>Quand l'éviter</h3>
+        <p>
+          Plateformes transactionnelles, dashboards SaaS, sites où la
+          tâche prime sur l'expérience. Le pacing intentionnel ralentit
+          la lecture — c'est un atout narratif, un défaut fonctionnel
+          dès qu'il s'agit d'agir vite.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>BIG · Style Library</span>
+    <span>24 / 34 — Storytelling-Driven</span>
+    <span>— FADE OUT</span>
+  </footer>
+
+</body>
+</html>

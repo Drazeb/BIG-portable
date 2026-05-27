@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier Vermeil — Systeme de Signes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           FURNACE — Systeme de Signes (Batch 2)
+           A3 (Rupture) x B3 (Contre-pied total)
+           Atelier Vermeil — Brand Identity
+           ============================================= */
+
+        :root {
+            --color-primary: #E84D0E;
+            --color-primary-light: #FF6B2C;
+            --color-primary-dark: #B83A08;
+            --color-secondary: #FFBA0A;
+            --color-accent: #FFBA0A;
+            --color-surface: #FFFFFF;
+            --color-surface-alt: #F5F5F0;
+            --color-depth: #0A0A0A;
+            --color-depth-warm: #111111;
+            --color-text-primary: #0A0A0A;
+            --color-text-secondary: #4A4A4A;
+            --color-text-on-dark: #FFFFFF;
+            --color-text-on-primary: #FFFFFF;
+            --color-text-muted: rgba(255,255,255,0.5);
+            --color-depth-rgb: 10, 10, 10;
+            --color-primary-rgb: 232, 77, 14;
+            --color-secondary-rgb: 255, 186, 10;
+            --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+            --font-body: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+            --type-scale-ratio: 1.618;
+            --text-xs: 0.65rem;
+            --text-sm: 0.75rem;
+            --text-base: 0.875rem;
+            --text-lg: 1rem;
+            --text-xl: 1.618rem;
+            --text-2xl: 2.618rem;
+            --text-3xl: 4.236rem;
+            --text-4xl: 6.854rem;
+            --text-5xl: 11.089rem;
+            --text-hero: clamp(5rem, 10vw, 12rem);
+            --text-mega: clamp(8rem, 16vw, 18rem);
+            --text-monument: clamp(3.5rem, 7vw, 7rem);
+            --radius-sm: 0px;
+            --radius-md: 0px;
+            --radius-lg: 0px;
+            --radius-xl: 0px;
+            --radius-full: 0px;
+            --shadow-sm: none;
+            --shadow-md: none;
+            --shadow-lg: none;
+            --space-unit: 4px;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 32px;
+            --space-xl: 64px;
+            --space-2xl: 96px;
+            --space-3xl: 128px;
+            --space-4xl: 192px;
+            --border-thin: 1px solid;
+            --border-thick: 3px solid;
+            --border-heavy: 4px solid;
+            --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
+            --ease-out-back: cubic-bezier(.34, 1.56, .64, 1);
+            --transition-fast: 200ms var(--ease-out-expo);
+            --transition-base: 350ms var(--ease-out-expo);
+            --transition-slow: 500ms cubic-bezier(.22, 1, .36, 1);
+
+            /* Data Viz Palette */
+            --color-dataviz-1: #E84D0E;
+            --color-dataviz-2: #FFBA0A;
+            --color-dataviz-3: #FFFFFF;
+            --color-dataviz-4: #4A4A4A;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--color-text-primary);
+            background: var(--color-surface);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* === CONTAINER === */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-xl); }
+
+        /* === CHAPTER HEADER === */
+        .chapter-header {
+            padding: var(--space-3xl) 0 var(--space-xl);
+            position: relative;
+        }
+
+        .chapter-header--tight {
+            padding-top: var(--space-2xl);
+            padding-bottom: var(--space-lg);
+        }
+
+        .chapter-header__overline {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .chapter-header__overline::before {
+            content: '';
+            display: block;
+            width: 48px;
+            height: 3px;
+            background: var(--color-primary);
+        }
+
+        .chapter-header__title {
+            font-family: var(--font-display);
+            font-size: clamp(2.618rem, 5vw, var(--text-3xl));
+            font-weight: 400;
+            line-height: 1.05;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-md);
+            letter-spacing: -0.02em;
+        }
+
+        .chapter-header__lead {
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: 300;
+            line-height: 1.75;
+            color: var(--color-text-secondary);
+            max-width: 52ch;
+        }
+
+        /* Dark chapter header */
+        .chapter-header--dark .chapter-header__title { color: var(--color-text-on-dark); }
+        .chapter-header--dark .chapter-header__lead { color: var(--color-text-muted); }
+
+        /* === SECTION BLOCKS === */
+        .section-block {
+            padding: var(--space-xl) 0;
+            position: relative;
+        }
+
+        .section-block + .section-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--color-text-primary);
+            opacity: 0.08;
+        }
+
+        .section-label {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .section-label::before {
+            content: '';
+            width: 24px;
+            height: 3px;
+            background: var(--color-primary);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            font-weight: 400;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-sm);
+            line-height: 1.1;
+            letter-spacing: -0.015em;
+        }
+
+        .section-desc {
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+            max-width: 56ch;
+            margin-bottom: var(--space-lg);
+        }
+
+        /* Dark variants */
+        .section-block--dark .section-title { color: var(--color-text-on-dark); }
+        .section-block--dark .section-desc { color: var(--color-text-muted); }
+        .section-block--dark + .section-block--dark::before {
+            background: rgba(255,255,255,0.06);
+            opacity: 1;
+        }
+
+        /* === DIVIDERS === */
+        .chapter-divider {
+            height: 3px;
+            border: none;
+            margin: 0;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-primary));
+        }
+
+        .ember-line {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                var(--color-primary) 0%,
+                var(--color-secondary) 35%,
+                var(--color-primary) 70%,
+                var(--color-secondary) 100%);
+        }
+
+        /* === HERO BANNER === */
+        .batch-hero {
+            background: var(--color-depth);
+            padding: var(--space-4xl) 0 var(--space-3xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .batch-hero__ghost {
+            position: absolute;
+            top: -8%;
+            right: -5%;
+            font-family: var(--font-display);
+            font-size: clamp(12rem, 28vw, 28rem);
+            font-weight: 400;
+            line-height: 0.8;
+            color: rgba(var(--color-primary-rgb), 0.03);
+            pointer-events: none;
+            white-space: nowrap;
+            font-style: italic;
+            letter-spacing: -0.04em;
+        }
+
+        .batch-hero .chapter-header__title {
+            color: var(--color-text-on-dark);
+            font-size: clamp(3rem, 7vw, var(--text-3xl));
+        }
+
+        .batch-hero .chapter-header__lead { color: rgba(255,255,255,0.5); }
+        .batch-hero .chapter-header { padding-top: 0; }
+
+        /* =============================================
+           05 — LOGOTYPE & MORPHOLOGIE
+           ============================================= */
+
+        /* 05.1 Logo Showcase */
+        .logo-showcase {
+            background: var(--color-depth);
+            padding: var(--space-3xl) var(--space-xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+            border: 3px solid var(--color-primary);
+        }
+
+        .logo-showcase__symbol {
+            position: relative;
+            z-index: 2;
+            margin-bottom: var(--space-xl);
+        }
+
+        .logo-showcase__wordmark {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            font-weight: 400;
+            color: var(--color-text-on-dark);
+            letter-spacing: -0.03em;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: var(--space-lg);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-showcase__wordmark em {
+            font-style: italic;
+            color: var(--color-primary);
+        }
+
+        .logo-showcase__sub {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: var(--space-xl);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-showcase__narrative {
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: 300;
+            line-height: 1.75;
+            color: rgba(255,255,255,0.45);
+            max-width: 52ch;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-showcase__narrative em {
+            font-style: normal;
+            color: var(--color-primary-light);
+            font-weight: 500;
+        }
+
+        .logo-showcase__ghost {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.03;
+        }
+
+        /* Symbol anatomy */
+        .symbol-anatomy {
+            background: var(--color-surface-alt);
+            padding: var(--space-2xl) var(--space-xl);
+            border: 1px solid rgba(10,10,10,0.06);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            align-items: center;
+        }
+
+        .symbol-anatomy__visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-xl);
+        }
+
+        .symbol-anatomy__legend {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .anatomy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-sm) 0;
+        }
+
+        .anatomy-item__marker {
+            width: 24px;
+            height: 3px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .anatomy-item__text {
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .anatomy-item__text strong {
+            display: block;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 2px;
+            font-size: var(--text-sm);
+            letter-spacing: 0.02em;
+        }
+
+        /* 05.2 Lockups */
+        .lockups-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .lockup-card {
+            padding: var(--space-xl) var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            border: 1px solid rgba(10,10,10,0.08);
+            transition: background var(--transition-base), border-color var(--transition-fast);
+            background: var(--color-surface);
+        }
+
+        .lockup-card:hover { background: var(--color-surface-alt); border-color: rgba(232,77,14,0.2); }
+
+        .lockup-card--dark {
+            background: var(--color-depth);
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .lockup-card--dark:hover {
+            background: var(--color-depth-warm);
+            border-color: rgba(232,77,14,0.15);
+        }
+
+        .lockup-card__type {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            margin-top: var(--space-lg);
+        }
+
+        .lockup-card--dark .lockup-card__type {
+            color: rgba(255,255,255,0.35);
+        }
+
+        .lockup-card__context {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 300;
+            color: var(--color-text-secondary);
+            margin-top: var(--space-xs);
+            opacity: 0.6;
+        }
+
+        .lockup-card--dark .lockup-card__context {
+            color: rgba(255,255,255,0.25);
+        }
+
+        .lockup-horizontal {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .lockup-stacked {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .lockup-wordmark {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 400;
+            color: var(--color-text-primary);
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+        }
+
+        .lockup-wordmark--sm { font-size: var(--text-lg); }
+
+        .lockup-wordmark em {
+            font-style: italic;
+            color: var(--color-primary);
+        }
+
+        .lockup-wordmark--light {
+            color: var(--color-text-on-dark);
+        }
+
+        .lockup-wordmark--light em {
+            color: var(--color-primary-light);
+        }
+
+        /* Responsive lockups row */
+        .responsive-lockups {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2xl);
+            flex-wrap: wrap;
+        }
+
+        .responsive-lockup-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .responsive-lockup-item__size {
+            font-family: var(--font-body);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+        }
+
+        /* 05.3 Safe Area */
+        .safe-area-demo {
+            background: var(--color-surface-alt);
+            padding: var(--space-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 380px;
+            border: 1px solid rgba(10,10,10,0.06);
+        }
+
+        .safe-area-box {
+            position: relative;
+            padding: var(--space-xl);
+        }
+
+        .safe-area-boundary {
+            position: absolute;
+            inset: 0;
+            border: 2px dashed var(--color-primary);
+            opacity: 0.35;
+        }
+
+        .safe-area-label {
+            position: absolute;
+            font-family: var(--font-body);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--color-primary);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .safe-area-label--top { top: -24px; left: 50%; transform: translateX(-50%); }
+        .safe-area-label--right { right: -56px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+        .safe-area-label--bottom { bottom: -24px; left: 50%; transform: translateX(-50%); }
+        .safe-area-label--left { left: -56px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+        .safe-area-inner {
+            background: var(--color-surface);
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            border: 1px solid rgba(10,10,10,0.08);
+        }
+
+        .safe-area-measure {
+            position: absolute;
+            display: flex;
+            align-items: center;
+        }
+
+        .safe-area-measure--h { bottom: -12px; left: 0; right: 0; }
+
+        .safe-area-measure--v {
+            right: -12px;
+            top: 0;
+            bottom: 0;
+            flex-direction: column;
+        }
+
+        .measure-line { flex: 1; height: 1px; background: var(--color-primary); opacity: 0.3; }
+        .measure-line--v { width: 1px; height: auto; flex: 1; }
+        .measure-cap { width: 1px; height: 8px; background: var(--color-primary); opacity: 0.3; }
+        .measure-cap--h { width: 8px; height: 1px; }
+
+        /* 05.4 Variants */
+        .variants-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .variant-card {
+            padding: var(--space-xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 240px;
+            position: relative;
+            transition: background var(--transition-base), border-color var(--transition-fast);
+            border: 1px solid rgba(10,10,10,0.04);
+        }
+
+        .variant-card--light { background: var(--color-surface); }
+        .variant-card--dark { background: var(--color-depth); }
+        .variant-card--mono { background: var(--color-surface); }
+        .variant-card--oled { background: #000; }
+
+        .variant-context {
+            position: absolute;
+            bottom: var(--space-sm);
+            right: var(--space-md);
+            font-family: var(--font-body);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.3;
+        }
+
+        .variant-card--light .variant-context { color: var(--color-text-primary); }
+        .variant-card--dark .variant-context { color: var(--color-text-on-dark); }
+        .variant-card--mono .variant-context { color: var(--color-text-secondary); }
+        .variant-card--oled .variant-context { color: rgba(255,255,255,0.25); }
+
+        .variant-lockup {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        /* =============================================
+           06 — ICONOGRAPHIE & SYSTEME DE SIGNES
+           ============================================= */
+
+        .icon-grammar-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+        }
+
+        .icon-style-card {
+            padding: var(--space-xl) var(--space-lg);
+            text-align: center;
+            border: 1px solid rgba(10,10,10,0.06);
+            transition: background var(--transition-base), border-color var(--transition-fast);
+            background: var(--color-surface);
+        }
+
+        .icon-style-card:hover { background: var(--color-surface-alt); border-color: rgba(232,77,14,0.15); }
+
+        .icon-style-card__icons {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md) 0;
+        }
+
+        .icon-style-card__name {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 400;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .icon-style-card__desc {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 300;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Stroke demo */
+        .stroke-demo {
+            display: flex;
+            gap: var(--space-xl);
+            align-items: flex-end;
+            justify-content: center;
+            padding: var(--space-xl);
+            background: var(--color-surface);
+            border: 1px solid rgba(10,10,10,0.06);
+        }
+
+        .stroke-sample {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .stroke-sample__label {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            letter-spacing: 0.04em;
+        }
+
+        .stroke-divider {
+            width: 1px;
+            height: 64px;
+            background: var(--color-text-primary);
+            opacity: 0.08;
+        }
+
+        /* Abstraction scale */
+        .abstraction-scale {
+            display: flex;
+            align-items: stretch;
+            border: 1px solid rgba(10,10,10,0.06);
+        }
+
+        .abstraction-step {
+            flex: 1;
+            padding: var(--space-xl) var(--space-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-md);
+            text-align: center;
+            position: relative;
+            transition: background var(--transition-base), border-color var(--transition-fast);
+            background: var(--color-surface);
+        }
+
+        .abstraction-step:hover { background: var(--color-surface-alt); border-color: rgba(232,77,14,0.12); }
+
+        .abstraction-step + .abstraction-step {
+            border-left: 1px solid rgba(10,10,10,0.06);
+        }
+
+        .abstraction-step__label {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .abstraction-arrow-row {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            color: var(--color-primary);
+            letter-spacing: 0.15em;
+            text-align: center;
+            padding: var(--space-md) 0;
+        }
+
+        /* Business icons grid */
+        .icons-business-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+
+        .icon-biz-card {
+            padding: var(--space-lg) var(--space-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+            text-align: center;
+            border: 1px solid rgba(10,10,10,0.04);
+            transition: background var(--transition-base), border-color var(--transition-fast);
+            background: var(--color-surface);
+        }
+
+        .icon-biz-card:hover {
+            background: var(--color-depth);
+            border-color: var(--color-primary);
+        }
+
+        .icon-biz-card:hover .icon-biz-card__label,
+        .icon-biz-card:hover .icon-biz-card__sub {
+            color: var(--color-text-on-dark);
+        }
+
+        .icon-biz-card__icon-wrap {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--color-primary);
+            transition: background var(--transition-base), border-color var(--transition-fast);
+        }
+
+        .icon-biz-card:hover .icon-biz-card__icon-wrap {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .icon-biz-card__label {
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--color-text-primary);
+            letter-spacing: 0.02em;
+            transition: color var(--transition-base);
+        }
+
+        .icon-biz-card__sub {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 300;
+            color: var(--color-text-secondary);
+            line-height: 1.4;
+            transition: color var(--transition-base);
+        }
+
+        /* =============================================
+           07 — DATA VISUALIZATION & EVIDENCE
+           ============================================= */
+
+        .section--dark {
+            background: var(--color-depth);
+            padding: var(--space-xl) 0;
+        }
+
+        .chart-showcase {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            gap: 0;
+        }
+
+        .chart-card {
+            padding: var(--space-lg);
+            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--color-depth-warm);
+            transition: border-color var(--transition-fast), background var(--transition-base);
+        }
+
+        .chart-card:hover { border-color: rgba(232,77,14,0.2); background: rgba(232,77,14,0.04); }
+
+        .chart-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .chart-card__title {
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--color-text-on-dark);
+            letter-spacing: 0.02em;
+        }
+
+        .chart-card__period {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 400;
+            color: var(--color-text-muted);
+        }
+
+        .grid-demo-card {
+            padding: var(--space-lg);
+            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--color-depth-warm);
+        }
+
+        /* Data viz palette */
+        .dataviz-palette-row {
+            display: flex;
+            gap: 0;
+        }
+
+        .dataviz-swatch {
+            flex: 1;
+            padding: var(--space-xl) var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 200px;
+            position: relative;
+            transition: transform var(--transition-base), border-color var(--transition-fast);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .dataviz-swatch:hover { transform: scale(1.02); z-index: 2; border-color: rgba(255,255,255,0.15); }
+
+        .dataviz-swatch__role {
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+            letter-spacing: 0.04em;
+        }
+
+        .dataviz-swatch__usage {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 300;
+            line-height: 1.5;
+            opacity: 0.7;
+        }
+
+        .dataviz-swatch--1 { background: var(--color-dataviz-1); color: var(--color-text-on-dark); }
+        .dataviz-swatch--2 { background: var(--color-dataviz-2); color: var(--color-depth); }
+        .dataviz-swatch--3 { background: var(--color-dataviz-3); color: var(--color-depth); border-color: rgba(10,10,10,0.08); }
+        .dataviz-swatch--4 { background: var(--color-dataviz-4); color: var(--color-text-on-dark); }
+
+        /* Data Typography */
+        .data-typo-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .data-typo-card {
+            padding: var(--space-xl);
+            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--color-depth-warm);
+        }
+
+        .data-typo-card--primary {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .kpi-hero {
+            font-family: var(--font-body);
+            font-size: clamp(2.618rem, 6vw, 4.236rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .kpi-unit {
+            font-family: var(--font-body);
+            font-size: var(--text-lg);
+            font-weight: 400;
+            opacity: 0.5;
+            margin-left: var(--space-xs);
+        }
+
+        .kpi-label {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: var(--space-sm);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-lg);
+        }
+
+        .data-table th {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-align: left;
+            padding: var(--space-sm) 0;
+            border-bottom: 2px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.35);
+        }
+
+        .data-table td {
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-feature-settings: 'tnum' 1;
+            color: var(--color-text-on-dark);
+        }
+
+        .data-table td:first-child { font-weight: 500; }
+
+        .data-table--primary th {
+            border-bottom-color: rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.6);
+        }
+
+        .data-table--primary td {
+            border-bottom-color: rgba(255,255,255,0.08);
+        }
+
+        .legend-row {
+            display: flex;
+            gap: var(--space-lg);
+            margin-top: var(--space-md);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 400;
+            color: var(--color-text-muted);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            flex-shrink: 0;
+        }
+
+        /* === FOOTER === */
+        .batch-footer {
+            background: var(--color-depth);
+            padding: var(--space-2xl) var(--space-xl) var(--space-xl);
+            position: relative;
+            overflow: hidden;
+            border-top: 3px solid var(--color-primary);
+        }
+
+        .batch-footer__inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .batch-footer__brand {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            color: var(--color-text-on-dark);
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .batch-footer__brand em {
+            font-style: italic;
+            color: var(--color-primary);
+        }
+
+        .batch-footer__sub {
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 300;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 960px) {
+            .lockups-grid,
+            .icon-grammar-grid { grid-template-columns: 1fr; }
+            .variants-grid,
+            .data-typo-showcase { grid-template-columns: 1fr; }
+            .icons-business-grid { grid-template-columns: 1fr 1fr; }
+            .chart-showcase { grid-template-columns: 1fr; }
+            .dataviz-palette-row { flex-direction: column; }
+            .abstraction-scale { flex-direction: column; }
+            .abstraction-step + .abstraction-step { border-left: none; border-top: 1px solid rgba(10,10,10,0.06); }
+            .symbol-anatomy { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =============================================
+         BATCH HERO
+         ============================================= -->
+    <div class="batch-hero">
+        <div class="batch-hero__ghost" aria-hidden="true">SIGNES</div>
+        <div class="container">
+            <div class="chapter-header chapter-header--dark">
+                <p class="chapter-header__overline">Systeme de Signes</p>
+                <h1 class="chapter-header__title">Chaque signe<br>est un acte</h1>
+                <p class="chapter-header__lead">
+                    Le systeme visuel des Vermeil ne decore pas. Il frappe.
+                    Un symbole forge dans la geometrie du cycle, des icones au scalpel,
+                    des donnees qui parlent fort. Trois chapitres, un seul langage :
+                    celui de la transformation.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="ember-line"></div>
+
+    <!-- =============================================
+         CHAPITRE 05 — LOGOTYPE & MORPHOLOGIE DU SIGNE
+         ============================================= -->
+    <div class="container">
+        <div class="chapter-header">
+            <p class="chapter-header__overline">Logotype &amp; Morphologie</p>
+            <h1 class="chapter-header__title">Le cycle forge<br>dans le signe</h1>
+            <p class="chapter-header__lead">
+                Le logotype Atelier Vermeil combine un symbole geometrique — le Creuset —
+                avec la typographie Instrument Serif. Le signe incarne le cycle de
+                transformation : matiere organique qui descend, chaleur qui monte,
+                retour a la terre. Pas d'alchimie esoterique. La realite du sol.
+            </p>
+        </div>
+
+        <!-- 05.1 Concept & Symbolique -->
+        <div class="section-block">
+            <p class="section-label">Concept &amp; Symbolique</p>
+            <h2 class="section-title">Le Creuset — geometrie du cycle</h2>
+            <p class="section-desc">
+                Le symbole est ne de la superposition de deux chevrons opposes :
+                un chevron ascendant (la chaleur du compostage, la transformation
+                qui s'eleve) et un chevron descendant (le retour a la terre, la
+                matiere qui nourrit le sol). Leur intersection forme un losange
+                central — le creuset, le point de bascule ou le dechet devient
+                ressource. Sharp, geometrique, 0px radius. La forme fonctionne
+                seule, avec le nom, et a toute echelle.
+            </p>
+            <div class="logo-showcase">
+                <!-- Ghost background — large symbol -->
+                <div class="logo-showcase__ghost" aria-hidden="true">
+                    <svg width="480" height="480" viewBox="0 0 100 100" fill="none">
+                        <path d="M50 8 L82 40 L50 52 L18 40 Z" stroke="rgba(232,77,14,0.5)" stroke-width="1.2" fill="none"/>
+                        <path d="M50 92 L18 60 L50 48 L82 60 Z" stroke="rgba(232,77,14,0.5)" stroke-width="1.2" fill="none"/>
+                    </svg>
+                </div>
+
+                <!-- Main symbol display -->
+                <div class="logo-showcase__symbol">
+                    <svg width="160" height="160" viewBox="0 0 100 100" fill="none">
+                        <!-- Ascending chevron — heat rising -->
+                        <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                        <!-- Descending chevron — return to earth -->
+                        <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                        <!-- Central diamond overlap area darkened for depth -->
+                        <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                        <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                    </svg>
+                </div>
+
+                <div class="logo-showcase__sub">Collecte &amp; Compostage Local</div>
+                <div class="logo-showcase__wordmark">
+                    Les<br><em>Vermeil</em>
+                </div>
+                <p class="logo-showcase__narrative">
+                    Le <em>Creuset</em> traduit visuellement le coeur de metier :
+                    le chevron ascendant incarne la <em>chaleur thermogene</em> du compostage
+                    (60-70 degres au coeur de l'andain), le chevron descendant figure
+                    le <em>retour a la terre</em> — la boucle ferme du cycle organique.
+                    Le losange central est le <em>point de bascule</em> ou le dechet
+                    devient ressource. Aucune reference esoterique : c'est la geometrie
+                    du reel.
+                </p>
+            </div>
+
+            <!-- Symbol anatomy breakdown -->
+            <div class="symbol-anatomy">
+                <div class="symbol-anatomy__visual">
+                    <svg width="240" height="240" viewBox="0 0 100 100" fill="none">
+                        <!-- Construction lines -->
+                        <line x1="50" y1="0" x2="50" y2="100" stroke="#E84D0E" stroke-width="0.3" stroke-dasharray="2 2" opacity="0.4"/>
+                        <line x1="0" y1="50" x2="100" y2="50" stroke="#E84D0E" stroke-width="0.3" stroke-dasharray="2 2" opacity="0.4"/>
+                        <!-- Ascending chevron -->
+                        <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="none" stroke="#E84D0E" stroke-width="1.5"/>
+                        <!-- Descending chevron -->
+                        <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="none" stroke="#FFBA0A" stroke-width="1.5"/>
+                        <!-- Central diamond highlight -->
+                        <path d="M50 40 L68.67 50 L50 60 L31.33 50 Z" fill="#E84D0E" opacity="0.15" stroke="#E84D0E" stroke-width="0.5"/>
+                        <!-- Annotation dots -->
+                        <circle cx="50" cy="8" r="2" fill="#E84D0E"/>
+                        <circle cx="50" cy="92" r="2" fill="#FFBA0A"/>
+                        <circle cx="50" cy="50" r="2.5" fill="#FFFFFF" stroke="#E84D0E" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="symbol-anatomy__legend">
+                    <div class="anatomy-item">
+                        <span class="anatomy-item__marker" style="background:#E84D0E;"></span>
+                        <span class="anatomy-item__text">
+                            <strong>Chevron ascendant</strong>
+                            Chaleur du compostage. La matiere organique monte en temperature,
+                            se decompose, se transforme. Le mouvement vers le haut.
+                        </span>
+                    </div>
+                    <div class="anatomy-item">
+                        <span class="anatomy-item__marker" style="background:#FFBA0A;"></span>
+                        <span class="anatomy-item__text">
+                            <strong>Chevron descendant</strong>
+                            Retour a la terre. Le compost redescend dans le sol, nourrit
+                            les cultures, ferme le cycle. Le mouvement vers le bas.
+                        </span>
+                    </div>
+                    <div class="anatomy-item">
+                        <span class="anatomy-item__marker" style="background:linear-gradient(90deg, #E84D0E, #FFBA0A);"></span>
+                        <span class="anatomy-item__text">
+                            <strong>Losange central — le Creuset</strong>
+                            Le point de bascule. La ou le dechet devient ressource,
+                            ou l'organique se transmute en terreau. Le coeur du signe.
+                        </span>
+                    </div>
+                    <div class="anatomy-item">
+                        <span class="anatomy-item__marker" style="background:#0A0A0A;"></span>
+                        <span class="anatomy-item__text">
+                            <strong>Construction geometrique</strong>
+                            Axe de symetrie vertical, angles a 45 degres.
+                            Zero arrondi. Proportions sur grille 100x100.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 05.2 Systeme de Lockups -->
+        <div class="section-block">
+            <p class="section-label">Systeme de Lockups</p>
+            <h2 class="section-title">Quatre configurations, une seule charge</h2>
+            <p class="section-desc">
+                Du rapport annuel au profil LinkedIn, de la reponse AO au flanc
+                du velo-cargo — le signe s'adapte sans perdre sa puissance.
+                Quatre modes de deploiement, zero compromis sur l'impact.
+            </p>
+            <div class="lockups-grid">
+                <!-- Primaire (horizontal) -->
+                <div class="lockup-card">
+                    <div class="lockup-horizontal">
+                        <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                        </svg>
+                        <span class="lockup-wordmark">Les <em>Vermeil</em></span>
+                    </div>
+                    <span class="lockup-card__type">Primaire</span>
+                    <span class="lockup-card__context">Sites web, en-tetes, signatures</span>
+                </div>
+                <!-- Secondaire (stacked) -->
+                <div class="lockup-card">
+                    <div class="lockup-stacked">
+                        <svg width="56" height="56" viewBox="0 0 100 100" fill="none">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                        </svg>
+                        <span class="lockup-wordmark lockup-wordmark--sm">Les <em>Vermeil</em></span>
+                    </div>
+                    <span class="lockup-card__type">Secondaire</span>
+                    <span class="lockup-card__context">Presentations, decks, flyers</span>
+                </div>
+                <!-- Icon Only — fond clair -->
+                <div class="lockup-card">
+                    <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+                        <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                        <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                        <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                        <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                    </svg>
+                    <span class="lockup-card__type">Marque seule</span>
+                    <span class="lockup-card__context">Favicons, avatars, tampons</span>
+                </div>
+                <!-- Responsive / favicon — fond sombre -->
+                <div class="lockup-card lockup-card--dark">
+                    <div class="responsive-lockups">
+                        <div class="responsive-lockup-item">
+                            <svg width="48" height="48" viewBox="0 0 100 100" fill="none">
+                                <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                                <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                                <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                                <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                            </svg>
+                            <span class="responsive-lockup-item__size">48px</span>
+                        </div>
+                        <div class="responsive-lockup-item">
+                            <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+                                <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                                <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                                <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                                <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                            </svg>
+                            <span class="responsive-lockup-item__size">32px</span>
+                        </div>
+                        <div class="responsive-lockup-item">
+                            <svg width="20" height="20" viewBox="0 0 100 100" fill="none">
+                                <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                                <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                                <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                                <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                            </svg>
+                            <span class="responsive-lockup-item__size">20px</span>
+                        </div>
+                        <div class="responsive-lockup-item">
+                            <svg width="16" height="16" viewBox="0 0 100 100" fill="none">
+                                <path d="M50 5 L85 40 L50 55 L15 40 Z" fill="#E84D0E"/>
+                                <path d="M50 95 L15 60 L50 45 L85 60 Z" fill="#FFBA0A"/>
+                            </svg>
+                            <span class="responsive-lockup-item__size">16px</span>
+                        </div>
+                    </div>
+                    <span class="lockup-card__type">Responsive</span>
+                    <span class="lockup-card__context">Le losange central disparait sous 20px</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 05.3 Zone d'Exclusion & Lisibilite -->
+        <div class="section-block">
+            <p class="section-label">Zone d'exclusion</p>
+            <h2 class="section-title">L'espace vital du signe</h2>
+            <p class="section-desc">
+                Le logotype exige un perimetre de silence equivalant a la
+                hauteur du symbole. Aucun element ne penetre cette zone.
+                Le respect de cet espace garantit l'impact a toute echelle.
+            </p>
+            <div class="safe-area-demo">
+                <div class="safe-area-box">
+                    <div class="safe-area-boundary"></div>
+                    <span class="safe-area-label safe-area-label--top">1x hauteur symbole</span>
+                    <span class="safe-area-label safe-area-label--right">1x</span>
+                    <span class="safe-area-label safe-area-label--bottom">Zone de protection</span>
+                    <span class="safe-area-label safe-area-label--left">1x</span>
+                    <div class="safe-area-inner">
+                        <svg width="40" height="40" viewBox="0 0 100 100" fill="none" style="flex-shrink:0;">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                        </svg>
+                        <span class="lockup-wordmark">Les <em>Vermeil</em></span>
+                    </div>
+                    <div class="safe-area-measure safe-area-measure--h">
+                        <span class="measure-cap"></span>
+                        <span class="measure-line"></span>
+                        <span class="measure-cap"></span>
+                    </div>
+                    <div class="safe-area-measure safe-area-measure--v">
+                        <span class="measure-cap measure-cap--h"></span>
+                        <span class="measure-line measure-line--v"></span>
+                        <span class="measure-cap measure-cap--h"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 05.4 Variantes de Contexte -->
+        <div class="section-block">
+            <p class="section-label">Variantes de contexte</p>
+            <h2 class="section-title">Un signe, tous les territoires</h2>
+            <p class="section-desc">
+                Du papier blanc a l'ecran OLED, du deck de presentation
+                au bac de collecte — le logotype s'adapte sans alterer
+                son impact. Quatre modes, zero perte de signal.
+            </p>
+            <div class="variants-grid">
+                <!-- Light -->
+                <div class="variant-card variant-card--light">
+                    <div class="variant-lockup">
+                        <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                        </svg>
+                        <span style="font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-text-primary);text-transform:uppercase;letter-spacing:-0.01em;">Les <em style="font-style:italic;color:var(--color-primary);">Vermeil</em></span>
+                    </div>
+                    <span class="variant-context">Fond clair</span>
+                </div>
+                <!-- Dark -->
+                <div class="variant-card variant-card--dark">
+                    <div class="variant-lockup">
+                        <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                        </svg>
+                        <span style="font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-text-on-dark);text-transform:uppercase;letter-spacing:-0.01em;">Les <em style="font-style:italic;color:var(--color-primary-light);">Vermeil</em></span>
+                    </div>
+                    <span class="variant-context">Fond sombre</span>
+                </div>
+                <!-- Monochrome -->
+                <div class="variant-card variant-card--mono">
+                    <div class="variant-lockup">
+                        <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#0A0A0A"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#4A4A4A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#000000"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#333333"/>
+                        </svg>
+                        <span style="font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-text-primary);text-transform:uppercase;letter-spacing:-0.01em;">Les <em style="font-style:italic;color:var(--color-text-primary);">Vermeil</em></span>
+                    </div>
+                    <span class="variant-context">Monochrome</span>
+                </div>
+                <!-- OLED -->
+                <div class="variant-card variant-card--oled">
+                    <div class="variant-lockup">
+                        <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+                            <path d="M50 8 L82 40 L50 52 L18 40 Z" fill="#E84D0E"/>
+                            <path d="M50 92 L18 60 L50 48 L82 60 Z" fill="#FFBA0A"/>
+                            <path d="M50 48 L68.67 40 L50 52 L31.33 40 Z" fill="#B83A08"/>
+                            <path d="M50 52 L31.33 60 L50 48 L68.67 60 Z" fill="#D49A00"/>
+                        </svg>
+                        <span style="font-family:var(--font-display);font-size:var(--text-xl);color:#fff;text-transform:uppercase;letter-spacing:-0.01em;">Les <em style="font-style:italic;color:var(--color-primary);">Vermeil</em></span>
+                    </div>
+                    <span class="variant-context">OLED</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+         CHAPITRE 06 — ICONOGRAPHIE & SYSTEME DE SIGNES
+         ============================================= -->
+    <hr class="chapter-divider">
+    <div class="container">
+        <div class="chapter-header chapter-header--tight">
+            <p class="chapter-header__overline">Iconographie &amp; Signes</p>
+            <h1 class="chapter-header__title">Des signes au scalpel</h1>
+            <p class="chapter-header__lead">
+                Le systeme iconique FURNACE est sharp, direct, sans fioritures.
+                Outline 2px, radius 0, terminaisons franches. Chaque icone
+                est un outil de communication, pas de la decoration.
+            </p>
+        </div>
+
+        <!-- 06.1 Grammaire Iconique -->
+        <div class="section-block">
+            <p class="section-label">Grammaire iconique</p>
+            <h2 class="section-title">Trois registres, une discipline</h2>
+            <p class="section-desc">
+                De l'interface au support imprime, trois niveaux d'expression
+                qui partagent le meme ADN : angles vifs, lignes epaisses,
+                zero arrondi. Le systeme est brutalement coherent.
+            </p>
+            <div class="icon-grammar-grid">
+                <!-- Outline -->
+                <div class="icon-style-card">
+                    <div class="icon-style-card__icons">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect x="10" y="12" width="20" height="20" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M14 12V8h12v4" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M16 20v4M20 18v6M24 22v2" stroke="#E84D0E" stroke-width="2"/>
+                        </svg>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <path d="M8 20a12 12 0 0120-9" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M28 7v4h-4" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M32 20a12 12 0 01-20 9" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M12 33v-4h4" stroke="#E84D0E" stroke-width="2"/>
+                        </svg>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect x="8" y="6" width="24" height="28" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M14 14h12M14 20h8M14 26h10" stroke="#E84D0E" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="icon-style-card__name">Outline</h3>
+                    <p class="icon-style-card__desc">Interfaces, navigation, etats de repos. Stroke 2px, sharp absolu.</p>
+                </div>
+                <!-- Solid -->
+                <div class="icon-style-card">
+                    <div class="icon-style-card__icons">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect x="10" y="12" width="20" height="20" fill="#E84D0E"/>
+                            <path d="M14 12V8h12v4" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M16 20v4M20 18v6M24 22v2" stroke="#FFFFFF" stroke-width="2"/>
+                        </svg>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <path d="M8 20a12 12 0 0120-9" stroke="#E84D0E" stroke-width="3"/>
+                            <path d="M28 7v4h-4" fill="#E84D0E"/>
+                            <path d="M32 20a12 12 0 01-20 9" stroke="#0A0A0A" stroke-width="3"/>
+                            <path d="M12 33v-4h4" fill="#0A0A0A"/>
+                        </svg>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect x="8" y="6" width="24" height="28" fill="#0A0A0A"/>
+                            <path d="M14 14h12M14 20h8M14 26h10" stroke="#E84D0E" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="icon-style-card__name">Solid</h3>
+                    <p class="icon-style-card__desc">Boutons, accents actifs, supports impactants. Aplats denses.</p>
+                </div>
+                <!-- Duotone -->
+                <div class="icon-style-card">
+                    <div class="icon-style-card__icons">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect x="10" y="12" width="20" height="20" fill="#E84D0E" opacity="0.15"/>
+                            <rect x="10" y="12" width="20" height="20" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M14 12V8h12v4" stroke="#0A0A0A" stroke-width="2"/>
+                            <path d="M16 20v4M20 18v6M24 22v2" stroke="#E84D0E" stroke-width="2"/>
+                        </svg>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="11" fill="#FFBA0A" opacity="0.12"/>
+                            <path d="M8 20a12 12 0 0120-9" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M28 7v4h-4" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M32 20a12 12 0 01-20 9" stroke="#0A0A0A" stroke-width="2"/>
+                            <path d="M12 33v-4h4" stroke="#0A0A0A" stroke-width="2"/>
+                        </svg>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect x="8" y="6" width="24" height="28" fill="#0A0A0A" opacity="0.06"/>
+                            <rect x="8" y="6" width="24" height="28" stroke="#0A0A0A" stroke-width="2"/>
+                            <path d="M14 14h12" stroke="#E84D0E" stroke-width="2"/>
+                            <path d="M14 20h8M14 26h10" stroke="#0A0A0A" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="icon-style-card__name">Duotone</h3>
+                    <p class="icon-style-card__desc">Supports premium, presentations. Orange + noir en dialogue.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 06.2 Epaisseur & Finitions -->
+        <div class="section-block">
+            <p class="section-label">Epaisseur &amp; Finitions</p>
+            <h2 class="section-title">La precision du trait</h2>
+            <p class="section-desc">
+                Trois epaisseurs definissent la hierarchie. Les terminaisons
+                sont franches (butt ou square), les coins sont vifs — pas d'arrondi,
+                pas de douceur. Le trait est un outil, pas une caresse.
+            </p>
+            <div class="stroke-demo">
+                <div class="stroke-sample">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <rect x="12" y="12" width="32" height="32" stroke="#E84D0E" stroke-width="1.5"/>
+                        <path d="M20 28h16" stroke="#E84D0E" stroke-width="1.5"/>
+                        <path d="M28 20v16" stroke="#E84D0E" stroke-width="1.5"/>
+                    </svg>
+                    <span class="stroke-sample__label">1.5px — Detail</span>
+                </div>
+                <div class="stroke-sample">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <rect x="12" y="12" width="32" height="32" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M20 28h16" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M28 20v16" stroke="#E84D0E" stroke-width="2"/>
+                    </svg>
+                    <span class="stroke-sample__label">2.0px — Standard</span>
+                </div>
+                <div class="stroke-sample">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <rect x="12" y="12" width="32" height="32" stroke="#E84D0E" stroke-width="3"/>
+                        <path d="M20 28h16" stroke="#E84D0E" stroke-width="3"/>
+                        <path d="M28 20v16" stroke="#E84D0E" stroke-width="3"/>
+                    </svg>
+                    <span class="stroke-sample__label">3.0px — Impact</span>
+                </div>
+                <div class="stroke-divider"></div>
+                <div class="stroke-sample">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <rect x="10" y="10" width="36" height="36" stroke="#0A0A0A" stroke-width="2"/>
+                        <path d="M10 28h36" stroke="#E84D0E" stroke-width="2"/>
+                    </svg>
+                    <span class="stroke-sample__label">Coins vifs</span>
+                </div>
+                <div class="stroke-sample">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <path d="M12 12h32v32H12z" stroke="#0A0A0A" stroke-width="2"/>
+                        <path d="M12 12L44 44" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M44 12L12 44" stroke="#FFBA0A" stroke-width="2"/>
+                    </svg>
+                    <span class="stroke-sample__label">Terminaisons franches</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 06.3 Niveau d'Abstraction -->
+        <div class="section-block">
+            <p class="section-label">Niveau d'abstraction</p>
+            <h2 class="section-title">Du concret au concept</h2>
+            <p class="section-desc">
+                L'echelle d'abstraction traduit les activites metier en signes
+                de plus en plus synthetiques. Du pictogramme fonctionnel
+                au symbole d'impact — quatre degres, une meme rigueur.
+            </p>
+            <div class="abstraction-scale">
+                <!-- Literal -->
+                <div class="abstraction-step">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <rect x="12" y="14" width="24" height="22" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M16 14V10h16v4" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M18 22v6M24 20v8M30 24v4" stroke="#0A0A0A" stroke-width="2"/>
+                    </svg>
+                    <span class="abstraction-step__label">Bac de collecte</span>
+                </div>
+                <!-- Semi-literal -->
+                <div class="abstraction-step">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <path d="M10 36V16l14-8 14 8v20" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M18 36V24h12v12" stroke="#0A0A0A" stroke-width="2"/>
+                        <path d="M24 24v-4" stroke="#FFBA0A" stroke-width="2"/>
+                    </svg>
+                    <span class="abstraction-step__label">Plateforme</span>
+                </div>
+                <!-- Metaphorical -->
+                <div class="abstraction-step">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <path d="M12 36L24 12l12 24" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M18 24h12" stroke="#FFBA0A" stroke-width="2"/>
+                        <path d="M24 12v-4" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M20 8h8" stroke="#E84D0E" stroke-width="2"/>
+                    </svg>
+                    <span class="abstraction-step__label">Transformation</span>
+                </div>
+                <!-- Abstract -->
+                <div class="abstraction-step">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="4" fill="#E84D0E"/>
+                        <path d="M24 8v8M24 32v8M8 24h8M32 24h8" stroke="#E84D0E" stroke-width="2"/>
+                        <path d="M14 14l5 5M29 29l5 5M14 34l5-5M29 19l5-5" stroke="#0A0A0A" stroke-width="1.5"/>
+                    </svg>
+                    <span class="abstraction-step__label">Impact territorial</span>
+                </div>
+            </div>
+            <div class="abstraction-arrow-row">
+                LITTERAL ———————————————————> ABSTRAIT
+            </div>
+        </div>
+
+        <!-- 06.4 DA Illustrative (8 icones metier) -->
+        <div class="section-block">
+            <p class="section-label">Direction artistique illustrative</p>
+            <h2 class="section-title">L'arsenal operationnel</h2>
+            <p class="section-desc">
+                Huit icones metier contextualisees incarnent le systeme FURNACE.
+                Sharp, lisibles, sans ambiguite. Chacune est un outil
+                de communication qui fonctionne du velo-cargo au deck investisseur.
+            </p>
+            <div class="icons-business-grid">
+                <!-- Collecte -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <rect x="4" y="8" width="16" height="12"/>
+                            <path d="M7 8V5h10v3"/>
+                            <path d="M9 13v3M12 12v4M15 14v2"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Collecte</span>
+                    <span class="icon-biz-card__sub">Biodechets en porte-a-porte</span>
+                </div>
+                <!-- Compostage -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <path d="M4 18L12 4l8 14"/>
+                            <path d="M8 12h8"/>
+                            <path d="M10 15h4"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Compostage</span>
+                    <span class="icon-biz-card__sub">Transformation locale</span>
+                </div>
+                <!-- Velo-cargo -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <circle cx="6" cy="17" r="3"/>
+                            <circle cx="18" cy="17" r="3"/>
+                            <path d="M6 17l3-7h4l2 3h3"/>
+                            <rect x="2" y="7" width="8" height="5"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Velo-cargo</span>
+                    <span class="icon-biz-card__sub">Logistique douce</span>
+                </div>
+                <!-- Sol -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <path d="M4 14h16"/>
+                            <path d="M6 14v4M10 14v6M14 14v5M18 14v3"/>
+                            <path d="M12 4v4"/>
+                            <path d="M10 5l2 3 2-3"/>
+                            <path d="M8 10c2-1 4-1 8 0"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Sol vivant</span>
+                    <span class="icon-biz-card__sub">Retour a la terre agricole</span>
+                </div>
+                <!-- Reporting -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <rect x="4" y="2" width="16" height="20"/>
+                            <path d="M8 7h8M8 11h5"/>
+                            <path d="M8 16l3-2 2 3 3-4" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Reporting</span>
+                    <span class="icon-biz-card__sub">Tracabilite et impact</span>
+                </div>
+                <!-- Territoire -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <path d="M12 2L4 7v10l8 5 8-5V7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Territoire</span>
+                    <span class="icon-biz-card__sub">26 antennes, maillage local</span>
+                </div>
+                <!-- Insertion -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <circle cx="9" cy="7" r="3"/>
+                            <path d="M3 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+                            <circle cx="17" cy="9" r="2.5" stroke-width="1.5"/>
+                            <path d="M14 18c0-2 1-3.5 3-4" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Insertion</span>
+                    <span class="icon-biz-card__sub">2/3 des effectifs</span>
+                </div>
+                <!-- Lavage bacs -->
+                <div class="icon-biz-card">
+                    <div class="icon-biz-card__icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E84D0E" stroke-width="2">
+                            <path d="M3 8h18l-2 12H5z"/>
+                            <path d="M3 8l2-4h14l2 4"/>
+                            <path d="M10 12v4M14 12v4"/>
+                        </svg>
+                    </div>
+                    <span class="icon-biz-card__label">Lavage bacs</span>
+                    <span class="icon-biz-card__sub">Service premium</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+         CHAPITRE 07 — DATA VISUALIZATION & EVIDENCE
+         ============================================= -->
+    <hr class="chapter-divider">
+    <div class="section--dark">
+        <div class="container">
+            <div class="chapter-header chapter-header--dark">
+                <p class="chapter-header__overline">Data Visualization</p>
+                <h1 class="chapter-header__title">Les chiffres sont<br>le manifeste</h1>
+                <p class="chapter-header__lead">
+                    Atelier Vermeil ne parlent pas d'impact — ils le prouvent.
+                    30 000 tonnes, 4 000 clients, 250 hectares. Les donnees sont
+                    traitees avec la meme rigueur que tout le systeme : flat, sharp,
+                    orange et noir. Pas de decoration, que de l'evidence.
+                </p>
+            </div>
+
+            <!-- 07.1 Style des Graphiques -->
+            <div class="section-block section-block--dark">
+                <p class="section-label" style="color:var(--color-primary-light);">
+                    <span style="display:inline-block;width:24px;height:3px;background:var(--color-primary-light);margin-right:var(--space-sm);"></span>
+                    Style des graphiques
+                </p>
+                <h2 class="section-title" style="color:var(--color-text-on-dark);">Des barres qui frappent, des courbes qui prouvent</h2>
+                <p class="section-desc" style="color:var(--color-text-muted);">
+                    Les graphiques FURNACE sont plats, angulaires, a haute densite de couleur.
+                    Les barres sont des blocs sans arrondi. Les courbes sont des lignes
+                    tendues. L'orange domine, le jaune accentue, le blanc structure.
+                </p>
+                <div class="chart-showcase">
+                    <!-- Bar + Line chart -->
+                    <div class="chart-card">
+                        <div class="chart-card__header">
+                            <span class="chart-card__title">Tonnage collecte par trimestre</span>
+                            <span class="chart-card__period">2024 — 2025</span>
+                        </div>
+                        <svg viewBox="0 0 520 220" fill="none" width="100%" style="display:block;">
+                            <!-- Grid lines -->
+                            <line x1="40" y1="20" x2="500" y2="20" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                            <line x1="40" y1="60" x2="500" y2="60" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                            <line x1="40" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                            <line x1="40" y1="140" x2="500" y2="140" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                            <line x1="40" y1="180" x2="500" y2="180" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                            <!-- Y-axis labels -->
+                            <text x="34" y="24" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="end">8k</text>
+                            <text x="34" y="64" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="end">6k</text>
+                            <text x="34" y="104" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="end">4k</text>
+                            <text x="34" y="144" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="end">2k</text>
+                            <text x="34" y="184" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="end">0</text>
+                            <!-- Bars — sharp, no radius -->
+                            <rect x="60" y="100" width="32" height="80" fill="#E84D0E" opacity="0.6"/>
+                            <rect x="108" y="80" width="32" height="100" fill="#E84D0E" opacity="0.7"/>
+                            <rect x="156" y="70" width="32" height="110" fill="#E84D0E" opacity="0.8"/>
+                            <rect x="204" y="60" width="32" height="120" fill="#E84D0E" opacity="0.85"/>
+                            <rect x="252" y="50" width="32" height="130" fill="#E84D0E" opacity="0.9"/>
+                            <rect x="300" y="55" width="32" height="125" fill="#FFBA0A" opacity="0.7"/>
+                            <rect x="348" y="40" width="32" height="140" fill="#FFBA0A" opacity="0.8"/>
+                            <rect x="396" y="30" width="32" height="150" fill="#E84D0E"/>
+                            <!-- Trend line -->
+                            <path d="M76 95 L124 76 L172 66 L220 56 L268 46 L316 50 L364 36 L412 26" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+                            <circle cx="412" cy="26" r="4" fill="#FFFFFF"/>
+                            <!-- X-axis labels -->
+                            <text x="76" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T1-24</text>
+                            <text x="124" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T2-24</text>
+                            <text x="172" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T3-24</text>
+                            <text x="220" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T4-24</text>
+                            <text x="268" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T1-25</text>
+                            <text x="316" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T2-25</text>
+                            <text x="364" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T3-25</text>
+                            <text x="412" y="198" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">T4-25</text>
+                        </svg>
+                        <div class="legend-row">
+                            <span class="legend-item"><span class="legend-dot" style="background:#E84D0E;"></span> Tonnage collecte</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#FFBA0A;"></span> Objectif annuel</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#FFFFFF;"></span> Tendance</span>
+                        </div>
+                    </div>
+                    <!-- Donut chart -->
+                    <div class="chart-card">
+                        <div class="chart-card__header">
+                            <span class="chart-card__title">Repartition des collectes</span>
+                            <span class="chart-card__period">2025</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:center;padding:var(--space-lg) 0;">
+                            <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
+                                <!-- Donut segments — sharp, thick -->
+                                <circle cx="100" cy="100" r="70" fill="none" stroke="#E84D0E" stroke-width="28" stroke-dasharray="198 242" stroke-dashoffset="-60"/>
+                                <circle cx="100" cy="100" r="70" fill="none" stroke="#FFBA0A" stroke-width="28" stroke-dasharray="110 330" stroke-dashoffset="-258"/>
+                                <circle cx="100" cy="100" r="70" fill="none" stroke="#FFFFFF" stroke-width="28" stroke-dasharray="66 374" stroke-dashoffset="-368"/>
+                                <circle cx="100" cy="100" r="70" fill="none" stroke="#4A4A4A" stroke-width="28" stroke-dasharray="44 396" stroke-dashoffset="-434"/>
+                                <!-- Center -->
+                                <text x="100" y="95" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="26" font-weight="700" fill="#FFFFFF">4 021</text>
+                                <text x="100" y="114" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10" fill="rgba(255,255,255,0.4)">clients actifs</text>
+                            </svg>
+                        </div>
+                        <div class="legend-row" style="justify-content:center;flex-wrap:wrap;">
+                            <span class="legend-item"><span class="legend-dot" style="background:#E84D0E;"></span> Restauration</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#FFBA0A;"></span> Collectivites</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#FFFFFF;border:1px solid rgba(255,255,255,0.2);"></span> Entreprises</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#4A4A4A;"></span> Marches</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 07.2 Systeme de Grilles & Axes -->
+            <div class="section-block section-block--dark">
+                <p class="section-label" style="color:var(--color-primary-light);">
+                    <span style="display:inline-block;width:24px;height:3px;background:var(--color-primary-light);margin-right:var(--space-sm);"></span>
+                    Grilles &amp; axes
+                </p>
+                <h2 class="section-title" style="color:var(--color-text-on-dark);">La structure sous les chiffres</h2>
+                <p class="section-desc" style="color:var(--color-text-muted);">
+                    Les gridlines sont discretes — 1px, basse opacite.
+                    La baseline est plus affirmee. Les axes sont en IBM Plex Mono
+                    tabulaire. Aucun arrondi sur les barres, aucune fioriture sur les labels.
+                </p>
+                <div class="grid-demo-card">
+                    <svg viewBox="0 0 600 260" fill="none" width="100%" style="display:block;">
+                        <!-- Y-axis labels -->
+                        <text x="30" y="28" font-family="'IBM Plex Mono', monospace" font-size="10" fill="rgba(255,255,255,0.3)" text-anchor="end">250</text>
+                        <text x="30" y="78" font-family="'IBM Plex Mono', monospace" font-size="10" fill="rgba(255,255,255,0.3)" text-anchor="end">200</text>
+                        <text x="30" y="128" font-family="'IBM Plex Mono', monospace" font-size="10" fill="rgba(255,255,255,0.3)" text-anchor="end">150</text>
+                        <text x="30" y="178" font-family="'IBM Plex Mono', monospace" font-size="10" fill="rgba(255,255,255,0.3)" text-anchor="end">100</text>
+                        <text x="30" y="228" font-family="'IBM Plex Mono', monospace" font-size="10" fill="rgba(255,255,255,0.3)" text-anchor="end">0</text>
+                        <!-- Gridlines -->
+                        <line x1="40" y1="24" x2="580" y2="24" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="2 4"/>
+                        <line x1="40" y1="74" x2="580" y2="74" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="2 4"/>
+                        <line x1="40" y1="124" x2="580" y2="124" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="2 4"/>
+                        <line x1="40" y1="174" x2="580" y2="174" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="2 4"/>
+                        <!-- Baseline -->
+                        <line x1="40" y1="224" x2="580" y2="224" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+                        <!-- Y axis -->
+                        <line x1="40" y1="18" x2="40" y2="228" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                        <!-- Stacked bars — sharp -->
+                        <rect x="65" y="84" width="36" height="140" fill="#E84D0E"/>
+                        <rect x="65" y="44" width="36" height="40" fill="#FFBA0A"/>
+                        <rect x="125" y="94" width="36" height="130" fill="#E84D0E"/>
+                        <rect x="125" y="64" width="36" height="30" fill="#FFBA0A"/>
+                        <rect x="185" y="74" width="36" height="150" fill="#E84D0E"/>
+                        <rect x="185" y="34" width="36" height="40" fill="#FFBA0A"/>
+                        <rect x="245" y="64" width="36" height="160" fill="#E84D0E"/>
+                        <rect x="245" y="24" width="36" height="40" fill="#FFBA0A"/>
+                        <rect x="305" y="54" width="36" height="170" fill="#E84D0E"/>
+                        <rect x="305" y="24" width="36" height="30" fill="#FFBA0A"/>
+                        <rect x="365" y="44" width="36" height="180" fill="#E84D0E"/>
+                        <rect x="365" y="24" width="36" height="20" fill="#FFBA0A"/>
+                        <!-- Annotation -->
+                        <line x1="40" y1="74" x2="420" y2="74" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="4 2" opacity="0.25"/>
+                        <text x="430" y="78" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.4)">objectif mensuel</text>
+                        <!-- X-axis labels -->
+                        <text x="83" y="244" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">Jan</text>
+                        <text x="143" y="244" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">Fev</text>
+                        <text x="203" y="244" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">Mar</text>
+                        <text x="263" y="244" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">Avr</text>
+                        <text x="323" y="244" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">Mai</text>
+                        <text x="383" y="244" font-family="'IBM Plex Mono', monospace" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">Jun</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 07.3 Usage de la Couleur -->
+            <div class="section-block section-block--dark">
+                <p class="section-label" style="color:var(--color-primary-light);">
+                    <span style="display:inline-block;width:24px;height:3px;background:var(--color-primary-light);margin-right:var(--space-sm);"></span>
+                    Palette data-viz
+                </p>
+                <h2 class="section-title" style="color:var(--color-text-on-dark);">Quatre voix, zero ambiguite</h2>
+                <p class="section-desc" style="color:var(--color-text-muted);">
+                    La palette data-viz est extraite directement de l'univers FURNACE.
+                    Orange pour les metriques principales, jaune pour les accents,
+                    blanc pour les references, gris pour le contexte. Quatre couleurs,
+                    pas une de plus.
+                </p>
+                <div class="dataviz-palette-row">
+                    <div class="dataviz-swatch dataviz-swatch--1">
+                        <span class="dataviz-swatch__role">Primaire</span>
+                        <span class="dataviz-swatch__usage">Metriques principales, tonnage, croissance, KPI hero</span>
+                    </div>
+                    <div class="dataviz-swatch dataviz-swatch--2">
+                        <span class="dataviz-swatch__role">Accent</span>
+                        <span class="dataviz-swatch__usage">Objectifs, comparaisons, donnees secondaires positives</span>
+                    </div>
+                    <div class="dataviz-swatch dataviz-swatch--3">
+                        <span class="dataviz-swatch__role">Reference</span>
+                        <span class="dataviz-swatch__usage">Lignes de tendance, annotations, labels de valeur</span>
+                    </div>
+                    <div class="dataviz-swatch dataviz-swatch--4">
+                        <span class="dataviz-swatch__role">Contexte</span>
+                        <span class="dataviz-swatch__usage">Benchmark sectoriel, historique, donnees tierces</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 07.4 Typographie de la Donnee -->
+            <div class="section-block section-block--dark">
+                <p class="section-label" style="color:var(--color-primary-light);">
+                    <span style="display:inline-block;width:24px;height:3px;background:var(--color-primary-light);margin-right:var(--space-sm);"></span>
+                    Typographie de la donnee
+                </p>
+                <h2 class="section-title" style="color:var(--color-text-on-dark);">Les chiffres ont une voix</h2>
+                <p class="section-desc" style="color:var(--color-text-muted);">
+                    IBM Plex Mono en tabulaire, font-feature-settings 'tnum'.
+                    Les KPI sont des monuments. Les labels sont des murmures.
+                    Les legendes s'effacent. La hierarchie est implacable.
+                </p>
+                <div class="data-typo-showcase">
+                    <!-- Dark card — Tonnage KPI -->
+                    <div class="data-typo-card">
+                        <p style="font-family:var(--font-body);font-size:var(--text-xs);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:var(--space-sm);">Indicateur cle</p>
+                        <div class="kpi-hero" style="color:var(--color-primary-light);">
+                            30 247<span class="kpi-unit">t</span>
+                        </div>
+                        <p class="kpi-label" style="color:rgba(255,255,255,0.35);">Tonnage total collecte depuis la creation</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Territoire</th>
+                                    <th>Volume</th>
+                                    <th>Part</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td style="color:#fff;">Ile-de-France</td><td style="color:#E84D0E;">12 840</td><td style="color:rgba(255,255,255,0.6);">42.4%</td></tr>
+                                <tr><td style="color:#fff;">Auvergne-Rhone-Alpes</td><td style="color:#E84D0E;">5 230</td><td style="color:rgba(255,255,255,0.6);">17.3%</td></tr>
+                                <tr><td style="color:#fff;">Occitanie</td><td style="color:#E84D0E;">4 108</td><td style="color:rgba(255,255,255,0.6);">13.6%</td></tr>
+                                <tr><td style="color:#fff;">Autres territoires</td><td style="color:#FFBA0A;">8 069</td><td style="color:rgba(255,255,255,0.6);">26.7%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Primary card — Social Impact KPI -->
+                    <div class="data-typo-card data-typo-card--primary">
+                        <p style="font-family:var(--font-body);font-size:var(--text-xs);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:var(--space-sm);">Impact social</p>
+                        <div class="kpi-hero" style="color:#FFFFFF;">
+                            264<span class="kpi-unit">salaries</span>
+                        </div>
+                        <p class="kpi-label" style="color:rgba(255,255,255,0.5);">Dont 176 en parcours d'insertion</p>
+                        <table class="data-table data-table--primary">
+                            <thead>
+                                <tr>
+                                    <th>Metrique</th>
+                                    <th>Valeur</th>
+                                    <th>Evol.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td style="color:#fff;">Taux d'insertion</td><td style="color:#fff;font-weight:700;">67%</td><td style="color:#FFBA0A;">&#9650; stable</td></tr>
+                                <tr><td style="color:#fff;">Sorties positives</td><td style="color:#fff;font-weight:700;">73%</td><td style="color:#FFBA0A;">&#9650; +4</td></tr>
+                                <tr><td style="color:#fff;">Anciennete moy.</td><td style="color:#fff;">14 mois</td><td style="color:rgba(255,255,255,0.5);">&#9660; -1</td></tr>
+                                <tr><td style="color:#fff;">Formations/an</td><td style="color:#fff;">2 480</td><td style="color:#FFBA0A;">&#9650; +320</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === FOOTER === -->
+    <div class="ember-line"></div>
+    <footer class="batch-footer">
+        <div class="batch-footer__inner">
+            <div>
+                <p class="batch-footer__brand">Les <em>Vermeil</em></p>
+                <p class="batch-footer__sub" style="margin-top:var(--space-xs);">Systeme de Signes — FURNACE</p>
+            </div>
+            <p class="batch-footer__sub">Batch 2 — Logotype, Iconographie, Data Viz</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier Vermeil — Narration & Espace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #E84D0E;
+            --color-primary-light: #FF6B2C;
+            --color-primary-dark: #B83A08;
+            --color-secondary: #FFBA0A;
+            --color-accent: #FFBA0A;
+            --color-surface: #FFFFFF;
+            --color-surface-alt: #F5F5F0;
+            --color-depth: #0A0A0A;
+            --color-depth-warm: #111111;
+            --color-text-primary: #0A0A0A;
+            --color-text-secondary: #4A4A4A;
+            --color-text-on-dark: #FFFFFF;
+            --color-text-on-primary: #FFFFFF;
+            --color-text-muted: rgba(255,255,255,0.5);
+            --color-depth-rgb: 10, 10, 10;
+            --color-primary-rgb: 232, 77, 14;
+            --color-secondary-rgb: 255, 186, 10;
+            --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+            --font-body: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+            --type-scale-ratio: 1.618;
+            --text-xs: 0.65rem;
+            --text-sm: 0.75rem;
+            --text-base: 0.875rem;
+            --text-lg: 1rem;
+            --text-xl: 1.618rem;
+            --text-2xl: 2.618rem;
+            --text-3xl: 4.236rem;
+            --text-4xl: 6.854rem;
+            --text-5xl: 11.089rem;
+            --text-hero: clamp(5rem, 10vw, 12rem);
+            --text-mega: clamp(8rem, 16vw, 18rem);
+            --text-monument: clamp(3.5rem, 7vw, 7rem);
+            --radius-sm: 0px;
+            --radius-md: 0px;
+            --radius-lg: 0px;
+            --radius-xl: 0px;
+            --radius-full: 0px;
+            --shadow-sm: none;
+            --shadow-md: none;
+            --shadow-lg: none;
+            --space-unit: 4px;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 32px;
+            --space-xl: 64px;
+            --space-2xl: 96px;
+            --space-3xl: 128px;
+            --space-4xl: 192px;
+            --border-thin: 1px solid;
+            --border-thick: 3px solid;
+            --border-heavy: 4px solid;
+            --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
+            --ease-out-back: cubic-bezier(.34, 1.56, .64, 1);
+            --transition-fast: 200ms var(--ease-out-expo);
+            --transition-base: 350ms var(--ease-out-expo);
+            --transition-slow: 500ms cubic-bezier(.22, 1, .36, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-text-primary);
+            background: var(--color-depth);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        .ctn { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-xl); }
+
+        /* === CHAPTER OPENERS === */
+        .ch-open {
+            padding: var(--space-4xl) 0 var(--space-2xl);
+            position: relative; overflow: hidden;
+        }
+        .ch-open--ch09 { padding: var(--space-3xl) 0 var(--space-xl); }
+        .ch-open--ch10 { padding: var(--space-2xl) 0 var(--space-3xl); }
+        .ch-open--dark { background: var(--color-depth); }
+        .ch-open--fire { background: var(--color-primary); }
+        .ch-open__over {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: var(--space-md); display: block;
+        }
+        .ch-open__over--gold { color: var(--color-secondary); }
+        .ch-open__over--white { color: rgba(255,255,255,0.6); }
+        .ch-open__h {
+            font-family: var(--font-display); font-size: var(--text-monument); font-weight: 400;
+            line-height: 0.95; color: var(--color-text-on-dark); margin-bottom: var(--space-lg);
+        }
+        .ch-open__p {
+            font-family: var(--font-body); font-size: var(--text-base); line-height: 1.75;
+            color: var(--color-text-muted); max-width: 52ch;
+        }
+        .ch-open__rule {
+            width: 80px; height: 3px; background: var(--color-secondary);
+            margin-top: var(--space-lg); border: none;
+        }
+
+        /* === SECTION BLOCKS === */
+        .sec {
+            padding: var(--space-2xl) 0; position: relative;
+            background: var(--color-depth);
+        }
+        .sec__over {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: var(--space-md);
+            display: flex; align-items: center; gap: var(--space-sm);
+        }
+        .sec__over::before { content: ''; width: 32px; height: 3px; background: currentColor; }
+        .sec__over--fire { color: var(--color-primary); }
+        .sec__over--gold { color: var(--color-secondary); }
+        .sec__over--mute { color: var(--color-text-muted); }
+        .sec__h {
+            font-family: var(--font-display); font-size: clamp(1.8rem, 3.5vw, var(--text-2xl));
+            font-weight: 400; line-height: 1.1; color: var(--color-text-on-dark); margin-bottom: var(--space-sm);
+        }
+        .sec__p {
+            font-family: var(--font-body); font-size: var(--text-sm); line-height: 1.75;
+            color: var(--color-text-muted); max-width: 56ch; margin-bottom: var(--space-lg);
+        }
+
+        /* === DIVIDERS === */
+        .div-h { height: 3px; background: var(--color-primary); border: none; margin: 0; }
+        .div-h--gold { background: var(--color-secondary); }
+        .div-t { height: 1px; background: rgba(255,255,255,0.06); border: none; margin: 0; }
+
+        /* =============================================
+           08.1 — MOODBOARD
+           ============================================= */
+        .mood-grid {
+            display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: 280px 280px; gap: 3px;
+        }
+        .mood-c {
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            justify-content: flex-end; padding: var(--space-lg);
+            transition: filter var(--transition-base), border-color var(--transition-fast);
+            border: 3px solid transparent;
+        }
+        .mood-c:hover { filter: brightness(1.08); border-color: var(--color-primary); }
+        .mood-c__over {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-secondary); margin-bottom: 4px;
+        }
+        .mood-c__h {
+            font-family: var(--font-display); font-size: var(--text-xl); font-weight: 400;
+            color: #fff; line-height: 1.15; margin-bottom: 4px;
+        }
+        .mood-c__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: rgba(255,255,255,0.4); line-height: 1.6; max-width: 32ch;
+        }
+        .mood-c--hero {
+            grid-row: 1 / 3;
+            background:
+                linear-gradient(to top, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.2) 50%, transparent 100%),
+                radial-gradient(ellipse 70% 50% at 50% 40%, rgba(232,77,14,0.25) 0%, transparent 60%),
+                linear-gradient(160deg, #1a0d05 0%, #2a1508 35%, #3d1f0a 65%, #0A0A0A 100%);
+        }
+        .mood-c--hero::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(232,77,14,0.015) 3px, rgba(232,77,14,0.015) 4px);
+        }
+        .mood-c--portrait {
+            background:
+                linear-gradient(to top, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.15) 60%),
+                radial-gradient(circle at 50% 35%, rgba(255,186,10,0.12) 0%, transparent 50%),
+                linear-gradient(135deg, #111 0%, #1a1108 50%, #0A0A0A 100%);
+        }
+        .mood-c--portrait::before {
+            content: ''; position: absolute; top: 18%; left: 22%; width: 56%; height: 52%;
+            border: 2px solid rgba(232,77,14,0.1); pointer-events: none;
+        }
+        .mood-c--action {
+            background:
+                linear-gradient(to top, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.1) 50%),
+                radial-gradient(ellipse 60% 50% at 30% 50%, rgba(232,77,14,0.3) 0%, transparent 50%),
+                linear-gradient(170deg, #2a1508 0%, #1a0d05 50%, #0A0A0A 100%);
+        }
+        .mood-c--action::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(-45deg, transparent 0px, transparent 40px, rgba(232,77,14,0.025) 40px, rgba(232,77,14,0.025) 41px);
+        }
+
+        /* =============================================
+           08.2 — COLOR GRADING
+           ============================================= */
+        .grad-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .grad-c { overflow: hidden; background: var(--color-depth); }
+        .grad-c__vis { height: 220px; position: relative; overflow: hidden; }
+        .grad-c__strip { display: flex; height: 4px; }
+        .grad-c__strip span { flex: 1; }
+        .grad-c__info { padding: var(--space-md); border-top: 3px solid var(--color-primary); }
+        .grad-c__info--mute { border-top-color: #4A4A4A; }
+        .grad-c__tag {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px;
+        }
+        .grad-c__tag--off { color: var(--color-text-secondary); }
+        .grad-c__tag--on { color: var(--color-primary); }
+        .grad-c__h {
+            font-family: var(--font-display); font-size: var(--text-lg);
+            color: var(--color-text-on-dark); margin-bottom: 4px;
+        }
+        .grad-c__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.6;
+        }
+        .grad-before {
+            background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 40%, #B0B8C1 100%);
+        }
+        .grad-before::after {
+            content: 'BRUT'; position: absolute; top: var(--space-md); left: var(--space-md);
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; background: rgba(0,0,0,0.5); color: #fff; padding: 4px 12px;
+        }
+        .grad-after {
+            background:
+                radial-gradient(ellipse 60% 50% at 40% 50%, rgba(232,77,14,0.35) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255,186,10,0.1) 0%, transparent 40%),
+                linear-gradient(135deg, #2a1508 0%, #3d1f0a 30%, #1a0d05 70%, #0A0A0A 100%);
+            filter: contrast(1.15) saturate(1.2);
+        }
+        .grad-after::after {
+            content: 'FURNACE'; position: absolute; top: var(--space-md); left: var(--space-md);
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; background: var(--color-primary); color: #fff; padding: 4px 12px;
+        }
+        .grad-rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 3px; }
+        .grad-rule {
+            background: var(--color-depth-warm); padding: var(--space-lg); border-left: 3px solid var(--color-primary);
+            transition: background var(--transition-base), border-left-color var(--transition-fast);
+        }
+        .grad-rule:hover { background: var(--color-primary); border-left-color: var(--color-secondary); }
+        .grad-rule__h {
+            font-family: var(--font-display); font-size: var(--text-lg);
+            color: var(--color-text-on-dark); margin-bottom: var(--space-sm);
+        }
+        .grad-rule__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.7;
+        }
+
+        /* =============================================
+           08.3 — SCENOGRAPHY
+           ============================================= */
+        .sceno-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .dev-frame {
+            background: var(--color-depth-warm); padding: var(--space-lg);
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .dev-frame__over {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-secondary); margin-bottom: var(--space-sm);
+        }
+        .dev-frame__h {
+            font-family: var(--font-display); font-size: var(--text-xl);
+            color: var(--color-text-on-dark); margin-bottom: var(--space-md);
+        }
+        .dev-screen {
+            flex: 1; overflow: hidden; position: relative;
+        }
+        .dev-bar {
+            height: 28px; background: var(--color-depth); display: flex;
+            align-items: center; padding: 0 12px; gap: 6px;
+        }
+        .dev-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dev-dot--r { background: #E84D0E; }
+        .dev-dot--y { background: #FFBA0A; }
+        .dev-dot--g { background: #4A4A4A; }
+        .dev-body { padding: var(--space-md); min-height: 200px; background: var(--color-depth); }
+        .dev-row { height: 7px; margin-bottom: 5px; }
+        .dev-row--h { width: 45%; background: rgba(255,255,255,0.15); height: 12px; margin-bottom: 10px; }
+        .dev-row--p { width: 75%; background: rgba(255,255,255,0.05); }
+        .dev-row--s { width: 35%; background: rgba(255,255,255,0.03); }
+        .dev-hero-bar {
+            background: var(--color-primary); height: 48px; margin-bottom: var(--space-md);
+            display: flex; align-items: center; padding: 0 var(--space-md);
+        }
+        .dev-hero-bar span { height: 8px; width: 35%; background: rgba(255,255,255,0.4); }
+        .dev-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; margin-top: var(--space-sm); }
+        .dev-mini {
+            height: 44px; background: var(--color-depth-warm); border: 1px solid rgba(232,77,14,0.12);
+            padding: 8px;
+        }
+        .dev-mini__bar { height: 3px; margin-top: 8px; }
+
+        .supports { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 3px; }
+        .support {
+            background: var(--color-depth-warm); padding: var(--space-lg);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            min-height: 130px; border-top: 3px solid rgba(232,77,14,0.2);
+            transition: background var(--transition-base), border-top-color var(--transition-fast);
+        }
+        .support:hover { background: var(--color-depth); border-top-color: var(--color-secondary); }
+        .support__h {
+            font-family: var(--font-display); font-size: var(--text-lg);
+            color: var(--color-text-on-dark); margin-bottom: 4px;
+        }
+        .support__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.6;
+        }
+
+        /* =============================================
+           08.4 — IA PROMPTING (PHOTO)
+           ============================================= */
+        .pmt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .pmt {
+            background: var(--color-depth-warm); border-left: 3px solid var(--color-primary);
+            padding: var(--space-lg);
+        }
+        .pmt--gold { border-left-color: var(--color-secondary); }
+        .pmt__engine {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-primary); margin-bottom: var(--space-sm);
+        }
+        .pmt--gold .pmt__engine { color: var(--color-secondary); }
+        .pmt__text {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: rgba(255,255,255,0.7); line-height: 1.85; word-break: break-word;
+        }
+        .pmt__text .hl { color: var(--color-primary-light); }
+        .pmt__text .hl-a { color: var(--color-secondary); }
+        .pmt__text .dim { color: rgba(255,255,255,0.25); }
+        .pmt-tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-md); }
+        .pmt-tag {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+            padding: 4px 12px; border: 1px solid rgba(232,77,14,0.2); color: rgba(255,255,255,0.45);
+        }
+        .pmt-tag--hot { border-color: var(--color-primary); color: var(--color-primary-light); background: rgba(232,77,14,0.06); }
+
+        /* =============================================
+           09.1 — GRID ARCHITECTURE
+           ============================================= */
+        .grid-wrap {
+            background: var(--color-depth-warm); padding: var(--space-lg); position: relative; overflow: hidden;
+        }
+        .grid-vis {
+            display: grid; grid-template-columns: 3fr 2fr 1fr 2fr 3fr;
+            gap: 3px; height: 340px; position: relative;
+        }
+        .grid-col {
+            background: rgba(232,77,14,0.025); border-left: 1px solid rgba(232,77,14,0.06);
+            border-right: 1px solid rgba(232,77,14,0.06);
+        }
+        .grid-blk {
+            position: absolute; z-index: 2; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 600;
+            letter-spacing: 0.05em; color: var(--color-text-on-dark);
+        }
+        .grid-blk--a { left: 0; top: 16px; width: 62%; height: 130px; background: var(--color-primary); }
+        .grid-blk--b { right: 0; top: 16px; width: 36%; height: 130px; background: rgba(255,186,10,0.12); border: 3px solid rgba(255,186,10,0.25); color: var(--color-secondary); }
+        .grid-blk--c { left: 0; top: 162px; width: 100%; height: 56px; background: rgba(232,77,14,0.06); border: 1px solid rgba(232,77,14,0.12); color: var(--color-primary-light); }
+        .grid-blk--d { left: 0; top: 234px; width: 28%; height: 88px; background: rgba(232,77,14,0.05); border: 1px solid rgba(232,77,14,0.1); color: var(--color-primary-light); }
+        .grid-blk--e { left: 30%; top: 234px; width: 42%; height: 88px; background: var(--color-depth); border: 3px solid var(--color-primary); color: var(--color-primary); }
+        .grid-blk--f { right: 0; top: 234px; width: 26%; height: 88px; background: rgba(255,186,10,0.05); border: 1px solid rgba(255,186,10,0.1); color: var(--color-secondary); }
+        .grid-legend {
+            display: flex; gap: var(--space-xl); margin-top: var(--space-md);
+            padding-top: var(--space-md); border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .grid-legend__item { display: flex; align-items: center; gap: var(--space-sm); }
+        .grid-legend__dot { width: 12px; height: 3px; }
+        .grid-legend__text { font-family: var(--font-body); font-size: var(--text-xs); color: var(--color-text-muted); }
+
+        /* =============================================
+           09.2 — DENSITY
+           ============================================= */
+        .dens-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .dens-c { background: var(--color-depth-warm); overflow: hidden; }
+        .dens-c__head {
+            padding: var(--space-md); display: flex; align-items: center; justify-content: space-between;
+        }
+        .dens-c__head--air { border-bottom: 3px solid var(--color-secondary); }
+        .dens-c__head--pack { border-bottom: 3px solid var(--color-primary); }
+        .dens-c__tag {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase;
+        }
+        .dens-c__tag--air { color: var(--color-secondary); }
+        .dens-c__tag--pack { color: var(--color-primary); }
+        .dens-c__body { padding: var(--space-lg); }
+        .dens-c__body--air { padding: var(--space-xl) var(--space-lg); }
+        .dens-row { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) 0; }
+        .dens-row--air { padding: var(--space-md) 0; }
+        .dens-ico { width: 32px; height: 32px; background: rgba(232,77,14,0.08); flex-shrink: 0; }
+        .dens-ico--lg { width: 48px; height: 48px; }
+        .dens-lines { flex: 1; }
+        .dens-ln { height: 6px; margin-bottom: 4px; }
+        .dens-ln--h { width: 55%; background: rgba(255,255,255,0.12); height: 8px; }
+        .dens-ln--p { width: 85%; background: rgba(255,255,255,0.05); }
+        .dens-ln--s { width: 35%; background: rgba(255,255,255,0.03); }
+
+        /* =============================================
+           09.3 — LAYOUT PATTERNS
+           ============================================= */
+        .pat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .pat-c { background: var(--color-depth-warm); overflow: hidden; transition: background var(--transition-base), border-color var(--transition-fast); border: 3px solid transparent; }
+        .pat-c:hover { background: #141414; border-color: var(--color-primary); }
+        .pat-c__preview {
+            height: 200px; padding: var(--space-md); background: var(--color-depth);
+            border-bottom: 3px solid var(--color-primary);
+        }
+        .pat-c__info { padding: var(--space-lg); }
+        .pat-c__h {
+            font-family: var(--font-display); font-size: var(--text-xl);
+            color: var(--color-text-on-dark); margin-bottom: 4px;
+        }
+        .pat-c__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.7;
+        }
+        /* Mini skeletons */
+        .mn-split { display: grid; grid-template-columns: 5fr 7fr; gap: 3px; height: 100%; }
+        .mn-blk { position: relative; overflow: hidden; }
+        .mn-txt {
+            background: var(--color-depth-warm); padding: var(--space-md);
+            display: flex; flex-direction: column; justify-content: center; gap: 5px;
+        }
+        .mn-vis {
+            background: linear-gradient(160deg, var(--color-primary-dark), var(--color-primary));
+        }
+        .mn-vis::after {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(-45deg, transparent 0px, transparent 8px, rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 9px);
+        }
+        .mn-ln { height: 4px; }
+        .mn-ln--h { width: 60%; background: rgba(255,255,255,0.18); height: 9px; }
+        .mn-ln--p { width: 88%; background: rgba(255,255,255,0.06); }
+        .mn-ln--s { width: 42%; background: rgba(255,255,255,0.04); }
+        .mn-ln--cta { width: 28%; background: var(--color-primary); height: 7px; }
+        .mn-bento { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px; height: 100%; }
+        .mn-bento-cell { background: var(--color-depth-warm); padding: var(--space-sm); display: flex; flex-direction: column; justify-content: flex-end; }
+        .mn-bento-cell--hero { grid-column: 1/3; background: var(--color-primary); }
+        .mn-bento-cell--acc { background: rgba(255,186,10,0.06); border: 1px solid rgba(255,186,10,0.12); }
+        .mn-feat { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; height: 100%; grid-template-rows: 2fr 1fr; }
+        .mn-feat-hero {
+            grid-column: 1/4; background: var(--color-primary); padding: var(--space-md);
+            display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        .mn-feat-cell { background: var(--color-depth-warm); padding: var(--space-sm); }
+        .mn-mani { height: 100%; display: flex; flex-direction: column; }
+        .mn-mani__top {
+            flex: 2; background: var(--color-depth); padding: var(--space-lg);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;
+        }
+        .mn-mani__bot {
+            flex: 1; background: var(--color-primary); display: flex;
+            align-items: center; justify-content: center; padding: var(--space-md);
+        }
+
+        /* =============================================
+           09.4 — VERTICAL RHYTHM
+           ============================================= */
+        .rhy-wrap {
+            background: var(--color-depth-warm); padding: var(--space-xl); position: relative;
+        }
+        .rhy-ruler {
+            position: absolute; left: 20px; top: var(--space-xl); bottom: var(--space-xl); width: 40px;
+        }
+        .rhy-ruler__ln {
+            position: absolute; left: 0; right: 0; border-bottom: 1px solid rgba(232,77,14,0.05);
+        }
+        .rhy-ruler__ln--acc { border-bottom-color: rgba(232,77,14,0.12); }
+        .rhy-body { margin-left: 72px; }
+        .rhy-blk { padding: var(--space-md); }
+        .rhy-blk--hero {
+            background: var(--color-primary); min-height: 96px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .rhy-blk--card {
+            background: rgba(232,77,14,0.04); min-height: 52px;
+            display: flex; align-items: center; gap: var(--space-md);
+            border-left: 3px solid var(--color-primary);
+        }
+        .rhy-blk--void { min-height: 32px; position: relative; }
+        .rhy-blk--void::before {
+            content: ''; position: absolute; left: -20px; top: 0; bottom: 0; width: 1px;
+            background: repeating-linear-gradient(to bottom, var(--color-primary) 0px, var(--color-primary) 2px, transparent 2px, transparent 8px);
+            opacity: 0.25;
+        }
+        .rhy-blk--cta {
+            background: var(--color-depth); border: 3px solid var(--color-primary);
+            min-height: 44px; display: flex; align-items: center; justify-content: center;
+        }
+        .rhy-ann {
+            font-family: var(--font-body); font-size: 10px; color: var(--color-primary);
+            position: absolute; right: -12px; transform: translateX(100%); white-space: nowrap;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .rhy-ann::before { content: ''; width: 16px; height: 1px; background: var(--color-primary); opacity: 0.4; }
+
+        /* =============================================
+           10.1 — CYCLE METAPHOR
+           ============================================= */
+        .cycle-canvas {
+            background: var(--color-depth); padding: var(--space-2xl) var(--space-xl);
+            min-height: 480px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .cycle-canvas__glow {
+            position: absolute; width: 500px; height: 500px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(232,77,14,0.07) 0%, transparent 70%);
+            pointer-events: none; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .cycle-canvas__h {
+            font-family: var(--font-display); font-size: clamp(2rem, 4vw, var(--text-2xl));
+            color: var(--color-text-on-dark); text-align: center; margin-bottom: var(--space-sm);
+            position: relative; z-index: 1;
+        }
+        .cycle-canvas__p {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: var(--color-text-muted); text-align: center; max-width: 48ch;
+            margin-bottom: var(--space-xl); position: relative; z-index: 1; line-height: 1.7;
+        }
+        .cycle-svg { position: relative; z-index: 1; width: 100%; max-width: 600px; }
+
+        /* =============================================
+           10.2 — ILLUSTRATION PHYSICS
+           ============================================= */
+        .phys-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+        .phys-c {
+            background: var(--color-depth-warm); padding: var(--space-lg); text-align: center;
+            min-height: 200px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: var(--space-md);
+            transition: background var(--transition-base), color var(--transition-fast);
+        }
+        .phys-c:hover { background: var(--color-primary); }
+        .phys-c:hover .phys-c__h { color: var(--color-text-on-dark); }
+        .phys-c:hover .phys-c__p { color: rgba(255,255,255,0.7); }
+        .phys-c__shape { width: 80px; height: 80px; }
+        .phys-c__h {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-primary);
+        }
+        .phys-c__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.6;
+        }
+
+        /* =============================================
+           10.3 — CHARACTER DESIGN
+           ============================================= */
+        .char-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+        .char-c {
+            background: var(--color-depth-warm); padding: var(--space-xl) var(--space-lg);
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; min-height: 260px;
+        }
+        .char-c__fig { flex: 1; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-md); }
+        .char-c__h {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-secondary); margin-bottom: var(--space-sm);
+        }
+        .char-c__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.6;
+        }
+
+        /* =============================================
+           10.4 — COMPOSITION LAWS
+           ============================================= */
+        .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .comp-c {
+            background: var(--color-depth-warm); padding: var(--space-xl); position: relative;
+            transition: background var(--transition-base), border-color var(--transition-fast);
+            border: 3px solid transparent;
+        }
+        .comp-c:hover { background: #141414; border-color: var(--color-secondary); }
+        .comp-c__num {
+            font-family: var(--font-display); font-size: var(--text-3xl);
+            color: rgba(232,77,14,0.08); position: absolute; top: var(--space-md);
+            right: var(--space-lg); line-height: 1;
+        }
+        .comp-c__h {
+            font-family: var(--font-display); font-size: var(--text-xl);
+            color: var(--color-text-on-dark); margin-bottom: var(--space-sm);
+        }
+        .comp-c__p {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-muted); line-height: 1.75; max-width: 38ch;
+        }
+        .comp-c__demo {
+            margin-top: var(--space-lg); height: 72px; position: relative;
+        }
+
+        /* =============================================
+           10.5 — IA PROMPTING (ILLUSTRATION)
+           ============================================= */
+        .illpmt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+
+        /* =============================================
+           COLOPHON
+           ============================================= */
+        .colo {
+            background: var(--color-primary); padding: var(--space-2xl) var(--space-xl); text-align: center;
+        }
+        .colo__h {
+            font-family: var(--font-display); font-size: clamp(2rem, 5vw, var(--text-3xl));
+            color: var(--color-text-on-primary); margin-bottom: var(--space-md);
+        }
+        .colo__p {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: rgba(255,255,255,0.55); max-width: 48ch; margin: 0 auto; line-height: 1.7;
+        }
+        .colo__rule { width: 60px; height: 3px; background: rgba(255,255,255,0.25); margin: var(--space-lg) auto 0; border: none; }
+    </style>
+</head>
+<body>
+
+    <!-- ====== DIRECTION PHOTOGRAPHIQUE ====== -->
+
+    <section class="ch-open ch-open--dark">
+        <div class="ctn">
+            <span class="ch-open__over ch-open__over--gold">Direction photographique</span>
+            <h1 class="ch-open__h">Le terrain,<br>pas le studio.</h1>
+            <p class="ch-open__p">La photographie FURNACE documente l'action. Elle ne met pas en scene, elle capture. Le cadrage est editorial, la lumiere est naturelle, le grain est assume. Chaque image respire le reportage et la fierte du geste.</p>
+            <hr class="ch-open__rule">
+        </div>
+    </section>
+
+    <hr class="div-h">
+
+    <!-- 08.1 — Style Photographique -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Style photographique</span>
+            <h2 class="sec__h">Quatre registres,<br>une seule verite.</h2>
+            <p class="sec__p">Du reportage terrain au portrait frontal. Du geste en mouvement a la lumiere d'aube sur les bacs. Toujours le reel, jamais la mise en scene.</p>
+            <div class="mood-grid">
+                <div class="mood-c mood-c--hero">
+                    <span class="mood-c__over">Reportage terrain</span>
+                    <span class="mood-c__h">L'aube sur la collecte</span>
+                    <span class="mood-c__p">Cadrage large, contre-plongee. Velo-cargo en mouvement dans la lumiere matinale. Grain filmique, color grading chaud.</span>
+                </div>
+                <div class="mood-c mood-c--portrait">
+                    <span class="mood-c__over">Portraits humains</span>
+                    <span class="mood-c__h">Regards & fierte</span>
+                    <span class="mood-c__p">Frontal, regard camera. Lumiere naturelle directionnelle. La dignite du geste de terrain.</span>
+                </div>
+                <div class="mood-c mood-c--action">
+                    <span class="mood-c__over">Geste & mouvement</span>
+                    <span class="mood-c__h">Les mains dans la matiere</span>
+                    <span class="mood-c__p">Retournement du compost, pesee des bacs. Cadrage serre, vitesse, flou de mouvement assume.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 08.2 — Traitement Chromatique -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--mute">Traitement chromatique</span>
+            <h2 class="sec__h">Le filtre FURNACE</h2>
+            <p class="sec__p">Chaque image passe par le meme traitement : warm shift radical, contraste pousse, saturation des oranges. Le teal et le pastel sont bannis.</p>
+            <div class="grad-demo">
+                <div class="grad-c">
+                    <div class="grad-c__vis grad-before"></div>
+                    <div class="grad-c__strip">
+                        <span style="background:#6B7280"></span><span style="background:#9CA3AF"></span>
+                        <span style="background:#B0B8C1"></span><span style="background:#D1D5DB"></span>
+                    </div>
+                    <div class="grad-c__info grad-c__info--mute">
+                        <span class="grad-c__tag grad-c__tag--off">Image source</span>
+                        <span class="grad-c__h">Neutre / Non-traite</span>
+                        <span class="grad-c__p">Balance des blancs standard, couleurs plates, sans direction.</span>
+                    </div>
+                </div>
+                <div class="grad-c">
+                    <div class="grad-c__vis grad-after"></div>
+                    <div class="grad-c__strip">
+                        <span style="background:var(--color-primary-dark)"></span><span style="background:var(--color-primary)"></span>
+                        <span style="background:var(--color-secondary)"></span><span style="background:var(--color-depth)"></span>
+                    </div>
+                    <div class="grad-c__info">
+                        <span class="grad-c__tag grad-c__tag--on">Filtre FURNACE</span>
+                        <span class="grad-c__h">Chaud / Incandescent</span>
+                        <span class="grad-c__p">Warm shift radical, contraste pousse, noirs profonds. Zero teal, zero pastel.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grad-rules">
+                <div class="grad-rule">
+                    <span class="grad-rule__h">Contraste</span>
+                    <span class="grad-rule__p">Noirs en bas, hautes lumieres chaudes. Pas de HDR. La courbe est agressive et intentionnelle.</span>
+                </div>
+                <div class="grad-rule">
+                    <span class="grad-rule__h">Temperature</span>
+                    <span class="grad-rule__p">Shift global vers l'orange. Les ombres tirent vers le brun, jamais vers le bleu. Peau naturelle et chaude.</span>
+                </div>
+                <div class="grad-rule">
+                    <span class="grad-rule__h">Grain</span>
+                    <span class="grad-rule__p">Grain filmique subtil, type pellicule 400 ISO. Visible en plein ecran, fondu en miniature.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 08.3 — Scenographie Produit -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--fire">Scenographie</span>
+            <h2 class="sec__h">La marque en situation</h2>
+            <p class="sec__p">Du site web au vehicule de collecte, chaque point de contact incarne l'energie FURNACE. Noir, orange, typographie massive, zero compromis.</p>
+            <div class="sceno-grid">
+                <div class="dev-frame">
+                    <span class="dev-frame__over">Site web</span>
+                    <span class="dev-frame__h">Landing page</span>
+                    <div class="dev-screen">
+                        <div class="dev-bar">
+                            <span class="dev-dot dev-dot--r"></span>
+                            <span class="dev-dot dev-dot--y"></span>
+                            <span class="dev-dot dev-dot--g"></span>
+                        </div>
+                        <div class="dev-body">
+                            <div class="dev-hero-bar"><span></span></div>
+                            <div class="dev-row dev-row--h"></div>
+                            <div class="dev-row dev-row--p"></div>
+                            <div class="dev-row dev-row--s"></div>
+                            <div class="dev-cards">
+                                <div class="dev-mini"><div class="dev-mini__bar" style="background:var(--color-primary);width:70%"></div></div>
+                                <div class="dev-mini"><div class="dev-mini__bar" style="background:var(--color-secondary);width:50%"></div></div>
+                                <div class="dev-mini"><div class="dev-mini__bar" style="background:var(--color-primary);width:85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dev-frame">
+                    <span class="dev-frame__over">Deck commercial</span>
+                    <span class="dev-frame__h">Pitch & appels d'offres</span>
+                    <div class="dev-screen">
+                        <div style="background:var(--color-depth);height:100%;padding:var(--space-md);display:flex;flex-direction:column">
+                            <div style="background:var(--color-primary);padding:var(--space-md) var(--space-lg);margin-bottom:var(--space-sm)">
+                                <div style="height:10px;width:50%;background:rgba(255,255,255,0.45);margin-bottom:6px"></div>
+                                <div style="height:5px;width:70%;background:rgba(255,255,255,0.15)"></div>
+                            </div>
+                            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:3px">
+                                <div style="background:var(--color-depth-warm);padding:var(--space-sm)">
+                                    <div style="height:5px;width:40%;background:var(--color-primary);opacity:0.3;margin-bottom:8px"></div>
+                                    <div style="height:3px;width:80%;background:rgba(255,255,255,0.05);margin-bottom:3px"></div>
+                                    <div style="height:3px;width:55%;background:rgba(255,255,255,0.03)"></div>
+                                </div>
+                                <div style="background:var(--color-depth-warm);padding:var(--space-sm)">
+                                    <div style="font-family:var(--font-display);font-size:28px;color:var(--color-primary);line-height:1">30K</div>
+                                    <div style="font-family:var(--font-body);font-size:8px;color:var(--color-text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px">tonnes/an</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="supports">
+                <div class="support">
+                    <span class="support__h">LinkedIn Post</span>
+                    <span class="support__p">Fond noir, chiffre d'impact en Instrument Serif oversize, barre orange en bas. Le manifeste en 1080x1080.</span>
+                </div>
+                <div class="support">
+                    <span class="support__h">Vehicule de collecte</span>
+                    <span class="support__p">Habillage noir mat, logotype blanc, bande orange 15cm continue. Visible a 50 metres.</span>
+                </div>
+                <div class="support">
+                    <span class="support__h">Bac de collecte</span>
+                    <span class="support__p">Noir, adhesif orange sur le couvercle, typo mono blanche pour les consignes. Le bac est un objet de marque.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 08.4 — Signature Prompting IA -->
+    <section class="sec" style="padding-bottom:0">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Prompting IA</span>
+            <h2 class="sec__h">Generer dans l'univers FURNACE</h2>
+            <p class="sec__p">Des prompts precalibres pour Midjourney et FLUX.2 Pro. Copiez, collez, generez. La direction artistique est dans les mots-cles.</p>
+            <div class="pmt-grid">
+                <div class="pmt">
+                    <span class="pmt__engine">Midjourney v6</span>
+                    <p class="pmt__text"><span class="hl">documentary photography</span>, <span class="hl-a">compost facility workers</span>, early morning light, warm orange color grading, <span class="hl">high contrast shadows</span>, 35mm film grain, <span class="dim">editorial framing</span>, eye-level, <span class="hl">strong directional light</span>, earth tones, <span class="hl-a">authentic working conditions</span>, no green tint, <span class="dim">--ar 16:9 --style raw --s 200</span></p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">documentary</span>
+                        <span class="pmt-tag">film grain</span>
+                        <span class="pmt-tag pmt-tag--hot">warm orange</span>
+                        <span class="pmt-tag">editorial</span>
+                    </div>
+                </div>
+                <div class="pmt">
+                    <span class="pmt__engine">Midjourney v6</span>
+                    <p class="pmt__text"><span class="hl">portrait photography</span>, <span class="hl-a">compost worker looking at camera</span>, proud expression, <span class="hl">Rembrandt lighting</span>, warm skin tones, dark background, <span class="dim">shallow depth of field</span>, <span class="hl">subtle film grain</span>, <span class="hl-a">workwear details visible</span>, no forced smile, authentic, <span class="dim">--ar 4:5 --style raw --s 150</span></p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">portrait</span>
+                        <span class="pmt-tag">Rembrandt light</span>
+                        <span class="pmt-tag pmt-tag--hot">authentic</span>
+                    </div>
+                </div>
+                <div class="pmt pmt--gold">
+                    <span class="pmt__engine">FLUX.2 Pro</span>
+                    <p class="pmt__text"><span class="hl-a">Professional editorial photograph</span> of urban composting operation at dawn. <span class="hl">Cargo bike loaded with collection bins</span>, moving through narrow street. Warm orange sodium light mixing with cold blue dawn. <span class="hl-a">High contrast, deep blacks</span>, film-like rendering. <span class="dim">No HDR, no oversaturation.</span> Shot on medium format, 80mm equivalent.</p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">FLUX.2 Pro</span>
+                        <span class="pmt-tag">medium format</span>
+                        <span class="pmt-tag pmt-tag--hot">dawn light</span>
+                    </div>
+                </div>
+                <div class="pmt pmt--gold">
+                    <span class="pmt__engine">FLUX.2 Pro</span>
+                    <p class="pmt__text"><span class="hl-a">Close-up macro photograph</span> of hands turning compost pile. Rich dark soil textures, <span class="hl">steam rising in cold morning air</span>. Warm directional sunlight creating rim light on fingers. <span class="hl-a">Earth tones dominant</span>, orange-brown-black palette. <span class="dim">Shallow depth of field, cinematic.</span> No green tint, no blue shadows.</p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">macro</span>
+                        <span class="pmt-tag">hands</span>
+                        <span class="pmt-tag pmt-tag--hot">steam</span>
+                        <span class="pmt-tag">cinematic</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-h" style="margin-top:var(--space-2xl)">
+
+    <!-- ====== SYSTEME DE COMPOSITION ====== -->
+
+    <section class="ch-open ch-open--fire ch-open--ch09">
+        <div class="ctn">
+            <span class="ch-open__over ch-open__over--white">Systeme de composition</span>
+            <h1 class="ch-open__h" style="color:var(--color-text-on-primary)">Construire<br>pour percuter.</h1>
+            <p class="ch-open__p" style="color:rgba(255,255,255,0.6)">La grille FURNACE est une arme. Asymetrique, brisee, modulaire. L'alternance brutale entre plein et vide cree la tension visuelle d'un manifeste.</p>
+            <hr class="ch-open__rule" style="background:rgba(255,255,255,0.25)">
+        </div>
+    </section>
+
+    <hr class="div-h div-h--gold">
+
+    <!-- 09.1 — Architecture de Grilles -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Architecture de grilles</span>
+            <h2 class="sec__h">Cinq colonnes asymetriques</h2>
+            <p class="sec__p">Pas de 12 colonnes corporate. La grille FURNACE est en 5 colonnes non-egales avec gouttiere 3px. Les blocs se chevauchent, debordent, collisionnent.</p>
+            <div class="grid-wrap">
+                <div class="grid-vis">
+                    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+                    <div class="grid-blk grid-blk--a">Hero 3/5</div>
+                    <div class="grid-blk grid-blk--b">Side 2/5</div>
+                    <div class="grid-blk grid-blk--c">Full-bleed</div>
+                    <div class="grid-blk grid-blk--d">Card</div>
+                    <div class="grid-blk grid-blk--e">Feature</div>
+                    <div class="grid-blk grid-blk--f">CTA</div>
+                </div>
+                <div class="grid-legend">
+                    <div class="grid-legend__item"><span class="grid-legend__dot" style="background:var(--color-primary)"></span><span class="grid-legend__text">Blocs primaires</span></div>
+                    <div class="grid-legend__item"><span class="grid-legend__dot" style="background:var(--color-secondary)"></span><span class="grid-legend__text">Blocs accent</span></div>
+                    <div class="grid-legend__item"><span class="grid-legend__dot" style="background:rgba(255,255,255,0.1)"></span><span class="grid-legend__text">Gouttiere 3px</span></div>
+                    <div class="grid-legend__item"><span class="grid-legend__dot" style="background:rgba(232,77,14,0.25)"></span><span class="grid-legend__text">Marge 64px</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 09.2 — Strategie de Densite -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--mute">Strategie de densite</span>
+            <h2 class="sec__h">Plein / Vide — l'alternance brutale</h2>
+            <p class="sec__p">Pas de densite moyenne. Soit le bloc est compact et dense, soit l'espace respire radicalement. L'entre-deux est interdit.</p>
+            <div class="dens-cmp">
+                <div class="dens-c">
+                    <div class="dens-c__head dens-c__head--air"><span class="dens-c__tag dens-c__tag--air">Mode Respiration</span></div>
+                    <div class="dens-c__body dens-c__body--air">
+                        <div class="dens-row dens-row--air">
+                            <div class="dens-ico dens-ico--lg" style="background:var(--color-primary)"></div>
+                            <div class="dens-lines"><div class="dens-ln dens-ln--h"></div><div class="dens-ln dens-ln--p"></div></div>
+                        </div>
+                        <div style="height:var(--space-xl)"></div>
+                        <div class="dens-row dens-row--air">
+                            <div class="dens-ico dens-ico--lg" style="background:rgba(255,186,10,0.12);border:2px solid rgba(255,186,10,0.25)"></div>
+                            <div class="dens-lines"><div class="dens-ln dens-ln--h"></div><div class="dens-ln dens-ln--p"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dens-c">
+                    <div class="dens-c__head dens-c__head--pack"><span class="dens-c__tag dens-c__tag--pack">Mode Dense</span></div>
+                    <div class="dens-c__body">
+                        <div class="dens-row"><div class="dens-ico"></div><div class="dens-lines"><div class="dens-ln dens-ln--h"></div><div class="dens-ln dens-ln--p"></div><div class="dens-ln dens-ln--s"></div></div></div>
+                        <div class="dens-row"><div class="dens-ico"></div><div class="dens-lines"><div class="dens-ln dens-ln--h"></div><div class="dens-ln dens-ln--p"></div><div class="dens-ln dens-ln--s"></div></div></div>
+                        <div class="dens-row"><div class="dens-ico"></div><div class="dens-lines"><div class="dens-ln dens-ln--h"></div><div class="dens-ln dens-ln--p"></div><div class="dens-ln dens-ln--s"></div></div></div>
+                        <div class="dens-row"><div class="dens-ico"></div><div class="dens-lines"><div class="dens-ln dens-ln--h"></div><div class="dens-ln dens-ln--p"></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 09.3 — Patterns de Mise en Page -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--fire">Patterns de mise en page</span>
+            <h2 class="sec__h">Quatre armes de composition</h2>
+            <p class="sec__p">Chaque pattern est une structure de combat. Pas de decoration. Chaque pixel au service de l'impact et de la lisibilite.</p>
+            <div class="pat-grid">
+                <div class="pat-c">
+                    <div class="pat-c__preview">
+                        <div class="mn-split"><div class="mn-blk mn-txt"><div class="mn-ln mn-ln--h"></div><div class="mn-ln mn-ln--p"></div><div class="mn-ln mn-ln--s"></div><div class="mn-ln mn-ln--cta"></div></div><div class="mn-blk mn-vis"></div></div>
+                    </div>
+                    <div class="pat-c__info"><span class="pat-c__h">Hero Split</span><span class="pat-c__p">Texte a gauche, visuel a droite. Division asymetrique 5/7. Le titre en Instrument Serif deborde sur le visuel.</span></div>
+                </div>
+                <div class="pat-c">
+                    <div class="pat-c__preview">
+                        <div class="mn-bento"><div class="mn-bento-cell mn-bento-cell--hero"><div class="mn-ln mn-ln--h" style="background:rgba(255,255,255,0.3)"></div><div class="mn-ln mn-ln--p" style="background:rgba(255,255,255,0.12)"></div></div><div class="mn-bento-cell"><div class="mn-ln mn-ln--p"></div><div class="mn-ln mn-ln--s"></div></div><div class="mn-bento-cell mn-bento-cell--acc"><div class="mn-ln mn-ln--p"></div><div class="mn-ln mn-ln--s"></div></div></div>
+                    </div>
+                    <div class="pat-c__info"><span class="pat-c__h">Bento Grid</span><span class="pat-c__p">Cellules asymetriques avec gouttiere 3px. Le bloc hero couvre 2 colonnes. Chiffres d'impact isoles.</span></div>
+                </div>
+                <div class="pat-c">
+                    <div class="pat-c__preview">
+                        <div class="mn-feat"><div class="mn-feat-hero"><div class="mn-ln mn-ln--h" style="background:rgba(255,255,255,0.3)"></div></div><div class="mn-feat-cell"><div class="mn-ln mn-ln--p"></div></div><div class="mn-feat-cell"><div class="mn-ln mn-ln--p"></div></div><div class="mn-feat-cell"><div class="mn-ln mn-ln--p"></div></div></div>
+                    </div>
+                    <div class="pat-c__info"><span class="pat-c__h">Feature Grid</span><span class="pat-c__p">Hero full-bleed en haut, 3 colonnes egales en bas. Les services, les preuves, les chiffres en 3 blocs.</span></div>
+                </div>
+                <div class="pat-c">
+                    <div class="pat-c__preview">
+                        <div class="mn-mani"><div class="mn-mani__top"><div class="mn-ln mn-ln--h" style="width:75%;background:rgba(255,255,255,0.18)"></div><div class="mn-ln mn-ln--p" style="width:55%;background:rgba(255,255,255,0.06)"></div></div><div class="mn-mani__bot"><div class="mn-ln mn-ln--cta" style="width:40%;background:rgba(255,255,255,0.4)"></div></div></div>
+                    </div>
+                    <div class="pat-c__info"><span class="pat-c__h">Manifesto Full-Bleed</span><span class="pat-c__p">Texte centre monumental sur fond noir. Puis barre orange full-width avec CTA. Le manifeste en pleine page.</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 09.4 — Rythme Vertical -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Rythme vertical</span>
+            <h2 class="sec__h">Grille 4px, rythme hache</h2>
+            <p class="sec__p">Chaque espacement est un multiple de 4px. Le rythme n'est pas regulier : hero massif, puis bloc serre, puis vide radical. La tension de lecture maintient l'attention.</p>
+            <div class="rhy-wrap">
+                <div class="rhy-ruler">
+                    <div class="rhy-ruler__ln rhy-ruler__ln--acc" style="top:0"></div>
+                    <div class="rhy-ruler__ln" style="top:32px"></div>
+                    <div class="rhy-ruler__ln" style="top:64px"></div>
+                    <div class="rhy-ruler__ln rhy-ruler__ln--acc" style="top:96px"></div>
+                    <div class="rhy-ruler__ln" style="top:128px"></div>
+                    <div class="rhy-ruler__ln" style="top:160px"></div>
+                    <div class="rhy-ruler__ln rhy-ruler__ln--acc" style="top:192px"></div>
+                    <div class="rhy-ruler__ln" style="top:224px"></div>
+                    <div class="rhy-ruler__ln" style="top:256px"></div>
+                    <div class="rhy-ruler__ln rhy-ruler__ln--acc" style="top:288px"></div>
+                    <div class="rhy-ruler__ln" style="top:320px"></div>
+                    <div class="rhy-ruler__ln" style="top:352px"></div>
+                    <div class="rhy-ruler__ln rhy-ruler__ln--acc" style="top:384px"></div>
+                </div>
+                <div class="rhy-body">
+                    <div style="position:relative">
+                        <div class="rhy-blk rhy-blk--hero">
+                            <div style="height:12px;width:45%;background:rgba(255,255,255,0.4);margin-bottom:6px"></div>
+                            <div style="height:5px;width:65%;background:rgba(255,255,255,0.12)"></div>
+                        </div>
+                        <span class="rhy-ann" style="top:50%">96px hero</span>
+                    </div>
+                    <div style="position:relative">
+                        <div class="rhy-blk rhy-blk--void" style="min-height:64px"></div>
+                        <span class="rhy-ann" style="top:50%">64px vide</span>
+                    </div>
+                    <div style="position:relative">
+                        <div class="rhy-blk rhy-blk--card">
+                            <div style="width:24px;height:24px;background:var(--color-primary);flex-shrink:0"></div>
+                            <div><div style="height:7px;width:110px;background:rgba(255,255,255,0.1);margin-bottom:3px"></div><div style="height:4px;width:160px;background:rgba(255,255,255,0.04)"></div></div>
+                        </div>
+                        <span class="rhy-ann" style="top:50%">16px gap</span>
+                    </div>
+                    <div style="position:relative;margin-top:3px">
+                        <div class="rhy-blk rhy-blk--card">
+                            <div style="width:24px;height:24px;background:rgba(255,186,10,0.15);border:2px solid rgba(255,186,10,0.25);flex-shrink:0"></div>
+                            <div><div style="height:7px;width:90px;background:rgba(255,255,255,0.1);margin-bottom:3px"></div><div style="height:4px;width:140px;background:rgba(255,255,255,0.04)"></div></div>
+                        </div>
+                    </div>
+                    <div style="position:relative">
+                        <div class="rhy-blk rhy-blk--void"></div>
+                        <span class="rhy-ann" style="top:50%">32px vide</span>
+                    </div>
+                    <div style="position:relative">
+                        <div class="rhy-blk rhy-blk--cta">
+                            <div style="height:7px;width:90px;background:var(--color-primary)"></div>
+                        </div>
+                        <span class="rhy-ann" style="top:50%">48px CTA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-h div-h--gold">
+
+    <!-- ====== ILLUSTRATION NARRATIVE ====== -->
+
+    <section class="ch-open ch-open--dark ch-open--ch10">
+        <div class="ctn">
+            <span class="ch-open__over ch-open__over--gold">Illustration narrative</span>
+            <h1 class="ch-open__h">Le cycle<br>comme systeme.</h1>
+            <p class="ch-open__p">L'illustration FURNACE ne decore pas. Elle explique. Le cycle dechet-compost-sol-nourriture est visualise comme un circuit d'energie : flat radical, contours epais, aplats orange-noir-jaune.</p>
+            <hr class="ch-open__rule">
+        </div>
+    </section>
+
+    <hr class="div-h">
+
+    <!-- 10.1 — Angle de Metaphore -->
+    <section class="sec" style="padding-bottom:0">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Angle de metaphore</span>
+            <h2 class="sec__h">La boucle du vivant</h2>
+            <p class="sec__p">Dechet, compost, sol, nourriture. Le cycle d'energie des Vermeil visualise en circuit ferme. Chaque etape est un noeud, chaque fleche est une transformation.</p>
+        </div>
+        <div class="cycle-canvas">
+            <div class="cycle-canvas__glow"></div>
+            <h3 class="cycle-canvas__h">Le circuit d'energie</h3>
+            <p class="cycle-canvas__p">Un systeme ferme ou rien ne se perd. Le dechet devient ressource, le compost devient sol, le sol nourrit.</p>
+            <div class="cycle-svg">
+                <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+                    <path d="M 150 100 L 450 100 L 450 300 L 150 300 Z" fill="none" stroke="#E84D0E" stroke-width="3" stroke-dasharray="8 4" opacity="0.3"/>
+                    <polygon points="300,88 308,100 300,100" fill="#E84D0E" opacity="0.6"/>
+                    <polygon points="462,200 450,208 450,200" fill="#E84D0E" opacity="0.6"/>
+                    <polygon points="300,312 292,300 300,300" fill="#E84D0E" opacity="0.6"/>
+                    <polygon points="138,200 150,192 150,200" fill="#E84D0E" opacity="0.6"/>
+                    <rect x="100" y="70" width="100" height="60" fill="#0A0A0A" stroke="#E84D0E" stroke-width="3"/>
+                    <text x="150" y="97" font-family="'Instrument Serif',serif" font-size="16" fill="#FFF" text-anchor="middle">Biodechet</text>
+                    <text x="150" y="117" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FFBA0A" text-anchor="middle" letter-spacing="0.1em">COLLECTE</text>
+                    <rect x="400" y="70" width="100" height="60" fill="#E84D0E" stroke="#E84D0E" stroke-width="3"/>
+                    <text x="450" y="97" font-family="'Instrument Serif',serif" font-size="16" fill="#FFF" text-anchor="middle">Compost</text>
+                    <text x="450" y="117" font-family="'IBM Plex Mono',monospace" font-size="9" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="0.1em">TRANSFORMATION</text>
+                    <rect x="400" y="270" width="100" height="60" fill="#0A0A0A" stroke="#FFBA0A" stroke-width="3"/>
+                    <text x="450" y="297" font-family="'Instrument Serif',serif" font-size="16" fill="#FFF" text-anchor="middle">Sol fertile</text>
+                    <text x="450" y="317" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FFBA0A" text-anchor="middle" letter-spacing="0.1em">REGENERATION</text>
+                    <rect x="100" y="270" width="100" height="60" fill="#0A0A0A" stroke="#E84D0E" stroke-width="3"/>
+                    <text x="150" y="297" font-family="'Instrument Serif',serif" font-size="16" fill="#FFF" text-anchor="middle">Nourriture</text>
+                    <text x="150" y="317" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#E84D0E" text-anchor="middle" letter-spacing="0.1em">PRODUCTION</text>
+                    <text x="300" y="195" font-family="'Instrument Serif',serif" font-size="22" fill="#E84D0E" text-anchor="middle" font-style="italic">Boucle fermee</text>
+                    <text x="300" y="215" font-family="'IBM Plex Mono',monospace" font-size="10" fill="rgba(255,255,255,0.25)" text-anchor="middle" letter-spacing="0.15em">&lt;15 KM DU LIEU DE COLLECTE</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 10.2 — Physique de l'Illustration -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--mute">Physique de l'illustration</span>
+            <h2 class="sec__h">Flat radical, sharp, massif</h2>
+            <p class="sec__p">Contours epais 2-3px, aplats sans degrade, palette limitee orange/noir/jaune/blanc. Pas de volume, pas d'ombre. La forme pure.</p>
+            <div class="phys-grid">
+                <div class="phys-c">
+                    <div class="phys-c__shape"><svg viewBox="0 0 80 80"><rect x="5" y="5" width="70" height="70" fill="#E84D0E" stroke="#FFF" stroke-width="3"/></svg></div>
+                    <span class="phys-c__h">Aplat pur</span>
+                    <span class="phys-c__p">Zero degrade, zero volume. La couleur est un signal.</span>
+                </div>
+                <div class="phys-c">
+                    <div class="phys-c__shape"><svg viewBox="0 0 80 80"><polygon points="40,5 75,75 5,75" fill="none" stroke="#FFBA0A" stroke-width="3"/><polygon points="40,22 62,65 18,65" fill="#FFBA0A" opacity="0.2"/></svg></div>
+                    <span class="phys-c__h">Contour epais</span>
+                    <span class="phys-c__p">2-3px minimum. Le trait est structure, pas decoration.</span>
+                </div>
+                <div class="phys-c">
+                    <div class="phys-c__shape"><svg viewBox="0 0 80 80"><rect x="5" y="5" width="30" height="70" fill="#0A0A0A" stroke="#E84D0E" stroke-width="3"/><rect x="40" y="5" width="35" height="30" fill="#E84D0E"/><rect x="40" y="40" width="35" height="35" fill="#FFBA0A"/></svg></div>
+                    <span class="phys-c__h">Sharp absolu</span>
+                    <span class="phys-c__p">Radius 0px. Chaque angle est un choix. Les formes sont des blocs.</span>
+                </div>
+                <div class="phys-c">
+                    <div class="phys-c__shape"><svg viewBox="0 0 80 80"><rect x="5" y="5" width="70" height="70" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2"/><rect x="15" y="15" width="20" height="20" fill="#E84D0E"/><rect x="45" y="15" width="20" height="20" fill="#FFBA0A"/><rect x="15" y="45" width="20" height="20" fill="#FFF"/><rect x="45" y="45" width="20" height="20" fill="#E84D0E" opacity="0.5"/></svg></div>
+                    <span class="phys-c__h">3 couleurs max</span>
+                    <span class="phys-c__p">Orange, noir, jaune. Le blanc comme respiration. Jamais plus de 3.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 10.3 — Character Design -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Silhouettes</span>
+            <h2 class="sec__h">Geometrie humaine en mouvement</h2>
+            <p class="sec__p">Pas de cartoon, pas de mascotte. Si l'humain apparait en illustration, c'est une silhouette geometrique sharp, en action. La dignite du geste.</p>
+            <div class="char-strip">
+                <div class="char-c">
+                    <div class="char-c__fig">
+                        <svg viewBox="0 0 120 180" width="100" height="150">
+                            <rect x="48" y="10" width="24" height="24" fill="#E84D0E"/>
+                            <rect x="44" y="38" width="32" height="50" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2"/>
+                            <rect x="44" y="92" width="14" height="55" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2"/>
+                            <rect x="62" y="92" width="14" height="55" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2"/>
+                            <rect x="20" y="42" width="24" height="8" fill="#E84D0E" opacity="0.8"/>
+                            <rect x="76" y="42" width="24" height="8" fill="#E84D0E" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <span class="char-c__h">Posture : Ancree</span>
+                    <span class="char-c__p">Pieds plantes, bras etendus. La silhouette est stable et determinee.</span>
+                </div>
+                <div class="char-c">
+                    <div class="char-c__fig">
+                        <svg viewBox="0 0 120 180" width="100" height="150">
+                            <rect x="50" y="8" width="22" height="22" fill="#FFBA0A"/>
+                            <rect x="45" y="34" width="30" height="48" fill="#0A0A0A" stroke="#FFBA0A" stroke-width="2" transform="rotate(-5,60,58)"/>
+                            <rect x="38" y="86" width="13" height="52" fill="#0A0A0A" stroke="#FFBA0A" stroke-width="2" transform="rotate(15,44,112)"/>
+                            <rect x="68" y="86" width="13" height="52" fill="#0A0A0A" stroke="#FFBA0A" stroke-width="2" transform="rotate(-10,74,112)"/>
+                            <rect x="30" y="38" width="20" height="7" fill="#FFBA0A" opacity="0.7" transform="rotate(-20,40,41)"/>
+                            <rect x="75" y="50" width="20" height="7" fill="#FFBA0A" opacity="0.7" transform="rotate(15,85,53)"/>
+                        </svg>
+                    </div>
+                    <span class="char-c__h">Posture : En marche</span>
+                    <span class="char-c__p">Dynamisme, desequilibre. Le corps en mouvement, la trajectoire evidente.</span>
+                </div>
+                <div class="char-c">
+                    <div class="char-c__fig">
+                        <svg viewBox="0 0 120 180" width="100" height="150">
+                            <rect x="55" y="20" width="22" height="22" fill="#E84D0E"/>
+                            <rect x="48" y="46" width="32" height="45" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2" transform="rotate(15,64,68)"/>
+                            <rect x="42" y="94" width="14" height="50" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2"/>
+                            <rect x="64" y="94" width="14" height="50" fill="#0A0A0A" stroke="#E84D0E" stroke-width="2" transform="rotate(8,71,119)"/>
+                            <rect x="75" y="54" width="28" height="7" fill="#E84D0E" opacity="0.7" transform="rotate(30,89,57)"/>
+                            <rect x="20" y="65" width="28" height="7" fill="#E84D0E" opacity="0.7" transform="rotate(-15,34,68)"/>
+                        </svg>
+                    </div>
+                    <span class="char-c__h">Posture : Au travail</span>
+                    <span class="char-c__p">Le corps engage dans le geste. Les bras en action, le terrain, pas le bureau.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 10.4 — Lois de Composition -->
+    <section class="sec">
+        <div class="ctn">
+            <span class="sec__over sec__over--fire">Lois de composition</span>
+            <h2 class="sec__h">Cohabitation illustration / texte / CTA</h2>
+            <p class="sec__p">Quatre regles non-negociables pour que l'illustration FURNACE fonctionne dans le systeme sans jamais l'affaiblir.</p>
+            <div class="comp-grid">
+                <div class="comp-c">
+                    <span class="comp-c__num">01</span>
+                    <h3 class="comp-c__h">Jamais derriere le texte</h3>
+                    <p class="comp-c__p">L'illustration est un bloc autonome, pas un fond. Elle occupe sa zone. Le texte occupe la sienne. La lisibilite est sacree.</p>
+                    <div class="comp-c__demo">
+                        <div style="display:flex;gap:3px;height:100%">
+                            <div style="flex:1;background:var(--color-primary);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 40 40" width="28" height="28"><rect x="4" y="4" width="32" height="32" fill="none" stroke="#fff" stroke-width="2"/></svg></div>
+                            <div style="flex:2;background:var(--color-depth);padding:var(--space-sm);display:flex;flex-direction:column;justify-content:center;gap:3px"><div style="height:5px;width:55%;background:rgba(255,255,255,0.12)"></div><div style="height:3px;width:75%;background:rgba(255,255,255,0.05)"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="comp-c">
+                    <span class="comp-c__num">02</span>
+                    <h3 class="comp-c__h">Marge de securite 32px</h3>
+                    <p class="comp-c__p">Minimum 32px entre l'illustration et tout element de texte ou CTA. L'illustration respire. Pas de collision.</p>
+                    <div class="comp-c__demo">
+                        <div style="display:flex;align-items:center;height:100%;gap:32px;padding:0 var(--space-md)">
+                            <div style="width:44px;height:44px;background:var(--color-primary);flex-shrink:0"></div>
+                            <div style="width:1px;height:100%;background:repeating-linear-gradient(to bottom,var(--color-secondary) 0px,var(--color-secondary) 3px,transparent 3px,transparent 8px)"></div>
+                            <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="height:5px;width:65%;background:rgba(255,255,255,0.1)"></div><div style="height:3px;width:45%;background:rgba(255,255,255,0.05)"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="comp-c">
+                    <span class="comp-c__num">03</span>
+                    <h3 class="comp-c__h">Le CTA prime toujours</h3>
+                    <p class="comp-c__p">Quand illustration et CTA coexistent, le CTA a la hierarchie superieure. Taille, contraste, position : le CTA gagne.</p>
+                    <div class="comp-c__demo">
+                        <div style="display:flex;align-items:center;height:100%;gap:3px">
+                            <div style="flex:1;background:rgba(232,77,14,0.05);height:100%;display:flex;align-items:center;justify-content:center;opacity:0.5"><svg viewBox="0 0 40 40" width="24" height="24"><polygon points="20,4 36,36 4,36" fill="none" stroke="#E84D0E" stroke-width="2"/></svg></div>
+                            <div style="flex:2;background:var(--color-primary);height:100%;display:flex;align-items:center;justify-content:center"><div style="height:7px;width:35%;background:rgba(255,255,255,0.45)"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="comp-c">
+                    <span class="comp-c__num">04</span>
+                    <h3 class="comp-c__h">Echelle contextuelle</h3>
+                    <p class="comp-c__p">En hero : grande (max 40% de la surface). En composant : icone seulement (24-48px). En footer : absente ou en filigrane.</p>
+                    <div class="comp-c__demo">
+                        <div style="display:flex;gap:3px;height:100%">
+                            <div style="flex:2;background:rgba(232,77,14,0.06);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 60 60" width="42" height="42"><rect x="5" y="5" width="50" height="50" fill="#E84D0E" opacity="0.25"/><rect x="15" y="15" width="30" height="30" fill="#E84D0E"/></svg></div>
+                            <div style="flex:1;background:var(--color-depth-warm);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="18" height="18" fill="#E84D0E"/></svg></div>
+                            <div style="flex:1;background:var(--color-depth);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" width="8" height="8" opacity="0.15"><rect x="2" y="2" width="12" height="12" fill="#E84D0E"/></svg></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-t">
+
+    <!-- 10.5 — Directives Prompting IA Illustration -->
+    <section class="sec" style="padding-bottom:0">
+        <div class="ctn">
+            <span class="sec__over sec__over--gold">Prompting IA illustration</span>
+            <h2 class="sec__h">Generer des illustrations FURNACE</h2>
+            <p class="sec__p">Des prompts precalibres pour Recraft V3 et Midjourney. Le style flat radical, les contraintes de palette, les interdits.</p>
+            <div class="illpmt-grid">
+                <div class="pmt">
+                    <span class="pmt__engine">Recraft V3</span>
+                    <p class="pmt__text"><span class="hl">Flat vector illustration</span>, <span class="hl-a">composting cycle diagram</span>, bold geometric shapes, <span class="hl">thick outlines 3px</span>, solid color fills only, <span class="dim">no gradients no shadows no textures</span>, color palette strictly <span class="hl-a">orange #E84D0E black #0A0A0A yellow #FFBA0A white</span>, <span class="hl">sharp corners zero radius</span>, minimalist industrial style, <span class="dim">no cartoon no cute no rounded</span></p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">flat vector</span>
+                        <span class="pmt-tag">thick outlines</span>
+                        <span class="pmt-tag pmt-tag--hot">no gradients</span>
+                        <span class="pmt-tag">industrial</span>
+                    </div>
+                </div>
+                <div class="pmt">
+                    <span class="pmt__engine">Recraft V3</span>
+                    <p class="pmt__text"><span class="hl">Geometric human silhouette</span>, <span class="hl-a">worker in motion carrying container</span>, flat style no volume, <span class="hl">rectangular body parts</span>, angular pose dynamic movement, solid fills <span class="hl-a">orange and black only</span>, <span class="dim">no face details no rounded shapes no cute style</span>, <span class="hl">brutalist graphic design aesthetic</span>, thick border strokes, transparent background</p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">silhouette</span>
+                        <span class="pmt-tag">brutalist</span>
+                        <span class="pmt-tag pmt-tag--hot">rectangular</span>
+                    </div>
+                </div>
+                <div class="pmt pmt--gold">
+                    <span class="pmt__engine">Midjourney v6</span>
+                    <p class="pmt__text"><span class="hl-a">Flat bold graphic illustration</span>, <span class="hl">composting process infographic</span>, geometric shapes only, thick black outlines, <span class="hl-a">limited palette orange black yellow white</span>, <span class="dim">no 3D no gradients no soft edges</span>, <span class="hl">modernist poster design</span>, strong visual hierarchy, industrial aesthetic, <span class="dim">--style raw --s 50 --no smooth gradient rounded cartoon</span></p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">modernist poster</span>
+                        <span class="pmt-tag">infographic</span>
+                        <span class="pmt-tag pmt-tag--hot">limited palette</span>
+                    </div>
+                </div>
+                <div class="pmt pmt--gold">
+                    <span class="pmt__engine">Midjourney v6</span>
+                    <p class="pmt__text"><span class="hl-a">Bold flat icon set</span>, <span class="hl">urban composting service icons</span>, bicycle cargo truck compost bin soil plant, <span class="hl-a">thick stroke 3px</span>, geometric minimalist, <span class="hl">strict color palette orange on black</span>, <span class="dim">no shadows no depth no rounded corners</span>, Swiss graphic design influence, <span class="dim">--style raw --s 30 --no gradient soft cute 3d</span></p>
+                    <div class="pmt-tags">
+                        <span class="pmt-tag pmt-tag--hot">icon set</span>
+                        <span class="pmt-tag">Swiss design</span>
+                        <span class="pmt-tag pmt-tag--hot">strict palette</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="div-h" style="margin-top:var(--space-2xl)">
+
+    <!-- COLOPHON -->
+    <section class="colo">
+        <div class="ctn">
+            <h2 class="colo__h">La forme est le fond<br>qui remonte a la surface.</h2>
+            <p class="colo__p">Narration & Espace — Atelier Vermeil. Direction photographique, systeme de composition et illustration narrative calibres pour FURNACE. A3 x B3.</p>
+            <hr class="colo__rule">
+        </div>
+    </section>
+
+</body>
+</html>

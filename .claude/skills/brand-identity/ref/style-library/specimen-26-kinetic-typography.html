@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 26. Kinetic Typography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,100..900,0..100,0..1&family=Inter+Tight:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-ink:        #0E0E0C;
+      --color-paper:      #F4F1EA;
+      --color-paper-2:    #ECE7DC;
+      --color-accent:     #E6FF3C;   /* jaune acide signature kinetic */
+      --color-accent-2:   #FF5B2E;   /* orange brûlé en contrepoint */
+      --color-mute:       #6B6A65;
+      --color-line:       #1F1E1B;
+
+      --font-display: "Fraunces", "Times New Roman", serif;
+      --font-body:    "Inter Tight", system-ui, sans-serif;
+
+      --radius-card: 4px;
+      --gutter: clamp(20px, 3vw, 36px);
+
+      /* Variable font axes — VALEURS DE REPOS (l'animation joue au hover) */
+      --display-wght: 320;
+      --display-opsz: 144;
+      --display-soft: 100;
+      --display-wonk: 1;
+
+      /* Easing typographique : entrée fluide, retour franc */
+      --ease-type: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { background: var(--color-paper); color: var(--color-ink); }
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      padding: var(--gutter);
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      gap: 64px;
+    }
+
+    /* ─────────────────────────── HERO ─────────────────────────── */
+    .hero {
+      padding: clamp(24px, 5vw, 56px) 0 clamp(32px, 6vw, 72px);
+      border-top: 1.5px solid var(--color-line);
+      border-bottom: 1.5px solid var(--color-line);
+      position: relative;
+    }
+
+    .hero .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      padding-bottom: clamp(20px, 4vw, 40px);
+    }
+    .hero .meta strong { color: var(--color-ink); font-weight: 500; }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(64px, 13vw, 200px);
+      line-height: 0.86;
+      letter-spacing: -0.04em;
+      font-variation-settings:
+        "wght" var(--display-wght),
+        "opsz" var(--display-opsz),
+        "SOFT" var(--display-soft),
+        "WONK" var(--display-wonk);
+      transition: font-variation-settings 600ms var(--ease-type);
+      cursor: default;
+    }
+
+    /* Chaque mot du titre a un comportement variable indépendant au hover */
+    .hero h1 .w {
+      display: inline-block;
+      transition: font-variation-settings 700ms var(--ease-type);
+    }
+    .hero h1 .w:hover {
+      font-variation-settings:
+        "wght" 900,
+        "opsz" 9,
+        "SOFT" 0,
+        "WONK" 0;
+    }
+    .hero h1 .w-2:hover {
+      font-variation-settings:
+        "wght" 200,
+        "opsz" 144,
+        "SOFT" 100,
+        "WONK" 1;
+      font-style: italic;
+    }
+
+    .hero .lede {
+      max-width: 62ch;
+      margin-top: 28px;
+      font-size: clamp(17px, 1.6vw, 22px);
+      line-height: 1.45;
+      color: var(--color-ink);
+      font-weight: 400;
+    }
+    .hero .lede em {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-variation-settings: "wght" 380, "SOFT" 100, "WONK" 1;
+      background: var(--color-accent);
+      padding: 0 6px;
+      border-radius: 2px;
+    }
+
+    .hero .brand {
+      position: absolute;
+      top: clamp(24px, 5vw, 56px);
+      right: 0;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+    }
+
+    /* ──────────────────── SIGNATURE 1 — AXES VARIABLES ──────────────────── */
+    .sig {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: clamp(24px, 5vw, 64px);
+      align-items: start;
+    }
+    @media (max-width: 800px) { .sig { grid-template-columns: 1fr; } }
+
+    .sig h2 {
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-variation-settings: "wght" 600, "opsz" 9;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid var(--color-line);
+      margin-bottom: 18px;
+    }
+    .sig p {
+      font-size: 15.5px;
+      line-height: 1.6;
+      color: var(--color-ink);
+      max-width: 46ch;
+    }
+    .sig p + p { margin-top: 12px; }
+
+    .axis-board {
+      background: var(--color-ink);
+      color: var(--color-paper);
+      padding: clamp(20px, 4vw, 36px);
+      border-radius: var(--radius-card);
+      display: grid;
+      gap: 18px;
+    }
+    .axis-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      align-items: baseline;
+      gap: 18px;
+      padding: 8px 0;
+      border-bottom: 1px solid #2a2925;
+    }
+    .axis-row:last-child { border-bottom: none; }
+    .axis-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8a8880;
+    }
+    .axis-sample {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1;
+      color: var(--color-paper);
+      transition: font-variation-settings 600ms var(--ease-type);
+      cursor: pointer;
+    }
+    .axis-sample.wght        { font-variation-settings: "wght" 200, "opsz" 144; }
+    .axis-sample.wght:hover  { font-variation-settings: "wght" 900, "opsz" 9; }
+
+    .axis-sample.opsz        { font-variation-settings: "opsz" 9,  "wght" 500; }
+    .axis-sample.opsz:hover  { font-variation-settings: "opsz" 144,"wght" 500; }
+
+    .axis-sample.soft        { font-variation-settings: "SOFT" 0,  "wght" 500; }
+    .axis-sample.soft:hover  { font-variation-settings: "SOFT" 100,"wght" 500; }
+
+    .axis-sample.wonk        { font-variation-settings: "WONK" 0,  "wght" 500; font-style: italic; }
+    .axis-sample.wonk:hover  { font-variation-settings: "WONK" 1,  "wght" 500; font-style: italic; }
+
+    /* ─────────────────── SIGNATURE 2 — INTERACTION = MOTEUR ─────────────────── */
+    .sig-2 {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: clamp(24px, 5vw, 64px);
+      align-items: start;
+    }
+    @media (max-width: 800px) { .sig-2 { grid-template-columns: 1fr; } }
+
+    .interactive-stage {
+      background: var(--color-paper-2);
+      padding: clamp(28px, 5vw, 56px);
+      border-radius: var(--radius-card);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .interactive-stage .word {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 11vw, 140px);
+      line-height: 0.9;
+      letter-spacing: -0.035em;
+      font-variation-settings: "wght" 300, "opsz" 144, "SOFT" 100;
+      transition: font-variation-settings 800ms var(--ease-type),
+                  color 600ms var(--ease-type);
+      cursor: pointer;
+      color: var(--color-ink);
+    }
+    .interactive-stage .word:hover {
+      font-variation-settings: "wght" 880, "opsz" 9, "SOFT" 0, "WONK" 1;
+    }
+    .interactive-stage .word .alt {
+      font-style: italic;
+      transition: font-variation-settings 800ms var(--ease-type);
+    }
+    .interactive-stage .word:hover .alt {
+      color: var(--color-accent-2);
+    }
+
+    .stage-cap {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--color-line);
+      padding-top: 14px;
+    }
+    .stage-cap kbd {
+      font-family: var(--font-body);
+      background: var(--color-ink);
+      color: var(--color-paper);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─────────────────── SIGNATURE 3 — TYPO COMME MATIÈRE ─────────────────── */
+    .matter {
+      border-top: 1.5px solid var(--color-line);
+      padding-top: clamp(24px, 4vw, 40px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(20px, 4vw, 48px);
+    }
+    @media (max-width: 800px) { .matter { grid-template-columns: 1fr; } }
+
+    .matter-card {
+      padding: clamp(20px, 3vw, 32px);
+      border-radius: var(--radius-card);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 260px;
+    }
+    .matter-card.a { background: var(--color-accent); color: var(--color-ink); }
+    .matter-card.b { background: var(--color-ink);    color: var(--color-paper); }
+
+    .matter-card .num {
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-variation-settings: "wght" 600;
+    }
+    .matter-card .big {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 7vw, 84px);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      transition: font-variation-settings 600ms var(--ease-type);
+    }
+    .matter-card.a .big { font-variation-settings: "wght" 700, "opsz" 9, "SOFT" 0, "WONK" 0; }
+    .matter-card.b .big {
+      font-style: italic;
+      font-variation-settings: "wght" 280, "opsz" 144, "SOFT" 100, "WONK" 1;
+    }
+    .matter-card.a .big:hover { font-variation-settings: "wght" 200, "opsz" 144, "SOFT" 100; font-style: italic; }
+    .matter-card.b .big:hover { font-variation-settings: "wght" 900, "opsz" 9,  "SOFT" 0,   "WONK" 0; font-style: normal; }
+
+    .matter-card p {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 38ch;
+      margin-top: auto;
+    }
+    .matter-card.a p { color: var(--color-ink); }
+    .matter-card.b p { color: #c8c5be; }
+
+    /* ─────────────────────── ATMOSPHÈRE ─────────────────────── */
+    .atmosphere {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: clamp(24px, 4vw, 48px);
+      border-top: 1.5px solid var(--color-line);
+      padding-top: clamp(24px, 4vw, 40px);
+    }
+    @media (max-width: 800px) { .atmosphere { grid-template-columns: 1fr; } }
+
+    .atmosphere-visual {
+      background:
+        linear-gradient(180deg, var(--color-paper) 0%, var(--color-paper-2) 100%);
+      border: 1.5px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: clamp(32px, 5vw, 56px);
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Échelle typographique vivante : chaque ligne = un état d'axe différent.
+       Au hover sur le bloc, les lignes "respirent" séquentiellement vers leur état alternatif. */
+    .atmosphere-visual .line {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4.4vw, 56px);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--color-ink);
+      transition: font-variation-settings 700ms var(--ease-type),
+                  color 500ms var(--ease-type),
+                  letter-spacing 700ms var(--ease-type);
+      cursor: default;
+    }
+    .atmosphere-visual .l1 { font-variation-settings: "wght" 200, "opsz" 144, "SOFT" 100, "WONK" 1; font-style: italic; }
+    .atmosphere-visual .l2 { font-variation-settings: "wght" 400, "opsz" 72; }
+    .atmosphere-visual .l3 { font-variation-settings: "wght" 700, "opsz" 9;  }
+    .atmosphere-visual .l4 { font-variation-settings: "wght" 900, "opsz" 9,  "SOFT" 0; }
+    .atmosphere-visual .l5 { font-variation-settings: "wght" 320, "opsz" 144,"SOFT" 100,"WONK" 1; font-style: italic; color: var(--color-mute); }
+
+    .atmosphere-visual:hover .l1 { font-variation-settings: "wght" 900, "opsz" 9,   "SOFT" 0,   "WONK" 0; font-style: normal; }
+    .atmosphere-visual:hover .l2 { font-variation-settings: "wght" 280, "opsz" 144, "SOFT" 100, "WONK" 1; font-style: italic; }
+    .atmosphere-visual:hover .l3 { font-variation-settings: "wght" 200, "opsz" 144; letter-spacing: 0; }
+    .atmosphere-visual:hover .l4 { font-variation-settings: "wght" 350, "opsz" 144, "SOFT" 100; color: var(--color-accent-2); }
+    .atmosphere-visual:hover .l5 { font-variation-settings: "wght" 800, "opsz" 9,   "SOFT" 0; color: var(--color-ink); font-style: normal; }
+
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-variation-settings: "wght" 600, "opsz" 9;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid var(--color-line);
+      margin-bottom: 18px;
+    }
+    .atmosphere-text p { font-size: 15px; line-height: 1.6; max-width: 42ch; }
+    .atmosphere-text p + p { margin-top: 12px; }
+    .atmosphere-text .tag {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      background: var(--color-ink);
+      color: var(--color-paper);
+      border-radius: 2px;
+      margin-right: 4px;
+    }
+    .atmosphere-text .tag.warn { background: var(--color-accent-2); color: var(--color-ink); }
+
+    /* ─────────────────────── COLOPHON ─────────────────────── */
+    footer {
+      border-top: 1.5px solid var(--color-line);
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+<main>
+
+  <!-- ─────────── HERO ─────────── -->
+  <section class="hero">
+    <div class="meta">
+      <span><strong>Style 26</strong> · Cinétique / Éditorial</span>
+      <span>Awwwards Typography Honors · Pangram Pangram · Variable fonts museum</span>
+    </div>
+    <p class="brand">Helio Type Foundry — Atelier de typographies vivantes</p>
+    <h1>
+      <span class="w w-1">Kinetic</span>
+      <span class="w w-2">Typography</span>
+    </h1>
+    <p class="lede">
+      Les lettres ne décrivent plus, elles <em>se déplacent</em>. Les axes variables d'une seule fonte — poids, taille optique, contraste — deviennent des paramètres animables au geste de l'utilisateur. Le texte est ici la matière première, pas l'emballage.
+    </p>
+  </section>
+
+  <!-- ─────────── SIGNATURE 1 — AXES ─────────── -->
+  <section class="sig">
+    <div>
+      <h2>01 · Une seule fonte, plusieurs vies</h2>
+      <p>
+        Le style repose sur des fontes variables pensées pour la cinétique : Fraunces, Recursive, Roboto Flex. Chacune expose des <em>axes</em> — wght, opsz, SOFT, WONK — qu'on anime entre deux états. Le geste pivote la fonte d'un visage à l'autre sans jamais la remplacer.
+      </p>
+      <p>
+        À droite : quatre axes de Fraunces. Survolez chaque échantillon pour passer à l'état alternatif. La transition utilise la même courbe d'easing que le rendu : sortie franche, entrée moelleuse.
+      </p>
+    </div>
+    <div class="axis-board" aria-label="Démonstration des axes variables de Fraunces">
+      <div class="axis-row">
+        <div class="axis-label">wght 200→900</div>
+        <div class="axis-sample wght" tabindex="0">Helio</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">opsz 9→144</div>
+        <div class="axis-sample opsz" tabindex="0">Helio</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">SOFT 0→100</div>
+        <div class="axis-sample soft" tabindex="0">Helio</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">WONK 0→1</div>
+        <div class="axis-sample wonk" tabindex="0">Helio</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── SIGNATURE 2 — INTERACTION ─────────── -->
+  <section class="sig-2">
+    <div class="interactive-stage" aria-label="Mot interactif — survolez">
+      <div class="word" tabindex="0">
+        Cinét<span class="alt">ique</span>.
+      </div>
+      <div class="stage-cap">
+        <span>Animation déclenchée par le <kbd>hover</kbd></span>
+        <span>Pas d'auto-play</span>
+      </div>
+    </div>
+    <div>
+      <h2>02 · L'interaction comme moteur</h2>
+      <p>
+        L'animation n'est pas décorative et ne tourne pas en boucle. Elle attend un geste : survol, focus clavier, scroll, frappe. Chaque transition de poids ou de taille optique naît d'une intention de l'utilisateur.
+      </p>
+      <p>
+        Cette discipline distingue Kinetic Typography des bandeaux animés des années 2010 : ici, le mouvement est une réponse, pas un appât. Spotify Wrapped, Pangram Pangram et la catégorie Typography Honors d'Awwwards consacrent ce critère.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── SIGNATURE 3 — TYPO COMME MATIÈRE ─────────── -->
+  <section class="matter">
+    <div class="matter-card a">
+      <div class="num">03 · Matière, pas information</div>
+      <div class="big" tabindex="0">Aa</div>
+      <p>
+        Les lettres occupent l'espace au lieu de le légender. Une glyphe peut être un personnage, un terrain, une masse plastique. Le contenu sémantique passe au second plan derrière la présence physique du caractère.
+      </p>
+    </div>
+    <div class="matter-card b">
+      <div class="num">04 · Transitions fluides, pas saccadées</div>
+      <div class="big" tabindex="0">Aa</div>
+      <p>
+        Les courbes d'easing prolongent l'inertie typographique. Une transition ratée — linéaire, trop courte, brusque — trahit immédiatement le style. Le tempo se joue entre 500 et 900 ms, sur des courbes en sortie de cubic-bezier.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── ATMOSPHÈRE ─────────── -->
+  <section class="atmosphere">
+    <div class="atmosphere-visual" aria-label="Échelle typographique vivante">
+      <div class="line l1">légère</div>
+      <div class="line l2">posée</div>
+      <div class="line l3">tendue</div>
+      <div class="line l4">massive</div>
+      <div class="line l5">flottante</div>
+    </div>
+    <div class="atmosphere-text">
+      <h3>05 · Quand l'utiliser, quand l'éviter</h3>
+      <p>
+        <span class="tag">Type foundries</span>
+        <span class="tag">Portfolios créatifs</span>
+        <span class="tag">Éditorial culturel</span>
+        <span class="tag">Lancements produit événementiels</span>
+      </p>
+      <p>
+        Kinetic Typography sert les marques dont la voix est elle-même typographique : fonderies, studios de design, publications, campagnes éditoriales. Il y instaure un rapport corporel à la lecture.
+      </p>
+      <p>
+        <span class="tag warn">À éviter</span> Dashboards data-dense, e-commerce de masse, interfaces administratives, services financiers conservateurs. Le mouvement du texte y devient une friction de lecture.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── COLOPHON ─────────── -->
+  <footer>
+    <span>Style Library · BIG · Spécimen 26</span>
+    <span>Fraunces (Variable) · Inter Tight</span>
+    <span>HTML/CSS pur · Animation déclenchée par hover</span>
+  </footer>
+
+</main>
+
+</body>
+</html>

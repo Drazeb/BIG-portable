@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 19. Naïve Design / Handmade Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Caveat:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1;1,9..144,400..900,0..100,0..1&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette — aplats saturés, pigments naïfs, jamais dégradés */
+      --color-paper: #F5EFE0;          /* crème papier journal */
+      --color-paper-warm: #EDE2C8;     /* papier vieilli, ombre douce */
+      --color-ink: #1F1A14;            /* noir brut, jamais #000, légère chaleur */
+      --color-tomato: #E8442C;         /* rouge tomate cru, gouache */
+      --color-cobalt: #2554C7;         /* bleu cobalt outremer, peinture d'écolier */
+      --color-mustard: #F4B940;        /* jaune crayon de cire */
+      --color-grass: #4F8B3A;          /* vert pré gouache */
+      --color-rose: #F0A0B8;           /* rose délavé, aquarelle */
+
+      /* Typo — hand-drawn vraies, pas filtres */
+      --font-display: "Rubik Wet Paint", "Bradley Hand", cursive;     /* peinte à la main, signature naïve */
+      --font-hand: "Caveat", "Bradley Hand", cursive;                 /* manuscrit vif */
+      --font-body: "Fraunces", "Iowan Old Style", Georgia, serif;     /* serif variable wonky, soft */
+      --font-note: "Patrick Hand", "Comic Sans MS", cursive;          /* note d'écolier, légende */
+    }
+
+    /* RESET sobre */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 17px; }
+    body {
+      font-family: var(--font-body);
+      font-variation-settings: "SOFT" 50, "WONK" 1;
+      background: var(--color-paper);
+      color: var(--color-ink);
+      line-height: 1.55;
+      /* Texture papier brut : grain SVG + halo lumière douce, pas studio */
+      background-image:
+        radial-gradient(ellipse 70% 50% at 8% 0%, rgba(255, 248, 225, 0.55), transparent 60%),
+        radial-gradient(ellipse 80% 60% at 100% 100%, rgba(31, 26, 20, 0.10), transparent 65%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0.28 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+      background-size: auto, auto, 240px 240px;
+      background-attachment: fixed, fixed, scroll;
+    }
+
+    /* Conteneur — décentrement assumé, pas grille parfaite */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 56px 96px;
+      position: relative;
+    }
+
+    /* HERO — composition décentrée, formes gouache derrière le titre */
+    .hero {
+      padding: 48px 0 56px;
+      position: relative;
+      border-bottom: 2px solid var(--color-ink);
+      /* Tremblement assumé : bord du bas dessiné en SVG ondulé */
+      border-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='6' viewBox='0 0 1200 6' preserveAspectRatio='none'><path d='M 0 3 Q 60 0 120 3 T 240 3 T 360 3 T 480 3 T 600 3 T 720 3 T 840 3 T 960 3 T 1080 3 T 1200 3' stroke='%231F1A14' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") 0 0 100% 0 / 0 0 6px 0 repeat;
+    }
+    .eyebrow {
+      font-family: var(--font-note);
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      color: var(--color-tomato);
+      margin-bottom: 22px;
+      display: inline-block;
+      transform: rotate(-1.5deg);
+    }
+    .eyebrow::before {
+      content: "★ ";
+      color: var(--color-mustard);
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(3.6rem, 8.5vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      color: var(--color-ink);
+      max-width: 14ch;
+      margin-bottom: 28px;
+      position: relative;
+      /* Légère rotation : geste, pas Adobe */
+    }
+    .hero h1 .word-1 {
+      display: inline-block;
+      transform: rotate(-2deg);
+      color: var(--color-ink);
+    }
+    .hero h1 .word-2 {
+      display: inline-block;
+      transform: rotate(1.5deg) translateY(8px);
+      color: var(--color-tomato);
+      margin-left: 0.05em;
+    }
+    .hero h1 .slash {
+      display: inline-block;
+      font-family: var(--font-hand);
+      color: var(--color-cobalt);
+      font-weight: 700;
+      transform: rotate(-12deg);
+      vertical-align: -0.05em;
+      margin: 0 0.1em;
+    }
+    .hero h1 .word-3 {
+      display: inline-block;
+      transform: rotate(-1deg);
+      color: var(--color-cobalt);
+    }
+    .hero h1 .word-4 {
+      display: inline-block;
+      transform: rotate(2deg) translateY(4px);
+      color: var(--color-grass);
+    }
+
+    .hero .lede {
+      font-family: var(--font-body);
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-size: 1.28rem;
+      max-width: 54ch;
+      color: var(--color-ink);
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    .hero .brand {
+      font-family: var(--font-note);
+      font-size: 1.1rem;
+      color: var(--color-ink);
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--color-mustard);
+      transform: rotate(-1.2deg);
+      box-shadow: 4px 4px 0 var(--color-ink);
+    }
+
+    /* Tache de gouache derrière le hero — forme organique aplat */
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 80px;
+      right: -40px;
+      width: 280px;
+      height: 280px;
+      background: var(--color-rose);
+      border-radius: 58% 42% 50% 50% / 48% 58% 42% 52%;
+      z-index: -1;
+      opacity: 0.85;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      bottom: 30px;
+      right: 110px;
+      width: 90px;
+      height: 90px;
+      background: var(--color-cobalt);
+      border-radius: 42% 58% 62% 38% / 52% 48% 52% 48%;
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    /* SECTIONS communes */
+    section.specimen {
+      padding: 64px 0 56px;
+      position: relative;
+      border-bottom: 2px solid var(--color-ink);
+      border-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='6' viewBox='0 0 1200 6' preserveAspectRatio='none'><path d='M 0 3 Q 60 0 120 3 T 240 3 T 360 3 T 480 3 T 600 3 T 720 3 T 840 3 T 960 3 T 1080 3 T 1200 3' stroke='%231F1A14' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") 0 0 100% 0 / 0 0 6px 0 repeat;
+    }
+    .section-label {
+      font-family: var(--font-note);
+      font-size: 1rem;
+      color: var(--color-tomato);
+      margin-bottom: 14px;
+      display: inline-block;
+      transform: rotate(-1deg);
+    }
+    .section-label::before {
+      content: "→ ";
+      color: var(--color-cobalt);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2rem, 3.6vw, 2.9rem);
+      line-height: 1.05;
+      color: var(--color-ink);
+      max-width: 22ch;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+    .section-prose {
+      font-family: var(--font-body);
+      font-variation-settings: "SOFT" 60, "WONK" 1;
+      font-size: 1.1rem;
+      max-width: 60ch;
+      color: var(--color-ink);
+    }
+    .section-prose p + p { margin-top: 14px; }
+    .section-prose strong {
+      background: linear-gradient(180deg, transparent 60%, var(--color-mustard) 60%, var(--color-mustard) 92%, transparent 92%);
+      font-weight: 600;
+      padding: 0 2px;
+    }
+
+    /* SIGNATURE 1 — Lignes tremblantes + formes asymétriques (la grammaire visuelle) */
+    .signature-shapes {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .shapes-canvas {
+      position: relative;
+      aspect-ratio: 5 / 4;
+      background: var(--color-paper-warm);
+      border: 2px solid var(--color-ink);
+      box-shadow: 6px 6px 0 var(--color-ink);
+      overflow: hidden;
+    }
+    /* SVG composition naïve : soleil, nuage, montagne, ligne tremblante */
+    .shapes-canvas svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* SIGNATURE 2 — Typographie crayonnée + manuscrit (vraie hand-drawn, pas filtre) */
+    .signature-typo {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 48px;
+      align-items: stretch;
+    }
+    .typo-card {
+      padding: 36px 32px 38px;
+      background: var(--color-paper-warm);
+      border: 2px solid var(--color-ink);
+      box-shadow: 6px 6px 0 var(--color-ink);
+      position: relative;
+    }
+    .typo-card .specimen-letters {
+      font-family: var(--font-display);
+      font-size: 9rem;
+      line-height: 0.8;
+      color: var(--color-ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .typo-card .specimen-letters .a { color: var(--color-tomato); display: inline-block; transform: rotate(-3deg); }
+    .typo-card .specimen-letters .b { color: var(--color-cobalt); display: inline-block; transform: rotate(2deg) translateY(6px); }
+    .typo-card .specimen-name {
+      font-family: var(--font-note);
+      font-size: 0.9rem;
+      color: var(--color-ink);
+      border-top: 2px dotted var(--color-ink);
+      padding-top: 10px;
+      margin-bottom: 22px;
+    }
+    .typo-card .specimen-line {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--color-ink);
+      line-height: 1.2;
+      margin-bottom: 8px;
+      transform: rotate(-0.6deg);
+      transform-origin: left center;
+    }
+    .typo-card .specimen-source {
+      font-family: var(--font-hand);
+      font-size: 1.15rem;
+      color: var(--color-cobalt);
+      transform: rotate(-1.8deg);
+      display: inline-block;
+      margin-top: 6px;
+    }
+    .typo-card .annotation {
+      position: absolute;
+      right: -24px;
+      top: 32%;
+      font-family: var(--font-hand);
+      color: var(--color-tomato);
+      font-size: 1.3rem;
+      transform: rotate(8deg);
+      max-width: 170px;
+      line-height: 1.1;
+      background: var(--color-paper);
+      padding: 8px 12px;
+      border: 2px solid var(--color-ink);
+      box-shadow: 3px 3px 0 var(--color-ink);
+    }
+
+    /* SIGNATURE 3 — Palette pigments naïfs (aplats, pas swatches digitaux) */
+    .signature-palette {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .pigment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px 18px;
+    }
+    .pigment {
+      position: relative;
+    }
+    .pigment .blob {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      /* Tache de gouache : forme organique aplat (pas gradient !) */
+      position: relative;
+      box-shadow: 4px 4px 0 var(--color-ink);
+      border: 2px solid var(--color-ink);
+    }
+    .pigment .blob::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      /* Texture papier sur le pigment */
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.30 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
+      mix-blend-mode: overlay;
+      opacity: 0.5;
+    }
+    /* Bord irrégulier : forme blob naïve */
+    .pigment.tomato .blob   { background: var(--color-tomato);  border-radius: 56% 44% 38% 62% / 48% 56% 44% 52%; }
+    .pigment.cobalt .blob   { background: var(--color-cobalt);  border-radius: 42% 58% 56% 44% / 56% 44% 58% 42%; }
+    .pigment.mustard .blob  { background: var(--color-mustard); border-radius: 50% 50% 42% 58% / 44% 56% 50% 50%; }
+    .pigment.grass .blob    { background: var(--color-grass);   border-radius: 48% 52% 56% 44% / 60% 40% 52% 48%; }
+    .pigment.rose .blob     { background: var(--color-rose);    border-radius: 58% 42% 48% 52% / 50% 50% 56% 44%; }
+    .pigment.ink .blob      { background: var(--color-ink);     border-radius: 44% 56% 52% 48% / 52% 48% 46% 54%; }
+
+    .pigment .label {
+      margin-top: 12px;
+      font-family: var(--font-hand);
+      font-size: 1.2rem;
+      color: var(--color-ink);
+      transform: rotate(-1.5deg);
+      display: inline-block;
+      line-height: 1.05;
+    }
+    .pigment .hex {
+      display: block;
+      font-family: var(--font-note);
+      font-size: 0.85rem;
+      color: var(--color-ink);
+      transform: rotate(0.5deg);
+      margin-top: 2px;
+      opacity: 0.75;
+    }
+
+    /* ATMOSPHÈRE — composition naïve + texte usage */
+    .atmosphere {
+      padding: 72px 0 24px;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 56px;
+      align-items: center;
+      border-bottom: none;
+    }
+    .atmosphere-visual {
+      position: relative;
+      aspect-ratio: 5 / 4;
+      background: var(--color-paper-warm);
+      border: 2px solid var(--color-ink);
+      box-shadow: 8px 8px 0 var(--color-ink);
+      overflow: hidden;
+    }
+    .atmosphere-visual svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .atmosphere-text .section-title { max-width: 20ch; }
+    .atmosphere-text .usage-list {
+      list-style: none;
+      margin-top: 22px;
+    }
+    .atmosphere-text .usage-list li {
+      font-family: var(--font-body);
+      font-variation-settings: "SOFT" 60, "WONK" 1;
+      font-size: 1.05rem;
+      color: var(--color-ink);
+      padding: 12px 0 12px 32px;
+      border-top: 2px dashed var(--color-ink);
+      position: relative;
+    }
+    .atmosphere-text .usage-list li:last-child {
+      border-bottom: 2px dashed var(--color-ink);
+    }
+    .atmosphere-text .usage-list li::before {
+      position: absolute;
+      left: 0;
+      top: 8px;
+      font-family: var(--font-hand);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .atmosphere-text .usage-list li.yes::before {
+      content: "✓";
+      color: var(--color-grass);
+      transform: rotate(-8deg);
+      display: inline-block;
+    }
+    .atmosphere-text .usage-list li.no::before {
+      content: "✗";
+      color: var(--color-tomato);
+      transform: rotate(6deg);
+      display: inline-block;
+    }
+
+    /* COLOPHON — pied éditorial naïf */
+    .colophon {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 2px solid var(--color-ink);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-family: var(--font-note);
+      font-size: 0.95rem;
+      color: var(--color-ink);
+    }
+    .colophon .ref { color: var(--color-tomato); transform: rotate(-0.8deg); display: inline-block; }
+    .colophon .src { color: var(--color-cobalt); }
+
+    /* RESPONSIVE */
+    @media (max-width: 820px) {
+      .page { padding: 48px 24px 64px; }
+      .signature-shapes, .signature-typo, .signature-palette, .atmosphere {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .typo-card .specimen-letters { font-size: 7rem; }
+      .typo-card .annotation {
+        position: static;
+        transform: rotate(-1.5deg);
+        margin-top: 14px;
+        max-width: 100%;
+        display: inline-block;
+      }
+      .pigment-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero::before { width: 200px; height: 200px; right: -60px; top: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- HERO -->
+    <header class="hero">
+      <span class="eyebrow">Style № 19 · Bibliothèque BIG</span>
+      <h1><span class="word-1">Naïve</span> <span class="word-2">Design</span><span class="slash">/</span><span class="word-3">Handmade</span> <span class="word-4">Digital</span></h1>
+      <p class="lede">Lignes tremblantes assumées, couleurs vives en aplats, typographie crayonnée vraie. Intentionnellement imparfait — mais parfaitement calculé dans son imperfection.</p>
+      <p class="brand">Helio Stories — Édition jeunesse &amp; papeterie illustrée</p>
+    </header>
+
+    <!-- SIGNATURE 1 — Lignes tremblantes + formes asymétriques -->
+    <section class="specimen signature-shapes">
+      <div class="shapes-canvas" aria-hidden="true">
+        <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Soleil aplat tomate, contour tremblant -->
+          <path d="M 380 90 Q 420 88 422 128 Q 420 168 380 170 Q 340 168 338 128 Q 340 90 380 90 Z" fill="#E8442C" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Rayons soleil — traits asymétriques, pas symétrie radiale parfaite -->
+          <path d="M 380 60 L 378 78" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 425 70 L 415 88" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 450 110 L 432 116" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 448 150 L 430 148" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 322 100 L 338 110" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 318 140 L 336 138" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Nuage aplat blanc papier, forme irrégulière -->
+          <path d="M 90 110 Q 80 90 102 86 Q 108 70 130 76 Q 142 60 165 72 Q 185 64 192 88 Q 210 92 200 112 Q 205 130 178 130 Q 160 140 138 132 Q 115 138 102 128 Q 82 128 90 110 Z" fill="#F5EFE0" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+
+          <!-- Montagne cobalt, asymétrique, sommet pas centré -->
+          <path d="M 60 320 Q 110 305 145 250 Q 185 180 220 240 Q 245 282 285 270 Q 320 260 360 290 Q 400 318 440 305 L 440 360 L 60 360 Z" fill="#2554C7" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+
+          <!-- Petite montagne verte devant, plus basse -->
+          <path d="M 140 360 Q 200 295 250 320 Q 305 340 360 320 Q 400 310 440 330 L 440 365 L 140 365 Z" fill="#4F8B3A" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+
+          <!-- Ligne d'horizon tremblante (pas droite parfaite) -->
+          <path d="M 30 365 Q 80 363 130 366 T 240 364 T 350 366 T 470 364" stroke="#1F1A14" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+          <!-- Étoile cobalt asymétrique flottante -->
+          <path d="M 280 80 L 286 100 L 308 102 L 290 116 L 296 138 L 280 124 L 264 138 L 270 116 L 252 102 L 274 100 Z" fill="#2554C7" stroke="#1F1A14" stroke-width="2.5" stroke-linejoin="round" transform="rotate(-12 280 110)"/>
+
+          <!-- Petite forme rose blob -->
+          <path d="M 50 195 Q 65 180 85 195 Q 95 215 80 230 Q 60 235 48 220 Q 38 205 50 195 Z" fill="#F0A0B8" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+
+          <!-- Annotation manuscrite -->
+          <text x="160" y="200" font-family="Caveat, cursive" font-size="22" fill="#E8442C" transform="rotate(-4 160 200)">tout est dessiné à la main —</text>
+          <text x="178" y="222" font-family="Caveat, cursive" font-size="22" fill="#E8442C" transform="rotate(-4 178 222)">aucun trait n'est droit.</text>
+
+          <!-- Petite flèche manuscrite pointant la montagne -->
+          <path d="M 232 250 Q 218 260 205 252" stroke="#E8442C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 210 248 L 205 252 L 211 257" stroke="#E8442C" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="section-label">Signature 01 · Le geste tremblant</p>
+        <h2 class="section-title">Aucun trait n'est droit. Aucune forme n'est symétrique.</h2>
+        <div class="section-prose">
+          <p>Le style Naïve refuse la perfection vectorielle. Chaque ligne hésite légèrement, chaque cercle est un peu ovale, chaque rectangle penche imperceptiblement. <strong>L'imperfection est calculée</strong>, pas chaotique : le designer décide où trembler et de combien de degrés.</p>
+          <p>C'est la différence avec un filtre crayon Illustrator appliqué sur un trait droit : le geste tremblant doit naître de la composition, pas du post-traitement. Acne Studios × Michael McGregor ou les vitrines Gail's Bakeries (linogravure de Christopher Brown) le prouvent — chaque forme porte la mémoire du couteau, du pinceau, de la main.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 2 — Typographie crayonnée vraie + manuscrit -->
+    <section class="specimen signature-typo">
+      <div class="typo-card">
+        <div class="specimen-letters"><span class="a">A</span><span class="b">a</span></div>
+        <div class="specimen-name">Rubik Wet Paint · Display peinte main</div>
+        <p class="specimen-line">«&nbsp;Ce que l'algorithme ne peut pas<br>refaire devient le signal.&nbsp;»</p>
+        <span class="specimen-source">— DesignRush, tendance n°1 / 2026</span>
+        <span class="annotation">une vraie hand-drawn — pas un filtre crayon Inter</span>
+      </div>
+      <div>
+        <p class="section-label">Signature 02 · Typographie habitée</p>
+        <h2 class="section-title">Une display peinte. Un manuscrit. Un body wonky. Jamais Inter.</h2>
+        <div class="section-prose">
+          <p>La typo Naïve descend du pinceau et du crayon de cire, pas de la grille pixel. Rubik Wet Paint, Karla Display, Bracket, Nikkei — toutes portent les irrégularités d'un geste réel. Le contour vacille, l'épaisseur varie, le rythme respire.</p>
+          <p>Le manuscrit (Caveat, Patrick Hand, ou une vraie écriture scannée en production) sert de contrepoint : <strong>annotations, étiquettes, arrows, légendes</strong>. Le body reste lisible — Fraunces avec ses axes SOFT et WONK donne juste assez d'humanité sans sacrifier la lecture longue.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 3 — Palette aplats saturés -->
+    <section class="specimen signature-palette">
+      <div>
+        <p class="section-label">Signature 03 · Aplats assumés</p>
+        <h2 class="section-title">Des couleurs vives sans dégradé. Aucun mesh, aucun blur.</h2>
+        <div class="section-prose">
+          <p>Tomate, cobalt, jaune crayon, vert pré, rose délavé, noir d'imprimerie — chaque couleur est posée en aplat franc, comme à la gouache. <strong>Pas de gradient, jamais</strong>. Le volume vient de la juxtaposition des aplats et du contour noir, pas d'un dégradé Photoshop.</p>
+          <p>C'est la frontière nette avec Memphis Design (qui utilise des pastels ludiques et zigzags) ou Y2K (qui chrome et glow tout). Ici, les couleurs sont saturées, terriennes, presque enfantines mais jamais sucrées.</p>
+        </div>
+      </div>
+      <div class="pigment-grid">
+        <div class="pigment tomato"><div class="blob"></div><span class="label">Tomate cru<span class="hex">#E8442C</span></span></div>
+        <div class="pigment cobalt"><div class="blob"></div><span class="label">Cobalt outremer<span class="hex">#2554C7</span></span></div>
+        <div class="pigment mustard"><div class="blob"></div><span class="label">Jaune crayon<span class="hex">#F4B940</span></span></div>
+        <div class="pigment grass"><div class="blob"></div><span class="label">Vert pré gouache<span class="hex">#4F8B3A</span></span></div>
+        <div class="pigment rose"><div class="blob"></div><span class="label">Rose délavé<span class="hex">#F0A0B8</span></span></div>
+        <div class="pigment ink"><div class="blob"></div><span class="label">Noir d'imprimerie<span class="hex">#1F1A14</span></span></div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual" aria-hidden="true">
+        <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Personnage naïf : bonhomme stylisé, formes simples, contour épais -->
+          <!-- Tête -->
+          <path d="M 230 90 Q 280 86 285 138 Q 282 188 232 192 Q 182 188 178 138 Q 180 90 230 90 Z" fill="#F4B940" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Yeux asymétriques -->
+          <circle cx="215" cy="130" r="6" fill="#1F1A14"/>
+          <circle cx="252" cy="132" r="7" fill="#1F1A14"/>
+          <!-- Sourire tremblant -->
+          <path d="M 210 158 Q 230 172 254 156" stroke="#1F1A14" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- Joue rose -->
+          <ellipse cx="200" cy="155" rx="10" ry="7" fill="#F0A0B8" opacity="0.85"/>
+          <ellipse cx="265" cy="158" rx="10" ry="7" fill="#F0A0B8" opacity="0.85"/>
+          <!-- Corps : forme triangle/robe asymétrique cobalt -->
+          <path d="M 232 192 Q 175 220 165 320 Q 200 340 232 335 Q 270 340 305 322 Q 295 218 232 192 Z" fill="#2554C7" stroke="#1F1A14" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Bras qui salue, asymétrie -->
+          <path d="M 178 230 Q 130 240 110 200 Q 105 180 120 178" stroke="#1F1A14" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="115" cy="178" r="9" fill="#F4B940" stroke="#1F1A14" stroke-width="3"/>
+          <!-- Bras autre côté -->
+          <path d="M 290 232 Q 330 250 348 290" stroke="#1F1A14" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="350" cy="293" r="9" fill="#F4B940" stroke="#1F1A14" stroke-width="3"/>
+
+          <!-- Petites étoiles flottantes -->
+          <path d="M 100 100 L 103 110 L 113 111 L 105 118 L 108 128 L 100 122 L 92 128 L 95 118 L 87 111 L 97 110 Z" fill="#E8442C" stroke="#1F1A14" stroke-width="2"/>
+          <path d="M 410 130 L 413 140 L 423 141 L 415 148 L 418 158 L 410 152 L 402 158 L 405 148 L 397 141 L 407 140 Z" fill="#4F8B3A" stroke="#1F1A14" stroke-width="2"/>
+          <path d="M 380 60 L 382 68 L 390 69 L 384 74 L 386 82 L 380 78 L 374 82 L 376 74 L 370 69 L 378 68 Z" fill="#2554C7" stroke="#1F1A14" stroke-width="2"/>
+
+          <!-- Sol tremblant -->
+          <path d="M 30 365 Q 80 358 130 366 T 250 362 T 370 366 T 470 360" stroke="#1F1A14" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+          <!-- Petites fleurs naïves -->
+          <g transform="translate(60 350)">
+            <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z" fill="#F0A0B8" stroke="#1F1A14" stroke-width="2"/>
+            <circle cx="0" cy="0" r="3" fill="#F4B940"/>
+          </g>
+          <g transform="translate(420 348)">
+            <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z" fill="#E8442C" stroke="#1F1A14" stroke-width="2"/>
+            <circle cx="0" cy="0" r="3" fill="#F4B940"/>
+          </g>
+
+          <!-- Soleil coin -->
+          <circle cx="60" cy="60" r="22" fill="#F4B940" stroke="#1F1A14" stroke-width="3"/>
+          <path d="M 60 28 L 60 18" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 38 38 L 32 32" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 30 60 L 20 60" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 38 82 L 32 88" stroke="#1F1A14" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Annotation manuscrite -->
+          <text x="80" y="280" font-family="Caveat, cursive" font-size="22" fill="#E8442C" transform="rotate(-3 80 280)">bonjour !</text>
+        </svg>
+      </div>
+      <div class="atmosphere-text">
+        <p class="section-label">Atmosphère · Quand ce style fonctionne</p>
+        <h2 class="section-title">Là où l'humain doit signaler humain — face au tsunami AI 2026.</h2>
+        <ul class="usage-list">
+          <li class="yes">Édition jeunesse, papeterie d'auteur, librairies indépendantes</li>
+          <li class="yes">Marques alimentaires artisanales, boulangeries, ateliers de fermentation</li>
+          <li class="yes">Identités culturelles (festivals, théâtres, expositions) qui revendiquent la main</li>
+          <li class="yes">Petites maisons d'édition, podcasts indépendants, newsletters d'auteur</li>
+          <li class="no">SaaS B2B, fintech, infra cloud — la naïveté devient costume mal taillé</li>
+          <li class="no">Marques médicales ou juridiques — le tremblé sape la crédibilité</li>
+          <li class="no">Quand le client veut "moderne et propre" — c'est l'inverse exact du style</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COLOPHON -->
+    <footer class="colophon">
+      <span>Bibliothèque BIG · Style № 19</span>
+      <span class="ref">Naïve Design / Handmade Digital · Verdict ACTUEL (émergent fort)</span>
+      <span class="src">Source · DesignRush 2026, registre Crafty</span>
+    </footer>
+
+  </main>
+</body>
+</html>

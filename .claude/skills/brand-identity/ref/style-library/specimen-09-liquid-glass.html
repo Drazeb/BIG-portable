@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 09. Liquid Glass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Liquid Glass — fond chromatique riche derrière la surface translucide.
+         Ces violets/magentas/cyans sont JUSTIFIÉS pour ce style : iOS 26 montre que la profondeur
+         optique exige des longueurs d'onde saturées qui se filtrent à travers le glass. Sans
+         spectre dense derrière, le glass devient vitrine plate (= Glassmorphism daté). */
+      --bg-base: #0A0814;             /* nuit profonde, presque noire mais non #000 */
+      --light-aurora-violet: #5B2BFF; /* point chaud violet — source lumineuse 1 */
+      --light-aurora-magenta: #FF3D8B;/* magenta saturé — source lumineuse 2 */
+      --light-aurora-cyan: #00C8FF;   /* cyan électrique — source lumineuse 3 */
+      --light-aurora-amber: #FFA64F;  /* chaleur de contre-jour */
+
+      --glass-tint: rgba(255, 255, 255, 0.06);   /* base translucide */
+      --glass-tint-warm: rgba(255, 220, 200, 0.05);
+      --glass-edge-top: rgba(255, 255, 255, 0.45); /* reflet supérieur — signature liquid */
+      --glass-edge-bottom: rgba(0, 0, 0, 0.35);
+      --glass-edge-side: rgba(255, 255, 255, 0.18);
+
+      --ink-primary: #FFFFFF;
+      --ink-secondary: rgba(255, 255, 255, 0.75);
+      --ink-muted: rgba(255, 255, 255, 0.50);
+      --ink-faint: rgba(255, 255, 255, 0.32);
+
+      --accent-cta: #FFFFFF;          /* CTA primaire OPAQUE — règle absolue : pas de glass sur CTA */
+      --ink-on-cta: #0A0814;
+
+      --radius-glass: 24px;
+      --radius-glass-lg: 32px;
+      --radius-pill: 999px;
+
+      --font-display: "Inter", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--ink-primary);
+      font-family: var(--font-display);
+      font-weight: 500;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      padding: 56px 40px 80px;
+    }
+
+    /* ─── FOND CHROMATIQUE RICHE — composition asymétrique, PAS aurora 3-blobs centrée ─── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 45% at 88% 12%, rgba(255, 61, 139, 0.55), transparent 65%),
+        radial-gradient(ellipse 70% 55% at 8% 35%, rgba(91, 43, 255, 0.65), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 75%, rgba(0, 200, 255, 0.42), transparent 60%),
+        radial-gradient(circle 35% at 30% 95%, rgba(255, 166, 79, 0.30), transparent 55%),
+        var(--bg-base);
+      pointer-events: none;
+    }
+    /* Grain léger pour casser la fadeur des gradients lisses */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+      opacity: 0.55;
+      mix-blend-mode: overlay;
+    }
+
+    .wrap { max-width: 1180px; margin: 0 auto; position: relative; z-index: 2; }
+
+    /* ─── HERO ─────────────────────────────────────────────── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding-bottom: 40px;
+      margin-bottom: 36px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .eyebrow .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--light-aurora-magenta), var(--light-aurora-cyan));
+      box-shadow: 0 0 12px 1px rgba(255, 61, 139, 0.6);
+    }
+    .hero h1 {
+      font-size: clamp(48px, 6vw, 78px);
+      line-height: 1.0;
+      letter-spacing: -0.035em;
+      font-weight: 700;
+      max-width: 14ch;
+    }
+    .hero .lede {
+      font-size: 19px;
+      color: var(--ink-secondary);
+      max-width: 62ch;
+      line-height: 1.55;
+      font-weight: 400;
+    }
+    .hero .brand {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-top: 6px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+    }
+
+    /* ─── PRIMITIVE GLASS — la signature du style ───────────── */
+    /* Recette : translucide (rgba blanc faible) + backdrop-filter combiné (blur+saturate+brightness)
+       + double bord (top éclairé / bottom assombri) qui simule la réfraction sur l'épaisseur du verre.
+       Les deux bords inset DOIVENT coexister — c'est ce qui distingue Liquid Glass du glassmorphism plat. */
+    .glass {
+      background: var(--glass-tint);
+      backdrop-filter: blur(28px) saturate(1.6) brightness(1.05);
+      -webkit-backdrop-filter: blur(28px) saturate(1.6) brightness(1.05);
+      border-radius: var(--radius-glass);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow:
+        inset 0 1px 0 var(--glass-edge-top),
+        inset 0 -1px 0 var(--glass-edge-bottom),
+        inset 1px 0 0 var(--glass-edge-side),
+        inset -1px 0 0 var(--glass-edge-side),
+        0 22px 50px -20px rgba(0, 0, 0, 0.55);
+      position: relative;
+    }
+    /* Reflet de surface — petit glow diagonal qui simule la lumière qui glisse sur le verre */
+    .glass::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: calc(var(--radius-glass) - 1px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 35%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .glass > * { position: relative; z-index: 2; }
+
+    /* ─── COMPOSANT 1 — STACK MULTI-COUCHES (signature Liquid Glass) ─────────────── */
+    .signature-1 { margin-top: 56px; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+    .section-head h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.018em;
+    }
+    .section-head .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .section-intro {
+      font-size: 15px;
+      color: var(--ink-secondary);
+      max-width: 70ch;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .stack-demo {
+      position: relative;
+      min-height: 420px;
+      padding: 36px;
+      border-radius: var(--radius-glass-lg);
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 30%, rgba(91, 43, 255, 0.55), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 80% 80%, rgba(255, 61, 139, 0.45), transparent 60%),
+        rgba(10, 8, 20, 0.55);
+      overflow: hidden;
+    }
+
+    /* Couche 1 — la plus en arrière, blur léger, opacité forte */
+    .layer-1 {
+      position: absolute;
+      top: 50px;
+      left: 60px;
+      width: 60%;
+      padding: 24px 28px;
+      backdrop-filter: blur(14px) saturate(1.4);
+      -webkit-backdrop-filter: blur(14px) saturate(1.4);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.30),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+    }
+    /* Couche 2 — médiane */
+    .layer-2 {
+      position: absolute;
+      top: 130px;
+      right: 80px;
+      width: 50%;
+      padding: 22px 26px;
+      backdrop-filter: blur(22px) saturate(1.7) brightness(1.08);
+      -webkit-backdrop-filter: blur(22px) saturate(1.7) brightness(1.08);
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.40),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+        0 10px 30px -10px rgba(0, 0, 0, 0.35);
+    }
+    /* Couche 3 — la plus avant, blur le plus fort, refletflashier */
+    .layer-3 {
+      position: absolute;
+      bottom: 40px;
+      left: 100px;
+      width: 55%;
+      padding: 20px 24px;
+      backdrop-filter: blur(34px) saturate(1.9) brightness(1.12);
+      -webkit-backdrop-filter: blur(34px) saturate(1.9) brightness(1.12);
+      background: rgba(255, 255, 255, 0.10);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+        0 16px 40px -12px rgba(0, 0, 0, 0.45);
+    }
+
+    .layer-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .layer-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+    }
+    .layer-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-top: 6px;
+    }
+
+    /* ─── COMPOSANT 2 — ANATOMIE DE LA SURFACE GLASS ───────── */
+    .signature-2 { margin-top: 64px; }
+    .anatomy {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+    .anatomy-card {
+      padding: 32px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .anatomy-card .tag {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-on-cta);
+      background: var(--accent-cta);
+      padding: 5px 11px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+    }
+    .anatomy-card .role {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.018em;
+      line-height: 1.15;
+    }
+    .anatomy-card .desc {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      line-height: 1.55;
+    }
+    .anatomy-card .specs {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.12);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-secondary);
+    }
+    .anatomy-card .specs li::before {
+      content: "→ ";
+      color: var(--light-aurora-cyan);
+      margin-right: 6px;
+    }
+
+    .anatomy-rules {
+      padding: 32px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .anatomy-rules h3 {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+      font-weight: 500;
+    }
+    .anatomy-rules .rule {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .anatomy-rules .rule .n {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--light-aurora-magenta);
+      padding-top: 2px;
+      font-weight: 600;
+    }
+    .anatomy-rules .rule p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink-secondary);
+    }
+    .anatomy-rules .rule p strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    /* CTA primaire — OPAQUE blanc, jamais en glass (règle Liquid Glass) */
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 22px;
+      align-items: center;
+    }
+    .btn-primary {
+      background: var(--accent-cta);
+      color: var(--ink-on-cta);
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      padding: 12px 22px;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 18px -6px rgba(255, 255, 255, 0.30);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(16px) saturate(1.5);
+      -webkit-backdrop-filter: blur(16px) saturate(1.5);
+      color: var(--ink-primary);
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 20px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.30);
+    }
+    .cta-note {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── ATMOSPHÈRE / USAGE ────────────────────────────────── */
+    .atmosphere { margin-top: 64px; }
+    .atmosphere-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .atmosphere-visual {
+      position: relative;
+      min-height: 280px;
+      border-radius: var(--radius-glass-lg);
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 60% at 20% 25%, rgba(91, 43, 255, 0.75), transparent 55%),
+        radial-gradient(ellipse 80% 50% at 90% 70%, rgba(255, 61, 139, 0.65), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 90%, rgba(0, 200, 255, 0.45), transparent 60%),
+        #0A0814;
+      padding: 28px;
+    }
+    /* Trois pastilles "glass" qui flottent sur le fond riche pour montrer la signature visuellement */
+    .atm-pill {
+      position: absolute;
+      backdrop-filter: blur(24px) saturate(1.7) brightness(1.08);
+      -webkit-backdrop-filter: blur(24px) saturate(1.7) brightness(1.08);
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.50),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+        0 12px 30px -10px rgba(0, 0, 0, 0.40);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--ink-primary);
+      text-transform: uppercase;
+    }
+    .atm-pill .led {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--light-aurora-cyan);
+      box-shadow: 0 0 8px 1px rgba(0, 200, 255, 0.7);
+    }
+    .atm-pill.p1 { top: 30px; left: 32px; }
+    .atm-pill.p2 { top: 110px; right: 38px; }
+    .atm-pill.p2 .led { background: var(--light-aurora-magenta); box-shadow: 0 0 8px 1px rgba(255, 61, 139, 0.7); }
+    .atm-pill.p3 { bottom: 36px; left: 60px; }
+    .atm-pill.p3 .led { background: var(--light-aurora-amber); box-shadow: 0 0 8px 1px rgba(255, 166, 79, 0.7); }
+
+    /* Carte texte "mode d'emploi" en glass */
+    .atmosphere-text {
+      padding: 32px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .atmosphere-text h3 {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+      font-weight: 500;
+    }
+    .atmosphere-text .use, .atmosphere-text .avoid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .atmosphere-text .use h4, .atmosphere-text .avoid h4 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-primary);
+    }
+    .atmosphere-text .use h4::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--light-aurora-cyan);
+      box-shadow: 0 0 8px 1px rgba(0, 200, 255, 0.6);
+    }
+    .atmosphere-text .avoid h4::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--light-aurora-magenta);
+      box-shadow: 0 0 8px 1px rgba(255, 61, 139, 0.6);
+    }
+    .atmosphere-text p {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      line-height: 1.55;
+    }
+
+    /* COLOPHON */
+    .colophon {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 880px) {
+      body { padding: 32px 20px 60px; }
+      .anatomy, .atmosphere-grid { grid-template-columns: 1fr; }
+      .stack-demo { min-height: 480px; }
+      .layer-1, .layer-2, .layer-3 { width: 78%; }
+      .layer-1 { left: 24px; }
+      .layer-2 { right: 24px; }
+      .layer-3 { left: 50px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span>Style Library · 09 / 34</span>
+        <span>Registre — Cinétique / Tech</span>
+      </div>
+      <h1>Liquid Glass.</h1>
+      <p class="lede">Surfaces translucides qui filtrent la lumière du fond, profondeur multi-couches perceptible, bord supérieur lumineux, bord inférieur assombri. Le verre n'est pas une simple feuille floutée : il a une épaisseur optique. Validé à l'échelle système par Apple iOS 26 (juin 2025).</p>
+      <p class="brand">Helio — Compositeur d'interfaces spatiales</p>
+    </section>
+
+    <!-- COMPOSANT 1 — STACK MULTI-COUCHES -->
+    <section class="signature-1">
+      <div class="section-head">
+        <h2>Trois plans, une même lumière</h2>
+        <span class="meta">SIGNATURE #1</span>
+      </div>
+      <p class="section-intro">La profondeur du Liquid Glass ne se devine pas — elle se voit. Chaque couche a son propre niveau de flou (14 → 22 → 34 px), sa propre saturation et son propre reflet supérieur. Empilées sur un fond chromatique riche, elles révèlent la hiérarchie spatiale de l'interface : ce qui est devant filtre plus, ce qui est derrière filtre moins.</p>
+
+      <div class="stack-demo">
+        <div class="layer-1">
+          <span class="layer-tag">Plan arrière · blur 14px</span>
+          <div class="layer-title">Surface ambiante</div>
+          <div class="layer-meta">Saturation 1.4 · Reflet 30%</div>
+        </div>
+        <div class="layer-2">
+          <span class="layer-tag">Plan médian · blur 22px</span>
+          <div class="layer-title">Carte contenu</div>
+          <div class="layer-meta">Saturation 1.7 · Reflet 40% · Brightness 1.08</div>
+        </div>
+        <div class="layer-3">
+          <span class="layer-tag">Plan avant · blur 34px</span>
+          <div class="layer-title">Action contextuelle</div>
+          <div class="layer-meta">Saturation 1.9 · Reflet 55% · Brightness 1.12</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 2 — ANATOMIE + RÈGLES + CTA -->
+    <section class="signature-2">
+      <div class="section-head">
+        <h2>Anatomie d'une surface, règles non négociables</h2>
+        <span class="meta">SIGNATURE #2</span>
+      </div>
+      <p class="section-intro">Une surface Liquid Glass n'est pas un <code style="font-family:var(--font-mono);font-size:13px;color:var(--light-aurora-cyan);">backdrop-filter: blur(20px)</code> jeté sur un fond pâle. C'est l'addition disciplinée de quatre éléments : translucidité mesurée, blur+saturate combinés, double bord (haut éclairé / bas assombri) qui simule l'épaisseur du verre, et fond chromatique RICHE derrière. Sans l'un, le glass devient daté.</p>
+
+      <div class="anatomy">
+        <div class="glass anatomy-card">
+          <span class="tag">Recette canonique</span>
+          <div class="role">Translucide + saturé + bord lumineux + fond riche.</div>
+          <p class="desc">Si l'un des quatre piliers manque, vous tombez dans le Glassmorphism plat de 2021. La lumière du fond DOIT être visible à travers le glass — sinon, autant utiliser une carte opaque. C'est le filtrage des longueurs d'onde qui crée la sensation premium.</p>
+          <ul class="specs">
+            <li>background : rgba(255,255,255, 0.06–0.12)</li>
+            <li>backdrop-filter : blur(20–34px) saturate(1.5–1.9)</li>
+            <li>border : 1px rgba(255,255,255, 0.10–0.18)</li>
+            <li>box-shadow inset : top blanc 30–55% / bottom noir 30–35%</li>
+            <li>fond : ≥ 3 sources de couleur saturées derrière</li>
+          </ul>
+          <div class="cta-row">
+            <button class="btn-primary">Action primaire opaque</button>
+            <button class="btn-secondary">Action glass</button>
+            <span class="cta-note">CTA #1 : jamais en glass</span>
+          </div>
+        </div>
+
+        <div class="glass anatomy-rules">
+          <h3>Les 4 règles non négociables</h3>
+          <div class="rule">
+            <span class="n">01</span>
+            <p><strong>Le fond doit être riche.</strong> Glass sur fond gris uni = vitrine plate. Il faut au minimum 3 sources de couleur saturées derrière, sinon la réfraction n'a rien à filtrer.</p>
+          </div>
+          <div class="rule">
+            <span class="n">02</span>
+            <p><strong>Double bord obligatoire.</strong> Inset top blanc 30–55%, inset bottom noir 30–35%. C'est ce qui simule l'épaisseur — un seul bord = surface plate.</p>
+          </div>
+          <div class="rule">
+            <span class="n">03</span>
+            <p><strong>CTA primaire OPAQUE.</strong> Le bouton qui convertit n'est jamais en glass — la lisibilité prime. Le glass va sur les surfaces secondaires (cartes, modales, navs).</p>
+          </div>
+          <div class="rule">
+            <span class="n">04</span>
+            <p><strong>Hiérarchie multi-couches.</strong> Au moins 3 niveaux de blur/saturation distincts. Si toutes les surfaces ont le même blur, vous avez du Glassmorphism statique, pas du Liquid.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE / USAGE -->
+    <section class="atmosphere">
+      <div class="section-head">
+        <h2>Couleur émotionnelle &amp; usages</h2>
+        <span class="meta">ATMOSPHÈRE</span>
+      </div>
+
+      <div class="atmosphere-grid">
+        <div class="atmosphere-visual" aria-hidden="true">
+          <div class="atm-pill p1"><span class="led"></span>Online · 18 nodes</div>
+          <div class="atm-pill p2"><span class="led"></span>Sync · 2.4 ms</div>
+          <div class="atm-pill p3"><span class="led"></span>Region EU-W</div>
+        </div>
+
+        <div class="glass atmosphere-text">
+          <h3>Mode d'emploi</h3>
+          <div class="use">
+            <h4>Quand utiliser ce style</h4>
+            <p>OS et apps natives premium (suites Apple-like), produits SaaS qui exposent des données spatiales (cartes, dashboards 3D, configurateurs), interfaces immersives où le contenu sous-jacent doit rester visible. Idéal quand la marque veut signaler "outil système, performance GPU, raffinement matériel".</p>
+          </div>
+          <div class="avoid">
+            <h4>Quand l'éviter</h4>
+            <p>Sites éditoriaux denses en texte (le glass nuit à la lecture longue), marques chaleureuses ou artisanales (le verre est froid par nature), produits low-tech ou destinés à des appareils anciens (le rendu mobile est exigeant — toujours tester sur Android milieu de gamme). Évitez aussi sur le CTA primaire de conversion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="colophon">
+      <span>Style Library · BIG</span>
+      <span>09 / Liquid Glass · Cinétique-Tech</span>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Spécimens canoniques — famille 04 et 06</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 40px; font-family: 'Inter', sans-serif; background: #faf8f3; }
+  h1 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 28px; margin: 0 0 32px; }
+  h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 20px; margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid #ddd; }
+  .specimens { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .spec {
+    background: white; padding: 32px 24px; border-radius: 6px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    min-height: 280px; justify-content: center;
+  }
+  .spec.dark { background: #0d1623; color: #f0eee8; }
+  .spec-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #888; text-align: center; }
+  .spec.dark .spec-label { color: #888; }
+  .spec-name { font-family: 'DM Serif Display', serif; font-size: 16px; color: #1a1a1a; text-align: center; }
+  .spec.dark .spec-name { color: #f0eee8; }
+</style>
+</head>
+<body>
+
+<h1>Spécimens canoniques — pool icon-system</h1>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- Hachures variées pour gravure -->
+    <pattern id="hatch-5" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(5)">
+      <line x1="0" y1="0" x2="0" y2="3" stroke="#1a1a1a" stroke-width="1.1"/>
+    </pattern>
+    <pattern id="hatch-15" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(15)">
+      <line x1="0" y1="0" x2="0" y2="3" stroke="#1a1a1a" stroke-width="1.1"/>
+    </pattern>
+    <pattern id="hatch-45" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#1a1a1a" stroke-width="1"/>
+    </pattern>
+    <pattern id="hatch-crosshatch" patternUnits="userSpaceOnUse" width="4" height="4">
+      <path d="M0,4 L4,0 M-1,1 L1,-1 M3,5 L5,3" stroke="#1a1a1a" stroke-width="0.9" fill="none"/>
+    </pattern>
+    <!-- Grain noise pour flat illustré -->
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="2" seed="3"/>
+      <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+</svg>
+
+<h2>04 — Gravure / linocut</h2>
+<div class="specimens">
+
+  <!-- Spec 1 : pictogramme éditorial type Atlantic (Helga Cocco-like) -->
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Maison gravée avec 3 niveaux de gris (aplat + hachure + vide) -->
+      <!-- Aplat noir : toit -->
+      <polygon points="60,22 96,52 24,52" fill="#1a1a1a"/>
+      <!-- Hachure clairsemée : façade -->
+      <rect x="32" y="52" width="56" height="46" fill="url(#hatch-15)"/>
+      <!-- Vide : fenêtre -->
+      <rect x="46" y="62" width="14" height="14" fill="white" stroke="#1a1a1a" stroke-width="1.4"/>
+      <!-- Aplat noir : porte -->
+      <rect x="66" y="68" width="14" height="30" fill="#1a1a1a"/>
+      <!-- Croisillon dense : ombre au sol -->
+      <rect x="20" y="98" width="80" height="6" fill="url(#hatch-crosshatch)"/>
+      <!-- Trait variable au contour de la maison -->
+      <polyline points="24,52 24,98 96,98 96,52" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+      <polyline points="24,52 96,52" fill="none" stroke="#1a1a1a" stroke-width="2.6"/>
+    </svg>
+    <div class="spec-name">Pictogramme éditorial</div>
+    <div class="spec-label">SIG-01, SIG-03 · 3 niveaux gris</div>
+  </div>
+
+  <!-- Spec 2 : symbole monogramme type Aesop -->
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Cercle hachuré à 5° (signature) -->
+      <circle cx="60" cy="60" r="40" fill="url(#hatch-5)"/>
+      <!-- Aplat central -->
+      <circle cx="60" cy="60" r="22" fill="#1a1a1a"/>
+      <!-- Vide central -->
+      <circle cx="60" cy="60" r="10" fill="#faf8f3"/>
+      <!-- Trait extérieur stroke variable -->
+      <circle cx="60" cy="60" r="40" fill="none" stroke="#1a1a1a" stroke-width="2.2"/>
+      <circle cx="60" cy="60" r="22" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+      <!-- Accent terreux ponctuel (SIG-04) -->
+      <circle cx="60" cy="60" r="3" fill="#8B2424"/>
+    </svg>
+    <div class="spec-name">Monogramme bichrome</div>
+    <div class="spec-label">SIG-03, SIG-04 · accent terreux ponctuel</div>
+  </div>
+
+  <!-- Spec 3 : narratif type Loewe Craft -->
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Composition asymétrique (SIG-05) -->
+      <!-- Outil burin : aplat -->
+      <polygon points="80,30 95,30 95,80 88,90 73,90 80,82" fill="#1a1a1a"/>
+      <!-- Hachure 45° sur le corps de l'outil -->
+      <polygon points="80,82 88,90 73,90" fill="url(#hatch-45)"/>
+      <!-- Trace gravée : ligne hachurée -->
+      <rect x="20" y="62" width="50" height="8" fill="url(#hatch-15)"/>
+      <!-- Copeaux : petits aplats noirs irréguliers -->
+      <polygon points="22,80 30,82 26,86 20,84" fill="#1a1a1a"/>
+      <polygon points="32,90 40,88 38,94 32,93" fill="#1a1a1a"/>
+      <polygon points="48,85 54,84 52,90 48,89" fill="#1a1a1a"/>
+      <!-- Trait au sol stroke variable -->
+      <line x1="15" y1="100" x2="105" y2="100" stroke="#1a1a1a" stroke-width="2.4"/>
+      <line x1="15" y1="103" x2="105" y2="103" stroke="#1a1a1a" stroke-width="0.6"/>
+    </svg>
+    <div class="spec-name">Scène narrative artisanale</div>
+    <div class="spec-label">SIG-02, SIG-05 · décentrement éditorial</div>
+  </div>
+
+</div>
+
+<h2>06 — Flat illustré coloré (variante cinéma sombre)</h2>
+<div class="specimens">
+
+  <!-- Spec 1 : scène cinéma palette nuit type Mubi -->
+  <div class="spec dark">
+    <svg width="140" height="140" viewBox="0 0 140 140">
+      <!-- Fond profond -->
+      <rect x="0" y="0" width="140" height="140" fill="#0d1623"/>
+      <!-- Horizon nuit : 2 plans superposés (SIG-02) -->
+      <polygon points="0,90 40,80 90,86 140,78 140,140 0,140" fill="#1a2d40"/>
+      <polygon points="0,105 50,98 90,103 140,95 140,140 0,140" fill="#243a52"/>
+      <!-- Phare : aplat principal -->
+      <polygon points="100,40 108,40 110,100 98,100" fill="#dde5ee"/>
+      <!-- Phare : haut accent laiton (SIG-01) -->
+      <polygon points="98,30 110,30 108,40 100,40" fill="#E89248"/>
+      <!-- Halo laiton (juxtaposition aplat, pas gradient) -->
+      <polygon points="104,35 130,28 134,50 108,42" fill="#E89248" opacity="0.6"/>
+      <polygon points="104,35 80,28 76,50 102,42" fill="#E89248" opacity="0.4"/>
+      <!-- Lune (accent ivoire) -->
+      <circle cx="35" cy="35" r="10" fill="#f0eee8"/>
+      <!-- Grain overlay (SIG-03) -->
+      <rect x="0" y="0" width="140" height="140" fill="white" filter="url(#grain)"/>
+    </svg>
+    <div class="spec-name">Hero cinéma nocturne</div>
+    <div class="spec-label">SIG-01, SIG-02, SIG-03 · clair-obscur</div>
+  </div>
+
+  <!-- Spec 2 : narratif scène d'usage type Pitch -->
+  <div class="spec dark">
+    <svg width="140" height="140" viewBox="0 0 140 140">
+      <rect x="0" y="0" width="140" height="140" fill="#0d1623"/>
+      <!-- Table : plan 1 -->
+      <rect x="20" y="85" width="100" height="50" fill="#243a52"/>
+      <rect x="20" y="80" width="100" height="6" fill="#dde5ee"/>
+      <!-- Document : plan 2 -->
+      <rect x="40" y="55" width="38" height="32" fill="#f0eee8"/>
+      <line x1="44" y1="62" x2="74" y2="62" stroke="#0d1623" stroke-width="1.4"/>
+      <line x1="44" y1="68" x2="68" y2="68" stroke="#243a52" stroke-width="1.2"/>
+      <line x1="44" y1="74" x2="72" y2="74" stroke="#243a52" stroke-width="1.2"/>
+      <!-- Accent laiton (SIG-01) : trait souligné -->
+      <line x1="44" y1="80" x2="60" y2="80" stroke="#E89248" stroke-width="2.4"/>
+      <!-- Stylo : plan 3 (juxtaposition) -->
+      <polygon points="78,52 92,42 96,46 82,56" fill="#E89248"/>
+      <polygon points="92,42 96,46 99,44 95,40" fill="#dde5ee"/>
+      <!-- Grain overlay -->
+      <rect x="0" y="0" width="140" height="140" fill="white" filter="url(#grain)"/>
+    </svg>
+    <div class="spec-name">Scène d'usage narrative</div>
+    <div class="spec-label">SIG-02, SIG-04 · 4 plans aplats</div>
+  </div>
+
+  <!-- Spec 3 : abstraction figurative type Arc -->
+  <div class="spec dark">
+    <svg width="140" height="140" viewBox="0 0 140 140">
+      <rect x="0" y="0" width="140" height="140" fill="#0d1623"/>
+      <!-- Composition abstraite : 4 plans aplats (SIG-02) -->
+      <polygon points="20,35 90,20 100,75 30,90" fill="#1a2d40"/>
+      <polygon points="50,50 110,40 116,95 56,105" fill="#243a52"/>
+      <polygon points="70,30 120,45 124,80 78,68" fill="#E89248"/>
+      <polygon points="40,75 95,72 90,115 35,110" fill="#dde5ee" opacity="0.85"/>
+      <!-- Détails fins -->
+      <line x1="48" y1="86" x2="86" y2="83" stroke="#0d1623" stroke-width="1.4"/>
+      <line x1="48" y1="92" x2="78" y2="90" stroke="#0d1623" stroke-width="1"/>
+      <!-- Grain overlay -->
+      <rect x="0" y="0" width="140" height="140" fill="white" filter="url(#grain)"/>
+    </svg>
+    <div class="spec-name">Abstraction figurative</div>
+    <div class="spec-label">SIG-02, SIG-05 · profondeur par juxtaposition</div>
+  </div>
+
+</div>
+
+</body>
+</html>

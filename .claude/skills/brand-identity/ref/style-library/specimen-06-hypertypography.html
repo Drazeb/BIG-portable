@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 06. Hypertypography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette — 2 couleurs canoniques (texte vs fond) + 1 accent rare imprimeur */
+      --color-paper: #F4F1EA;          /* crème typographique, jamais #fff */
+      --color-ink: #0E0E0C;            /* noir profond mat, jamais #000 pur */
+      --color-ink-soft: rgba(14, 14, 12, 0.62);
+      --color-ink-ghost: rgba(14, 14, 12, 0.10);
+      --color-accent: #C8341E;         /* rouge imprimeur — une seule occurrence forte */
+
+      /* Typo — Fraunces (display variable, axes wght/opsz/SOFT/WONK) + Instrument Sans (sobriété) */
+      --font-display: "Fraunces", "GT Sectra", "PP Editorial Old", "Cormorant Garamond", Georgia, serif;
+      --font-body: "Instrument Sans", "Söhne", "Helvetica Neue", Arial, sans-serif;
+
+      /* Échelle dramatique — du caps 38vw aux body 14px */
+      --type-mega: clamp(120px, 38vw, 560px);
+      --type-huge: clamp(72px, 18vw, 280px);
+      --type-display: clamp(48px, 9vw, 140px);
+      --type-h2: clamp(32px, 5.4vw, 84px);
+      --type-h3: clamp(22px, 2.6vw, 38px);
+      --type-body: 17px;
+      --type-meta: 13px;
+      --type-micro: 11px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      line-height: 1.45;
+      overflow-x: hidden;
+      font-feature-settings: "ss01", "ss02", "kern";
+    }
+    .page { max-width: 1480px; margin: 0 auto; padding: 56px 48px 120px; position: relative; }
+
+    /* Bandeau meta (asymétrique, pas centré) */
+    .meta-bar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 32px;
+      align-items: baseline;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--color-ink);
+      font-size: var(--type-meta);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .meta-bar .brand { font-weight: 600; }
+    .meta-bar .meta-cell { color: var(--color-ink-soft); }
+    .meta-bar .meta-cell strong { color: var(--color-ink); font-weight: 600; }
+
+    /* HERO — la typographie est la matière, pas l'habillage */
+    .hero {
+      position: relative;
+      padding: 80px 0 0;
+      isolation: isolate;
+    }
+    .hero-mega {
+      font-family: var(--font-display);
+      font-size: var(--type-mega);
+      font-weight: 350;
+      font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 0;
+      line-height: 0.82;
+      letter-spacing: -0.045em;
+      color: var(--color-ink);
+      margin-left: -0.04em;
+      /* Asymétrie : titre qui déborde à droite */
+      width: 108%;
+      white-space: nowrap;
+      overflow: visible;
+    }
+    .hero-mega em {
+      font-style: italic;
+      font-weight: 300;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+      color: var(--color-accent);
+    }
+    .hero-mega .ligature {
+      font-feature-settings: "dlig", "liga", "ss01";
+    }
+
+    /* Sous-bloc hero — placé en bas-droite asymétrique, contraste de proportion brutal */
+    .hero-aside {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 64px;
+      margin-top: 72px;
+      align-items: end;
+    }
+    .hero-aside .lede {
+      font-family: var(--font-display);
+      font-size: var(--type-h3);
+      font-weight: 350;
+      font-variation-settings: "opsz" 36, "SOFT" 50;
+      line-height: 1.18;
+      max-width: 560px;
+      color: var(--color-ink);
+    }
+    .hero-aside .lede em {
+      font-style: italic;
+      font-variation-settings: "opsz" 36, "SOFT" 100, "WONK" 1;
+    }
+    .hero-aside .credit {
+      font-size: var(--type-meta);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-ink-soft);
+      border-left: 1px solid var(--color-ink);
+      padding-left: 16px;
+    }
+    .hero-aside .credit strong { display: block; color: var(--color-ink); font-weight: 600; margin-bottom: 4px; }
+
+    /* Section signature 1 — Variable axes : démonstration kinétique de la matière typographique */
+    .axes {
+      margin-top: 180px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .axes-title {
+      font-family: var(--font-display);
+      font-size: var(--type-h2);
+      font-weight: 300;
+      font-variation-settings: "opsz" 144, "SOFT" 50;
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+    }
+    .axes-title em {
+      font-style: italic;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+      color: var(--color-accent);
+    }
+    .axes-text {
+      font-size: var(--type-body);
+      line-height: 1.55;
+      color: var(--color-ink);
+      max-width: 480px;
+      margin-top: 12px;
+    }
+    .axes-text + .axes-text { margin-top: 14px; color: var(--color-ink-soft); }
+
+    /* Démonstration des axes — chaque ligne du même mot, axes différents */
+    .axes-demo {
+      grid-column: 1 / -1;
+      margin-top: 56px;
+      border-top: 1px solid var(--color-ink);
+      padding-top: 8px;
+    }
+    .axis-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 240px;
+      gap: 32px;
+      align-items: baseline;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--color-ink-ghost);
+    }
+    .axis-label {
+      font-size: var(--type-micro);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-ink-soft);
+      font-variant-numeric: tabular-nums;
+    }
+    .axis-word {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 7vw, 110px);
+      line-height: 0.9;
+      letter-spacing: -0.025em;
+      color: var(--color-ink);
+    }
+    .axis-spec {
+      font-size: var(--type-meta);
+      color: var(--color-ink-soft);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .axis-spec strong { color: var(--color-ink); font-weight: 600; }
+
+    .row-a .axis-word { font-weight: 200; font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0; }
+    .row-b .axis-word { font-weight: 400; font-style: italic; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; }
+    .row-c .axis-word { font-weight: 700; font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0; }
+    .row-d .axis-word { font-weight: 900; font-variation-settings: "opsz" 14, "SOFT" 0, "WONK" 0; letter-spacing: -0.04em; }
+    .row-e .axis-word { font-weight: 350; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; font-style: italic; color: var(--color-accent); }
+
+    /* Section signature 2 — Overlap typographique intentionnel */
+    .overlap {
+      margin-top: 200px;
+      position: relative;
+      isolation: isolate;
+      min-height: 480px;
+    }
+    .overlap-bg {
+      font-family: var(--font-display);
+      font-size: var(--type-huge);
+      font-weight: 200;
+      font-variation-settings: "opsz" 144, "SOFT" 0;
+      line-height: 0.78;
+      letter-spacing: -0.05em;
+      color: var(--color-ink);
+      position: absolute;
+      top: -40px;
+      left: -2vw;
+      width: 110%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .overlap-bg span { display: block; }
+    .overlap-bg span:nth-child(2) { padding-left: 14vw; color: var(--color-ink-ghost); }
+    .overlap-bg span:nth-child(3) { padding-left: 4vw; }
+
+    .overlap-content {
+      position: relative;
+      z-index: 2;
+      margin-top: 280px;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .overlap-num {
+      font-family: var(--font-display);
+      font-size: clamp(140px, 18vw, 260px);
+      font-weight: 250;
+      font-variation-settings: "opsz" 144, "SOFT" 80;
+      line-height: 0.78;
+      letter-spacing: -0.06em;
+      color: var(--color-ink);
+      font-feature-settings: "ss01", "lnum";
+    }
+    .overlap-num em {
+      font-style: italic;
+      color: var(--color-accent);
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    }
+    .overlap-prose {
+      padding-top: 24px;
+      border-top: 1px solid var(--color-ink);
+    }
+    .overlap-prose h3 {
+      font-family: var(--font-body);
+      font-size: var(--type-meta);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: var(--color-ink);
+    }
+    .overlap-prose p {
+      font-family: var(--font-display);
+      font-size: var(--type-h3);
+      font-weight: 300;
+      font-variation-settings: "opsz" 36, "SOFT" 60;
+      line-height: 1.22;
+      color: var(--color-ink);
+      max-width: 540px;
+    }
+    .overlap-prose p + p {
+      margin-top: 18px;
+      font-size: var(--type-body);
+      font-family: var(--font-body);
+      color: var(--color-ink-soft);
+      line-height: 1.55;
+    }
+
+    /* Section signature 3 — Hiérarchie radicale (du 11px au 140px sur même ligne logique) */
+    .hierarchy {
+      margin-top: 200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8vw;
+      align-items: baseline;
+    }
+    .hierarchy-block .micro {
+      font-size: var(--type-micro);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--color-ink-soft);
+      margin-bottom: 24px;
+      display: block;
+    }
+    .hierarchy-block .display {
+      font-family: var(--font-display);
+      font-size: var(--type-display);
+      font-weight: 300;
+      font-variation-settings: "opsz" 144, "SOFT" 60, "WONK" 0;
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      color: var(--color-ink);
+      margin-bottom: 28px;
+    }
+    .hierarchy-block .display em {
+      font-style: italic;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    }
+    .hierarchy-block .body {
+      font-size: var(--type-body);
+      line-height: 1.6;
+      color: var(--color-ink);
+      max-width: 460px;
+    }
+    .hierarchy-block .body + .body {
+      margin-top: 14px;
+      color: var(--color-ink-soft);
+    }
+    .hierarchy-block .ratio {
+      margin-top: 36px;
+      font-family: var(--font-display);
+      font-size: clamp(60px, 8vw, 120px);
+      font-weight: 250;
+      font-variation-settings: "opsz" 144, "SOFT" 50;
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+      color: var(--color-accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .hierarchy-block .ratio small {
+      font-family: var(--font-body);
+      font-size: var(--type-meta);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-ink-soft);
+      display: block;
+      margin-top: 8px;
+      font-variant-numeric: normal;
+    }
+
+    /* ATMOSPHÈRE — masse typographique en fond, usage typique en sur-impression */
+    .atmosphere {
+      margin-top: 220px;
+      position: relative;
+      isolation: isolate;
+      padding: 0;
+      min-height: 560px;
+      border-top: 1px solid var(--color-ink);
+      padding-top: 32px;
+    }
+    .atmosphere-label {
+      font-size: var(--type-micro);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--color-ink-soft);
+      margin-bottom: 8px;
+    }
+    .atmosphere-visual {
+      font-family: var(--font-display);
+      font-weight: 200;
+      font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+      font-size: clamp(160px, 26vw, 420px);
+      line-height: 0.8;
+      letter-spacing: -0.055em;
+      color: var(--color-ink);
+      margin-top: 16px;
+      width: 110%;
+      overflow: visible;
+    }
+    .atmosphere-visual em {
+      font-style: italic;
+      font-weight: 250;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+      color: var(--color-accent);
+    }
+    .atmosphere-text {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+    .atmosphere-text .col h4 {
+      font-family: var(--font-body);
+      font-size: var(--type-meta);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--color-ink);
+    }
+    .atmosphere-text .col p {
+      font-family: var(--font-display);
+      font-size: var(--type-h3);
+      font-weight: 300;
+      font-variation-settings: "opsz" 36, "SOFT" 60;
+      line-height: 1.25;
+      color: var(--color-ink);
+    }
+    .atmosphere-text .col.avoid p { color: var(--color-ink-soft); }
+    .atmosphere-text .col.avoid em {
+      font-style: italic;
+      color: var(--color-accent);
+      font-variation-settings: "opsz" 36, "SOFT" 100, "WONK" 1;
+    }
+
+    /* Colophon final */
+    .colophon {
+      margin-top: 140px;
+      padding-top: 24px;
+      border-top: 1px solid var(--color-ink);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      font-size: var(--type-micro);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-ink-soft);
+    }
+    .colophon strong { color: var(--color-ink); font-weight: 600; display: block; margin-bottom: 4px; }
+
+    @media (max-width: 900px) {
+      .meta-bar { grid-template-columns: 1fr; gap: 12px; }
+      .hero-aside { grid-template-columns: 1fr; gap: 32px; }
+      .axes { grid-template-columns: 1fr; gap: 32px; }
+      .axis-row { grid-template-columns: 60px 1fr; }
+      .axis-spec { display: none; }
+      .overlap-content { grid-template-columns: 1fr; gap: 32px; }
+      .hierarchy { grid-template-columns: 1fr; gap: 80px; }
+      .atmosphere-text { grid-template-columns: 1fr; gap: 32px; }
+      .colophon { grid-template-columns: 1fr; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Meta bar -->
+  <header class="meta-bar">
+    <div class="brand">Helio Type Foundry — Spécimen typographique N°06</div>
+    <div class="meta-cell"><strong>Style</strong> Hypertypography</div>
+    <div class="meta-cell"><strong>Verdict</strong> Actuel · 2026</div>
+  </header>
+
+  <!-- HERO — la typographie EST le visuel -->
+  <section class="hero">
+    <h1 class="hero-mega">
+      <span class="ligature">Type</span><em>face</em>
+    </h1>
+    <div class="hero-aside">
+      <p class="lede">
+        La typographie traitée comme <em>matière première</em> de la composition&nbsp;: pas d'images, pas d'illustrations, pas d'iconographie. Uniquement du texte, à toutes les échelles, dans toutes les graisses, pour porter à la fois l'information et l'émotion.
+      </p>
+      <p class="credit">
+        <strong>Hypertypography</strong>
+        Awwwards Typography Honors · Studio Size · Pangram Pangram · Maksym Ponomarenko
+      </p>
+    </div>
+  </section>
+
+  <!-- SIGNATURE 1 — Axes variables -->
+  <section class="axes">
+    <div>
+      <h2 class="axes-title">Une seule famille, <em>cinq voix</em>.</h2>
+    </div>
+    <div>
+      <p class="axes-text">
+        Le style repose sur l'exploitation des <strong>variable fonts</strong> — wght, opsz, SOFT, WONK. Une même famille typographique devient un système expressif à part entière.
+      </p>
+      <p class="axes-text">
+        Chaque axe ouvre une voix nouvelle&nbsp;: thin éditorial, italic à crochets, display ultra-bold, micro-text à 11&nbsp;px et accent kinétique. Cinq registres, zéro changement de fonte.
+      </p>
+    </div>
+
+    <div class="axes-demo">
+      <div class="axis-row row-a">
+        <span class="axis-label">A.01</span>
+        <span class="axis-word">Helio</span>
+        <span class="axis-spec"><strong>200 / opsz 144</strong><br>thin display</span>
+      </div>
+      <div class="axis-row row-b">
+        <span class="axis-label">A.02</span>
+        <span class="axis-word">Helio</span>
+        <span class="axis-spec"><strong>400 italic / WONK 1</strong><br>italic à crochets</span>
+      </div>
+      <div class="axis-row row-c">
+        <span class="axis-label">A.03</span>
+        <span class="axis-word">Helio</span>
+        <span class="axis-spec"><strong>700 / SOFT 50</strong><br>regular bold</span>
+      </div>
+      <div class="axis-row row-d">
+        <span class="axis-label">A.04</span>
+        <span class="axis-word">Helio</span>
+        <span class="axis-spec"><strong>900 / opsz 14</strong><br>black micro-text</span>
+      </div>
+      <div class="axis-row row-e">
+        <span class="axis-label">A.05</span>
+        <span class="axis-word">Helio</span>
+        <span class="axis-spec"><strong>350 italic / accent</strong><br>voix éditoriale</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNATURE 2 — Overlap typographique -->
+  <section class="overlap">
+    <div class="overlap-bg" aria-hidden="true">
+      <span>Composition</span>
+      <span>Composition</span>
+      <span>Composition</span>
+    </div>
+    <div class="overlap-content">
+      <div class="overlap-num">N°<em>02</em></div>
+      <div class="overlap-prose">
+        <h3>Overlap intentionnel</h3>
+        <p>
+          Les masses typographiques se chevauchent. Le titre déborde de son conteneur, le mot répété sert de texture, le numéro de section pèse autant qu'une image.
+        </p>
+        <p>
+          Ce n'est pas une décoration&nbsp;: l'overlap impose un ordre de lecture par <strong>contraste de densité</strong>. L'œil hiérarchise sans qu'on lui dise. Le texte devient sculpture.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNATURE 3 — Hiérarchie radicale par proportion -->
+  <section class="hierarchy">
+    <div class="hierarchy-block">
+      <span class="micro">N°03 · Échelle</span>
+      <h3 class="display">Du caps <em>11</em> au caps <em>560</em>.</h3>
+      <p class="body">
+        L'échelle typographique varie d'un facteur <strong>50&times;</strong> dans une même page. Le micro-texte tient à 11&nbsp;px (réglage légal, mention de copyright), le display géant occupe 38&nbsp;vw.
+      </p>
+      <p class="body">
+        Cette amplitude force la hiérarchie&nbsp;: tout ce qui n'est pas display devient sous-texte, tout ce qui n'est pas micro devient corps. Aucune ambiguïté de niveau, aucune décision arbitraire de "title vs subtitle".
+      </p>
+    </div>
+    <div class="hierarchy-block">
+      <span class="micro">N°03 · Ratio</span>
+      <div class="ratio">
+        50&times;
+        <small>amplitude entre micro et mega</small>
+      </div>
+      <p class="body">
+        Pour comparaison, un site SaaS standard tient dans un ratio de 4&times; à 6&times; (h1 à 48&nbsp;px, body 16&nbsp;px). Hypertypography assume un facteur dix fois supérieur — c'est <strong>le seuil</strong> au-delà duquel la composition devient typographique.
+      </p>
+    </div>
+  </section>
+
+  <!-- ATMOSPHÈRE -->
+  <section class="atmosphere">
+    <div class="atmosphere-label">Atmosphère · usages</div>
+    <div class="atmosphere-visual">
+      Lis<em>i</em>ble.
+    </div>
+    <div class="atmosphere-text">
+      <div class="col">
+        <h4>Quand utiliser ce style</h4>
+        <p>
+          Foundries, studios typographiques, magazines indépendants, plateformes éditoriales, identités culturelles assumant la radicalité. Toute marque qui peut tenir sur sa <strong>voix</strong> sans recourir à une image stock.
+        </p>
+      </div>
+      <div class="col avoid">
+        <h4>Quand l'éviter</h4>
+        <p>
+          SaaS B2B grand public, <em>e-commerce</em>, plateformes pédagogiques pour novices, marques qui ont besoin d'images-produit. Sans tension de mots, le style s'effondre — il exige de la <em>copy ciselée</em>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOPHON -->
+  <footer class="colophon">
+    <div><strong>Display</strong> Fraunces · variable wght 200–900 · opsz 9–144 · SOFT 0–100 · WONK 0/1</div>
+    <div><strong>Body</strong> Instrument Sans · 400/600 · réservé aux meta et micro</div>
+    <div><strong>Palette</strong> #F4F1EA fond · #0E0E0C texte · #C8341E accent imprimeur (1 par bloc max)</div>
+  </footer>
+
+</div>
+</body>
+</html>

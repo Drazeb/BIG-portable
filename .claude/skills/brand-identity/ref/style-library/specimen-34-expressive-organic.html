@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 34. Expressive Organic / Anti-Grid Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette biomorphique — argiles, terres, mousses, miel */
+      --color-bg:        #F5EFE3;  /* crème argile */
+      --color-surface:   #FBF7EE;  /* lait */
+      --color-primary:   #9C3F2A;  /* terre cuite profonde */
+      --color-secondary: #3F5F3A;  /* mousse forestière */
+      --color-accent:    #D9A14B;  /* ocre miel */
+      --color-text:      #2A1F1A;  /* encre brune */
+      --color-muted:     #7A6E5E;  /* sépia atténué */
+      --color-haze:      #C6BBA8;  /* brume sablée */
+
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body:    "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Aucune unité de grille rigide — espacements en exposants doux */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 4rem;
+      --space-xl: 7rem;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      /* Texture organique : nuage de bruit doux + radial offset (pas centré) */
+      background-image:
+        radial-gradient(ellipse at 18% 12%, rgba(217, 161, 75, 0.18), transparent 55%),
+        radial-gradient(ellipse at 82% 78%, rgba(63, 95, 58, 0.14), transparent 60%);
+    }
+
+    /* ============================================================
+       TYPO — Fraunces axes (OPSZ + SOFT) pour le morphing typographique
+       ============================================================ */
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      color: var(--color-text);
+      font-feature-settings: "ss01", "ss02";
+      line-height: 1.02;
+    }
+
+    h1 {
+      font-size: clamp(3.4rem, 8.6vw, 7.6rem);
+      font-weight: 380;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 380;
+      letter-spacing: -0.025em;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 320;
+      color: var(--color-primary);
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      font-weight: 420;
+      font-variation-settings: "opsz" 96, "SOFT" 80, "wght" 420;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
+      letter-spacing: -0.005em;
+    }
+
+    p { color: var(--color-text); max-width: 62ch; }
+    .muted { color: var(--color-muted); }
+
+    /* ============================================================
+       CONTENEUR FLOTTANT — pas de grille rigide, marges respirantes
+       ============================================================ */
+    .canvas {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-md);
+      position: relative;
+    }
+
+    /* ============================================================
+       HERO — H1 qui s'enroule autour d'une forme morphique
+       ============================================================ */
+    .hero {
+      padding-top: var(--space-xl);
+      padding-bottom: var(--space-xl);
+      position: relative;
+    }
+
+    .hero .label {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+      margin-bottom: var(--space-md);
+      font-weight: 500;
+    }
+
+    .hero .label::before {
+      content: "● ";
+      color: var(--color-accent);
+      margin-right: 0.4em;
+    }
+
+    /* La forme morphique du hero — elle DICTE l'espace, pas l'inverse */
+    .hero-shape {
+      float: right;
+      width: 38%;
+      aspect-ratio: 1 / 1.05;
+      margin: 0.6em -2vw 0.5em var(--space-md);
+      background: radial-gradient(circle at 32% 30%, #B95636 0%, #9C3F2A 55%, #6E2A1A 100%);
+      shape-outside: ellipse(48% 50% at 52% 50%);
+      border-radius: 58% 42% 64% 36% / 50% 60% 40% 50%;
+      animation: morph-hero 22s ease-in-out infinite alternate;
+      position: relative;
+      box-shadow:
+        inset 18px 24px 60px rgba(255, 220, 180, 0.18),
+        inset -10px -22px 50px rgba(40, 16, 8, 0.32);
+    }
+
+    .hero-shape::after {
+      content: "";
+      position: absolute;
+      inset: -6%;
+      border-radius: 50% 60% 40% 50% / 55% 45% 55% 45%;
+      background: radial-gradient(circle at 70% 80%, rgba(217, 161, 75, 0.55), transparent 60%);
+      filter: blur(28px);
+      z-index: -1;
+    }
+
+    @keyframes morph-hero {
+      0%   { border-radius: 58% 42% 64% 36% / 50% 60% 40% 50%; transform: rotate(0deg) scale(1); }
+      50%  { border-radius: 42% 58% 36% 64% / 60% 40% 60% 40%; transform: rotate(-3deg) scale(1.02); }
+      100% { border-radius: 64% 36% 50% 50% / 42% 58% 42% 58%; transform: rotate(2deg) scale(0.99); }
+    }
+
+    .hero h1 {
+      margin-bottom: var(--space-md);
+    }
+
+    .hero .lede {
+      font-size: 1.3rem;
+      line-height: 1.55;
+      max-width: 56ch;
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+    .hero .brand {
+      margin-top: var(--space-lg);
+      font-family: var(--font-display);
+      font-style: italic;
+      font-variation-settings: "opsz" 14, "SOFT" 80, "wght" 400;
+      font-size: 1rem;
+      color: var(--color-muted);
+      clear: both;
+      padding-top: var(--space-md);
+    }
+
+    /* ============================================================
+       SIGNATURE 1 — Anti-grille : positionnement libre + text-wrap
+       ============================================================ */
+    .signature-1 {
+      padding: var(--space-xl) 0 var(--space-lg);
+      position: relative;
+    }
+
+    .sig1-inner {
+      position: relative;
+    }
+
+    .sig1-shape-a {
+      float: left;
+      width: 32%;
+      aspect-ratio: 1.1 / 1;
+      margin: 1em var(--space-md) 0.6em -3vw;
+      background: linear-gradient(135deg, #3F5F3A 0%, #5A7B52 100%);
+      border-radius: 70% 30% 55% 45% / 60% 50% 50% 40%;
+      shape-outside: ellipse(46% 52% at 50% 50%);
+      animation: morph-sig 26s ease-in-out infinite alternate;
+      box-shadow:
+        inset -12px -16px 40px rgba(20, 32, 18, 0.4),
+        inset 8px 12px 28px rgba(180, 220, 160, 0.15);
+    }
+
+    .sig1-shape-b {
+      float: right;
+      width: 18%;
+      aspect-ratio: 1 / 1.2;
+      margin: 4em -1vw 1em 1.5em;
+      background: var(--color-accent);
+      border-radius: 48% 52% 70% 30% / 60% 40% 60% 40%;
+      shape-outside: ellipse(44% 50% at 50% 50%);
+      opacity: 0.75;
+      animation: morph-sig 18s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes morph-sig {
+      0%   { border-radius: 70% 30% 55% 45% / 60% 50% 50% 40%; }
+      50%  { border-radius: 40% 60% 70% 30% / 45% 60% 40% 55%; }
+      100% { border-radius: 55% 45% 35% 65% / 55% 45% 60% 40%; }
+    }
+
+    .sig1-text h2 {
+      margin-bottom: var(--space-md);
+    }
+
+    .sig1-text h2 em {
+      font-style: italic;
+      color: var(--color-secondary);
+      font-variation-settings: "opsz" 96, "SOFT" 100, "wght" 380;
+    }
+
+    .sig1-text p {
+      font-size: 1.08rem;
+      margin-bottom: 1em;
+    }
+
+    /* ============================================================
+       SIGNATURE 2 — Typographie morphique (Fraunces axes en démonstration)
+       ============================================================ */
+    .signature-2 {
+      padding: var(--space-xl) 0 var(--space-lg);
+      background: var(--color-surface);
+      margin: 0 -100vw;
+      padding-left: calc(50vw - 600px);
+      padding-right: calc(50vw - 600px);
+      position: relative;
+    }
+
+    .signature-2::before,
+    .signature-2::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .signature-2::before {
+      top: -80px; left: 8%;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(217, 161, 75, 0.4), transparent 70%);
+      border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+      filter: blur(20px);
+      animation: morph-hero 30s ease-in-out infinite alternate;
+    }
+
+    .signature-2::after {
+      bottom: -60px; right: 6%;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(63, 95, 58, 0.35), transparent 70%);
+      border-radius: 40% 60% 50% 50% / 60% 40% 50% 50%;
+      filter: blur(24px);
+      animation: morph-sig 24s ease-in-out infinite alternate-reverse;
+    }
+
+    .sig2-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: flex-end;
+    }
+
+    .sig2-spec {
+      flex: 1 1 240px;
+      padding: var(--space-md) 0;
+    }
+
+    .sig2-spec .glyph {
+      font-family: var(--font-display);
+      font-size: 8rem;
+      line-height: 0.9;
+      color: var(--color-primary);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .sig2-spec.s-tight .glyph {
+      font-variation-settings: "opsz" 144, "SOFT" 0, "wght" 700;
+    }
+    .sig2-spec.s-balanced .glyph {
+      font-variation-settings: "opsz" 96, "SOFT" 60, "wght" 500;
+      color: var(--color-secondary);
+    }
+    .sig2-spec.s-soft .glyph {
+      font-variation-settings: "opsz" 36, "SOFT" 100, "wght" 380;
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    .sig2-spec .axis {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-weight: 500;
+    }
+
+    .sig2-text {
+      margin-top: var(--space-lg);
+      max-width: 64ch;
+    }
+
+    .sig2-text h2 {
+      margin-bottom: var(--space-md);
+    }
+
+    /* ============================================================
+       BLOC ATMOSPHÈRE — couleur émotionnelle + usages
+       ============================================================ */
+    .atmosphere {
+      padding: var(--space-xl) 0;
+      position: relative;
+    }
+
+    .atmo-visual {
+      position: relative;
+      height: 360px;
+      margin-bottom: var(--space-lg);
+      overflow: visible;
+    }
+
+    .atmo-blob {
+      position: absolute;
+      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      filter: blur(2px);
+    }
+
+    .atmo-blob.b1 {
+      top: 10%; left: 8%;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle at 35% 35%, #B95636, #9C3F2A 70%);
+      box-shadow:
+        inset 16px 20px 50px rgba(255, 220, 180, 0.18),
+        inset -10px -16px 40px rgba(40, 16, 8, 0.3);
+      animation: morph-hero 20s ease-in-out infinite alternate;
+    }
+
+    .atmo-blob.b2 {
+      top: 22%; left: 36%;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle at 40% 30%, #5A7B52, #3F5F3A 70%);
+      box-shadow:
+        inset 14px 18px 40px rgba(200, 230, 180, 0.15),
+        inset -8px -14px 32px rgba(20, 38, 18, 0.32);
+      animation: morph-sig 26s ease-in-out infinite alternate-reverse;
+    }
+
+    .atmo-blob.b3 {
+      top: 6%; left: 58%;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle at 38% 32%, #E8B768, #D9A14B 70%);
+      box-shadow:
+        inset 10px 14px 30px rgba(255, 240, 200, 0.25),
+        inset -6px -10px 24px rgba(120, 70, 20, 0.35);
+      animation: morph-hero 17s ease-in-out infinite alternate;
+    }
+
+    .atmo-blob.b4 {
+      top: 38%; left: 74%;
+      width: 140px; height: 140px;
+      background: radial-gradient(circle at 35% 35%, #C6BBA8, #9A8F7C 80%);
+      animation: morph-sig 22s ease-in-out infinite alternate-reverse;
+      opacity: 0.85;
+    }
+
+    .atmo-text {
+      max-width: 68ch;
+    }
+
+    .atmo-text h2 {
+      margin-bottom: var(--space-md);
+    }
+
+    .usage-cols {
+      display: flex;
+      gap: var(--space-lg);
+      margin-top: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .usage-col {
+      flex: 1 1 240px;
+    }
+
+    .usage-col h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .usage-col.go h3 { color: var(--color-secondary); }
+    .usage-col.go h3::before { content: "→ "; color: var(--color-accent); }
+    .usage-col.no h3 { color: var(--color-primary); }
+    .usage-col.no h3::before { content: "✕ "; color: var(--color-haze); }
+
+    .usage-col p { font-size: 0.98rem; color: var(--color-text); }
+
+    /* ============================================================
+       SIGNATURE FOOTER — discrète, signature de la fiche
+       ============================================================ */
+    .ref-footer {
+      padding: var(--space-md) 0 var(--space-lg);
+      border-top: 1px dashed var(--color-haze);
+      margin-top: var(--space-lg);
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
+    .ref-footer span em {
+      font-family: var(--font-display);
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.92rem;
+      color: var(--color-secondary);
+      font-variation-settings: "opsz" 14, "SOFT" 100, "wght" 380;
+    }
+
+    /* ============================================================
+       RESPONSIVE — sous 760px, on relâche les float pour ne pas casser le wrap
+       ============================================================ */
+    @media (max-width: 760px) {
+      .hero-shape, .sig1-shape-a, .sig1-shape-b {
+        float: none;
+        margin: 0 auto var(--space-md);
+        width: 70%;
+      }
+      .signature-2 {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+      }
+      .sig2-spec .glyph { font-size: 5rem; }
+      .atmo-visual { height: 480px; }
+      .atmo-blob.b1 { width: 200px; height: 200px; }
+      .atmo-blob.b2 { width: 160px; height: 160px; left: 28%; top: 36%; }
+      .atmo-blob.b3 { width: 140px; height: 140px; left: 52%; top: 12%; }
+      .atmo-blob.b4 { width: 110px; height: 110px; left: 65%; top: 56%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-shape, .sig1-shape-a, .sig1-shape-b,
+      .atmo-blob, .signature-2::before, .signature-2::after {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="canvas">
+
+    <!-- ============================== HERO ============================== -->
+    <section class="hero">
+      <p class="label">Style 34 — Catalogue BIG</p>
+
+      <!-- La forme morphique flotte ; le H1 s'enroule autour grâce à shape-outside -->
+      <div class="hero-shape" aria-hidden="true"></div>
+
+      <h1>Expressive Organic / <em>Anti-Grid Flow</em></h1>
+
+      <p class="lede">
+        Layouts fluides où la grille rigide disparaît : ce sont les formes organiques
+        qui dictent l'espace, et le texte qui s'enroule autour d'elles. Le scroll respire,
+        les contours se transforment, rien ne s'aligne par défaut sur une colonne.
+      </p>
+
+      <p class="brand">Atelier Helio — <em>Studio biomorphique &amp; édition culturelle</em></p>
+    </section>
+
+    <!-- ====================== SIGNATURE 1 — anti-grille ====================== -->
+    <section class="signature-1">
+      <div class="sig1-inner">
+
+        <div class="sig1-shape-a" aria-hidden="true"></div>
+        <div class="sig1-shape-b" aria-hidden="true"></div>
+
+        <div class="sig1-text">
+          <h2>L'espace n'est plus <em>une matrice</em> — c'est un fluide.</h2>
+          <p>
+            Là où le Bento Grid impose des tuiles cartésiennes, l'Anti-Grid Flow renverse
+            le rapport : la composition ne commence pas par un système de colonnes,
+            elle commence par une forme — une silhouette argileuse, un blob morphique —
+            et le texte vient se loger autour, en utilisant <strong>shape-outside</strong>
+            pour épouser ses contours.
+          </p>
+          <p>
+            La conséquence est immédiate : aucune ligne hairline droite, aucun bord net,
+            aucune répétition de cards alignées. Chaque section a son rythme propre,
+            dicté par la masse organique qu'elle contient. Le lecteur ne scanne plus,
+            il <em>traverse</em>.
+          </p>
+          <p>
+            Les formes elles-mêmes se transforment lentement (border-radius animé, axes
+            de variation typographiques) — mais jamais comme un gimmick. Le morphing
+            EST la grammaire, pas un effet décoratif ajouté en surface.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== SIGNATURE 2 — typo morphique ====================== -->
+    <section class="signature-2">
+
+      <div class="sig2-grid">
+        <div class="sig2-spec s-tight">
+          <span class="glyph">Aa</span>
+          <span class="axis">opsz 144 · soft 0 · wght 700</span>
+        </div>
+        <div class="sig2-spec s-balanced">
+          <span class="glyph">Aa</span>
+          <span class="axis">opsz 96 · soft 60 · wght 500</span>
+        </div>
+        <div class="sig2-spec s-soft">
+          <span class="glyph">Aa</span>
+          <span class="axis">opsz 36 · soft 100 · wght 380 italic</span>
+        </div>
+      </div>
+
+      <div class="sig2-text">
+        <h2>Une <em>typographie</em> qui respire en même temps que la forme.</h2>
+        <p>
+          Le style Anti-Grid Flow utilise des fontes à axes (variable fonts) — ici Fraunces
+          avec ses axes <strong>opsz</strong> (optical size) et <strong>SOFT</strong> —
+          pour synchroniser la matière typographique avec la matière biomorphique des
+          formes. À 144 pts, les terminaisons sont sèches et tendues ; à 36 pts en
+          italique soft 100, elles deviennent presque liquides. La même fonte produit
+          plusieurs tempéraments selon l'échelle.
+        </p>
+        <p class="muted">
+          Cette respiration typographique évite l'écueil principal de l'organique
+          basique : avoir des formes molles plaquées sur une typo standard rigide.
+          Quand la forme morphique change, la lettre l'accompagne.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================== ATMOSPHÈRE — couleur émotionnelle + usages ====================== -->
+    <section class="atmosphere">
+
+      <div class="atmo-visual" aria-hidden="true">
+        <div class="atmo-blob b1"></div>
+        <div class="atmo-blob b2"></div>
+        <div class="atmo-blob b3"></div>
+        <div class="atmo-blob b4"></div>
+      </div>
+
+      <div class="atmo-text">
+        <h2>La palette est <em>biomorphique</em>, jamais pastel SaaS.</h2>
+        <p>
+          Terre cuite profonde, mousse forestière, ocre miel, encre brune, brume sablée —
+          les couleurs viennent du registre des matières naturelles travaillées
+          (céramique, bois huilé, argile crue, lichen). Aucun violet/indigo générique,
+          aucun gradient violet→bleu de SaaS landing : ces signaux d'AI slop sont
+          structurellement incompatibles avec ce style.
+        </p>
+
+        <div class="usage-cols">
+          <div class="usage-col go">
+            <h3>Quand utiliser ce style</h3>
+            <p>
+              Édition culturelle, food artisanal, marques d'auteur, studios créatifs,
+              portfolios de céramistes ou parfumeurs, sites de slow living. Tout ce qui
+              gagne à signaler un rapport sensible et tactile à la matière.
+            </p>
+          </div>
+          <div class="usage-col no">
+            <h3>Quand l'éviter</h3>
+            <p>
+              Dashboards, plateformes analytiques B2B, fintech, SaaS de productivité —
+              tout contexte où la scannabilité d'une grille structurée est le besoin
+              primaire de l'utilisateur. L'Anti-Grid Flow ne se scanne pas, il se traverse.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ref-footer">
+        <span>Catalogue BIG · Style 34 · Registre Organique / Cinétique</span>
+        <span>Référence : <em>DevInterface 2026 trends — anti-grid layouts</em></span>
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

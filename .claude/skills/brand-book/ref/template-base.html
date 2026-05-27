@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="{{BRAND_THEME_COLOR}}" />
+  <meta name="description" content="{{BRAND}} — Brand Book v{{VERSION}}. Identité visuelle, palette, typographie, voix, système et direction artistique." />
+  <title>{{BRAND}} — Brand Book v{{VERSION}}</title>
+
+  <!-- TODO: GOOGLE FONTS — remplacer par les fontes effectivement importées dans le style-tile -->
+  <!-- Exemple : <link rel="preconnect" href="https://fonts.googleapis.com" /> -->
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" /> -->
+  {{GOOGLE_FONTS_LINK}}
+
+  <style>
+    /* =========================================================
+       :ROOT — TOKENS CANONIQUES DE LA MARQUE
+       Tous les tokens ci-dessous DOIVENT être remplacés par les
+       valeurs réelles extraites du style-tile au moment de la
+       génération. JAMAIS de valeurs génériques.
+       ========================================================= */
+    :root {
+      /* --- Palette (9+ couleurs en oklch) --- */
+      --brand-color-primary:        {{COLOR_PRIMARY}};        /* ex: oklch(0.55 0.18 250) */
+      --brand-color-secondary:      {{COLOR_SECONDARY}};
+      --brand-color-accent:         {{COLOR_ACCENT}};         /* couleur signature, ex: Foyer du Phare */
+      --brand-color-accent-2:       {{COLOR_ACCENT_2}};       /* utilisée pour les gradients section 08 */
+      --brand-color-positive-bg:    {{COLOR_POSITIVE_BG}};    /* Brume de Plan — fond clair sections positives */
+      --brand-color-positive-text:  {{COLOR_POSITIVE_TEXT}};  /* texte principal sur fond clair */
+      --brand-color-dark-bg:        {{COLOR_DARK_BG}};        /* Nuit d'Indigo — fond Dark Cinema */
+      --brand-color-dark-text:      {{COLOR_DARK_TEXT}};      /* texte principal sur fond sombre */
+      --brand-color-success:        {{COLOR_SUCCESS}};
+      --brand-color-warning:        {{COLOR_WARNING}};
+      --brand-color-danger:         {{COLOR_DANGER}};
+
+      /* --- Fonts --- */
+      --brand-display:              {{FONT_DISPLAY}};         /* ex: 'Gloock', serif */
+      --brand-body:                 {{FONT_BODY}};            /* ex: 'Inter', sans-serif */
+      --brand-mono:                 {{FONT_MONO}};            /* ex: 'JetBrains Mono', monospace */
+
+      /* --- Radius --- */
+      --brand-radius-xs:            {{RADIUS_XS}};            /* canonique BIG : 2px */
+      --brand-radius-sm:            {{RADIUS_SM}};            /* 4px */
+      --brand-radius-md:            {{RADIUS_MD}};            /* 8px */
+      --brand-radius-lg:            {{RADIUS_LG}};            /* 16px */
+
+      /* --- Aliases pour Identity Card v4 (bento intro "Le pack en une vue")
+             SANCTUARISÉ 27 mai 2026 (v4). Ces alias permettent au bloc bento
+             .bv4-* de référencer les couleurs/fontes de la marque sous
+             des noms sémantiques génériques. Substituer avec les vraies
+             valeurs marque au moment de la génération. --- */
+      --color-foyer:        {{COLOR_FOYER}};         /* ex: var(--color-beacon) */
+      --color-foyer-warm:   {{COLOR_FOYER_WARM}};    /* ex: var(--color-beacon-warm) */
+      --color-mist:         {{COLOR_MIST}};          /* ex: var(--color-chart-mist) */
+      --color-mist-cool:    {{COLOR_MIST_COOL}};     /* ex: var(--color-text-primary) */
+      --color-marine-cliff: {{COLOR_MARINE_CLIFF}};  /* ex: var(--brand-color-accent-2) — détail froid */
+      --color-night-clear:  {{COLOR_NIGHT_CLEAR}};   /* ex: lighten(--brand-color-dark-bg, 5%) — fond surface (fallback CSS: #142133) */
+      --font-display:       var(--brand-display);
+      --font-mono:          var(--brand-body);
+      --radius:             var(--brand-radius-xs);
+
+      /* --- Typography Hierarchy — FIGÉE (voir style-guide.md §4bis) --- */
+      /* Eyebrow (numéro + nom section) */
+      --type-eyebrow-size: 12px;
+      --type-eyebrow-letter-spacing: 0.14em;
+      --type-eyebrow-weight: 500;
+
+      /* Section title (titre H2 de section, ex: "Le phare immobile") */
+      --type-section-title-size: clamp(40px, 5vw, 64px);
+      --type-section-title-line-height: 1.05;
+      --type-section-title-letter-spacing: -0.02em;
+      --type-section-title-weight: 400;
+
+      /* Section subtitle (sous-titre italique accent) */
+      --type-section-subtitle-size: clamp(20px, 2.4vw, 32px);
+      --type-section-subtitle-line-height: 1.3;
+
+      /* Body */
+      --type-body-size: clamp(16px, 1.2vw, 18px);
+      --type-body-line-height: 1.6;
+
+      /* Caption / meta */
+      --type-caption-size: 13px;
+      --type-caption-line-height: 1.5;
+
+      /* Pull-quote (utilitaire restant — la section Voice & Tone a été retirée 27 mai 2026, mais la classe .pull-quote peut servir pour le closing ou des emphases ponctuelles) */
+      --type-pull-quote-size: clamp(40px, 4vw, 64px);
+      --type-pull-quote-line-height: 1.2;
+
+      /* Big number (KPI dataviz, page-numéro) */
+      --type-big-number-size: clamp(56px, 7vw, 96px);
+      --type-big-number-line-height: 0.9;
+
+      /* Mono (codes HEX/oklch/coordonnées) */
+      --type-mono-size: 13px;
+      --type-mono-letter-spacing: 0.02em;
+
+      /* --- Spacing scale --- */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --space-6: 48px;
+      --space-7: 64px;
+      --space-8: 96px;
+      --space-9: 128px;
+
+      /* --- Durations (animation discrète seulement) --- */
+      --dur-fast: 160ms;
+      --dur-med: 320ms;
+      --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+      /* --- Wordmark accent --- */
+      --brand-wordmark-accent: var(--brand-color-accent);
+    }
+
+    /* =========================================================
+       RESET MINIMAL
+       ========================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+    body {
+      margin: 0;
+      font-family: var(--brand-body);
+      color: var(--brand-color-positive-text);
+      background-color: var(--brand-color-positive-bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    img, svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    h1, h2, h3, h4, p {
+      margin: 0;
+    }
+
+    /* =========================================================
+       CLASSES GLOBALES — SECTIONS
+       ========================================================= */
+
+    /* Section générique — slide rythm 720-900px */
+    .section {
+      width: 100%;
+      padding-block: clamp(80px, 12vh, 160px);
+      padding-inline: clamp(24px, 5vw, 80px);
+      min-height: clamp(720px, 90vh, 900px);
+      position: relative;
+    }
+    .section__inner {
+      max-width: 1320px;
+      margin-inline: auto;
+    }
+    /* HIÉRARCHIE TYPO HOMOGÈNE — utilisent les variables --type-* (voir style-guide §4bis) */
+    .section__eyebrow {
+      font-family: var(--brand-body);
+      font-size: var(--type-eyebrow-size);
+      font-weight: var(--type-eyebrow-weight);
+      letter-spacing: var(--type-eyebrow-letter-spacing);
+      text-transform: uppercase;
+      color: var(--brand-color-accent);
+      margin-bottom: clamp(24px, 3vh, 48px);
+    }
+    .section__title {
+      font-family: var(--brand-display);
+      font-size: var(--type-section-title-size);
+      line-height: var(--type-section-title-line-height);
+      letter-spacing: var(--type-section-title-letter-spacing);
+      font-weight: var(--type-section-title-weight);
+      text-wrap: balance;
+    }
+    .section__subtitle {
+      font-family: var(--brand-display);
+      font-size: var(--type-section-subtitle-size);
+      line-height: var(--type-section-subtitle-line-height);
+      font-style: italic;
+      color: var(--brand-color-accent);
+      margin-top: clamp(16px, 2vh, 32px);
+    }
+    .section__body {
+      margin-top: clamp(48px, 6vh, 80px);
+      font-family: var(--brand-body);
+      font-size: var(--type-body-size);
+      line-height: var(--type-body-line-height);
+    }
+    .section__body p + p {
+      margin-top: 1.2em;
+    }
+
+    /* Classes utilitaires complémentaires */
+    .caption {
+      font-family: var(--brand-body);
+      font-size: var(--type-caption-size);
+      line-height: var(--type-caption-line-height);
+      color: var(--brand-color-text-secondary, currentColor);
+      opacity: 0.7;
+    }
+    .pull-quote {
+      font-family: var(--brand-display);
+      font-size: var(--type-pull-quote-size);
+      line-height: var(--type-pull-quote-line-height);
+      font-style: italic;
+      text-wrap: balance;
+    }
+    .big-number {
+      font-family: var(--brand-display);
+      font-size: var(--type-big-number-size);
+      line-height: var(--type-big-number-line-height);
+    }
+    .mono {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: var(--type-mono-size);
+      letter-spacing: var(--type-mono-letter-spacing);
+    }
+
+    /* Mode positif */
+    .section--positive {
+      background-color: var(--brand-color-positive-bg);
+      color: var(--brand-color-positive-text);
+    }
+
+    /* Mode Dark Cinema */
+    .section--dark-cinema {
+      background-color: var(--brand-color-dark-bg);
+      color: var(--brand-color-dark-text);
+    }
+    .section--dark-cinema .section__title,
+    .section--dark-cinema .section__body {
+      color: var(--brand-color-dark-text);
+    }
+
+    /* Îlot dark à l'intérieur d'une section positive (section 07 SYSTEM) */
+    .section--positive .island--dark {
+      background-color: var(--brand-color-dark-bg);
+      color: var(--brand-color-dark-text);
+      border-radius: var(--brand-radius-xs);
+      padding: clamp(24px, 4vw, 48px);
+    }
+
+    /* Colonne éditoriale 2-cols (Big Idea + Concept) — style brand book magazine
+       Fallback 1 col sous 768px (mobile). Voir structure.md §01 BIG IDEA. */
+    .editorial-column {
+      column-count: 2;
+      column-gap: clamp(40px, 5vw, 80px);
+      column-fill: balance;
+      max-width: 1100px;
+      margin-inline: 0;
+      font-family: var(--brand-body);
+      font-size: clamp(15px, 1.05vw, 17px);
+      line-height: 1.65;
+    }
+    .editorial-column p {
+      break-inside: avoid;
+      margin: 0;
+    }
+    .editorial-column p + p {
+      margin-top: 1.2em;
+    }
+    @media (max-width: 768px) {
+      .editorial-column { column-count: 1; max-width: 55ch; }
+    }
+
+    /* =========================================================
+       WORDMARK CANONIQUE — {brand}. avec point final en accent
+       ========================================================= */
+    .wordmark {
+      font-family: var(--brand-display);
+      font-size: clamp(72px, 10vw, 144px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--brand-color-dark-text);
+    }
+    .wordmark__dot {
+      color: var(--brand-wordmark-accent);
+    }
+
+    /* =========================================================
+       COVER FULLBLEED
+       ========================================================= */
+    .cover {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100svh;
+      background-color: var(--brand-color-dark-bg);
+      background-size: cover;
+      background-position: center;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover__inner {
+      text-align: center;
+      padding: clamp(40px, 8vw, 96px);
+      position: relative;
+      z-index: 2;
+    }
+    .cover__caption {
+      position: absolute;
+      bottom: clamp(24px, 4vh, 48px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--brand-body);
+      font-size: clamp(12px, 0.9vw, 14px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-color-dark-text);
+      opacity: 0.7;
+    }
+
+    /* =========================================================
+       SOMMAIRE — 2 colonnes (CSS multicol, ordre top→bottom col1 puis col2)
+       ========================================================= */
+    .toc__list {
+      list-style: none;
+      padding: 0;
+      max-width: 1200px;
+      margin-top: clamp(40px, 5vh, 64px);
+      column-count: 2;
+      column-gap: clamp(40px, 5vw, 80px);
+      column-fill: balance;
+    }
+    .toc__item {
+      display: flex;
+      align-items: baseline;
+      gap: clamp(16px, 2vw, 32px);
+      padding-block: clamp(12px, 1.4vh, 18px);
+      border-bottom: 1px solid var(--brand-color-accent);
+      break-inside: avoid;
+    }
+    .toc__item:last-child { border-bottom: none; }
+    .toc__number {
+      font-family: var(--brand-body);
+      font-size: clamp(13px, 1vw, 15px);
+      color: var(--brand-color-accent);
+      letter-spacing: 0.1em;
+      min-width: 3em;
+    }
+    .toc__label {
+      font-family: var(--brand-display);
+      font-size: clamp(22px, 2.2vw, 32px);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    /* =========================================================
+       CLOSING FULLBLEED
+       ========================================================= */
+    .closing {
+      width: 100%;
+      min-height: clamp(720px, 88vh, 880px);
+      background-color: var(--brand-color-dark-bg);
+      background-size: cover;
+      background-position: center;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .closing__statement {
+      font-family: var(--brand-display);
+      font-size: clamp(40px, 4.5vw, 72px);
+      line-height: 1.1;
+      color: var(--brand-color-dark-text);
+      text-align: center;
+      max-width: 18ch;
+      padding-inline: clamp(24px, 5vw, 80px);
+    }
+
+    /* =========================================================
+       ANTI-PATTERNS — Documentés ici pour mémoire
+       =========================================================
+       NE PAS faire :
+       - box-shadow: 0 0 24px ...        → toujours offset directionnel
+       - radial-gradient(circle at 50% 50%, ...)  → toujours asymétrique
+       - background: #000 / #FFF         → utiliser dark-bg / positive-bg
+       - text-align: center sur paragraphes longs  → aligner à gauche
+       - max-width au-delà de 75ch sur du corps   → 55ch canonique
+       - Roboto / Open Sans / Lato       → utiliser var(--brand-display/body)
+       - Iframe pour la section 08 WEB   → PNG capturé via Playwright
+       - Emoji dans le brand book        → jamais
+       ========================================================= */
+
+    /* =========================================================
+       IDENTITY CARD V4 — "Le pack en une vue" (bento intro après sommaire)
+       Grille 3 cols × 6 rows × 120px = 720px total
+       Cover (1×4) · Wordmark enrichi (1×2) · Manifesto (2×2)
+       Icônes mini bande 4× (2×1) · Typo mini 2 cols (2×1) · Dataviz (2×2)
+       Palette 6 couleurs 2 cols × 3 rows (1×4)
+       Préfixe `bv4-*`. Sanctuarisé 27 mai 2026 (v4).
+       ========================================================= */
+    .grain {
+      position: relative;
+      overflow: hidden;
+    }
+    .grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.85 0 0 0 0 0.87 0 0 0 0 0.92 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .grain--dark::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.09 0 0 0 0 0.14 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+      opacity: 0.5;
+    }
+    /* ═══════════════════════════════════════════════════════════════
+       BENTO V4 — 3 cols × 6 rows × 120px = 720px hauteur totale
+       Cover (1×4) | Manifesto (2×2) | Palette (1×4)
+       Wordmark (1×2) | Icônes mini (2×1) | (palette continue)
+                     | Typo mini (2×1)    |
+                     | Dataviz (2×2)      |
+       ═══════════════════════════════════════════════════════════════ */
+    .bento-v4 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(6, 120px);
+      gap: 14px;
+      margin-top: clamp(40px, 5vh, 64px);
+    }
+    .bento-v4 > div { position: relative; overflow: hidden; }
+
+    /* COVER — col 1, rows 1-4 (480px) */
+    .bv4-cover {
+      grid-column: 1;
+      grid-row: 1 / span 4;
+      border-radius: var(--radius);
+      background-image: url('visual-final/{{COVER_VISUAL}}');
+      background-size: cover;
+      background-position: center;
+      background-color: var(--brand-color-dark-bg);
+    }
+    .bv4-cover::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(13,22,35,0.55) 100%);
+      z-index: 1;
+    }
+    .bv4-cover__label {
+      position: absolute; bottom: 24px; left: 24px; z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0.85;
+    }
+
+    /* WORDMARK ENRICHI — col 1, rows 5-6 (240px)
+       Overline rôle · wordmark Gloock · signature coords (PAS de tagline) */
+    .bv4-wordmark {
+      grid-column: 1;
+      grid-row: 5 / span 2;
+      background:
+        radial-gradient(ellipse 380px 240px at 0% 0%, rgba(42,77,94,0.45) 0%, transparent 55%),
+        radial-gradient(ellipse 360px 220px at 100% 100%, rgba(232,146,72,0.12) 0%, transparent 55%),
+        var(--brand-color-dark-bg);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px 28px 22px;
+      border-radius: var(--radius);
+    }
+    .bv4-wordmark__overline {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-foyer);
+      opacity: 0.85;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-wordmark__center {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .bv4-wordmark__text {
+      font-family: var(--font-display);
+      font-size: 54px;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .bv4-wordmark__text .accent { color: var(--color-foyer); }
+    .bv4-wordmark__signature {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* MANIFESTO — col 2-3, rows 1-2 (240px) */
+    .bv4-manifesto {
+      grid-column: 2 / span 2;
+      grid-row: 1 / span 2;
+      background:
+        radial-gradient(ellipse 600px 360px at 100% 0%, rgba(232,146,72,0.10) 0%, rgba(232,146,72,0.04) 30%, transparent 65%),
+        radial-gradient(ellipse 480px 320px at 0% 100%, rgba(42,77,94,0.06) 0%, transparent 55%),
+        var(--color-mist);
+      padding: 36px 44px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      border-radius: var(--radius);
+    }
+    .bv4-manifesto__label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+    }
+    .bv4-manifesto__text {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 3.8vw, 52px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--brand-color-dark-bg);
+      margin: 0;
+    }
+    .bv4-manifesto__text .dot { color: var(--color-foyer); }
+    .bv4-manifesto__sub {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--brand-color-accent-2);
+      letter-spacing: 0.005em;
+      margin: 0;
+      max-width: 560px;
+    }
+
+    /* ICÔNES MINI — col 2, row 3 (120px), 4 icônes inline en ligne
+       Taille naturelle 32px (PAS zoomées). */
+    .bv4-icongrid {
+      grid-column: 2;
+      grid-row: 3;
+      background:
+        radial-gradient(ellipse 240px 140px at 50% 50%, var(--color-foyer-warm) 0%, var(--color-foyer) 60%, rgba(232,146,72,0.92) 100%),
+        var(--color-foyer);
+      padding: 16px 22px 14px;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius);
+    }
+    .bv4-icongrid__label {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--brand-color-dark-bg);
+      opacity: 0.65;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-icongrid__row {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-icongrid__cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bv4-icongrid__cell svg {
+      width: 32px;
+      height: 32px;
+      color: var(--brand-color-dark-bg);
+    }
+
+    /* TYPO MINI — col 2, row 4 (120px), Aa + Aa horizontaux, baseline align */
+    .bv4-typo {
+      grid-column: 2;
+      grid-row: 4;
+      background:
+        radial-gradient(ellipse 320px 140px at 0% 0%, rgba(42,77,94,0.07) 0%, transparent 55%),
+        var(--color-mist);
+      padding: 14px 22px 12px;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius);
+    }
+    .bv4-typo__label {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-typo__row {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: end;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-typo__block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .bv4-typo__aa-display {
+      font-family: var(--font-display);
+      font-size: 50px;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      color: var(--brand-color-dark-bg);
+      margin: 0;
+    }
+    .bv4-typo__aa-mono {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--brand-color-dark-bg);
+      font-weight: 500;
+      margin: 0;
+    }
+    .bv4-typo__caption {
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+      margin: 0;
+    }
+
+    /* DATAVIZ — col 2, rows 5-6 (240px) */
+    .bv4-dataviz {
+      grid-column: 2;
+      grid-row: 5 / span 2;
+      background:
+        radial-gradient(ellipse 320px 220px at 100% 100%, rgba(232,146,72,0.10) 0%, transparent 55%),
+        var(--brand-color-dark-bg);
+      padding: 20px 24px 18px;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius);
+    }
+    .bv4-dataviz__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0.7;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-dataviz__viz { flex: 1; margin-top: 8px; position: relative; z-index: 2; }
+    .bv4-dataviz__viz svg { width: 100%; height: 100%; display: block; }
+    .bv4-dataviz .viz-gridline { stroke: rgba(255,255,255,0.08); stroke-width: 1; stroke-dasharray: 2 4; }
+    .bv4-dataviz .viz-axis     { stroke: rgba(255,255,255,0.25); stroke-width: 1; }
+    .bv4-dataviz .viz-baseline { stroke: var(--color-foyer); stroke-width: 1; opacity: 0.7; }
+    .bv4-dataviz .viz-bar      { fill: rgba(232,146,72,0.55); }
+    .bv4-dataviz .viz-bar.is-active { fill: var(--color-foyer); }
+    .bv4-dataviz .viz-label-axis { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.12em; fill: rgba(255,255,255,0.45); }
+    .bv4-dataviz .viz-label-axis.is-on { fill: var(--color-foyer); }
+
+    /* PALETTE ÉTENDUE 6 COULEURS — col 3, rows 3-6 (480px) — grille 2 cols × 3 rows */
+    .bv4-palette {
+      grid-column: 3;
+      grid-row: 3 / span 4;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      gap: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .bv4-palette__bloc {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+    }
+    .bv4-palette__bloc-head {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+      z-index: 2;
+    }
+    .bv4-palette__bloc-role {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .bv4-palette__bloc-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+    .bv4-palette__bloc-foot {
+      position: relative;
+      z-index: 2;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+    }
+    .bv4-palette__bloc--nuit {
+      background:
+        radial-gradient(ellipse 260px 200px at 0% 100%, rgba(42,77,94,0.55) 0%, transparent 55%),
+        var(--brand-color-dark-bg);
+      color: #fff;
+    }
+    .bv4-palette__bloc--night {
+      background:
+        radial-gradient(ellipse 260px 200px at 100% 0%, rgba(42,77,94,0.40) 0%, transparent 55%),
+        var(--color-night-clear, #142133);
+      color: #fff;
+    }
+    .bv4-palette__bloc--marine {
+      background:
+        radial-gradient(ellipse 260px 200px at 50% 100%, rgba(232,146,72,0.10) 0%, transparent 60%),
+        var(--color-marine-cliff);
+      color: #fff;
+    }
+    .bv4-palette__bloc--mist {
+      background:
+        radial-gradient(ellipse 260px 200px at 50% 50%, rgba(255,255,255,0.7) 0%, var(--color-mist-cool) 60%),
+        var(--color-mist-cool);
+      color: var(--brand-color-dark-bg);
+    }
+    .bv4-palette__bloc--foyer {
+      background:
+        radial-gradient(ellipse 260px 200px at 0% 100%, rgba(242,166,99,0.55) 0%, transparent 60%),
+        var(--color-foyer);
+      color: var(--brand-color-dark-bg);
+    }
+    .bv4-palette__bloc--foyer-warm {
+      background:
+        radial-gradient(ellipse 260px 200px at 100% 100%, rgba(255,200,140,0.55) 0%, transparent 60%),
+        var(--color-foyer-warm);
+      color: var(--brand-color-dark-bg);
+    }
+
+    /* =========================================================
+       07a WEB — header contenu, stage en FULLBLEED viewport (touche bords)
+       Sanctuarisé 27 mai 2026 — pattern fullbleed pour le style-tile capturé.
+       Le .web__stage est enfant DIRECT de .web (hors .section__inner) pour
+       permettre le débordement viewport ; le header reste dans .section__inner.
+       ========================================================= */
+    .web {
+      min-height: clamp(1200px, 130vh, 1700px);
+      padding-inline: 0; /* override .section : stage doit toucher bords */
+    }
+    .web .section__inner {
+      padding-inline: clamp(24px, 5vw, 80px); /* restaure padding pour header eyebrow + title */
+    }
+    .web__stage {
+      width: 100%;
+      margin-top: clamp(32px, 4vh, 48px);
+      padding: clamp(40px, 6vw, 96px) clamp(24px, 5vw, 80px);
+      background: radial-gradient(
+        ellipse at 28% 35%,
+        var(--brand-color-accent, oklch(0.72 0.16 60)) / 0.18 0%,
+        var(--brand-color-accent-2, oklch(0.27 0.045 248)) / 0.32 38%,
+        var(--brand-color-positive-bg, oklch(0.93 0.012 240)) 80%
+      );
+      border-radius: 0; /* fullbleed strict — pas de border-radius qui crée un cadre */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(20px, 2.4vh, 32px);
+    }
+    .web__stage img {
+      max-width: min(900px, 100%);
+      width: 100%;
+      box-shadow:
+        0 24px 64px -16px oklch(0.06 0.02 250 / 0.42),
+        0 8px 20px -4px oklch(0.06 0.02 250 / 0.22);
+      border-radius: var(--brand-radius-xs);
+    }
+    .web__caption {
+      font-family: var(--brand-body);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+    }
+
+    /* =========================================================
+       08b PITCH DECK — Spread asymétrique 2 × 3 (fullbleed viewport)
+       Préfixe `s08b-` pour éviter collisions. Les 6 PNG viennent du
+       sous-skill SPG `generate-mini-deck` (cf. SKILL.md Étape 2d).
+       Mapping figé : Cover en position 2, Data Viz/KPI en position 5.
+       NOTE numérotation : le préfixe CSS reste `s08b-` (sanctuarisé)
+       même si la section s'affiche désormais comme "07b" dans le
+       brand book (cf. renumérotation après retrait Voice & Tone).
+       ========================================================= */
+    .s08b-section {
+      background: var(--brand-color-positive-bg);
+      padding: clamp(72px, 10vh, 128px) 0;
+      overflow-x: hidden;
+      position: relative;
+      width: 100%;
+    }
+    .s08b-header {
+      max-width: 1320px;
+      margin: 0 auto clamp(40px, 6vh, 64px);
+      padding: 0 clamp(24px, 5vw, 80px);
+    }
+    .s08b-eyebrow {
+      font-family: var(--brand-body);
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-color-accent);
+      margin-bottom: clamp(20px, 2.4vh, 40px);
+    }
+    .s08b-title {
+      font-family: var(--brand-display);
+      font-size: clamp(48px, 6vw, 88px);
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      color: var(--brand-color-positive-text);
+    }
+    .s08b-subtitle {
+      font-family: var(--brand-body);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+      margin-top: clamp(16px, 2vh, 24px);
+    }
+    /* Spread layout — 2 rangées × 3 slides, viewport overflow contrôlé */
+    .s08b-spread {
+      --s08b-slide-gap: 28px;
+      --s08b-slide-w: calc((100vw - 2 * var(--s08b-slide-gap)) / 2);
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding: 0;
+    }
+    .s08b-row {
+      display: flex;
+      gap: var(--s08b-slide-gap);
+      width: max-content;
+      align-items: stretch;
+    }
+    .s08b-row--top    { transform: translateX(calc(-0.25 * var(--s08b-slide-w))); }
+    .s08b-row--bottom { transform: translateX(calc(-0.75 * var(--s08b-slide-w))); }
+    .s08b-card {
+      flex: 0 0 var(--s08b-slide-w);
+      aspect-ratio: 16 / 9;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow:
+        0 8px 24px -4px rgba(13,22,35,0.32),
+        0 2px 6px rgba(13,22,35,0.16);
+      margin: 0;
+    }
+    .s08b-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      max-width: none;
+    }
+    .s08b-caption {
+      max-width: 1320px;
+      margin: clamp(48px, 6vh, 64px) auto 0;
+      padding: 0 clamp(24px, 5vw, 80px);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--brand-body);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+    }
+    .s08b-caption strong {
+      color: var(--brand-color-positive-text);
+      font-weight: 500;
+    }
+
+    /* =========================================================
+       08c RÉSEAUX SOCIAUX — Diptyque LinkedIn + X **SANCTUARISÉ 27 mai 2026**
+
+       Spec figée après 6+ itérations Charles. Ne pas dévier sans validation.
+       Préfixe `s08c-` pour éviter toute collision avec le reste du brand book.
+
+       Règle fondamentale :
+       - Section transparente (pas de fond global)
+       - 2 cellules fullbleed strict (gap: 0, pas de max-width, pas de padding latéral)
+       - Cellule LinkedIn : fond beige clair chaud DISTINCT du --brand-color-positive-bg
+       - Cellule X : fond Nuit = --brand-color-dark-bg
+       - Mockups 1000×1000 capturés via Playwright (LinkedIn omit_background, X non)
+       - Wrapper mockup neutralisé côté LinkedIn (la card a ses styles natifs)
+       ========================================================= */
+    .s08c-section {
+      width: 100%;
+      padding: clamp(72px, 10vh, 128px) 0 0;
+      background: transparent;
+    }
+    .s08c-header {
+      max-width: 1320px;
+      margin: 0 auto clamp(40px, 6vh, 64px);
+      padding: 0 clamp(24px, 5vw, 80px);
+    }
+    .s08c-eyebrow {
+      font-family: var(--brand-body);
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand-color-accent);
+      margin-bottom: clamp(20px, 2.4vh, 40px);
+    }
+    .s08c-title {
+      font-family: var(--brand-display);
+      font-size: clamp(48px, 6vw, 88px);
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      color: var(--brand-color-positive-text);
+    }
+    .s08c-subtitle {
+      font-family: var(--brand-body);
+      font-size: clamp(15px, 1.05vw, 17px);
+      line-height: 1.55;
+      color: var(--brand-color-positive-muted);
+      margin-top: clamp(16px, 2vh, 24px);
+      max-width: 56ch;
+    }
+    .s08c-diptych {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .s08c-cell {
+      padding: clamp(56px, 7vh, 96px) clamp(32px, 4vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 720px;
+    }
+    /* Cellule LinkedIn : fond beige clair chaud, DISTINCT du fond Brume
+       (--brand-color-positive-bg) du body. À ajuster par marque pour
+       garantir un contraste visuel. */
+    .s08c-cell--linkedin { background: {{COLOR_CELL_LINKEDIN}}; }
+    .s08c-cell--x        { background: var(--brand-color-dark-bg); }
+    .s08c-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .s08c-mockup {
+      width: 100%;
+      max-width: 720px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow:
+        0 16px 32px -8px rgba(13,22,35,0.22),
+        0 4px 8px -2px rgba(13,22,35,0.12),
+        0 0 0 1px rgba(13,22,35,0.05);
+      margin: 0;
+    }
+    /* X mockup réduit à 56.3% de la largeur LinkedIn pour égaliser la hauteur
+       visuelle (LinkedIn PNG paysage ratio 1000:563 = 1.78:1, X PNG carré 1:1).
+       max-width X = max-width LinkedIn × (563/1000) = 720 × 0.563 = 405px. */
+    .s08c-cell--x .s08c-mockup {
+      max-width: calc(720px * 0.563);
+      box-shadow:
+        0 16px 48px -12px rgba(13,22,35,0.55),
+        0 4px 12px -2px rgba(13,22,35,0.30),
+        0 0 0 1px rgba(232,146,72,0.10);
+    }
+    /* LinkedIn : PNG transparent → la card flotte directement sur le fond
+       beige de la cellule. Neutralisation du wrapper. */
+    .s08c-cell--linkedin .s08c-mockup {
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+      overflow: visible;
+    }
+    .s08c-mockup img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .s08c-figcaption {
+      margin-top: clamp(24px, 3vh, 40px);
+      text-align: center;
+    }
+    .s08c-caption-label {
+      font-family: var(--brand-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brand-color-positive-muted);
+    }
+    .s08c-cell--x .s08c-caption-label {
+      color: rgba(221,229,238,0.75);
+    }
+    .s08c-caption-name {
+      font-family: var(--brand-display);
+      font-size: clamp(20px, 1.8vw, 26px);
+      line-height: 1.2;
+      margin-top: 8px;
+      letter-spacing: -0.01em;
+    }
+    .s08c-cell--linkedin .s08c-caption-name { color: var(--brand-color-positive-text); }
+    .s08c-cell--x        .s08c-caption-name { color: var(--brand-color-dark-text); }
+    @media (max-width: 920px) {
+      .s08c-diptych { grid-template-columns: 1fr; }
+      .s08c-cell    { min-height: auto; padding: 48px 24px; }
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+    @media (max-width: 1024px) {
+      .section__title { font-size: clamp(40px, 7vw, 64px); }
+      .wordmark       { font-size: clamp(56px, 12vw, 96px); }
+    }
+    @media (max-width: 640px) {
+      .section { padding-inline: 20px; }
+      .editorial-column { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       COVER FULLBLEED
+       Source : visual-final/{brand}-c{N}-{paletteID}-hero-*.png
+       ========================================================= -->
+  <section class="cover" style="background-image: url('visual-final/{{COVER_VISUAL}}');">
+    <div class="cover__inner">
+      <h1 class="wordmark">{{BRAND}}<span class="wordmark__dot">.</span></h1>
+    </div>
+    <p class="cover__caption">Brand Book v{{VERSION}} — {{YEAR}}</p>
+  </section>
+
+  <!-- =========================================================
+       SOMMAIRE — 2 colonnes (CSS multicol)
+       Ordre top→bottom col1 puis col2, lecture naturelle.
+       SANCTUARISÉ 27 mai 2026 (Voice & Tone retiré, intro "Le pack
+       en une vue" ajoutée, renumérotation 07→06 / 08→07 / 09→08).
+       ========================================================= -->
+  <section class="section section--positive toc" id="sommaire">
+    <div class="section__inner">
+      <p class="section__eyebrow">Sommaire</p>
+      <h2 class="section__title" style="font-size: clamp(28px, 2.6vw, 36px);">{{TOC_TITLE}}</h2>
+      <ol class="toc__list">
+        <li class="toc__item"><span class="toc__number">01 —</span><a href="#identity-card" class="toc__label">Le pack en une vue</a></li>
+        <li class="toc__item"><span class="toc__number">02 —</span><a href="#big-idea"    class="toc__label">Big Idea</a></li>
+        <li class="toc__item"><span class="toc__number">03 —</span><a href="#concept"     class="toc__label">Concept</a></li>
+        <li class="toc__item"><span class="toc__number">04 —</span><a href="#identity"    class="toc__label">Identité</a></li>
+        <li class="toc__item"><span class="toc__number">05 —</span><a href="#palette"     class="toc__label">Palette</a></li>
+        <li class="toc__item"><span class="toc__number">06 —</span><a href="#typographie" class="toc__label">Typographie</a></li>
+        <li class="toc__item"><span class="toc__number">07 —</span><a href="#system"      class="toc__label">Système</a></li>
+        <li class="toc__item"><span class="toc__number">08a —</span><a href="#web"         class="toc__label">Web</a></li>
+        <li class="toc__item"><span class="toc__number">08b —</span><a href="#pitch-deck"  class="toc__label">Pitch Deck</a></li>
+        <li class="toc__item"><span class="toc__number">08c —</span><a href="#social"      class="toc__label">Réseaux sociaux</a></li>
+        <li class="toc__item"><span class="toc__number">09 —</span><a href="#photo"       class="toc__label">Photo &amp; Illustration</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       IDENTITY CARD V4 — "Le pack en une vue" (intro bento après sommaire)
+       Grille 3 cols × 6 rows × 120px = 720px total
+       Sanctuarisé 27 mai 2026 (v4) après itérations Charles.
+       Préfixe CSS `bv4-*`.
+       Sources (composition manuelle par le skill) :
+         - Cover (1×4) : visual-final/{brand}-c{N}-{paletteID}-hero (image full)
+         - Wordmark enrichi (1×2) : overline (Brand ID · LL-{année}) + wordmark Gloock
+           + signature mono 2 lignes (coords géographiques + cadence/rythme du pitch)
+         - Manifesto (2×2) : extrait du pitch.md (2 lignes display + 1 ligne mono)
+         - Iconographie (2×1) : bande 4 icônes 32px inline, depuis batch2
+         - Typo (2×1) : "Aa" display + "Aa" mono, baseline align
+         - Dataviz (2×2) : bar chart signature composé depuis batch2
+         - Palette 6 couleurs (1×4) : 6 tokens :root nommés et classés par rôle
+       ========================================================= -->
+  <section class="section section--positive" id="identity-card">
+    <div class="section__inner">
+      <p class="section__eyebrow">01 — Identité condensée</p>
+      <h2 class="section__title">{{IDENTITY_CARD_TITLE}}</h2>
+
+      <div class="bento-v4">
+
+        <!-- COVER (col 1, rows 1-4) -->
+        <div class="bv4-cover grain grain--dark">
+          <span class="bv4-cover__label">Cover · atmosphère hero</span>
+        </div>
+
+        <!-- WORDMARK ENRICHI (col 1, rows 5-6) — overline · wordmark · signature -->
+        <div class="bv4-wordmark grain grain--dark">
+          <span class="bv4-wordmark__overline">{{WORDMARK_OVERLINE}}</span>
+          <div class="bv4-wordmark__center">
+            <span class="bv4-wordmark__text">{{BRAND}}<span class="accent">.</span></span>
+          </div>
+          <div class="bv4-wordmark__signature">
+            <span>{{BRAND_SIGNATURE_COORDS}}</span>
+            <span>{{BRAND_SIGNATURE_CADENCE}}</span>
+          </div>
+        </div>
+
+        <!-- MANIFESTO (col 2-3, rows 1-2) -->
+        <div class="bv4-manifesto grain">
+          <span class="bv4-manifesto__label">Manifesto</span>
+          <p class="bv4-manifesto__text">{{MANIFESTO_LINE1}}<span class="dot">.</span><br>{{MANIFESTO_LINE2}}<span class="dot">.</span></p>
+          <p class="bv4-manifesto__sub">{{MANIFESTO_SUB}}</p>
+        </div>
+
+        <!-- ICÔNES MINI 4× (col 2, row 3) — 4 SVG signature inline, 32px taille naturelle
+             extraites de batch2 (chercher les <svg aria-label="..."> dans la planche
+             iconographique métier). NE PAS zoomer : taille 32px par cellule. -->
+        <div class="bv4-icongrid grain">
+          <span class="bv4-icongrid__label">{{ICONGRID_LABEL}}</span>
+          <div class="bv4-icongrid__row">
+            {{IDENTITY_CARD_ICONS_4}}
+          </div>
+        </div>
+
+        <!-- TYPO MINI (col 2, row 4) — Aa Display + Aa Mono, baseline align -->
+        <div class="bv4-typo grain">
+          <span class="bv4-typo__label">Typographie</span>
+          <div class="bv4-typo__row">
+            <div class="bv4-typo__block">
+              <p class="bv4-typo__aa-display">Aa</p>
+              <p class="bv4-typo__caption">{{FONT_DISPLAY_NAME}} · display</p>
+            </div>
+            <div class="bv4-typo__block">
+              <p class="bv4-typo__aa-mono">Aa</p>
+              <p class="bv4-typo__caption">{{FONT_MONO_NAME}} · mono</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATAVIZ (col 2, rows 5-6) — bar chart signature -->
+        <div class="bv4-dataviz grain grain--dark">
+          <span class="bv4-dataviz__label">{{DATAVIZ_LABEL}}</span>
+          <div class="bv4-dataviz__viz">
+            {{DATAVIZ_SIGNATURE_SVG}}
+          </div>
+        </div>
+
+        <!-- PALETTE 6 COULEURS (col 3, rows 3-6) — grille 2 cols × 3 rows
+             6 blocs nommés par rôle (fond profond, fond surface, détail froid,
+             surface claire, accent signal, accent chaud). -->
+        <div class="bv4-palette">
+          <div class="bv4-palette__bloc bv4-palette__bloc--nuit grain grain--dark">
+            <div class="bv4-palette__bloc-head">
+              <span class="bv4-palette__bloc-role">{{COLOR_1_ROLE}}</span>
+              <span class="bv4-palette__bloc-name">{{COLOR_1_NAME}}</span>
+            </div>
+            <div class="bv4-palette__bloc-foot">{{COLOR_1_HEX}}</div>
+          </div>
+          <div class="bv4-palette__bloc bv4-palette__bloc--night grain grain--dark">
+            <div class="bv4-palette__bloc-head">
+              <span class="bv4-palette__bloc-role">{{COLOR_2_ROLE}}</span>
+              <span class="bv4-palette__bloc-name">{{COLOR_2_NAME}}</span>
+            </div>
+            <div class="bv4-palette__bloc-foot">{{COLOR_2_HEX}}</div>
+          </div>
+          <div class="bv4-palette__bloc bv4-palette__bloc--marine grain grain--dark">
+            <div class="bv4-palette__bloc-head">
+              <span class="bv4-palette__bloc-role">{{COLOR_3_ROLE}}</span>
+              <span class="bv4-palette__bloc-name">{{COLOR_3_NAME}}</span>
+            </div>
+            <div class="bv4-palette__bloc-foot">{{COLOR_3_HEX}}</div>
+          </div>
+          <div class="bv4-palette__bloc bv4-palette__bloc--mist grain">
+            <div class="bv4-palette__bloc-head">
+              <span class="bv4-palette__bloc-role">{{COLOR_4_ROLE}}</span>
+              <span class="bv4-palette__bloc-name">{{COLOR_4_NAME}}</span>
+            </div>
+            <div class="bv4-palette__bloc-foot">{{COLOR_4_HEX}}</div>
+          </div>
+          <div class="bv4-palette__bloc bv4-palette__bloc--foyer grain">
+            <div class="bv4-palette__bloc-head">
+              <span class="bv4-palette__bloc-role">{{COLOR_5_ROLE}}</span>
+              <span class="bv4-palette__bloc-name">{{COLOR_5_NAME}}</span>
+            </div>
+            <div class="bv4-palette__bloc-foot">{{COLOR_5_HEX}}</div>
+          </div>
+          <div class="bv4-palette__bloc bv4-palette__bloc--foyer-warm grain">
+            <div class="bv4-palette__bloc-head">
+              <span class="bv4-palette__bloc-role">{{COLOR_6_ROLE}}</span>
+              <span class="bv4-palette__bloc-name">{{COLOR_6_NAME}}</span>
+            </div>
+            <div class="bv4-palette__bloc-foot">{{COLOR_6_HEX}}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       01 BIG IDEA — éditorial minimaliste · positif
+       TODO: BIG IDEA — see editorial-patterns.md §4
+       Sources : {brand}-pitch.md "Big Idea" + design-specs §01.2
+       ========================================================= -->
+  <section class="section section--positive" id="big-idea">
+    <div class="section__inner">
+      <p class="section__eyebrow">02 — Big Idea</p>
+      <!-- TODO: H1 en 3-4 mots maximum -->
+      <h2 class="section__title">{{BIG_IDEA_H1}}</h2>
+      <!-- TODO: sous-titre italique facultatif (la formule-signature) -->
+      <p class="section__subtitle">{{BIG_IDEA_SUBTITLE}}</p>
+      <div class="section__body editorial-column">
+        <!-- TODO: 3-5 paragraphes courants, 2-4 lignes chacun -->
+        <p>{{BIG_IDEA_P1}}</p>
+        <p>{{BIG_IDEA_P2}}</p>
+        <p>{{BIG_IDEA_P3}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       02 CONCEPT — éditorial minimaliste · positif
+       TODO: CONCEPT — see editorial-patterns.md §5
+       Sources : {brand}-pitch.md "Concept" + design-specs §01.3
+       Option : manifesto split 35/65 si manifesto fort (3-5 lignes)
+       ========================================================= -->
+  <section class="section section--positive" id="concept">
+    <div class="section__inner">
+      <p class="section__eyebrow">03 — Concept</p>
+      <h2 class="section__title">{{CONCEPT_H2}}</h2>
+      <div class="section__body editorial-column">
+        <p>{{CONCEPT_P1}}</p>
+        <p>{{CONCEPT_P2}}</p>
+        <p>{{CONCEPT_P3}}</p>
+      </div>
+      <!-- TODO: optionnel — manifesto split 2-cols asymétriques (35/65) -->
+    </div>
+  </section>
+
+  <!-- =========================================================
+       03 IDENTITY — grille documentaire · positif
+       TODO: IDENTITY — see structure.md §03
+       Sources : {brand}-batch2.html §05 Logotype + design-specs §05
+       Contenu : 4 lockups + clear space + variantes de contexte
+       ========================================================= -->
+  <section class="section section--positive" id="identity">
+    <div class="section__inner">
+      <p class="section__eyebrow">04 — Identité</p>
+      <h2 class="section__title">{{IDENTITY_TITLE}}</h2>
+      <!-- TODO: grille 2x2 lockups + clear space + 4 variantes contexte -->
+    </div>
+  </section>
+
+  <!-- =========================================================
+       04 PALETTE — MODE IMMERSIF · positif (wrapper)
+       TODO: PALETTE — see structure.md §04
+       Sources : design-specs §02 COLOR SYSTEM
+       Contenu : 1 couleur = 1 page (~600-720px) × 9 couleurs minimum
+       ========================================================= -->
+  <section class="section section--positive" id="palette">
+    <div class="section__inner">
+      <p class="section__eyebrow">05 — Palette</p>
+      <h2 class="section__title">{{PALETTE_TITLE}}</h2>
+      <!-- TODO: générer une "page couleur" par item de palette -->
+      <!-- Chaque page : bloc couleur grand format à gauche (60%) + métadonnées droite (40%) -->
+    </div>
+  </section>
+
+  <!-- =========================================================
+       05 TYPOGRAPHIE — MODE IMMERSIF · positif
+       TODO: TYPOGRAPHIE — see structure.md §05
+       Sources : design-specs §03 + style-tile Google Fonts
+       Contenu : page Display + page Body + page Pairing + Type Scale
+       ========================================================= -->
+  <section class="section section--positive" id="typographie">
+    <div class="section__inner">
+      <p class="section__eyebrow">06 — Typographie</p>
+      <h2 class="section__title">{{TYPO_TITLE}}</h2>
+      <!-- TODO: spécimen "Aa" grand format display + body + pairing + type scale -->
+    </div>
+  </section>
+
+  <!-- Section Voice & Tone retirée (SANCTUARISÉ 27 mai 2026) — focus
+       brand identité visuelle, pas verbale. Renumérotation : ce qui
+       était 07 SYSTEM devient 06, 08 APPLICATIONS devient 07, 09 PHOTO
+       devient 08. -->
+
+  <!-- =========================================================
+       06 SYSTEM — positif wrapper + îlots dark canoniques
+       (ex-07, renuméroté 06 après retrait Voice & Tone)
+       Source structure.md §06 SYSTÈME / ICONOGRAPHIE
+       Sources données : {brand}-batch2.html + design-specs §06, §07, §09
+       Contenu : iconographie (titre canonique) + 3 sous-blocs (UI, data viz, composition)
+       NOTE : id="system" conservé pour stabilité des ancres internes.
+       ========================================================= -->
+  <section class="section section--positive" id="system">
+    <div class="section__inner">
+      <p class="section__eyebrow">07 — Système · Iconographie</p>
+      <!-- Titre canonique sanctuarisé : ne PAS mentionner un nombre d'icônes
+           (écarté par Charles 27 mai 2026 — le nombre de grammaires peut
+           varier par marque). -->
+      <h2 class="section__title">Une grammaire iconique tenue.</h2>
+      <p class="section__subtitle">{{ICONOGRAPHY_SUBTITLE}}</p>
+
+      <!-- ═══════════════════════════════════════════════════════════════════════
+           RÈGLE 12 — FIDÉLITÉ AU PACK SOURCE (STRICTE — voir SKILL.md règle 11 + style-guide.md §8quater)
+
+           Pour les 4 sous-sections ci-dessous (Iconographie, Composants UI,
+           Dataviz, Composition), tu DOIS faire un INVENTAIRE EXHAUSTIF de
+           batch2.html AVANT de générer ce contenu, et reproduire 1:1 TOUS
+           les éléments documentés. Pas de sélection arbitraire.
+
+           ANTI-PATTERN INTERDIT (signalé par Charles plusieurs fois) :
+           "j'ai mis quelques exemples représentatifs" → NON. Si batch2
+           documente 8 boutons (Primary+Secondary × 4 états Default/Hover/
+           Active/Disabled), le brand book DOIT en avoir 8. Si batch2 a
+           un toggle, le brand book DOIT l'avoir. Idem pour badges, cards,
+           feedback, navigation, et toute autre famille de composants.
+
+           AVANT DE GÉNÉRER : compter `grep -c '<button' batch2.html`,
+           `grep -c 'class="toggle"' batch2.html`, `grep -c 'class="badge'
+           batch2.html`, etc. Puis reproduire le compte exact dans chaque
+           sous-section. Quality gate : si le compte du brand book est
+           strictement inférieur au compte batch2, REGÉNÉRER.
+           ═══════════════════════════════════════════════════════════════════════ -->
+
+      <!-- 07a Iconographie : TOUTES les icônes signature de la section
+           "Iconographie · DA illustrative · icônes métier" de batch2 +
+           les 3 grammaires (Outline / Solid / Duotone) avec leurs % d'usage -->
+      <!-- INVENTAIRE batch2 obligatoire : compter les <svg> de la section
+           iconographie de batch2 (typiquement 6+ icônes) — toutes doivent
+           apparaître ici, pas une seule manquante -->
+
+      <!-- 07b Composants UI : TOUS les composants de batch2 reproduits 1:1.
+           Inventaire type attendu :
+           • Buttons Primary × 4 états (Default / Hover / Active / Disabled)
+           • Buttons Secondary × 4 états (idem)
+           • Inputs × 3-4 états (Empty / Focused / Filled / Error)
+           • Toggle on/off (si présent dans batch2)
+           • Badges × toutes variantes (Success / Beacon / Neutral / Warning / ...)
+           • Cards × variantes (KPI card, content card, etc.)
+           • Feedback states (Toast, Alert, etc. si présents)
+           • Navigation (Top nav, Tabs, Breadcrumbs si présents)
+           Tout ce qui est dans la section "Composants UI" de batch2 — pas
+           "quelques exemples" mais TOUT. -->
+      <!-- TODO: îlots dark canoniques (état production) -->
+
+      <!-- 07c Data viz : TOUS les charts canoniques de batch2 (Line + Bar +
+           Donut + Échantillon grille si présent + tout autre type
+           documenté). Reproduire à l'identique avec les vraies données
+           narrative-cohérentes (ex: pour Camille, cadence éclats, portée
+           milles, etc.). -->
+
+      <!-- 07d Composition : TOUTES les grilles canoniques documentées dans
+           batch2 (12-col / 8-col / hero asymétrique / etc.) avec
+           annotations de breakpoints. -->
+    </div>
+  </section>
+
+  <!-- =========================================================
+       07a WEB — positif wrapper · PNG sur fond gradient palette
+       (ex-08a, renuméroté 07a après retrait Voice & Tone)
+       Source structure.md §07a WEB
+       Sources données : capture PNG full-page du style-tile (Playwright)
+       JAMAIS d'iframe. NOTE : id="web" conservé.
+       ========================================================= -->
+  <section class="section section--positive web" id="web">
+    <div class="section__inner">
+      <p class="section__eyebrow">08a — Web</p>
+      <h2 class="section__title">{{WEB_TITLE}}</h2>
+    </div>
+
+    <!-- Stage FULLBLEED viewport (touche bords gauche/droit) — sanctuarisé 27 mai 2026 -->
+    <div class="web__stage">
+      <img src="{{BRAND}}-landing-fullpage.png" alt="Style-tile {{BRAND}} — capture full-page, viewport 1280px" />
+      <p class="web__caption">{{WEB_CAPTION}}</p>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       07b PITCH DECK — Spread asymétrique 2×3, fullbleed viewport
+       (ex-08b, eyebrow renuméroté 07b — préfixe CSS s08b- conservé)
+       Source : 6 PNG produites par le sous-skill SPG `generate-mini-deck`
+       (cf. SKILL.md Étape 2d) dans `pitch-deck-mini/`.
+       Spec complète : ref/structure.md §07b
+       Mapping figé : Cover en pos 2, Data Viz/KPI en pos 5.
+       Le <section> est enfant DIRECT du <body> pour autoriser le
+       débordement 100vw (le spread sort de la max-width 1320px).
+       ========================================================= -->
+  <section class="s08b-section" id="pitch-deck">
+    <header class="s08b-header">
+      <!-- Eyebrow affiché 07b (renumérotation après retrait Voice & Tone).
+           Préfixe CSS s08b- conservé (sanctuarisé). -->
+      <p class="s08b-eyebrow">08b — Pitch Deck</p>
+      <h2 class="s08b-title">{{PITCH_DECK_TITLE}}</h2>
+      <p class="s08b-subtitle">{{PITCH_DECK_SUBTITLE}}</p>
+    </header>
+
+    <div class="s08b-spread">
+      <!-- Row 1 : Process (75% coupée gauche) · COVER (100% centre) · Case Study (25% coupée droite) -->
+      <div class="s08b-row s08b-row--top">
+        <figure class="s08b-card">
+          <img src="pitch-deck-mini/slide-05-process-timeline.png" alt="Pitch deck — Process / Timeline" />
+        </figure>
+        <figure class="s08b-card">
+          <img src="pitch-deck-mini/slide-01-cover.png" alt="Pitch deck — Cover" />
+        </figure>
+        <figure class="s08b-card">
+          <img src="pitch-deck-mini/slide-02-case-study.png" alt="Pitch deck — Case Study" />
+        </figure>
+      </div>
+
+      <!-- Row 2 : Icon Grid (25% coupée gauche) · DATA VIZ (100% centre) · Dashboard KPI (75% coupée droite) -->
+      <div class="s08b-row s08b-row--bottom">
+        <figure class="s08b-card">
+          <img src="pitch-deck-mini/slide-06-icon-grid.png" alt="Pitch deck — Icon Grid" />
+        </figure>
+        <figure class="s08b-card">
+          <img src="pitch-deck-mini/slide-03-data-viz.png" alt="Pitch deck — Data Visualization" />
+        </figure>
+        <figure class="s08b-card">
+          <img src="pitch-deck-mini/slide-04-dashboard-kpi.png" alt="Pitch deck — Dashboard / KPIs" />
+        </figure>
+      </div>
+    </div>
+
+    <div class="s08b-caption">
+      <span>6 slides &middot; ratio 16:9 &middot; spread asymétrique 2×3</span>
+      <span><strong>{{BRAND}}</strong> &middot; deck commercial</span>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       07c RÉSEAUX SOCIAUX — Diptyque LinkedIn + X **SANCTUARISÉ 27 mai 2026**
+       (ex-08c, eyebrow renuméroté 07c — préfixe CSS s08c- conservé)
+       Source : 2 PNG capturés via Playwright (capture-linkedin-mockup.py + capture-x-mockup.py)
+       Mockups générés depuis ref/linkedin-profile-mockup.html + ref/x-profile-mockup.html
+       Spec complète : ref/structure.md §07c
+       ========================================================= -->
+  <section class="s08c-section" id="social">
+    <header class="s08c-header">
+      <!-- Eyebrow affiché 07c (renumérotation après retrait Voice & Tone).
+           Préfixe CSS s08c- conservé (sanctuarisé). -->
+      <p class="s08c-eyebrow">08c — Réseaux sociaux</p>
+      <h2 class="s08c-title">{{SOCIAL_TITLE}}</h2>
+      <p class="s08c-subtitle">{{SOCIAL_SUBTITLE}}</p>
+    </header>
+
+    <div class="s08c-diptych">
+
+      <!-- LinkedIn — fond beige clair chaud, card flottante (PNG transparent) -->
+      <div class="s08c-cell s08c-cell--linkedin">
+        <div class="s08c-inner">
+          <figure class="s08c-mockup">
+            <img src="{{BRAND}}-linkedin-mockup.png" alt="Mockup profil LinkedIn entreprise {{BRAND}}" />
+          </figure>
+          <div class="s08c-figcaption">
+            <div class="s08c-caption-label">Profil entreprise</div>
+            <div class="s08c-caption-name">LinkedIn</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- X — fond Nuit, mockup quasi-carré -->
+      <div class="s08c-cell s08c-cell--x">
+        <div class="s08c-inner">
+          <figure class="s08c-mockup">
+            <img src="{{BRAND}}-x-mockup.png" alt="Mockup profil X {{BRAND}}" />
+          </figure>
+          <div class="s08c-figcaption">
+            <div class="s08c-caption-label">Profil entreprise</div>
+            <div class="s08c-caption-name">X</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================
+       08 PHOTO & ILLUSTRATION — Dark Cinema natif
+       (ex-09, renuméroté 08 après retrait Voice & Tone)
+       Source structure.md §08 PHOTO
+       Sources données : {brand}-batch3.html + design-specs §08 + visual-final/
+       Contenu : 4 cadrages canoniques + signature prompting MJ + galerie
+       NOTE : id="photo" conservé.
+       ========================================================= -->
+  <section class="section section--dark-cinema" id="photo">
+    <div class="section__inner">
+      <p class="section__eyebrow">09 — Photo &amp; Illustration</p>
+      <h2 class="section__title">{{PHOTO_TITLE}}</h2>
+      <!-- TODO: 4 cadrages canoniques en grille 2x2 -->
+      <!-- TODO: bloc signature prompting MJ (format code, fond légèrement plus clair) -->
+      <!-- TODO: galerie 2-col ou 3-col des visuels finaux -->
+    </div>
+  </section>
+
+  <!-- =========================================================
+       CLOSING FULLBLEED
+       Source : visual-final/{brand}-c{N}-{paletteID}-halo-*.png
+       Mode : Dark Cinema natif (symétrie avec la cover)
+       ========================================================= -->
+  <section class="closing" style="background-image: url('visual-final/{{CLOSING_VISUAL}}');">
+    <p class="closing__statement">{{CLOSING_STATEMENT}}</p>
+  </section>
+
+</body>
+</html>

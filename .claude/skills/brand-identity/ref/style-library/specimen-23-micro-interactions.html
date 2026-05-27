@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 23. Micro-interactions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette — graphite carbon + cream + signal vermillion (registre Linear / Awwwards Honors) */
+      --color-ink: #0F1012;
+      --color-ink-soft: #1A1B1F;
+      --color-bg: #F5F4EE;
+      --color-surface: #FFFFFF;
+      --color-rule: #1F2024;
+      --color-mute: #6B6C70;
+      --color-signal: #E94B35;
+      --color-signal-deep: #B73824;
+
+      /* Typo */
+      --font-display: "Inter Tight", system-ui, sans-serif;
+      --font-body: "Inter Tight", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+      /* Easing nommés — la signature du style (réutilisables, jamais "ease") */
+      --ease-out-expo:  cubic-bezier(0.19, 1.00, 0.22, 1.00);
+      --ease-out-back:  cubic-bezier(0.34, 1.56, 0.64, 1.00);
+      --ease-in-out-quart: cubic-bezier(0.76, 0.00, 0.24, 1.00);
+      --ease-out-quint: cubic-bezier(0.22, 1.00, 0.36, 1.00);
+
+      /* Timings cohérents — un seul système, pas une valeur par composant */
+      --t-fast:  140ms;
+      --t-base:  240ms;
+      --t-slow:  360ms;
+
+      --rule: 1px solid var(--color-rule);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-bg);
+      color: var(--color-ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      cursor: none; /* curseur custom, signature du style */
+    }
+
+    a, button { cursor: none; }
+
+    /* ===== Curseur custom (follower) — signature Awwwards ===== */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 14px; height: 14px;
+      background: var(--color-ink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width var(--t-base) var(--ease-out-expo),
+                  height var(--t-base) var(--ease-out-expo),
+                  background-color var(--t-base) var(--ease-out-expo),
+                  border-radius var(--t-base) var(--ease-out-expo);
+      mix-blend-mode: difference;
+    }
+    .cursor.is-hover {
+      width: 56px;
+      height: 56px;
+      background: var(--color-signal);
+    }
+    .cursor.is-text {
+      width: 4px;
+      height: 28px;
+      border-radius: 1px;
+      background: var(--color-bg);
+    }
+
+    /* ===== Layout ===== */
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 56px 40px 120px;
+    }
+
+    .meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      padding-bottom: 28px;
+      border-bottom: var(--rule);
+      margin-bottom: 64px;
+    }
+    .meta-bar span { display: inline-flex; gap: 10px; align-items: center; }
+    .meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-signal); display: inline-block; }
+
+    /* ===== Hero ===== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: end;
+      margin-bottom: 120px;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(56px, 8vw, 112px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 0 0 24px;
+      color: var(--color-ink);
+    }
+    .hero h1 .accent { color: var(--color-signal); }
+    .hero .lede {
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--color-ink-soft);
+      max-width: 38ch;
+      margin: 0 0 18px;
+    }
+    .hero .brand {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      margin: 0;
+    }
+
+    /* CTA magnetic */
+    .cta-magnetic {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 28px;
+      border: var(--rule);
+      background: var(--color-ink);
+      color: var(--color-bg);
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      transition: background-color var(--t-base) var(--ease-out-expo),
+                  color var(--t-base) var(--ease-out-expo),
+                  border-color var(--t-base) var(--ease-out-expo);
+      will-change: transform;
+    }
+    .cta-magnetic:hover {
+      background: var(--color-signal);
+      color: var(--color-ink);
+      border-color: var(--color-signal);
+    }
+    .cta-magnetic .arrow {
+      width: 18px; height: 18px;
+      transition: transform var(--t-base) var(--ease-out-back);
+    }
+    /* Note : on N'UTILISE PAS translateX au hover sur l'arrow seule (cliché 2017).
+       L'effet "vivant" vient du magnetic du parent + d'un changement de couleur multi-property. */
+
+    /* ===== Sections génériques ===== */
+    section.block {
+      padding: 80px 0;
+      border-top: var(--rule);
+    }
+    .block-head {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 48px;
+      margin-bottom: 56px;
+      align-items: baseline;
+    }
+    .block-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--color-mute);
+    }
+    .block-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(32px, 4vw, 48px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin: 0 0 18px;
+    }
+    .block-prose {
+      max-width: 60ch;
+      color: var(--color-ink-soft);
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ===== Composant 1 — Hover states intentionnels ===== */
+    .hover-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: var(--rule);
+      background: var(--color-ink);
+    }
+    .hover-cell {
+      position: relative;
+      padding: 36px 32px;
+      background: var(--color-bg);
+      transition: background-color var(--t-base) var(--ease-out-expo),
+                  color var(--t-base) var(--ease-out-expo);
+      border-right: var(--rule);
+      overflow: hidden;
+    }
+    .hover-cell:last-child { border-right: 0; }
+    .hover-cell:hover {
+      background: var(--color-ink);
+      color: var(--color-bg);
+    }
+    .hover-cell .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      margin: 0 0 28px;
+    }
+    .hover-cell:hover .label { color: var(--color-signal); }
+    .hover-cell h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin: 0 0 14px;
+    }
+    .hover-cell p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-ink-soft);
+      margin: 0;
+      transition: color var(--t-base) var(--ease-out-expo);
+    }
+    .hover-cell:hover p { color: var(--color-bg); opacity: 0.78; }
+
+    /* Ligne signal qui se RÉVÈLE au hover (pas underline qui slide, pas translateY) :
+       elle se peint depuis la gauche, en multi-property propre. */
+    .hover-cell::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      height: 3px;
+      width: 100%;
+      background: var(--color-signal);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform var(--t-slow) var(--ease-out-expo);
+    }
+    .hover-cell:hover::after { transform: scaleX(1); }
+
+    /* ===== Composant 2 — Catalogue d'easings (le système typographié) ===== */
+    .ease-table {
+      border: var(--rule);
+      background: var(--color-surface);
+    }
+    .ease-row {
+      display: grid;
+      grid-template-columns: 220px 1fr 100px 100px;
+      align-items: center;
+      gap: 32px;
+      padding: 22px 28px;
+      border-bottom: var(--rule);
+      transition: background-color var(--t-base) var(--ease-out-expo);
+    }
+    .ease-row:last-child { border-bottom: 0; }
+    .ease-row:hover { background: var(--color-bg); }
+    .ease-row .name {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-ink);
+    }
+    .ease-row .curve {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--color-mute);
+    }
+    .ease-row .timing {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-align: right;
+      color: var(--color-ink-soft);
+    }
+    .ease-row .demo {
+      position: relative;
+      height: 4px;
+      background: var(--color-rule);
+      border-radius: 0;
+      overflow: visible;
+    }
+    .ease-row .ball {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 14px; height: 14px;
+      margin-top: -7px;
+      border-radius: 50%;
+      background: var(--color-signal);
+      transform: translateX(0);
+    }
+    .ease-row:hover .ball { animation: travel 1100ms forwards; }
+    .ease-row[data-ease="expo"]:hover .ball { animation-timing-function: cubic-bezier(0.19, 1.00, 0.22, 1.00); }
+    .ease-row[data-ease="back"]:hover .ball { animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1.00); }
+    .ease-row[data-ease="quart"]:hover .ball { animation-timing-function: cubic-bezier(0.76, 0.00, 0.24, 1.00); }
+    .ease-row[data-ease="quint"]:hover .ball { animation-timing-function: cubic-bezier(0.22, 1.00, 0.36, 1.00); }
+
+    @keyframes travel {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(100% - 14px)); }
+    }
+
+    /* ===== Composant 3 — Comparatif "slop vs intentionnel" ===== */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .compare-card {
+      border: var(--rule);
+      padding: 32px;
+      background: var(--color-surface);
+    }
+    .compare-card.slop { background: var(--color-bg); border-style: dashed; }
+    .compare-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      margin-bottom: 18px;
+    }
+    .compare-tag.slop { background: var(--color-ink); color: var(--color-bg); }
+    .compare-tag.good { background: var(--color-signal); color: var(--color-ink); }
+    .compare-card h4 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 18px;
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+    }
+    .compare-card p {
+      font-size: 13px;
+      color: var(--color-ink-soft);
+      line-height: 1.55;
+      margin: 0 0 20px;
+    }
+    .compare-card code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--color-ink);
+      color: var(--color-bg);
+      padding: 2px 6px;
+    }
+
+    /* Demo cards à l'intérieur des compare-card */
+    .demo-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 500;
+      border: var(--rule);
+      background: var(--color-surface);
+      color: var(--color-ink);
+    }
+    .demo-button.bad {
+      transition: transform 200ms ease;
+    }
+    .demo-button.bad:hover {
+      transform: translateY(-3px); /* le marqueur slop, ASSUMÉ pour le contraste pédagogique */
+    }
+    .demo-button.good {
+      transition: background-color var(--t-base) var(--ease-out-expo),
+                  color var(--t-base) var(--ease-out-expo),
+                  border-color var(--t-base) var(--ease-out-expo);
+    }
+    .demo-button.good:hover {
+      background: var(--color-ink);
+      color: var(--color-bg);
+      border-color: var(--color-ink);
+    }
+    .demo-arrow {
+      width: 14px; height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    /* ===== Atmosphère ===== */
+    .atmosphere {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 0;
+      border: var(--rule);
+      overflow: hidden;
+    }
+    .atmosphere-visual {
+      position: relative;
+      background: var(--color-ink);
+      min-height: 360px;
+      overflow: hidden;
+    }
+    .atmosphere-visual .line {
+      position: absolute;
+      left: 8%; right: 8%;
+      height: 1px;
+      background: rgba(245, 244, 238, 0.15);
+    }
+    .atmosphere-visual .marker {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--color-signal);
+      transform: translate(-50%, -50%);
+    }
+    .atmosphere-visual .marker.m1 { left: 16%; top: 28%; }
+    .atmosphere-visual .marker.m2 { left: 64%; top: 52%; background: var(--color-bg); }
+    .atmosphere-visual .marker.m3 { left: 38%; top: 78%; }
+
+    .atmosphere-visual .crosshair {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: rgba(245, 244, 238, 0.55);
+    }
+    .atmosphere-visual .crosshair.tl { top: 18px; left: 20px; }
+    .atmosphere-visual .crosshair.tr { top: 18px; right: 20px; }
+    .atmosphere-visual .crosshair.br { bottom: 18px; right: 20px; }
+
+    .atmosphere-text {
+      padding: 48px 40px;
+      background: var(--color-surface);
+    }
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      margin: 0 0 18px;
+    }
+    .atmosphere-text p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-ink-soft);
+      margin: 0 0 14px;
+    }
+    .atmosphere-text .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      margin-bottom: 6px;
+    }
+
+    /* ===== Footer minimal ===== */
+    .foot {
+      margin-top: 80px;
+      padding-top: 28px;
+      border-top: var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+    }
+
+    @media (max-width: 880px) {
+      html, body { cursor: auto; }
+      a, button { cursor: pointer; }
+      .cursor { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 40px; }
+      .hover-grid { grid-template-columns: 1fr; }
+      .hover-cell { border-right: 0; border-bottom: var(--rule); }
+      .hover-cell:last-child { border-bottom: 0; }
+      .ease-row { grid-template-columns: 1fr; gap: 12px; padding: 18px 20px; }
+      .ease-row .demo { display: none; }
+      .compare { grid-template-columns: 1fr; }
+      .atmosphere { grid-template-columns: 1fr; }
+      .block-head { grid-template-columns: 1fr; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <div class="wrap">
+
+    <div class="meta-bar">
+      <span><span class="meta-dot"></span> Style Library — 23</span>
+      <span>Registre cinétique · transversal</span>
+      <span>Helio · Système d'interactions</span>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+      <div>
+        <h1>Micro-<span class="accent">interactions</span>.</h1>
+        <a href="#systeme" class="cta-magnetic" data-magnetic>
+          Voir le système
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div>
+        <p class="lede">Trente pour cent du score Awwwards repose sur l'usabilité, dont les hover states, le comportement du curseur et les transitions. Ce style ne se lit pas — il se ressent à la milliseconde.</p>
+        <p class="brand">Helio — Système d'interactions</p>
+      </div>
+    </header>
+
+    <!-- ===== COMPOSANT 1 — Hover states intentionnels ===== -->
+    <section class="block" id="systeme">
+      <div class="block-head">
+        <div class="block-num">01 / Hover</div>
+        <div>
+          <h2 class="block-title">Hover states intentionnels.</h2>
+          <p class="block-prose">Pas de translation verticale au survol — le marqueur le plus générique du web. Ici, le hover modifie simultanément la couleur de fond, du texte, du label et révèle une ligne signal depuis la gauche. Multi-property, timing identique, easing nommé. Le geste est lu, pas subi.</p>
+        </div>
+      </div>
+
+      <div class="hover-grid">
+        <article class="hover-cell" data-magnetic-soft>
+          <p class="label">État · base</p>
+          <h3>Pas de translateY.</h3>
+          <p>Le hover change la couleur, pas la position. Le composant reste à sa place — l'œil ne saute pas, la grille tient.</p>
+        </article>
+        <article class="hover-cell" data-magnetic-soft>
+          <p class="label">État · base</p>
+          <h3>Multi-property.</h3>
+          <p>Background, color, label, ligne signal : quatre propriétés transitionnent ensemble, à 240ms, sur la même courbe expo.</p>
+        </article>
+        <article class="hover-cell" data-magnetic-soft>
+          <p class="label">État · base</p>
+          <h3>Easing nommé.</h3>
+          <p>Le système n'utilise jamais <code style="font-family:var(--font-mono); font-size:12px;">ease</code>. Tous les hover passent par <code style="font-family:var(--font-mono); font-size:12px;">--ease-out-expo</code>, partagé.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== COMPOSANT 2 — Catalogue d'easings ===== -->
+    <section class="block">
+      <div class="block-head">
+        <div class="block-num">02 / Easing</div>
+        <div>
+          <h2 class="block-title">Un catalogue d'easings, pas une valeur par composant.</h2>
+          <p class="block-prose">Les courbes sont nommées et partagées — survolez une ligne pour voir la bille parcourir la piste. La cohérence du timing dans tout le système est ce qui distingue un site primé d'un site générique.</p>
+        </div>
+      </div>
+
+      <div class="ease-table">
+        <div class="ease-row" data-ease="expo">
+          <div class="name">--ease-out-expo</div>
+          <div class="curve">cubic-bezier(0.19, 1, 0.22, 1)</div>
+          <div class="demo"><span class="ball"></span></div>
+          <div class="timing">240ms</div>
+        </div>
+        <div class="ease-row" data-ease="back">
+          <div class="name">--ease-out-back</div>
+          <div class="curve">cubic-bezier(0.34, 1.56, 0.64, 1)</div>
+          <div class="demo"><span class="ball"></span></div>
+          <div class="timing">360ms</div>
+        </div>
+        <div class="ease-row" data-ease="quart">
+          <div class="name">--ease-in-out-quart</div>
+          <div class="curve">cubic-bezier(0.76, 0, 0.24, 1)</div>
+          <div class="demo"><span class="ball"></span></div>
+          <div class="timing">360ms</div>
+        </div>
+        <div class="ease-row" data-ease="quint">
+          <div class="name">--ease-out-quint</div>
+          <div class="curve">cubic-bezier(0.22, 1, 0.36, 1)</div>
+          <div class="demo"><span class="ball"></span></div>
+          <div class="timing">240ms</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COMPOSANT 3 — Slop vs intentionnel ===== -->
+    <section class="block">
+      <div class="block-head">
+        <div class="block-num">03 / Contraste</div>
+        <div>
+          <h2 class="block-title">Slop générique vs geste intentionnel.</h2>
+          <p class="block-prose">À gauche, le pattern le plus copié du web : <code>transform: translateY(-3px)</code> sur <code>transition: all ease</code>. À droite, le même bouton avec un système nommé. Survolez les deux pour ressentir l'écart.</p>
+        </div>
+      </div>
+
+      <div class="compare">
+        <div class="compare-card slop">
+          <span class="compare-tag slop">À éviter · slop</span>
+          <h4>translateY au hover.</h4>
+          <p>Effet "carte qui flotte". Inflation de l'easing par défaut. Le système n'a aucune cohérence : chaque composant choisit son propre timing. Marqueur des landings 2017-2020.</p>
+          <button class="demo-button bad" data-magnetic-soft>
+            Hover me
+            <svg class="demo-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <div class="compare-card">
+          <span class="compare-tag good">Intentionnel</span>
+          <h4>Multi-property + easing nommé.</h4>
+          <p>Background, couleur, bordure transitionnent ensemble sur <code>--ease-out-expo</code> à <code>240ms</code>. Le composant ne bouge pas — il <em>change d'état</em>. Lisible, partagé, débuggable.</p>
+          <button class="demo-button good" data-magnetic-soft>
+            Hover me
+            <svg class="demo-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ATMOSPHÈRE ===== -->
+    <section class="block">
+      <div class="block-head">
+        <div class="block-num">04 / Atmosphère</div>
+        <div>
+          <h2 class="block-title">Le silence avant le geste.</h2>
+          <p class="block-prose">L'atmosphère du style est calme — graphite, cream, un seul signal vermillion. La densité visuelle reste basse pour que le mouvement, quand il vient, devienne lisible. C'est l'inverse du maximalisme.</p>
+        </div>
+      </div>
+
+      <div class="atmosphere">
+        <div class="atmosphere-visual">
+          <span class="crosshair tl">+ 00.00 / 00.00</span>
+          <span class="crosshair tr">EASE_OUT_EXPO</span>
+          <span class="crosshair br">240MS · LIVE</span>
+          <div class="line" style="top: 28%;"></div>
+          <div class="line" style="top: 52%;"></div>
+          <div class="line" style="top: 78%;"></div>
+          <span class="marker m1"></span>
+          <span class="marker m2"></span>
+          <span class="marker m3"></span>
+        </div>
+        <div class="atmosphere-text">
+          <p class="label">Quand l'utiliser</p>
+          <p>Outils SaaS premium, plateformes professionnelles, marques tech qui veulent signaler de la précision. Linear, Arc, Vercel, GSAP. Score Awwwards 8.5+ sur la composante Usability.</p>
+          <p class="label" style="margin-top: 22px;">Quand l'éviter</p>
+          <p>Édition culturelle expressive, sites événementiels à fort impact émotionnel, identités où le geste doit être théâtral plutôt que précis. Le style est neutre par discipline — c'est sa force et sa limite.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>Helio — Système d'interactions</span>
+      <span>Style 23 / 34</span>
+    </footer>
+
+  </div>
+
+  <script>
+    // ===== Curseur custom — signature du style =====
+    (function() {
+      if (window.matchMedia('(max-width: 880px)').matches) return;
+      const cursor = document.getElementById('cursor');
+      let x = -100, y = -100, tx = -100, ty = -100;
+
+      window.addEventListener('mousemove', (e) => {
+        tx = e.clientX; ty = e.clientY;
+      });
+
+      function tick() {
+        // lerp pour un suivi soft, easing implicite
+        x += (tx - x) * 0.22;
+        y += (ty - y) * 0.22;
+        cursor.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        requestAnimationFrame(tick);
+      }
+      tick();
+
+      // États contextuels du curseur
+      document.querySelectorAll('a, button, [data-magnetic], [data-magnetic-soft]').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+      });
+      document.querySelectorAll('p, h1, h2, h3, h4, code').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('is-text'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('is-text'));
+      });
+    })();
+
+    // ===== Magnetic hover — le bouton suit le curseur dans une zone proche =====
+    (function() {
+      if (window.matchMedia('(max-width: 880px)').matches) return;
+      document.querySelectorAll('[data-magnetic]').forEach(el => {
+        const strength = 0.35;
+        el.style.transition = 'transform 360ms cubic-bezier(0.19, 1, 0.22, 1)';
+        el.addEventListener('mousemove', (e) => {
+          const rect = el.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (e.clientX - cx) * strength;
+          const dy = (e.clientY - cy) * strength;
+          el.style.transform = `translate(${dx}px, ${dy}px)`;
+        });
+        el.addEventListener('mouseleave', () => {
+          el.style.transform = 'translate(0, 0)';
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

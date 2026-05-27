@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 16. Organic Biophilic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette earthy PRÉCISE — ancrée Pantone Mocha Mousse 2025 */
+      --color-mocha:      #A47864; /* Pantone Mocha Mousse — pivot */
+      --color-terracotta: #B86F4E; /* terre cuite cuite, pas orange saturé */
+      --color-sage:       #8A9A6B; /* vert olive sourd */
+      --color-clay:       #C8956D; /* argile claire */
+      --color-cream:      #F2EADD; /* crème lin */
+      --color-ivory:      #EAE0CE; /* ivoire papier */
+      --color-ink:        #2A211A; /* brun-noir, pas noir pur */
+
+      --color-bg:         var(--color-cream);
+      --color-text:       var(--color-ink);
+      --color-muted:      #6B5A4A;
+
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body:    "Lora", Georgia, serif;
+
+      --radius-pill: 999px;
+      --radius-soft: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.65;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Texture papier subtile, posée sur le fond entier */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .55;
+      background-image:
+        radial-gradient(rgba(42, 33, 26, .06) 1px, transparent 1px),
+        radial-gradient(rgba(42, 33, 26, .04) 1px, transparent 1px);
+      background-size: 3px 3px, 7px 7px;
+      background-position: 0 0, 1px 2px;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 64px 48px 96px;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 56px;
+      align-items: end;
+      padding: 48px 0 72px;
+      border-bottom: 1px solid rgba(42, 33, 26, .14);
+    }
+
+    .hero .brand {
+      font-family: var(--font-body);
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--color-terracotta);
+      margin-bottom: 28px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 380;
+      font-size: clamp(58px, 9vw, 116px);
+      line-height: .94;
+      letter-spacing: -.02em;
+      color: var(--color-ink);
+      font-variation-settings: "opsz" 144, "SOFT" 60, "WONK" 1;
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 350;
+      color: var(--color-mocha);
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    }
+
+    .hero .lede {
+      font-family: var(--font-display);
+      font-weight: 350;
+      font-size: 22px;
+      line-height: 1.45;
+      color: var(--color-muted);
+      max-width: 38ch;
+      font-variation-settings: "opsz" 36, "SOFT" 80;
+    }
+
+    /* Forme organique vectorielle décorative — pas un blob */
+    .hero-leaf {
+      position: absolute;
+      top: 32px;
+      right: 24px;
+      width: 220px;
+      height: 220px;
+      opacity: .85;
+      z-index: 0;
+    }
+
+    .hero-wrap { position: relative; }
+
+    /* ========== SIGNATURE 1 — Palette Earthy ========== */
+    .signature {
+      padding: 80px 0;
+      border-bottom: 1px solid rgba(42, 33, 26, .14);
+    }
+
+    .signature-label {
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--color-terracotta);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .signature h2 {
+      font-family: var(--font-display);
+      font-weight: 360;
+      font-size: clamp(36px, 4.4vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -.015em;
+      color: var(--color-ink);
+      max-width: 22ch;
+      margin-bottom: 20px;
+      font-variation-settings: "opsz" 96, "SOFT" 50;
+    }
+
+    .signature h2 em {
+      font-style: italic;
+      color: var(--color-sage);
+      font-weight: 340;
+    }
+
+    .signature p {
+      font-size: 17.5px;
+      line-height: 1.7;
+      color: var(--color-muted);
+      max-width: 56ch;
+      margin-bottom: 36px;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .swatch {
+      aspect-ratio: 3 / 4;
+      border-radius: 0;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+    }
+    .swatch::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(0,0,0,.05) 1px, transparent 1px);
+      background-size: 4px 4px;
+      mix-blend-mode: multiply;
+      opacity: .5;
+    }
+    .swatch span {
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+      font-weight: 500;
+    }
+    .swatch small {
+      display: block;
+      font-size: 10px;
+      letter-spacing: .05em;
+      opacity: .75;
+      margin-top: 4px;
+      font-family: var(--font-body);
+      font-weight: 400;
+    }
+
+    .sw-mocha      { background: var(--color-mocha);      color: var(--color-cream); }
+    .sw-terracotta { background: var(--color-terracotta); color: var(--color-cream); }
+    .sw-sage       { background: var(--color-sage);       color: var(--color-cream); }
+    .sw-clay       { background: var(--color-clay);       color: var(--color-ink); }
+    .sw-ocre       { background: #B8895C;                 color: var(--color-cream); }
+    .sw-ivory      { background: var(--color-ivory);      color: var(--color-ink); border: 1px solid rgba(42,33,26,.1); }
+    .sw-ink        { background: var(--color-ink);        color: var(--color-cream); }
+
+    /* ========== SIGNATURE 2 — Forme organique + typo humaniste ========== */
+    .sig-flow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .sig-flow .text-block {
+      max-width: 48ch;
+    }
+
+    .organic-card {
+      position: relative;
+      padding: 48px 44px 44px;
+      background: var(--color-ivory);
+      /* Forme NON-rectangulaire, NON-blob — bord asymétrique */
+      clip-path: path("M 0,40 C 30,10 90,0 180,8 C 280,18 380,0 460,12 C 520,22 540,60 538,140 C 536,220 548,300 532,380 C 516,460 460,488 360,480 C 260,472 160,492 80,476 C 16,464 -8,420 4,340 C 16,260 -10,80 0,40 Z");
+      width: 100%;
+      min-height: 480px;
+      box-shadow: 14px 18px 0 -2px rgba(184, 137, 92, .22);
+    }
+
+    .organic-card .quote-mark {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 84px;
+      color: var(--color-terracotta);
+      line-height: .8;
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    }
+
+    .organic-card blockquote {
+      font-family: var(--font-display);
+      font-weight: 360;
+      font-size: 26px;
+      line-height: 1.4;
+      color: var(--color-ink);
+      margin-top: 16px;
+      max-width: 22ch;
+      font-variation-settings: "opsz" 60, "SOFT" 70;
+    }
+
+    .organic-card cite {
+      display: block;
+      margin-top: 28px;
+      font-style: normal;
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--color-mocha);
+      font-weight: 500;
+    }
+
+    /* ========== SIGNATURE 3 — Composition fluide / anti-grille ========== */
+    .fluid-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .fluid-card {
+      padding: 28px 26px;
+      background: var(--color-ivory);
+      border-top: 2px solid var(--color-terracotta);
+      position: relative;
+    }
+
+    .fluid-card h3 {
+      font-family: var(--font-display);
+      font-weight: 380;
+      font-size: 22px;
+      line-height: 1.2;
+      color: var(--color-ink);
+      margin-bottom: 10px;
+      font-variation-settings: "opsz" 48, "SOFT" 60;
+    }
+
+    .fluid-card p {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: var(--color-muted);
+      margin: 0;
+    }
+
+    .fluid-card .num {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--color-sage);
+      letter-spacing: .04em;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    /* Désalignement intentionnel — on s'éloigne de la grille rigide */
+    .fluid-card.c1 { grid-column: 1 / span 5; transform: translateY(0); }
+    .fluid-card.c2 { grid-column: 6 / span 4; transform: translateY(28px); }
+    .fluid-card.c3 { grid-column: 10 / span 3; transform: translateY(-12px); }
+    .fluid-card.c4 { grid-column: 2 / span 4; transform: translateY(40px); }
+    .fluid-card.c5 { grid-column: 6 / span 6; transform: translateY(56px); }
+
+    /* ========== ATMOSPHÈRE ========== */
+    .atmosphere {
+      margin-top: 200px;
+      padding: 80px 56px;
+      background:
+        radial-gradient(ellipse 110% 70% at 80% 100%, rgba(184, 111, 78, .18) 0%, transparent 60%),
+        radial-gradient(ellipse 90% 60% at 10% 0%, rgba(138, 154, 107, .14) 0%, transparent 55%),
+        linear-gradient(180deg, var(--color-ivory) 0%, var(--color-cream) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .atmosphere::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(42, 33, 26, .06) 1px, transparent 1.4px);
+      background-size: 5px 5px;
+      opacity: .5;
+      pointer-events: none;
+    }
+
+    .atmosphere-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .atmosphere h2 {
+      font-family: var(--font-display);
+      font-weight: 360;
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -.018em;
+      color: var(--color-ink);
+      margin-bottom: 28px;
+      font-variation-settings: "opsz" 120, "SOFT" 60;
+    }
+    .atmosphere h2 em {
+      font-style: italic;
+      color: var(--color-terracotta);
+      font-weight: 340;
+    }
+
+    .atm-block { margin-bottom: 22px; }
+    .atm-block dt {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--color-sage);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .atm-block dd {
+      font-family: var(--font-display);
+      font-weight: 360;
+      font-size: 18.5px;
+      line-height: 1.5;
+      color: var(--color-ink);
+      max-width: 44ch;
+      font-variation-settings: "opsz" 36, "SOFT" 50;
+    }
+
+    /* SVG forme botanique côté droit */
+    .atm-visual {
+      position: relative;
+      aspect-ratio: 1 / 1.05;
+      width: 100%;
+    }
+
+    /* ========== FOOTER MINI ========== */
+    .specimen-foot {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(42, 33, 26, .14);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .specimen-foot .ref {
+      font-family: var(--font-display);
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 14px;
+      color: var(--color-mocha);
+    }
+
+    /* Responsive — confortable lecture sur écran moyen */
+    @media (max-width: 880px) {
+      .hero { grid-template-columns: 1fr; gap: 32px; }
+      .sig-flow { grid-template-columns: 1fr; gap: 40px; }
+      .atmosphere-grid { grid-template-columns: 1fr; gap: 40px; }
+      .fluid-card.c1, .fluid-card.c2, .fluid-card.c3,
+      .fluid-card.c4, .fluid-card.c5 {
+        grid-column: 1 / -1;
+        transform: none;
+      }
+      .palette-grid { grid-template-columns: repeat(4, 1fr); }
+      main { padding: 40px 24px 64px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+    <!-- ========== HERO ========== -->
+    <section class="hero hero-wrap">
+      <div>
+        <p class="brand">Helio — Maison de tisanes biologiques</p>
+        <h1>Organic<br><em>Biophilic</em></h1>
+      </div>
+      <div>
+        <p class="lede">Une grammaire visuelle qui emprunte à la terre, au lin, au mocha. Couleurs sourdes, formes vraiment organiques, typographies humanistes — la nature comme matériau, pas comme métaphore.</p>
+        <!-- Forme botanique vectorielle, pas un blob -->
+        <svg class="hero-leaf" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M 110 18 C 60 30 28 78 36 138 C 42 178 78 206 118 204 C 158 202 192 168 196 122 C 200 76 168 28 110 18 Z"
+                fill="none" stroke="#8A9A6B" stroke-width="1.4" opacity=".55"/>
+          <!-- nervure centrale -->
+          <path d="M 110 18 C 112 60 110 110 110 204"
+                fill="none" stroke="#8A9A6B" stroke-width="1.2" opacity=".7"/>
+          <!-- nervures latérales -->
+          <path d="M 110 50 C 92 56 70 70 50 88" fill="none" stroke="#8A9A6B" stroke-width="1" opacity=".5"/>
+          <path d="M 110 50 C 128 56 150 70 170 88" fill="none" stroke="#8A9A6B" stroke-width="1" opacity=".5"/>
+          <path d="M 110 90 C 88 96 60 112 38 132" fill="none" stroke="#8A9A6B" stroke-width="1" opacity=".5"/>
+          <path d="M 110 90 C 132 96 160 112 182 132" fill="none" stroke="#8A9A6B" stroke-width="1" opacity=".5"/>
+          <path d="M 110 134 C 92 142 70 158 56 176" fill="none" stroke="#8A9A6B" stroke-width=".9" opacity=".45"/>
+          <path d="M 110 134 C 128 142 150 158 164 176" fill="none" stroke="#8A9A6B" stroke-width=".9" opacity=".45"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ========== SIGNATURE 1 — Palette earthy précise ========== -->
+    <section class="signature">
+      <p class="signature-label">Signature 1 — Chromie</p>
+      <h2>Palette terre, ancrée <em>Mocha Mousse</em>.</h2>
+      <p>Le style Organic Biophilic refuse les "earth tones" génériques que produit toute IA quand on lui demande "naturel". Il s'ancre sur des pigments précis : Pantone Mocha Mousse 2025 comme pivot, terracotta cuite, sage olive sourd, argile claire. Aucune saturation. Le brun-noir remplace le noir pur. La lumière vient du crème lin — jamais du blanc clinique.</p>
+
+      <div class="palette-grid">
+        <div class="swatch sw-mocha"><span>Mocha</span><small>#A47864</small></div>
+        <div class="swatch sw-terracotta"><span>Terracotta</span><small>#B86F4E</small></div>
+        <div class="swatch sw-sage"><span>Sage</span><small>#8A9A6B</small></div>
+        <div class="swatch sw-clay"><span>Clay</span><small>#C8956D</small></div>
+        <div class="swatch sw-ocre"><span>Ocre</span><small>#B8895C</small></div>
+        <div class="swatch sw-ivory"><span>Crème lin</span><small>#F2EADD</small></div>
+        <div class="swatch sw-ink"><span>Encre</span><small>#2A211A</small></div>
+      </div>
+    </section>
+
+    <!-- ========== SIGNATURE 2 — Formes organiques + serif chaleureux ========== -->
+    <section class="signature">
+      <p class="signature-label">Signature 2 — Forme &amp; typographie</p>
+      <div class="sig-flow">
+        <div class="text-block">
+          <h2>Formes <em>vraiment</em> organiques. Serif <em>chaleureux</em> obligatoire.</h2>
+          <p>Un blob arrondi générique appartient à un autre style. Ici, les contours sont irréguliers, asymétriques, dérivés du vivant — galets érodés, feuilles, contours d'argile. La typographie suit la même règle : pas d'Inter, pas de Roboto. On choisit un serif humaniste à axe variable (Fraunces, EB Garamond, Lora, GT Sectra) qui porte la chaleur du papier ancien. L'italique respire. Les optical sizes vivent.</p>
+        </div>
+        <div class="organic-card">
+          <div class="quote-mark">"</div>
+          <blockquote>Les terres cuites parlent moins fort que les pixels — mais elles parlent plus longtemps.</blockquote>
+          <cite>— Note d'atelier, Helio</cite>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SIGNATURE 3 — Composition fluide ========== -->
+    <section class="signature">
+      <p class="signature-label">Signature 3 — Composition</p>
+      <h2>La grille existe — elle n'est pas <em>rigide</em>.</h2>
+      <p>L'Organic Biophilic refuse autant la grille Swiss froide que le chaos décoratif. Les blocs respirent à des hauteurs légèrement décalées, avec des marges habitées. La composition se rapproche d'un étalage de pierres sur une table — ordonnée, mais pas alignée au pixel près.</p>
+
+      <div class="fluid-grid">
+        <article class="fluid-card c1">
+          <span class="num">i.</span>
+          <h3>Pas d'animation infinie</h3>
+          <p>Pas de pulsing breathing décoratif. Le mouvement, s'il existe, est lié à un défilement, pas à un gimmick.</p>
+        </article>
+        <article class="fluid-card c2">
+          <span class="num">ii.</span>
+          <h3>Pas de gradient violet</h3>
+          <p>Le purple/indigo générique est l'opposé exact de ce style. Les dégradés, s'il y en a, sont solaires ou terreux.</p>
+        </article>
+        <article class="fluid-card c3">
+          <span class="num">iii.</span>
+          <h3>Texture présente</h3>
+          <p>Grain de papier, pointillés, micro-bruit sur les aplats — la matière refuse le flat clinique.</p>
+        </article>
+        <article class="fluid-card c4">
+          <span class="num">iv.</span>
+          <h3>Pas de stock nature</h3>
+          <p>Pas de photo "lifestyle wellness" interchangeable. Le visuel doit être SVG ou photographie d'auteur.</p>
+        </article>
+        <article class="fluid-card c5">
+          <span class="num">v.</span>
+          <h3>Hiérarchie typographique riche</h3>
+          <p>On joue les optical sizes, les italiques, les chasses variables. Une seule font ne suffit jamais à porter ce style — il faut un duo serif/serif ou serif/humaniste assumé, avec des contrastes clairs entre lede et corps.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ========== ATMOSPHÈRE ========== -->
+    <section class="atmosphere">
+      <div class="atmosphere-grid">
+        <div>
+          <h2>Quand l'utiliser, quand <em>l'éviter</em>.</h2>
+          <dl>
+            <div class="atm-block">
+              <dt>Quand utiliser</dt>
+              <dd>Cosmétique naturelle, alimentaire bio, hôtellerie de caractère, éditeurs littéraires, marques de slow fashion, studios d'architecture intérieure, plateformes de bien-être ancrées (pas wellness-tech générique).</dd>
+            </div>
+            <div class="atm-block">
+              <dt>Quand l'éviter</dt>
+              <dd>SaaS B2B technique, fintech rapide, dashboards data, tout produit dont la promesse est la vitesse, l'efficacité ou la précision technologique. Le style imposerait une lenteur émotionnelle inadéquate.</dd>
+            </div>
+            <div class="atm-block">
+              <dt>Références culturelles</dt>
+              <dd>Aesop, Patagonia, Airbnb période 2014-2018, Le Labo, Apartamento, l'éditorial de Kinfolk. Pantone Mocha Mousse 2025 ancre la palette pour la décennie.</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="atm-visual">
+          <!-- Composition botanique de référence : galet + feuille + brindille -->
+          <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:100%;height:100%;display:block;">
+            <!-- galet/argile principal -->
+            <path d="M 80 220
+                     C 60 160 110 100 190 88
+                     C 270 78 340 130 348 200
+                     C 356 270 296 332 220 340
+                     C 144 348 92 286 80 220 Z"
+                  fill="#B86F4E" opacity=".88"/>
+            <!-- ombre portée organique sous le galet -->
+            <ellipse cx="220" cy="362" rx="130" ry="14" fill="#2A211A" opacity=".10"/>
+            <!-- petite forme argile à gauche -->
+            <path d="M 50 318
+                     C 40 290 70 268 110 274
+                     C 150 280 158 314 138 332
+                     C 118 350 70 348 50 318 Z"
+                  fill="#A47864" opacity=".85"/>
+            <!-- feuille sage qui sort du galet principal -->
+            <path d="M 240 90
+                     C 252 50 296 28 332 36
+                     C 324 70 296 100 256 112
+                     C 246 110 240 100 240 90 Z"
+                  fill="#8A9A6B" opacity=".75"/>
+            <!-- nervure feuille -->
+            <path d="M 244 100 C 270 84 304 64 330 42"
+                  stroke="#2A211A" stroke-width="1" fill="none" opacity=".35"/>
+            <!-- brindille -->
+            <path d="M 90 80 C 130 110 150 150 158 200"
+                  stroke="#2A211A" stroke-width="1.4" fill="none" opacity=".5"/>
+            <!-- petite feuille brindille -->
+            <path d="M 118 116 C 102 108 96 122 108 130 C 120 138 134 124 118 116 Z"
+                  fill="#8A9A6B" opacity=".7"/>
+            <path d="M 142 156 C 126 150 122 164 134 172 C 146 178 158 162 142 156 Z"
+                  fill="#8A9A6B" opacity=".7"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FOOTER SPÉCIMEN ========== -->
+    <footer class="specimen-foot">
+      <span>Style Library · 16</span>
+      <span class="ref">Organic Biophilic · catalogue BIG</span>
+      <span>Registre — Organique</span>
+    </footer>
+
+  </main>
+</body>
+</html>

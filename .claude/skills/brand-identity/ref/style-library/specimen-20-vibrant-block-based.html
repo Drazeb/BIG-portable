@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 20. Vibrant &amp; Block-based</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Vibrant & Block-based : primaires saturées non-Tailwind */
+      --ink: #111111;            /* noir profond — pas pur */
+      --paper: #FAF7F2;          /* crème os — jamais blanc clinique */
+      --hot: #F24E1E;            /* rouge-orangé saturé (registre Gumroad) */
+      --signal: #FFD400;         /* jaune signal saturé (registre Mailchimp) */
+      --cobalt: #2945FF;         /* bleu cobalt franc (pas indigo Tailwind) */
+      --grass: #1FA85C;          /* vert herbe saturé */
+      --pink: #FF7AB6;           /* rose chaud (registre Stripe Press) */
+      --rule: 2px;               /* trait fin — la couleur fait le poids, pas la bordure */
+      --radius-tile: 6px;        /* radius bas — block reste block */
+      --font-display: "Archivo Black", "Arial Black", sans-serif;
+      --font-body: "Manrope", system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 32px 96px;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      background: var(--paper);
+      padding: 16px 0 56px;
+      border-bottom: var(--rule) solid var(--ink);
+      margin-bottom: 56px;
+    }
+
+    .hero .brand {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 8px 14px;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      /* clamp XXL — c'est la signature non-négociable du style */
+      font-size: clamp(64px, 13vw, 200px);
+      line-height: 0.86;
+      margin: 0 0 32px;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 .word-block {
+      display: inline-block;
+      background: var(--hot);
+      color: var(--paper);
+      padding: 0 16px 8px;
+      margin: 0 4px 8px 0;
+    }
+    .hero h1 .word-block.alt {
+      background: var(--cobalt);
+    }
+
+    .hero .lede {
+      font-size: 21px;
+      font-weight: 500;
+      max-width: 60ch;
+      margin: 0 0 28px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: var(--rule) solid var(--ink);
+    }
+    .hero-meta .cell {
+      flex: 1 1 0;
+      min-width: 200px;
+      padding: 18px 20px;
+      border-right: var(--rule) solid var(--ink);
+      border-bottom: var(--rule) solid var(--ink);
+    }
+    .hero-meta .cell:last-child { border-right: none; }
+    .hero-meta .cell strong {
+      display: block;
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.6;
+    }
+    .hero-meta .cell span {
+      font-family: var(--font-display);
+      font-size: 22px;
+      text-transform: uppercase;
+    }
+
+    /* ---------- COMPOSANT 1 — Aplats francs ---------- */
+    .signature {
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 0 0 20px;
+      padding: 6px 12px;
+      background: var(--ink);
+      color: var(--paper);
+      display: inline-block;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5.6vw, 72px);
+      line-height: 0.92;
+      margin: 0 0 20px;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      max-width: 18ch;
+    }
+
+    .section-intro {
+      font-size: 18px;
+      max-width: 65ch;
+      margin: 0 0 36px;
+      font-weight: 500;
+    }
+
+    .blocks {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 0;
+      border: var(--rule) solid var(--ink);
+    }
+
+    .block {
+      padding: 32px 28px;
+      border-right: var(--rule) solid var(--ink);
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .block:last-child { border-right: none; }
+    .block.b-hot      { background: var(--hot); color: var(--paper); }
+    .block.b-signal   { background: var(--signal); color: var(--ink); }
+    .block.b-cobalt   { background: var(--cobalt); color: var(--paper); }
+
+    .block .block-num {
+      font-family: var(--font-display);
+      font-size: 88px;
+      line-height: 0.8;
+      letter-spacing: -0.04em;
+    }
+    .block .block-meta {
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      opacity: 0.85;
+    }
+    .block .block-text {
+      font-size: 14px;
+      line-height: 1.45;
+      margin: 14px 0 0;
+      max-width: 32ch;
+    }
+
+    /* ---------- COMPOSANT 2 — Hiérarchie hard ---------- */
+    .signature-2 {
+      margin-bottom: 64px;
+    }
+    .scale-stack {
+      border: var(--rule) solid var(--ink);
+      background: var(--paper);
+    }
+    .scale-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      align-items: center;
+      gap: 0;
+      border-bottom: var(--rule) solid var(--ink);
+      padding: 0;
+    }
+    .scale-row:last-child { border-bottom: none; }
+    .scale-row .label {
+      padding: 18px 24px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+    }
+    .scale-row .sample {
+      padding: 18px 28px;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+    }
+    .scale-row.r-xxl .sample { font-size: clamp(48px, 9vw, 132px); }
+    .scale-row.r-xl  .sample { font-size: clamp(34px, 5.4vw, 68px); }
+    .scale-row.r-lg  .sample { font-size: clamp(22px, 2.8vw, 36px); }
+    .scale-row.r-md  .sample {
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .scale-row.r-md .sample {
+      max-width: 60ch;
+    }
+
+    /* ---------- COMPOSANT 3 — Compositions block ---------- */
+    .signature-3 {
+      margin-bottom: 64px;
+    }
+    .composition {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: 110px;
+      gap: 0;
+      border: var(--rule) solid var(--ink);
+    }
+    .cell {
+      border-right: var(--rule) solid var(--ink);
+      border-bottom: var(--rule) solid var(--ink);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .cell .big {
+      font-family: var(--font-display);
+      font-size: 44px;
+      letter-spacing: -0.02em;
+      line-height: 0.85;
+      text-transform: uppercase;
+    }
+    .cell.c1 { grid-column: span 3; grid-row: span 2; background: var(--cobalt); color: var(--paper); }
+    .cell.c2 { grid-column: span 2; background: var(--signal); color: var(--ink); }
+    .cell.c3 { grid-column: span 1; background: var(--ink); color: var(--paper); }
+    .cell.c4 { grid-column: span 2; background: var(--hot); color: var(--paper); }
+    .cell.c5 { grid-column: span 1; background: var(--grass); color: var(--paper); }
+    .cell.c1 .big { font-size: 88px; }
+    .cell.c2 .big { font-size: 56px; }
+    .cell.c4 .big { font-size: 56px; }
+
+    /* ---------- ATMOSPHERE ---------- */
+    .atmosphere {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 0;
+      border: var(--rule) solid var(--ink);
+    }
+    .atmosphere-visual {
+      background: var(--paper);
+      border-right: var(--rule) solid var(--ink);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 90px;
+    }
+    .atmosphere-visual .a {
+      border-right: var(--rule) solid var(--ink);
+      border-bottom: var(--rule) solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+    .atmosphere-visual .a:nth-child(4n) { border-right: none; }
+    .atmosphere-visual .a.fill-hot     { background: var(--hot); color: var(--paper); }
+    .atmosphere-visual .a.fill-signal  { background: var(--signal); color: var(--ink); }
+    .atmosphere-visual .a.fill-cobalt  { background: var(--cobalt); color: var(--paper); }
+    .atmosphere-visual .a.fill-grass   { background: var(--grass); color: var(--paper); }
+    .atmosphere-visual .a.fill-pink    { background: var(--pink); color: var(--ink); }
+    .atmosphere-visual .a.fill-ink     { background: var(--ink); color: var(--paper); }
+    .atmosphere-visual .a.fill-paper   { background: var(--paper); color: var(--ink); }
+
+    .atmosphere-text {
+      padding: 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: var(--paper);
+    }
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 0 0 4px;
+    }
+    .atmosphere-text p {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .atmosphere-text .when {
+      border-top: var(--rule) solid var(--ink);
+      padding-top: 14px;
+    }
+    .atmosphere-text .when strong {
+      display: block;
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .when-use strong { color: var(--hot); }
+    .when-avoid strong { color: var(--cobalt); }
+
+    /* ---------- ANCHOR ---------- */
+    .anchor {
+      margin-top: 56px;
+      padding: 18px 0 0;
+      border-top: var(--rule) solid var(--ink);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .anchor span { opacity: 0.7; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 880px) {
+      .blocks { grid-template-columns: 1fr; }
+      .blocks .block { border-right: none; border-bottom: var(--rule) solid var(--ink); }
+      .blocks .block:last-child { border-bottom: none; }
+      .scale-row { grid-template-columns: 1fr; }
+      .scale-row .label { padding: 12px 18px; }
+      .composition { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 130px; }
+      .cell.c1, .cell.c2, .cell.c3, .cell.c4, .cell.c5 { grid-column: span 2; grid-row: span 1; }
+      .atmosphere { grid-template-columns: 1fr; }
+      .atmosphere-visual { border-right: none; border-bottom: var(--rule) solid var(--ink); }
+      .hero-meta .cell { flex: 1 1 100%; border-right: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="brand">Helio Goods — Boutique d'outils créatifs en direct</span>
+      <h1>
+        <span class="word-block">Vibrant</span>
+        &amp;
+        <span class="word-block alt">Block</span>
+        based.
+      </h1>
+      <p class="lede">Couleurs primaires saturées posées en aplats franches, typographie XXL au-delà du raisonnable, hiérarchie tranchée par des sauts de taille brutaux. Le style refuse la nuance : chaque bloc est une déclaration, chaque mot pèse sur la page.</p>
+      <div class="hero-meta">
+        <div class="cell">
+          <strong>Catalogue BIG</strong>
+          <span>N° 06</span>
+        </div>
+        <div class="cell">
+          <strong>Verdict</strong>
+          <span>Actuel</span>
+        </div>
+        <div class="cell">
+          <strong>Registre</strong>
+          <span>Brutaliste / Cinétique</span>
+        </div>
+        <div class="cell">
+          <strong>Aplats</strong>
+          <span>5 couleurs · 0 dégradé</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 1 — Aplats francs -->
+    <section class="signature">
+      <span class="section-label">Signature 01 / Aplats primaires</span>
+      <h2 class="section-title">La couleur fait le poids. Pas la bordure, pas l'ombre.</h2>
+      <p class="section-intro">Le Vibrant &amp; Block-based ne décore pas avec la couleur — il construit avec. Une primaire saturée occupe une zone entière (un quart de page, une colonne, un bloc-titre) et porte tout le contraste. Pas de gradient AI-slop violet-rose, pas de teinte pastel timide : du #F24E1E plein, du #2945FF franc, du #FFD400 signal.</p>
+      <div class="blocks">
+        <article class="block b-hot">
+          <p class="block-meta">Aplat 01 · Hot</p>
+          <p class="block-num">01</p>
+          <p class="block-text">Le rouge-orangé Gumroad. Quand un bloc prend cette couleur, il devient le point d'ancrage du regard. À utiliser pour le CTA principal ou le titre-affiche, jamais pour un accent décoratif.</p>
+        </article>
+        <article class="block b-signal">
+          <p class="block-meta">Aplat 02 · Signal</p>
+          <p class="block-num">02</p>
+          <p class="block-text">Le jaune Mailchimp. Saturation maximale, contraste fort sur ink et sur paper. Sert les zones d'arrêt : prix, chiffre clé, badge. Toxique en gradient, parfait en aplat plein.</p>
+        </article>
+        <article class="block b-cobalt">
+          <p class="block-meta">Aplat 03 · Cobalt</p>
+          <p class="block-num">03</p>
+          <p class="block-text">Le bleu cobalt franc — pas l'indigo Tailwind générique. Plus profond, plus saturé, plus humain. C'est la couleur structurante des grandes zones (hero, footer, section signature).</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 2 — Hiérarchie hard -->
+    <section class="signature signature-2">
+      <span class="section-label">Signature 02 / Hiérarchie brutale</span>
+      <h2 class="section-title">Sauts de taille violents. Pas de gris intermédiaires.</h2>
+      <p class="section-intro">L'écart entre H1 et body est volontairement énorme — facteur 8 à 12, jamais 2-3 comme en Swiss. La hiérarchie ne se devine pas, elle s'impose. Le H1 dévore l'écran ; le H3 sert de relais ; le body assume sa modestie. Il n'y a pas de niveau intermédiaire confortable.</p>
+      <div class="scale-stack">
+        <div class="scale-row r-xxl">
+          <div class="label">H1 · Display XXL<br>132px desktop</div>
+          <div class="sample">XXL Hero</div>
+        </div>
+        <div class="scale-row r-xl">
+          <div class="label">H2 · Display XL<br>68px desktop</div>
+          <div class="sample">Section title</div>
+        </div>
+        <div class="scale-row r-lg">
+          <div class="label">H3 · Display L<br>36px desktop</div>
+          <div class="sample">Subhead</div>
+        </div>
+        <div class="scale-row r-md">
+          <div class="label">Body · Sans 800<br>16px corps</div>
+          <div class="sample">Le corps reste petit, dense, lisible. C'est le contraste avec la display XXL qui crée toute la tension visuelle du style — pas un body raffiné en 18-20px, mais un body ouvrier en 14-16px qui sait rester à sa place.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 3 — Composition block -->
+    <section class="signature signature-3">
+      <span class="section-label">Signature 03 / Composition par tuiles</span>
+      <h2 class="section-title">Tout devient un rectangle de couleur. Y compris le vide.</h2>
+      <p class="section-intro">La page se construit comme un bloc d'imprimerie : grille rigide, tuiles colorées de tailles inégales, frontières nettes. Pas de cards arrondies à 16px qui ramollissent ; pas d'ombres douces qui floutent. Le radius reste à 4-8px max, et chaque bloc s'arrête net contre son voisin.</p>
+      <div class="composition">
+        <div class="cell c1">
+          <span>Bloc principal</span>
+          <span class="big">+312%</span>
+        </div>
+        <div class="cell c2">
+          <span>Bloc data</span>
+          <span class="big">€48</span>
+        </div>
+        <div class="cell c3">
+          <span>Tag</span>
+          <span class="big">04</span>
+        </div>
+        <div class="cell c4">
+          <span>Bloc CTA</span>
+          <span class="big">Buy</span>
+        </div>
+        <div class="cell c5">
+          <span>Stamp</span>
+          <span class="big">v.6</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHERE -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual" aria-hidden="true">
+        <div class="a fill-hot">A</div>
+        <div class="a fill-signal">B</div>
+        <div class="a fill-paper">·</div>
+        <div class="a fill-cobalt">C</div>
+        <div class="a fill-paper">·</div>
+        <div class="a fill-ink">D</div>
+        <div class="a fill-grass">E</div>
+        <div class="a fill-paper">·</div>
+        <div class="a fill-cobalt">F</div>
+        <div class="a fill-pink">G</div>
+        <div class="a fill-signal">H</div>
+        <div class="a fill-hot">I</div>
+      </div>
+      <div class="atmosphere-text">
+        <h3>L'atmosphère : poster d'imprimerie, pas dashboard B2B.</h3>
+        <p>L'ensemble respire le pochoir sérigraphique, l'affiche grand format, le packaging produit grand public. Chaque couleur reste fidèle à elle-même — pas de transparence, pas de mélange. C'est une grammaire visuelle directe, pensée pour le scroll mobile rapide et la mémorisation immédiate.</p>
+        <div class="when when-use">
+          <strong>Quand utiliser ce style</strong>
+          <p>Marques B2C culture (presse, édition, podcast), creator economy (Gumroad-like), produits digitaux jeunes (apps lifestyle, marketplaces), campagnes SaaS qui cherchent à rompre avec le bleu-violet AI-slop générique. Aussi : marques CPG (food, beverage) qui veulent un visage digital aussi vif que leur packaging.</p>
+        </div>
+        <div class="when when-avoid">
+          <strong>Quand l'éviter</strong>
+          <p>Banque, assurance, légal, santé : la saturation transmet trop fort, l'institutionnel demande de la retenue. Aussi : luxe contemplatif, marques premium silencieuses, éditorial culturel haut de gamme — la palette saturée et la typo XXL tuent toute notion de raffinement réservé.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="anchor">
+      <span>Style Library · BIG</span>
+      <span>Réf. Gumroad · Mailchimp · Stripe Press · Notion</span>
+    </footer>
+
+  </main>
+</body>
+</html>

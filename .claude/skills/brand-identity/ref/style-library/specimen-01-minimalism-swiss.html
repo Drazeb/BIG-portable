@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 01. Minimalism & Swiss Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Swiss — neutres profonds + UN accent rouge signal (Müller-Brockmann) */
+      --paper: #F2F1ED;          /* blanc cassé chaud, pas blanc pur (référence offset) */
+      --paper-deep: #E7E5DE;     /* hairlines structurelles fond */
+      --ink: #0E0E0C;            /* noir d'imprimerie, pas #000 */
+      --ink-soft: #3A3A36;
+      --ink-muted: #7A7972;
+      --hairline: #1A1A18;       /* hairlines de grille (1px noir) */
+      --hairline-faint: #C7C5BD;
+      --signal: #D4321C;         /* rouge signal Swiss canonique (Müller-Brockmann, Vignelli) */
+
+      --font-display: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-body: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+      --col: 1fr;
+      --gutter: 24px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { background: var(--paper); color: var(--ink); }
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      font-size: 15px;
+    }
+
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 56px 48px 96px;
+    }
+
+    /* ─── GRILLE 12 COLONNES PERCEPTIBLE ─────────────────────── */
+    .grid-12 {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+    }
+
+    /* ─── BANDEAU MASTHEAD (folio Swiss éditorial) ───────────── */
+    .masthead {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: 56px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .masthead .m-left  { grid-column: 1 / span 4; color: var(--ink); }
+    .masthead .m-mid   { grid-column: 5 / span 4; color: var(--ink-muted); }
+    .masthead .m-right { grid-column: 9 / span 4; text-align: right; color: var(--ink); }
+    .masthead .m-right .red { color: var(--signal); }
+
+    /* ─── HERO — composition asymétrique grille forte ────────── */
+    .hero {
+      grid-template-columns: repeat(12, 1fr);
+      padding-bottom: 72px;
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: 72px;
+    }
+    .hero .h-section-no {
+      grid-column: 1 / span 1;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      padding-top: 14px;
+      border-top: 1px solid var(--hairline);
+    }
+    .hero .h-section-label {
+      grid-column: 2 / span 3;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      padding-top: 14px;
+      border-top: 1px solid var(--hairline);
+    }
+    .hero h1 {
+      grid-column: 1 / span 9;
+      margin-top: 28px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(56px, 7.4vw, 116px);
+      line-height: 0.94;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+    }
+    .hero h1 .ampersand {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--signal);
+    }
+    .hero .lede {
+      grid-column: 1 / span 6;
+      margin-top: 40px;
+      font-family: var(--font-body);
+      font-size: 19px;
+      line-height: 1.45;
+      color: var(--ink-soft);
+      max-width: 36ch;
+    }
+    .hero .meta {
+      grid-column: 9 / span 4;
+      margin-top: 40px;
+      align-self: end;
+    }
+    .hero .meta dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 24px; font-family: var(--font-display); font-size: 12px; letter-spacing: 0.02em; }
+    .hero .meta dt { color: var(--ink-muted); text-transform: uppercase; }
+    .hero .meta dd { color: var(--ink); font-weight: 500; }
+
+    /* ─── COMPOSANT 1 — La grille 12 colonnes PERCEPTIBLE ───── */
+    .sig {
+      margin-bottom: 88px;
+    }
+    .sig-header {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: 32px;
+    }
+    .sig-header .num {
+      grid-column: 1 / span 1;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .sig-header .label {
+      grid-column: 2 / span 5;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .sig-header .title {
+      grid-column: 7 / span 6;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .sig-1 .demo {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+      position: relative;
+      padding: 32px 0 12px;
+    }
+    /* Hairlines verticales perceptibles */
+    .sig-1 .demo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, var(--hairline-faint) 1px, transparent 1px) 0 0 / calc(100%/12) 100%;
+      pointer-events: none;
+    }
+    .sig-1 .col-label {
+      grid-row: 1;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-align: left;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .sig-1 .col-label.r { color: var(--signal); }
+    .sig-1 .row-block {
+      grid-row: 2;
+      height: 96px;
+      background: var(--ink);
+    }
+    .sig-1 .row-block.alt { background: var(--paper-deep); border: 1px solid var(--hairline); }
+    .sig-1 .row-block.signal { background: var(--signal); }
+
+    .sig-1 .body {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+      margin-top: 28px;
+    }
+    .sig-1 .body .lead-num {
+      grid-column: 1 / span 1;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 56px;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+    .sig-1 .body p {
+      grid-column: 2 / span 6;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+    .sig-1 .body p strong { color: var(--ink); font-weight: 600; }
+    .sig-1 .body .aside {
+      grid-column: 9 / span 4;
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      border-left: 1px solid var(--hairline);
+      padding-left: 18px;
+    }
+    .sig-1 .body .aside b { display: block; color: var(--ink); font-weight: 700; margin-bottom: 4px; }
+
+    /* ─── COMPOSANT 2 — Hiérarchie typographique forte ──────── */
+    .sig-2 .demo {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+    }
+    .sig-2 .scale { grid-column: 1 / span 8; display: flex; flex-direction: column; gap: 0; }
+    .sig-2 .scale .row {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      align-items: baseline;
+      gap: 24px;
+      padding: 16px 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .sig-2 .scale .row:last-child { border-bottom: 1px solid var(--hairline); }
+    .sig-2 .scale .tag {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+    .sig-2 .scale .h-display { font-family: var(--font-display); font-weight: 800; font-size: 80px; line-height: 0.92; letter-spacing: -0.035em; }
+    .sig-2 .scale .h1        { font-family: var(--font-display); font-weight: 700; font-size: 44px; line-height: 1.02; letter-spacing: -0.025em; }
+    .sig-2 .scale .h2        { font-family: var(--font-display); font-weight: 600; font-size: 26px; line-height: 1.15; letter-spacing: -0.012em; }
+    .sig-2 .scale .body-l    { font-family: var(--font-body); font-weight: 400; font-size: 17px; line-height: 1.5; color: var(--ink-soft); }
+    .sig-2 .scale .caption   { font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
+
+    .sig-2 .commentary {
+      grid-column: 9 / span 4;
+      align-self: start;
+      padding-top: 16px;
+      border-top: 1px solid var(--hairline);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+    }
+    .sig-2 .commentary b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); margin-bottom: 12px; }
+    .sig-2 .commentary p + p { margin-top: 12px; }
+    .sig-2 .commentary .ratio {
+      margin-top: 16px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .sig-2 .commentary .ratio span { color: var(--signal); }
+
+    /* ─── COMPOSANT 3 — Espace blanc structuré (ratio 60/40) ─ */
+    .sig-3 .demo {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+      align-items: stretch;
+    }
+    .sig-3 .panel-empty {
+      grid-column: 1 / span 7;
+      min-height: 280px;
+      border: 1px solid var(--hairline);
+      position: relative;
+      background:
+        repeating-linear-gradient(
+          135deg,
+          transparent 0,
+          transparent 14px,
+          var(--hairline-faint) 14px,
+          var(--hairline-faint) 15px
+        );
+    }
+    .sig-3 .panel-empty .crosshair {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 18px;
+    }
+    .sig-3 .panel-empty .crosshair::before,
+    .sig-3 .panel-empty .crosshair::after {
+      content: "";
+      position: absolute;
+      background: var(--ink);
+    }
+    .sig-3 .panel-empty .crosshair::before { left: 50%; top: 0; bottom: 0; width: 1px; }
+    .sig-3 .panel-empty .crosshair::after  { top: 50%; left: 0; right: 0; height: 1px; }
+    .sig-3 .panel-empty .label-tl {
+      position: absolute;
+      top: 14px; left: 14px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .sig-3 .panel-empty .label-br {
+      position: absolute;
+      bottom: 14px; right: 14px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--signal);
+    }
+
+    .sig-3 .panel-content {
+      grid-column: 8 / span 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+    .sig-3 .panel-content .eyebrow {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--signal);
+    }
+    .sig-3 .panel-content h3 {
+      margin-top: 14px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 1.05;
+      letter-spacing: -0.018em;
+    }
+    .sig-3 .panel-content p {
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+    }
+    .sig-3 .panel-content .arrow {
+      margin-top: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+      border-top: 1px solid var(--hairline);
+      padding-top: 14px;
+    }
+    .sig-3 .panel-content .arrow svg { color: var(--signal); }
+
+    /* ─── BLOC ATMOSPHÈRE — usage du style ───────────────────── */
+    .atmosphere {
+      margin-top: 96px;
+      padding-top: 32px;
+      border-top: 1px solid var(--hairline);
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+    }
+    .atmosphere .head-num {
+      grid-column: 1 / span 1;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .atmosphere .head-label {
+      grid-column: 2 / span 5;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .atmosphere .head-title {
+      grid-column: 7 / span 6;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .atmosphere .visual {
+      grid-column: 1 / span 6;
+      margin-top: 32px;
+      aspect-ratio: 4 / 3;
+      background: var(--paper);
+      border: 1px solid var(--hairline);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Composition Müller-Brockmann : un cercle rouge + grille hairline */
+    .atmosphere .visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, var(--hairline-faint) 1px, transparent 1px) 0 0 / calc(100%/8) 100%,
+        linear-gradient(to bottom, var(--hairline-faint) 1px, transparent 1px) 0 0 / 100% calc(100%/6);
+    }
+    .atmosphere .visual .disc {
+      position: absolute;
+      width: 46%;
+      aspect-ratio: 1;
+      background: var(--signal);
+      border-radius: 50%;
+      top: 18%;
+      right: 14%;
+    }
+    .atmosphere .visual .bar {
+      position: absolute;
+      bottom: 18%;
+      left: 12%;
+      width: 36%;
+      height: 4px;
+      background: var(--ink);
+    }
+    .atmosphere .visual .bar.short {
+      bottom: calc(18% + 14px);
+      width: 22%;
+      background: var(--ink-soft);
+    }
+    .atmosphere .visual .label {
+      position: absolute;
+      bottom: 14px; right: 14px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .atmosphere .visual .label-tl {
+      position: absolute;
+      top: 14px; left: 14px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .atmosphere .text {
+      grid-column: 8 / span 5;
+      margin-top: 32px;
+    }
+    .atmosphere .text h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.005em;
+      margin-bottom: 14px;
+    }
+    .atmosphere .text p {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+    }
+    .atmosphere .text p + p { margin-top: 14px; }
+    .atmosphere .text .use, .atmosphere .text .avoid {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 16px;
+      align-items: baseline;
+      padding: 14px 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .atmosphere .text .use:last-of-type { border-bottom: 1px solid var(--hairline); }
+    .atmosphere .text .avoid { border-bottom: 1px solid var(--hairline); }
+    .atmosphere .text .tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .atmosphere .text .tag.use   { color: var(--ink); }
+    .atmosphere .text .tag.avoid { color: var(--signal); }
+
+    .atmosphere .references {
+      grid-column: 1 / span 12;
+      margin-top: 56px;
+      padding-top: 18px;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .atmosphere .references b { color: var(--ink); font-weight: 700; margin-right: 10px; }
+
+    /* ─── FOOTER colophon (pas un sitemap, juste un colophon) ─ */
+    .colophon {
+      margin-top: 72px;
+      padding-top: 18px;
+      border-top: 1px solid var(--hairline);
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gutter);
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .colophon .c-l { grid-column: 1 / span 4; }
+    .colophon .c-m { grid-column: 5 / span 4; }
+    .colophon .c-r { grid-column: 9 / span 4; text-align: right; }
+
+  </style>
+</head>
+<body>
+  <main class="wrap">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="m-left">Style Library / BIG</div>
+      <div class="m-mid">Catalogue 2026 — Partie A</div>
+      <div class="m-right">Fiche N°<span class="red"> 01</span></div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero grid-12">
+      <div class="h-section-no">01</div>
+      <div class="h-section-label">Registre — Minimaliste · Verdict : Intemporel</div>
+
+      <h1>Minimalism <span class="ampersand">&amp;</span> Swiss Style</h1>
+
+      <p class="lede">Une grille rigoureuse, une typographie choisie à dessein, un espace blanc qui compose au lieu de combler. Depuis Müller-Brockmann jusqu'à Linear et Stripe, ce style traverse les décennies parce qu'il refuse l'ornement et confie la signature à la structure.</p>
+
+      <div class="meta">
+        <dl>
+          <dt>Marque</dt><dd>Helio — Studio éditorial</dd>
+          <dt>Période</dt><dd>1957 → présent</dd>
+          <dt>Héritage</dt><dd>École de Bâle</dd>
+          <dt>Accent</dt><dd>Rouge signal · 1 seul</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 1 — Grille 12 colonnes perceptible -->
+    <section class="sig sig-1">
+      <header class="sig-header">
+        <div class="num">02</div>
+        <div class="label">Signature 01 / Grille</div>
+        <div class="title">12 colonnes, perceptibles sans être décoratives</div>
+      </header>
+
+      <div class="demo">
+        <div class="col-label" style="grid-column: 1;">01</div>
+        <div class="col-label" style="grid-column: 2;">02</div>
+        <div class="col-label" style="grid-column: 3;">03</div>
+        <div class="col-label" style="grid-column: 4;">04</div>
+        <div class="col-label" style="grid-column: 5;">05</div>
+        <div class="col-label" style="grid-column: 6;">06</div>
+        <div class="col-label" style="grid-column: 7;">07</div>
+        <div class="col-label" style="grid-column: 8;">08</div>
+        <div class="col-label" style="grid-column: 9;">09</div>
+        <div class="col-label" style="grid-column: 10;">10</div>
+        <div class="col-label" style="grid-column: 11;">11</div>
+        <div class="col-label r" style="grid-column: 12;">12</div>
+
+        <div class="row-block" style="grid-column: 1 / span 5;"></div>
+        <div class="row-block alt" style="grid-column: 6 / span 4;"></div>
+        <div class="row-block signal" style="grid-column: 10 / span 3;"></div>
+      </div>
+
+      <div class="body">
+        <div class="lead-num">12</div>
+        <p>La grille n'est pas un échafaudage caché : elle est <strong>visible par les alignements eux-mêmes</strong>. Un bloc tient sur 5 colonnes, un autre sur 4, un troisième sur 3 — et c'est cette asymétrie maîtrisée qui rend la composition Swiss reconnaissable. Pas de mur de cards uniformes, pas de répartition trois-tiers automatique : chaque bloc a une largeur choisie qui répond à un autre bloc.</p>
+        <div class="aside"><b>Pourquoi cette signature</b>La grille structure le regard, mais l'asymétrie le retient. Un layout 12 colonnes égales devient un mur ; un layout 5+4+3 devient une composition.</div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 2 — Hiérarchie typographique forte -->
+    <section class="sig sig-2">
+      <header class="sig-header">
+        <div class="num">03</div>
+        <div class="label">Signature 02 / Typographie</div>
+        <div class="title">Sauts de taille marqués, font display assumée</div>
+      </header>
+
+      <div class="demo">
+        <div class="scale">
+          <div class="row"><div class="tag">Display</div><div class="h-display">Helio</div></div>
+          <div class="row"><div class="tag">H1</div><div class="h1">La structure parle plus fort que l'ornement.</div></div>
+          <div class="row"><div class="tag">H2</div><div class="h2">Une hiérarchie qui se lit en deux secondes</div></div>
+          <div class="row"><div class="tag">Body</div><div class="body-l">Le corps de texte s'efface devant la structure. Il existe pour être lu, pas pour décorer la page. La famille Inter Tight assure le confort de lecture sans rivaliser avec le display.</div></div>
+          <div class="row"><div class="tag">Caption</div><div class="caption">Légende — Manuel typographique Helio · 2026</div></div>
+        </div>
+
+        <div class="commentary">
+          <b>Pourquoi cette signature</b>
+          <p>Le Swiss n'utilise jamais une seule taille pour tout. Le contraste entre 80 px et 12 px crée la respiration que l'espace blanc seul ne suffit pas à produire.</p>
+          <p>Le display est <strong>choisi à dessein</strong> — Archivo, Söhne, Helvetica Neue, GT America. Inter en mono-font est un signal AI : le Swiss exige une voix typographique reconnaissable.</p>
+          <div class="ratio">Ratio Display / Body : <span>×6,7</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 3 — Espace blanc structuré -->
+    <section class="sig sig-3">
+      <header class="sig-header">
+        <div class="num">04</div>
+        <div class="label">Signature 03 / Espace blanc</div>
+        <div class="title">Le vide compose, il ne comble pas</div>
+      </header>
+
+      <div class="demo">
+        <div class="panel-empty">
+          <span class="label-tl">Vide structurel · 7 colonnes</span>
+          <span class="crosshair"></span>
+          <span class="label-br">58% de la composition</span>
+        </div>
+        <div class="panel-content">
+          <div>
+            <div class="eyebrow">Espace blanc actif</div>
+            <h3>L'espace n'est pas une absence. C'est un acteur.</h3>
+            <p>Un Swiss bien composé attribue 50 à 70 % de la surface au vide. Pas par paresse : pour donner au contenu la place de respirer et au lecteur la distance qu'il faut pour distinguer la hiérarchie. Le vide a des bords nets — il est délimité par la grille, pas dilué.</p>
+          </div>
+          <a class="arrow" href="#">
+            Voir le manuel
+            <svg width="22" height="10" viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M0 5h20M16 1l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE -->
+    <section class="atmosphere">
+      <div class="head-num">05</div>
+      <div class="head-label">Atmosphère / Usage</div>
+      <div class="head-title">Quand utiliser ce style — et quand l'éviter</div>
+
+      <div class="visual">
+        <span class="label-tl">Composition · Hommage Müller-Brockmann</span>
+        <span class="bar short"></span>
+        <span class="bar"></span>
+        <span class="disc"></span>
+        <span class="label">Helio · Affiche n°01</span>
+      </div>
+
+      <div class="text">
+        <h4>Une rigueur qui devient une voix.</h4>
+        <p>Le Swiss n'est pas un style "neutre" : c'est un parti pris. Il dit à l'utilisateur que la marque a confiance dans sa structure et n'a pas besoin de décorer pour être prise au sérieux. Il fonctionne quand le contenu lui-même est dense, sérieux, ou éditorial.</p>
+
+        <div class="use">
+          <div class="tag use">À utiliser</div>
+          <div>SaaS B2B sérieux · Plateformes éditoriales · Studios de design · Cabinets de conseil · Marques d'auteur · Applications professionnelles denses · Documentation technique.</div>
+        </div>
+        <div class="use">
+          <div class="tag use">Bien servi</div>
+          <div>Linear · Stripe · Vercel · Pentagram · Studios héritiers de Müller-Brockmann.</div>
+        </div>
+        <div class="avoid">
+          <div class="tag avoid">À éviter</div>
+          <div>Marques émotionnelles enfance/loisirs · DTC produits sensoriels · Univers ludiques · Tout contexte où la chaleur ou l'expressivité priment sur la rigueur structurelle.</div>
+        </div>
+      </div>
+
+      <div class="references">
+        <span><b>Références</b> Linear.app · Stripe · Vercel · Müller-Brockmann · Pentagram · Vignelli · GT America · Söhne · Helvetica Neue</span>
+      </div>
+    </section>
+
+    <!-- COLOPHON -->
+    <footer class="colophon">
+      <div class="c-l">Style Library BIG · Catalogue 2026</div>
+      <div class="c-m">Spécimen 01 / 34</div>
+      <div class="c-r">Composé en Archivo &amp; Inter Tight</div>
+    </footer>
+
+  </main>
+</body>
+</html>

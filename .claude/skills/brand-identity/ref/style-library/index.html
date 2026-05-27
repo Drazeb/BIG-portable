@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIG — Bibliothèque permanente des 34 styles</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #f9fafb; color: #1a1a1a; padding: 48px 32px; line-height: 1.5; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 24px; font-weight: 700; color: #0a0a0a; margin-bottom: 6px; letter-spacing: -0.01em; }
+  .subtitle { color: #525252; font-size: 14px; margin-bottom: 32px; }
+  .legend { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; padding: 12px 16px; background: #fff; border-radius: 6px; border: 1px solid #e5e7eb; font-size: 12px; color: #525252; flex-wrap: wrap; }
+  .legend strong { color: #1a1a1a; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; transition: border-color .15s, box-shadow .15s; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 6px; }
+  .card:hover { border-color: #1a1a1a; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+  .card .num { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; color: #9ca3af; font-weight: 500; letter-spacing: 0.04em; }
+  .card .name { font-size: 15px; font-weight: 600; color: #0a0a0a; }
+  .card .registre { font-size: 11px; color: #525252; text-transform: uppercase; letter-spacing: 0.04em; }
+  .registre-tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .reg-min { background: #f0fdf4; color: #166534; }
+  .reg-edit { background: #eff6ff; color: #1e40af; }
+  .reg-brut { background: #fef2f2; color: #991b1b; }
+  .reg-tech { background: #f5f3ff; color: #6b21a8; }
+  .reg-cine { background: #1a1a1a; color: #f3f4f6; }
+  .reg-org { background: #fef3c7; color: #854d0e; }
+  .reg-craft { background: #fef7ed; color: #9a3412; }
+  .reg-kin { background: #ecfeff; color: #155e75; }
+  .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>BIG — Bibliothèque permanente des 34 styles</h1>
+  <p class="subtitle">Specimens HTML auto-réflexifs : chaque page incarne le style ET en explique les signatures. Référence pour comprendre à quoi ressemble un style sans être designer.</p>
+
+  <div class="legend">
+    <strong>Registres</strong> :
+    <span class="registre-tag reg-min">Minimaliste</span>
+    <span class="registre-tag reg-edit">Éditorial</span>
+    <span class="registre-tag reg-brut">Brutaliste</span>
+    <span class="registre-tag reg-tech">Tech</span>
+    <span class="registre-tag reg-cine">Cinématographique</span>
+    <span class="registre-tag reg-org">Organique</span>
+    <span class="registre-tag reg-craft">Crafty</span>
+    <span class="registre-tag reg-kin">Cinétique</span>
+  </div>
+
+  <div class="grid">
+    <a href="specimen-01-minimalism-swiss.html" class="card"><span class="num">01</span><span class="name">Minimalism &amp; Swiss Style</span><span class="registre-tag reg-min">Minimaliste</span></a>
+    <a href="specimen-02-swiss-modernism-2.html" class="card"><span class="num">02</span><span class="name">Swiss Modernism 2.0</span><span class="registre-tag reg-edit">Éditorial</span></a>
+    <a href="specimen-03-editorial-grid.html" class="card"><span class="num">03</span><span class="name">Editorial Grid / Magazine</span><span class="registre-tag reg-edit">Éditorial</span></a>
+    <a href="specimen-04-bento-box-grid.html" class="card"><span class="num">04</span><span class="name">Bento Box Grid</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-05-exaggerated-minimalism.html" class="card"><span class="num">05</span><span class="name">Exaggerated Minimalism</span><span class="registre-tag reg-min">Minimaliste</span></a>
+    <a href="specimen-06-hypertypography.html" class="card"><span class="num">06</span><span class="name">Hypertypography</span><span class="registre-tag reg-edit">Éditorial</span></a>
+    <a href="specimen-07-glassmorphism.html" class="card"><span class="num">07</span><span class="name">Glassmorphism (raffiné)</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-08-brutalism.html" class="card"><span class="num">08</span><span class="name">Brutalism</span><span class="registre-tag reg-brut">Brutaliste</span></a>
+    <a href="specimen-09-liquid-glass.html" class="card"><span class="num">09</span><span class="name">Liquid Glass</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-10-neubrutalism.html" class="card"><span class="num">10</span><span class="name">Neubrutalism</span><span class="registre-tag reg-brut">Brutaliste</span></a>
+    <a href="specimen-11-gradient-mesh.html" class="card"><span class="num">11</span><span class="name">Gradient Mesh / Aurora Evolved</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-12-soft-ui-evolution.html" class="card"><span class="num">12</span><span class="name">Soft UI Evolution</span><span class="registre-tag reg-min">Minimaliste</span></a>
+    <a href="specimen-13-anti-ai-crafting.html" class="card"><span class="num">13</span><span class="name">Anti-AI Crafting / Craft-Core</span><span class="registre-tag reg-craft">Crafty</span></a>
+    <a href="specimen-14-dark-mode-cinema.html" class="card"><span class="num">14</span><span class="name">Dark Mode Cinema</span><span class="registre-tag reg-cine">Cinématographique</span></a>
+    <a href="specimen-15-aurora-ui.html" class="card"><span class="num">15</span><span class="name">Aurora UI</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-16-organic-biophilic.html" class="card"><span class="num">16</span><span class="name">Organic Biophilic</span><span class="registre-tag reg-org">Organique</span></a>
+    <a href="specimen-17-biomimetic-organic.html" class="card"><span class="num">17</span><span class="name">Biomimetic Organic 2.0</span><span class="registre-tag reg-org">Organique</span></a>
+    <a href="specimen-18-warmth-minimalism.html" class="card"><span class="num">18</span><span class="name">Warmth Minimalism / Quiet Luxury</span><span class="registre-tag reg-min">Minimaliste</span></a>
+    <a href="specimen-19-naive-design.html" class="card"><span class="num">19</span><span class="name">Naïve Design / Handmade Digital</span><span class="registre-tag reg-craft">Crafty</span></a>
+    <a href="specimen-20-vibrant-block-based.html" class="card"><span class="num">20</span><span class="name">Vibrant &amp; Block-based</span><span class="registre-tag reg-brut">Brutaliste</span></a>
+    <a href="specimen-21-3d-hyperrealism.html" class="card"><span class="num">21</span><span class="name">3D &amp; Hyperrealism</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-22-motion-driven.html" class="card"><span class="num">22</span><span class="name">Motion-Driven</span><span class="registre-tag reg-kin">Cinétique</span></a>
+    <a href="specimen-23-micro-interactions.html" class="card"><span class="num">23</span><span class="name">Micro-interactions</span><span class="registre-tag reg-kin">Cinétique</span></a>
+    <a href="specimen-24-storytelling-driven.html" class="card"><span class="num">24</span><span class="name">Storytelling-Driven</span><span class="registre-tag reg-cine">Cinématographique</span></a>
+    <a href="specimen-25-dimensional-layering.html" class="card"><span class="num">25</span><span class="name">Dimensional Layering</span><span class="registre-tag reg-kin">Cinétique</span></a>
+    <a href="specimen-26-kinetic-typography.html" class="card"><span class="num">26</span><span class="name">Kinetic Typography</span><span class="registre-tag reg-kin">Cinétique</span></a>
+    <a href="specimen-27-parallax-storytelling.html" class="card"><span class="num">27</span><span class="name">Parallax Storytelling</span><span class="registre-tag reg-cine">Cinématographique</span></a>
+    <a href="specimen-28-interactive-cursor.html" class="card"><span class="num">28</span><span class="name">Interactive Cursor</span><span class="registre-tag reg-kin">Cinétique</span></a>
+    <a href="specimen-29-3d-product-preview.html" class="card"><span class="num">29</span><span class="name">3D Product Preview</span><span class="registre-tag reg-tech">Tech</span></a>
+    <a href="specimen-30-adaptive-motion-identity.html" class="card"><span class="num">30</span><span class="name">Adaptive Motion Identity</span><span class="registre-tag reg-kin">Cinétique</span></a>
+    <a href="specimen-31-immersive-scroll-narrative.html" class="card"><span class="num">31</span><span class="name">Immersive Scroll Narrative</span><span class="registre-tag reg-cine">Cinématographique</span></a>
+    <a href="specimen-32-gen-z-chaos.html" class="card"><span class="num">32</span><span class="name">Gen Z Chaos / Maximalism</span><span class="registre-tag reg-brut">Brutaliste</span></a>
+    <a href="specimen-33-anti-polish-raw.html" class="card"><span class="num">33</span><span class="name">Anti-Polish / Raw Aesthetic</span><span class="registre-tag reg-craft">Crafty</span></a>
+    <a href="specimen-34-expressive-organic.html" class="card"><span class="num">34</span><span class="name">Expressive Organic / Anti-Grid Flow</span><span class="registre-tag reg-org">Organique</span></a>
+  </div>
+
+  <p class="footer-note">34 specimens permanents · ref/style-library/ · BIG Brand Identity Generator</p>
+</div>
+</body>
+</html>

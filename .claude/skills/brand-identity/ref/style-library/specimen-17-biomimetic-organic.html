@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 17. Biomimetic Organic 2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette dérivée du vivant — pigments biologiques précis, jamais "wellness stock" */
+      --mycelium-cream: #F1ECE0;       /* peau de champignon blanc, intérieur de tubercule */
+      --mycelium-deep:  #E4DBC6;       /* mycélium plus mature, pli de chair végétale */
+      --bark-sienna:    #8E5A36;       /* écorce humide après pluie, châtaignier */
+      --bark-deep:      #4A2F1E;       /* aubier, sève foncée, racine */
+      --moss:           #6E7A4F;       /* mousse de sous-bois, lichen vif */
+      --moss-deep:      #3F4A2A;       /* canopée à contre-jour */
+      --honey:          #C68B36;       /* miel cru, pollen, capucine séchée */
+      --berry:          #6B2237;       /* mûre écrasée, hibiscus, sang de betterave */
+      --ink-vein:       #1B1612;       /* charbon végétal, encre noix de galle */
+
+      --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+      --font-body:    "Manrope", "Inter", system-ui, sans-serif;
+    }
+
+    /* RESET */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 17px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--mycelium-cream);
+      color: var(--ink-vein);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      /* Substrat vivant : grain organique très fin (pas studio noise) + diffusions latérales chaudes */
+      background-image:
+        radial-gradient(ellipse 70% 55% at 8% 0%, rgba(198, 139, 54, 0.10), transparent 60%),
+        radial-gradient(ellipse 80% 60% at 100% 100%, rgba(74, 47, 30, 0.10), transparent 65%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='2' seed='14'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.13  0 0 0 0 0.08  0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23b)'/></svg>");
+      background-size: auto, auto, 240px 240px;
+      background-attachment: fixed, fixed, scroll;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 56px 96px;
+      position: relative;
+    }
+
+    /* ========================================================================
+       HERO — composition décentrée, organique, ancrée à gauche
+       ======================================================================== */
+    .hero {
+      padding: 32px 0 72px;
+      border-bottom: 1px solid rgba(74, 47, 30, 0.18);
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 56px;
+      align-items: end;
+    }
+    .eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--bark-sienna);
+      margin-bottom: 28px;
+      display: inline-block;
+      font-weight: 500;
+    }
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--bark-sienna);
+      vertical-align: middle;
+      margin-right: 14px;
+      transform: translateY(-2px);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1, "wght" 380;
+      font-style: normal;
+      font-size: clamp(3.4rem, 7.2vw, 6.4rem);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--ink-vein);
+      max-width: 16ch;
+      margin-bottom: 30px;
+    }
+    .hero h1 em {
+      font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1, "wght" 380;
+      font-style: italic;
+      color: var(--bark-sienna);
+    }
+    .hero .lede {
+      font-size: 1.18rem;
+      line-height: 1.55;
+      max-width: 52ch;
+      color: var(--bark-deep);
+      font-weight: 400;
+      margin-bottom: 28px;
+    }
+    .hero .brand {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+      color: var(--bark-sienna);
+      font-weight: 500;
+    }
+    .hero .brand::before {
+      content: "✦ ";
+      color: var(--moss);
+    }
+
+    /* "Organisme" CSS pur dans le hero — colonie de mycélium sur substrat */
+    .hero-organism {
+      position: relative;
+      aspect-ratio: 1 / 1.05;
+      align-self: end;
+      max-width: 380px;
+      justify-self: end;
+      width: 100%;
+    }
+    .hero-organism .substrate {
+      position: absolute;
+      inset: 0;
+      border-radius: 58% 42% 48% 52% / 50% 56% 44% 50%;
+      background:
+        radial-gradient(ellipse 60% 50% at 30% 28%, rgba(241, 236, 224, 0.45), transparent 55%),
+        radial-gradient(ellipse 80% 70% at 80% 95%, rgba(27, 22, 18, 0.30), transparent 65%),
+        linear-gradient(155deg, #B6936A 0%, #8E5A36 50%, #4A2F1E 100%);
+      box-shadow:
+        inset -10px -14px 28px rgba(27, 22, 18, 0.45),
+        inset 8px 6px 18px rgba(241, 236, 224, 0.25),
+        12px 14px 0 rgba(27, 22, 18, 0.85);
+      overflow: hidden;
+      animation: breathe 9s ease-in-out infinite;
+    }
+    .hero-organism .substrate::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='cork'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 0.20  0 0 0 0 0.12  0 0 0 0 0.05  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23cork)'/></svg>");
+      mix-blend-mode: multiply;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    /* Colonie organique cultivée sur le substrat : grappes de cellules irrégulières */
+    .hero-organism .colony {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hero-organism .colony svg { width: 100%; height: 100%; display: block; }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.012); }
+    }
+
+    /* ========================================================================
+       SECTIONS GÉNÉRIQUES
+       ======================================================================== */
+    section.specimen {
+      padding: 72px 0;
+      border-bottom: 1px solid rgba(74, 47, 30, 0.18);
+    }
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: var(--bark-sienna);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .section-label::before {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 1px;
+      background: var(--bark-sienna);
+      vertical-align: middle;
+      margin-right: 10px;
+      transform: translateY(-2px);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 80, "SOFT" 80, "WONK" 1, "wght" 460;
+      font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+      line-height: 1.08;
+      color: var(--ink-vein);
+      max-width: 26ch;
+      margin-bottom: 26px;
+      letter-spacing: -0.012em;
+    }
+    .section-prose {
+      font-family: var(--font-body);
+      font-size: 1.06rem;
+      max-width: 60ch;
+      color: var(--bark-deep);
+    }
+    .section-prose p + p { margin-top: 14px; }
+    .section-prose strong { color: var(--ink-vein); font-weight: 600; }
+
+    /* ========================================================================
+       SIGNATURE 1 — Texture du vivant RÉEL (mycélium / veine de feuille)
+       ======================================================================== */
+    .signature-living {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .living-frame {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: 6px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 60% at 25% 20%, rgba(241, 236, 224, 0.35), transparent 55%),
+        linear-gradient(160deg, #5C6B3F 0%, #3F4A2A 55%, #1F2814 100%);
+      box-shadow: 8px 10px 0 rgba(27, 22, 18, 0.85);
+    }
+    /* Macro veine de feuille — SVG inline pour fractalité réelle */
+    .living-frame svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .living-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='leaf'><feTurbulence type='fractalNoise' baseFrequency='1.05' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.30 0'/></filter><rect width='100%' height='100%' filter='url(%23leaf)'/></svg>");
+      mix-blend-mode: overlay;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .living-frame .scale-tag {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      color: var(--mycelium-cream);
+      text-transform: uppercase;
+      padding: 6px 10px;
+      background: rgba(27, 22, 18, 0.55);
+      backdrop-filter: blur(2px);
+      border-left: 2px solid var(--moss);
+    }
+
+    /* ========================================================================
+       SIGNATURE 2 — Mouvement RESPIRANT (animation cyclique justifiée)
+       ======================================================================== */
+    .signature-breath {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .breath-stage {
+      position: relative;
+      aspect-ratio: 5 / 4;
+      border-radius: 4px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 30%, rgba(241, 236, 224, 0.7), transparent 60%),
+        linear-gradient(160deg, #F1ECE0 0%, #E4DBC6 55%, #C9BC9C 100%);
+      box-shadow: 6px 8px 0 rgba(27, 22, 18, 0.55);
+    }
+    /* Cellule qui respire — diaphragme vivant, période lente (jamais frénétique) */
+    .breath-stage .cell {
+      position: absolute;
+      width: 58%;
+      height: 58%;
+      top: 21%;
+      left: 21%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(241, 236, 224, 0.55), transparent 50%),
+        radial-gradient(circle at 65% 70%, rgba(74, 47, 30, 0.35), transparent 55%),
+        radial-gradient(circle at 50% 50%, #C68B36 0%, #8E5A36 60%, #4A2F1E 100%);
+      box-shadow:
+        inset -10px -14px 32px rgba(27, 22, 18, 0.35),
+        inset 8px 6px 18px rgba(241, 236, 224, 0.20);
+      animation: cellBreath 7.5s ease-in-out infinite;
+    }
+    .breath-stage .cell::before {
+      /* Noyau intérieur, plus petit, autre rythme */
+      content: "";
+      position: absolute;
+      width: 38%;
+      height: 38%;
+      top: 31%;
+      left: 31%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, #E89B45 0%, #6B2237 70%, #2A0E15 100%);
+      box-shadow: inset 0 0 12px rgba(241, 236, 224, 0.25);
+      animation: nucleusBreath 5.2s ease-in-out infinite;
+    }
+    .breath-stage .cell::after {
+      /* Membrane externe — anneau qui se contracte */
+      content: "";
+      position: absolute;
+      inset: -8%;
+      border-radius: 50%;
+      border: 1px solid rgba(74, 47, 30, 0.4);
+      animation: membraneBreath 9s ease-in-out infinite;
+    }
+    @keyframes cellBreath {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50%      { transform: scale(1.05) rotate(2deg); }
+    }
+    @keyframes nucleusBreath {
+      0%, 100% { transform: scale(1); opacity: 0.92; }
+      50%      { transform: scale(0.94); opacity: 1; }
+    }
+    @keyframes membraneBreath {
+      0%, 100% { transform: scale(1); opacity: 0.55; }
+      50%      { transform: scale(1.04); opacity: 0.30; }
+    }
+    /* Légende scientifique en bas */
+    .breath-stage .reading {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      color: var(--bark-deep);
+      text-transform: uppercase;
+      padding: 6px 10px;
+      background: rgba(241, 236, 224, 0.7);
+      border-left: 2px solid var(--bark-sienna);
+    }
+
+    /* Désactivation animations si l'utilisateur le préfère — accessibilité */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-organism .substrate,
+      .breath-stage .cell,
+      .breath-stage .cell::before,
+      .breath-stage .cell::after { animation: none; }
+    }
+
+    /* ========================================================================
+       SIGNATURE 3 — Palette de pigments biologiques
+       ======================================================================== */
+    .signature-palette {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 56px;
+      align-items: center;
+    }
+    .pigment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px 18px;
+    }
+    .pigment {
+      position: relative;
+    }
+    .pigment .drop {
+      width: 100%;
+      aspect-ratio: 1 / 1.1;
+      /* Forme fractale, jamais cercle ni rectangle Tailwind */
+      border-radius: 56% 44% 38% 62% / 48% 58% 42% 52%;
+      box-shadow:
+        inset -8px -12px 22px rgba(27, 22, 18, 0.40),
+        inset 6px 4px 14px rgba(241, 236, 224, 0.25),
+        4px 5px 0 rgba(27, 22, 18, 0.85);
+      position: relative;
+      overflow: hidden;
+    }
+    .pigment .drop::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.32 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
+      mix-blend-mode: overlay;
+      opacity: 0.55;
+    }
+    .pigment.mycelium .drop { background: radial-gradient(circle at 32% 28%, #FAF6EC 0%, #E4DBC6 55%, #B6A887 100%); }
+    .pigment.bark     .drop { background: radial-gradient(circle at 32% 28%, #B58563 0%, #8E5A36 55%, #3F2618 100%); }
+    .pigment.moss     .drop { background: radial-gradient(circle at 32% 28%, #94A06D 0%, #6E7A4F 55%, #2E3820 100%); }
+    .pigment.honey    .drop { background: radial-gradient(circle at 32% 28%, #ECB76A 0%, #C68B36 55%, #6E4A18 100%); }
+    .pigment.berry    .drop { background: radial-gradient(circle at 32% 28%, #9F3850 0%, #6B2237 55%, #2A0E15 100%); }
+    .pigment.vein     .drop { background: radial-gradient(circle at 32% 28%, #4A4036 0%, #1B1612 60%, #0A0807 100%); }
+
+    .pigment .label {
+      margin-top: 14px;
+      display: block;
+    }
+    .pigment .name {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 14, "SOFT" 60, "WONK" 0, "wght" 500;
+      font-size: 1rem;
+      color: var(--ink-vein);
+      display: block;
+      line-height: 1.2;
+    }
+    .pigment .source {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      color: var(--bark-sienna);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 4px;
+    }
+    .pigment .hex {
+      font-family: var(--font-body);
+      font-size: 0.74rem;
+      color: var(--bark-deep);
+      letter-spacing: 0.06em;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ========================================================================
+       ATMOSPHÈRE — usage typique
+       ======================================================================== */
+    .atmosphere {
+      padding: 88px 0 24px;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 64px;
+      align-items: center;
+      border-bottom: none;
+    }
+    .atmosphere-visual {
+      position: relative;
+      aspect-ratio: 5 / 4;
+      border-radius: 4px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 25% 25%, rgba(241, 236, 224, 0.45), transparent 60%),
+        radial-gradient(ellipse 90% 70% at 95% 100%, rgba(74, 47, 30, 0.45), transparent 60%),
+        linear-gradient(155deg, #C09B6F 0%, #8E5A36 55%, #3F2618 100%);
+      box-shadow: 8px 10px 0 rgba(27, 22, 18, 0.85);
+    }
+    .atmosphere-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='a'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' seed='9'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.12  0 0 0 0 0.06  0 0 0 0.50 0'/></filter><rect width='100%' height='100%' filter='url(%23a)'/></svg>");
+      mix-blend-mode: multiply;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    /* Logo "biocultivé" sur la surface — comme Crucible / Madalena Studio */
+    .atmosphere-visual .biolog {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 56%;
+      aspect-ratio: 1 / 1;
+    }
+    .atmosphere-visual .biolog svg { width: 100%; height: 100%; }
+    .atmosphere-visual .caption {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      right: 18px;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      color: var(--mycelium-cream);
+      line-height: 1.4;
+      max-width: 50ch;
+    }
+    .atmosphere-visual .caption strong {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 14, "SOFT" 80, "WONK" 1, "wght" 500;
+      font-style: italic;
+      font-weight: 500;
+      color: #ECB76A;
+    }
+
+    .atmosphere-text .section-title {
+      max-width: 22ch;
+    }
+    .atmosphere-text .usage-list {
+      list-style: none;
+      margin-top: 24px;
+    }
+    .atmosphere-text .usage-list li {
+      font-family: var(--font-body);
+      font-size: 1.02rem;
+      color: var(--bark-deep);
+      padding: 12px 0 12px 30px;
+      border-top: 1px solid rgba(74, 47, 30, 0.20);
+      position: relative;
+    }
+    .atmosphere-text .usage-list li:last-child {
+      border-bottom: 1px solid rgba(74, 47, 30, 0.20);
+    }
+    .atmosphere-text .usage-list li::before {
+      position: absolute;
+      left: 0;
+      top: 12px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .atmosphere-text .usage-list li.yes::before { content: "✓"; color: var(--moss); }
+    .atmosphere-text .usage-list li.no::before  { content: "✕"; color: var(--berry); }
+
+    /* ========================================================================
+       COLOPHON
+       ======================================================================== */
+    .colophon {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(74, 47, 30, 0.30);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--bark-deep);
+      text-transform: uppercase;
+    }
+    .colophon .ref { color: var(--bark-sienna); font-weight: 600; }
+
+    /* ========================================================================
+       RESPONSIVE
+       ======================================================================== */
+    @media (max-width: 880px) {
+      .page { padding: 48px 28px 72px; }
+      .hero,
+      .signature-living,
+      .signature-breath,
+      .signature-palette,
+      .atmosphere {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .hero-organism { max-width: 320px; justify-self: start; }
+      .pigment-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div>
+        <span class="eyebrow">Style № 17 · Bibliothèque BIG</span>
+        <h1>Biomimetic <em>Organic</em> 2.0</h1>
+        <p class="lede">Le vivant remis à la racine du design. Pas de blobs sucrés, pas de "wellness stock" : des textures fractales, des matières microbiennes, et des surfaces qui respirent à la fréquence du corps.</p>
+        <p class="brand">Helio Biome — Cosmétique cultivée, fermentée, vivante.</p>
+      </div>
+
+      <div class="hero-organism" aria-hidden="true">
+        <div class="substrate"></div>
+        <!-- Colonie : grappes de cellules irrégulières, fractales, dérivées du vrai mycélium -->
+        <div class="colony">
+          <svg viewBox="0 0 400 420" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="cellA" cx="35%" cy="35%" r="60%">
+                <stop offset="0%" stop-color="#FAF6EC" stop-opacity="0.95"/>
+                <stop offset="60%" stop-color="#E4DBC6" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#B6A887" stop-opacity="0.70"/>
+              </radialGradient>
+              <radialGradient id="cellB" cx="40%" cy="35%" r="55%">
+                <stop offset="0%" stop-color="#ECB76A" stop-opacity="0.90"/>
+                <stop offset="100%" stop-color="#8E5A36" stop-opacity="0.65"/>
+              </radialGradient>
+              <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11"/>
+                <feDisplacementMap in="SourceGraphic" scale="3"/>
+              </filter>
+            </defs>
+            <!-- grappe principale -->
+            <g filter="url(#rough)" opacity="0.92">
+              <ellipse cx="180" cy="170" rx="60" ry="52" fill="url(#cellA)"/>
+              <ellipse cx="230" cy="200" rx="40" ry="36" fill="url(#cellA)"/>
+              <ellipse cx="155" cy="220" rx="32" ry="30" fill="url(#cellA)"/>
+              <ellipse cx="210" cy="148" rx="22" ry="20" fill="url(#cellA)"/>
+              <ellipse cx="135" cy="180" rx="18" ry="16" fill="url(#cellA)"/>
+              <ellipse cx="245" cy="165" rx="14" ry="13" fill="url(#cellA)"/>
+            </g>
+            <!-- grappe secondaire (plus chaude) -->
+            <g filter="url(#rough)" opacity="0.88">
+              <ellipse cx="265" cy="280" rx="38" ry="34" fill="url(#cellB)"/>
+              <ellipse cx="300" cy="260" rx="22" ry="20" fill="url(#cellB)"/>
+              <ellipse cx="240" cy="305" rx="18" ry="17" fill="url(#cellB)"/>
+              <ellipse cx="285" cy="305" rx="12" ry="11" fill="url(#cellB)"/>
+            </g>
+            <!-- spores éparses -->
+            <g opacity="0.75">
+              <circle cx="120" cy="140" r="4" fill="#FAF6EC"/>
+              <circle cx="100" cy="280" r="5" fill="#E4DBC6"/>
+              <circle cx="320" cy="180" r="3" fill="#FAF6EC"/>
+              <circle cx="340" cy="340" r="4" fill="#ECB76A"/>
+              <circle cx="80"  cy="200" r="3" fill="#FAF6EC"/>
+              <circle cx="200" cy="350" r="4" fill="#E4DBC6"/>
+            </g>
+            <!-- hyphes (filaments fins du mycélium) -->
+            <g stroke="#F1ECE0" stroke-width="0.6" fill="none" opacity="0.55">
+              <path d="M 180 170 Q 150 110 110 90"/>
+              <path d="M 180 170 Q 220 100 270 80"/>
+              <path d="M 230 200 Q 290 220 340 200"/>
+              <path d="M 155 220 Q 100 260 70 310"/>
+              <path d="M 265 280 Q 320 320 360 320"/>
+              <path d="M 240 305 Q 200 360 180 390"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- SIGNATURE 1 — Texture du vivant RÉEL -->
+    <section class="specimen signature-living">
+      <div class="living-frame" aria-hidden="true">
+        <!-- Macro veine de feuille — fractale réelle, pas blob -->
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="leafBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7B8A56" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#3F4A2A" stop-opacity="1"/>
+            </linearGradient>
+            <filter id="veinRough" x="-5%" y="-5%" width="110%" height="110%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" seed="22"/>
+              <feDisplacementMap in="SourceGraphic" scale="6"/>
+            </filter>
+          </defs>
+          <rect width="400" height="500" fill="url(#leafBg)"/>
+          <!-- Nervure principale -->
+          <g filter="url(#veinRough)" stroke="#D9CFA8" fill="none" opacity="0.78">
+            <path d="M 200 30 Q 195 200 195 470" stroke-width="3.5"/>
+            <!-- Nervures secondaires (asymétriques, comme une vraie feuille) -->
+            <path d="M 198 90 Q 130 110 50 130"   stroke-width="2"/>
+            <path d="M 197 120 Q 270 140 360 150" stroke-width="2"/>
+            <path d="M 196 170 Q 110 190 30 210"  stroke-width="2"/>
+            <path d="M 196 200 Q 280 215 380 230" stroke-width="2"/>
+            <path d="M 195 260 Q 120 275 40 285"  stroke-width="1.8"/>
+            <path d="M 195 290 Q 270 305 370 310" stroke-width="1.8"/>
+            <path d="M 195 350 Q 130 360 60 365"  stroke-width="1.5"/>
+            <path d="M 195 380 Q 260 388 350 388" stroke-width="1.5"/>
+            <!-- Nervures tertiaires (réseau fractal) -->
+            <path d="M 130 120 Q 110 140 90 165"  stroke-width="0.8"/>
+            <path d="M 270 140 Q 285 165 295 188" stroke-width="0.8"/>
+            <path d="M 110 195 Q 90 215 75 240"   stroke-width="0.8"/>
+            <path d="M 280 215 Q 295 240 305 265" stroke-width="0.8"/>
+            <path d="M 120 280 Q 100 300 90 320"  stroke-width="0.7"/>
+            <path d="M 270 305 Q 290 325 295 345" stroke-width="0.7"/>
+            <!-- Encore plus fines -->
+            <path d="M 160 100 L 145 115" stroke-width="0.5"/>
+            <path d="M 230 130 L 245 145" stroke-width="0.5"/>
+            <path d="M 155 180 L 138 195" stroke-width="0.5"/>
+            <path d="M 240 210 L 258 225" stroke-width="0.5"/>
+            <path d="M 165 270 L 148 285" stroke-width="0.5"/>
+            <path d="M 235 300 L 252 315" stroke-width="0.5"/>
+          </g>
+          <!-- Halos lumineux entre nervures -->
+          <g opacity="0.35">
+            <ellipse cx="100" cy="160" rx="60" ry="40" fill="#A8B57A"/>
+            <ellipse cx="290" cy="180" rx="55" ry="38" fill="#A8B57A"/>
+            <ellipse cx="120" cy="260" rx="50" ry="38" fill="#A8B57A"/>
+            <ellipse cx="290" cy="280" rx="55" ry="36" fill="#A8B57A"/>
+          </g>
+        </svg>
+        <span class="scale-tag">Macro · 32×</span>
+      </div>
+      <div>
+        <p class="section-label">Signature 01 · Texture du vivant réel</p>
+        <h2 class="section-title">Mycélium, veines, peau — pas blobs Photoshop.</h2>
+        <div class="section-prose">
+          <p>Biomimetic 2.0 ne dessine pas des formes "organiques" : il <strong>cultive du vivant</strong>. La référence canonique reste Madalena Studio pour Crucible, où le logo est une colonie de bactéries littéralement cultivée sur un bouchon de liège, photographiée à la macro.</p>
+          <p>Ce que ça implique côté écran : des fractales de nervures végétales, du grain de mycélium, des textures de peau, de l'écorce humide. Toujours <strong>asymétrique, irrégulier, photographiable</strong>. Si la forme pouvait être tracée à la règle ou générée d'un seul gradient blob, ce n'est plus du Biomimetic 2.0 — c'est de l'Organic Biophilic basique.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 2 — Mouvement RESPIRANT -->
+    <section class="specimen signature-breath">
+      <div>
+        <p class="section-label">Signature 02 · Mouvement respirant</p>
+        <h2 class="section-title">L'animation a la fréquence du diaphragme, pas du processeur.</h2>
+        <div class="section-prose">
+          <p>Une cellule biologique respire à <strong>6–9 secondes par cycle complet</strong>. Pas 1,5s. Pas "infinite" frénétique. Trois rythmes superposés (membrane, corps, noyau) en légère désynchronisation produisent le sentiment du vivant — la cohérence sans la mécanique.</p>
+          <p>Test simple : si l'animation continue de te distraire après 30 secondes, elle est mal calibrée. Le mouvement organique se <strong>fond dans la perception</strong>, comme un battement de respiration qu'on cesse de remarquer. Et il s'arrête net avec <code>prefers-reduced-motion: reduce</code> — le vivant n'est pas tyrannique.</p>
+        </div>
+      </div>
+      <div class="breath-stage" aria-hidden="true">
+        <div class="cell"></div>
+        <span class="reading">7,5 s · cycle complet</span>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 3 — Palette de pigments biologiques -->
+    <section class="specimen signature-palette">
+      <div>
+        <p class="section-label">Signature 03 · Palette biologique</p>
+        <h2 class="section-title">Pigments dérivés du règne vivant, pas swatches Tailwind.</h2>
+        <div class="section-prose">
+          <p>Chaque hex correspond à une matière qu'un biologiste pourrait <strong>nommer et tenir</strong> : mycélium frais, écorce après pluie, mousse de sous-bois, miel cru, mûre écrasée, charbon de noix de galle. Ces couleurs ont une <strong>histoire enzymatique</strong>.</p>
+          <p>Aucun violet <code>#6366f1</code>. Aucun cyan tech. Aucun pastel "wellness". Le contraste vient de la chair contre la sève, du miel contre le charbon. Si Pantone n'a pas un nom organique pour la couleur, on n'utilise pas la couleur.</p>
+        </div>
+      </div>
+      <div class="pigment-grid">
+        <div class="pigment mycelium">
+          <div class="drop"></div>
+          <span class="label">
+            <span class="name">Mycélium frais</span>
+            <span class="source">Pleurote · 7 jours</span>
+            <span class="hex">#E4DBC6</span>
+          </span>
+        </div>
+        <div class="pigment bark">
+          <div class="drop"></div>
+          <span class="label">
+            <span class="name">Écorce humide</span>
+            <span class="source">Châtaignier · pluie</span>
+            <span class="hex">#8E5A36</span>
+          </span>
+        </div>
+        <div class="pigment moss">
+          <div class="drop"></div>
+          <span class="label">
+            <span class="name">Mousse vive</span>
+            <span class="source">Sphaigne · sous-bois</span>
+            <span class="hex">#6E7A4F</span>
+          </span>
+        </div>
+        <div class="pigment honey">
+          <div class="drop"></div>
+          <span class="label">
+            <span class="name">Miel de pollen</span>
+            <span class="source">Châtaignier · cru</span>
+            <span class="hex">#C68B36</span>
+          </span>
+        </div>
+        <div class="pigment berry">
+          <div class="drop"></div>
+          <span class="label">
+            <span class="name">Mûre écrasée</span>
+            <span class="source">Hibiscus · betterave</span>
+            <span class="hex">#6B2237</span>
+          </span>
+        </div>
+        <div class="pigment vein">
+          <div class="drop"></div>
+          <span class="label">
+            <span class="name">Encre de galle</span>
+            <span class="source">Charbon · noix</span>
+            <span class="hex">#1B1612</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual" aria-hidden="true">
+        <div class="biolog">
+          <!-- "Logo cultivé" — figure organique fractale qui évoque Crucible -->
+          <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="biocell" cx="35%" cy="30%" r="65%">
+                <stop offset="0%"  stop-color="#FAF6EC" stop-opacity="0.95"/>
+                <stop offset="55%" stop-color="#E4DBC6" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#8E5A36" stop-opacity="0.40"/>
+              </radialGradient>
+              <filter id="bioRough" x="-15%" y="-15%" width="130%" height="130%">
+                <feTurbulence type="fractalNoise" baseFrequency="1.0" numOctaves="2" seed="17"/>
+                <feDisplacementMap in="SourceGraphic" scale="2.5"/>
+              </filter>
+            </defs>
+            <g filter="url(#bioRough)">
+              <!-- Forme principale, contour irrégulier -->
+              <path d="M 100 30
+                       Q 140 25 165 55
+                       Q 178 90 168 125
+                       Q 150 165 110 175
+                       Q 65 178 40 145
+                       Q 25 105 38 70
+                       Q 60 32 100 30 Z"
+                    fill="url(#biocell)" opacity="0.95"/>
+              <!-- Petites cellules satellites -->
+              <ellipse cx="155" cy="150" rx="14" ry="12" fill="#FAF6EC" opacity="0.85"/>
+              <ellipse cx="50"  cy="150" rx="10" ry="9"  fill="#FAF6EC" opacity="0.80"/>
+              <ellipse cx="175" cy="80"  rx="8"  ry="7"  fill="#FAF6EC" opacity="0.75"/>
+              <ellipse cx="30"  cy="90"  rx="7"  ry="6"  fill="#FAF6EC" opacity="0.70"/>
+            </g>
+            <!-- Hyphes qui rayonnent -->
+            <g stroke="#F1ECE0" stroke-width="0.7" fill="none" opacity="0.55">
+              <path d="M 100 175 Q 105 188 110 196"/>
+              <path d="M 165 130 Q 175 140 188 145"/>
+              <path d="M 40 110  Q 25 110 12 105"/>
+              <path d="M 70 35   Q 75 18 80 8"/>
+            </g>
+          </svg>
+        </div>
+        <p class="caption"><strong>Helio Biome</strong> — Identité cultivée sur substrat de liège, photographiée à 24h, 48h, 7 jours. Le logo grandit. C'est un <em>vivant</em>, pas un fichier vectoriel figé.</p>
+      </div>
+      <div class="atmosphere-text">
+        <p class="section-label">Atmosphère · Quand ce style fonctionne</p>
+        <h2 class="section-title">Là où le vivant n'est pas une métaphore mais le produit lui-même.</h2>
+        <ul class="usage-list">
+          <li class="yes">Cosmétique fermentée, probiotiques, dermo vivante (Aesop avancée, Skin+Me)</li>
+          <li class="yes">Food : fermentation, biotech alimentaire, mycoprotéines, kombucha</li>
+          <li class="yes">Wellness scientifique : longevity, microbiome, neuro-tracking corporel</li>
+          <li class="yes">Marques régénératives : Patagonia avancée, agriculture vivante, biomatériaux</li>
+          <li class="no">SaaS B2B analytique — le vivant sonne décoratif, costume biologique</li>
+          <li class="no">Fintech, infra cloud — la métaphore vivante glisse dans le greenwashing</li>
+          <li class="no">Wellness "stock" générique — Biomimetic 2.0 EXIGE des matériaux singuliers</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COLOPHON -->
+    <footer class="colophon">
+      <span>Bibliothèque BIG · Style № 17</span>
+      <span class="ref">Biomimetic Organic 2.0 · Verdict ACTUEL</span>
+      <span>Source · Madalena Studio (Crucible) · Aesop · Patagonia 2026</span>
+    </footer>
+
+  </main>
+</body>
+</html>

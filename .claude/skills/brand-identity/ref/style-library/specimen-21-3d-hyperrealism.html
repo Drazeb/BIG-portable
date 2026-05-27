@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 21. 3D & Hyperrealism</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique : nuit studio + signal lumière physique */
+      --bg-deep: #0A0B10;
+      --bg-surface: #14161E;
+      --bg-graphite: #1E2230;
+      --bg-metal: #2A2E3C;
+      --text-primary: #F4F3EE;
+      --text-mid: #A8AEC0;
+      --text-dim: #6A7187;
+      --signal-cyan: #5BE3FF;
+      --signal-rim: #FF6A2A;
+      --hairline: rgba(255, 255, 255, 0.07);
+      --hairline-strong: rgba(255, 255, 255, 0.14);
+
+      --font-display: "Space Grotesk", sans-serif;
+      --font-body: "Inter", sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { background: var(--bg-deep); color: var(--text-primary); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-size: 15px;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
+
+    /* ─────────── HERO ─────────── */
+    .hero {
+      position: relative;
+      padding: 56px 0 96px;
+      border-bottom: 1px solid var(--hairline);
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .meta-row span::before { content: "// "; color: var(--signal-cyan); }
+
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(48px, 6vw, 84px);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      margin-bottom: 24px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--signal-cyan);
+      font-weight: 500;
+    }
+
+    .lede {
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--text-mid);
+      max-width: 480px;
+      margin-bottom: 40px;
+    }
+
+    .brand-line {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      padding-top: 20px;
+      border-top: 1px solid var(--hairline);
+      max-width: 380px;
+    }
+    .brand-line strong {
+      color: var(--text-primary);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* — Scène 3D CSS pure : cube perspective + rim lights — */
+    .scene-stage {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      perspective: 1400px;
+      perspective-origin: 55% 35%;
+      background:
+        radial-gradient(ellipse 60% 40% at 70% 20%, rgba(91, 227, 255, 0.18), transparent 60%),
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(255, 106, 42, 0.10), transparent 65%),
+        linear-gradient(160deg, var(--bg-graphite) 0%, var(--bg-deep) 100%);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .scene-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--hairline) 1px, transparent 1px),
+        linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(ellipse 70% 50% at 50% 60%, black 30%, transparent 80%);
+    }
+    .cube {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 220px;
+      height: 220px;
+      transform: translate(-50%, -50%) rotateX(-22deg) rotateY(38deg);
+      transform-style: preserve-3d;
+    }
+    .face {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border: 1px solid var(--hairline-strong);
+    }
+    .face.top {
+      transform: rotateX(90deg) translateZ(110px);
+      background:
+        linear-gradient(135deg, rgba(91, 227, 255, 0.55) 0%, rgba(91, 227, 255, 0.10) 50%, rgba(20, 22, 30, 0.95) 100%),
+        var(--bg-metal);
+      box-shadow: inset 0 -1px 0 rgba(91, 227, 255, 0.4);
+    }
+    .face.front {
+      transform: translateZ(110px);
+      background:
+        linear-gradient(180deg, rgba(244, 243, 238, 0.06) 0%, rgba(20, 22, 30, 0.85) 75%),
+        linear-gradient(120deg, var(--bg-metal), var(--bg-graphite));
+      box-shadow:
+        inset 1px 0 0 rgba(255, 255, 255, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .face.right {
+      transform: rotateY(90deg) translateZ(110px);
+      background:
+        linear-gradient(90deg, rgba(255, 106, 42, 0.35) 0%, rgba(20, 22, 30, 0.95) 70%),
+        var(--bg-graphite);
+      box-shadow: inset 1px 0 0 rgba(255, 106, 42, 0.45);
+    }
+    /* Ombre projetée physique sous le cube */
+    .ground-shadow {
+      position: absolute;
+      bottom: 14%;
+      left: 50%;
+      width: 280px;
+      height: 60px;
+      transform: translateX(-50%) rotateX(78deg);
+      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0, 0, 0, 0.65), transparent 70%);
+      filter: blur(14px);
+    }
+
+    /* HUD overlay — specs en mono */
+    .hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .hud span { display: block; }
+    .hud .val { color: var(--signal-cyan); }
+    .hud .right { text-align: right; }
+
+    /* ─────────── SECTION COMMUNE ─────────── */
+    section.block { padding: 96px 0; border-bottom: 1px solid var(--hairline); }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(32px, 3.5vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      margin-bottom: 20px;
+      max-width: 640px;
+    }
+    .body-text {
+      color: var(--text-mid);
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 560px;
+    }
+    .body-text + .body-text { margin-top: 14px; }
+
+    /* ─────────── SIGNATURE 1 — Vraie 3D vs mockup ─────────── */
+    .sig-1-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .compare-cell {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--hairline-strong);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .compare-cell .label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 8px;
+      border: 1px solid var(--hairline-strong);
+      background: rgba(10, 11, 16, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 3;
+    }
+    .compare-cell.fake .label { color: var(--signal-rim); border-color: rgba(255, 106, 42, 0.5); }
+    .compare-cell.real .label { color: var(--signal-cyan); border-color: rgba(91, 227, 255, 0.5); }
+
+    /* Cellule 1 : faux 3D — image device frame mockup plat */
+    .fake-mockup {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, var(--bg-graphite) 0%, var(--bg-deep) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .device-frame {
+      width: 60%;
+      aspect-ratio: 9 / 16;
+      background: var(--bg-metal);
+      border: 4px solid #3a3f50;
+      border-radius: 18px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .device-frame::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      background: linear-gradient(135deg, #777, #333);
+      border-radius: 8px;
+    }
+    .device-frame::after {
+      content: "PNG";
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.2em;
+    }
+
+    /* Cellule 2 : vraie 3D — sphère métallique avec lumière physique */
+    .real-3d {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 90%, rgba(255, 106, 42, 0.12), transparent 60%),
+        linear-gradient(180deg, #1a1d28 0%, #0a0b10 100%);
+      overflow: hidden;
+    }
+    .real-3d .sphere {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 65%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 25%, #f8f6ee 0%, #c4c8d5 12%, #6a7187 35%, #2a2e3c 65%, #14161e 100%);
+      box-shadow:
+        0 30px 50px -10px rgba(0, 0, 0, 0.7),
+        inset -20px -30px 50px rgba(0, 0, 0, 0.5);
+    }
+    .real-3d .sphere::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 75% 80%, rgba(255, 106, 42, 0.55) 0%, transparent 25%),
+        radial-gradient(circle at 25% 75%, rgba(91, 227, 255, 0.30) 0%, transparent 22%);
+      mix-blend-mode: screen;
+    }
+    .real-3d .floor-shadow {
+      position: absolute;
+      bottom: 6%;
+      left: 50%;
+      width: 60%;
+      height: 14px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.7), transparent 70%);
+      filter: blur(8px);
+    }
+
+    .signature-rules {
+      list-style: none;
+      margin-top: 28px;
+      border-top: 1px solid var(--hairline);
+    }
+    .signature-rules li {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--hairline);
+      font-size: 14px;
+      color: var(--text-mid);
+    }
+    .signature-rules li .num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--signal-cyan);
+      letter-spacing: 0.08em;
+      padding-top: 2px;
+    }
+    .signature-rules li strong {
+      color: var(--text-primary);
+      font-weight: 500;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    /* ─────────── SIGNATURE 2 — Lumière physique ─────────── */
+    .sig-2-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .light-stage {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background:
+        radial-gradient(ellipse 35% 25% at 25% 30%, rgba(91, 227, 255, 0.40), transparent 55%),
+        radial-gradient(ellipse 30% 20% at 80% 75%, rgba(255, 106, 42, 0.30), transparent 60%),
+        linear-gradient(140deg, #1a1d28 0%, #0a0b10 100%);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .material-block {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 55%;
+      height: 45%;
+      transform: translate(-50%, -50%) skewY(-6deg);
+      background:
+        linear-gradient(180deg, #f4f3ee 0%, #c4c8d5 8%, #6a7187 30%, #2a2e3c 75%, #14161e 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 25px 40px -10px rgba(0, 0, 0, 0.6),
+        0 5px 12px -2px rgba(91, 227, 255, 0.15);
+    }
+    .material-block::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 35%;
+      background: linear-gradient(180deg, rgba(91, 227, 255, 0.22), transparent);
+      mix-blend-mode: overlay;
+    }
+    .light-rays {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, transparent 30%, rgba(91, 227, 255, 0.06) 35%, transparent 40%),
+        linear-gradient(115deg, transparent 60%, rgba(91, 227, 255, 0.04) 64%, transparent 68%);
+      pointer-events: none;
+    }
+    .light-labels {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .light-labels .pin {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .light-labels .pin::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--signal-cyan);
+      box-shadow: 0 1px 4px 0 rgba(91, 227, 255, 0.6);
+    }
+    .light-labels .pin.warm::before { background: var(--signal-rim); box-shadow: 0 1px 4px 0 rgba(255, 106, 42, 0.6); }
+    .pin-key { top: 18%; left: 14%; }
+    .pin-rim { bottom: 20%; right: 14%; }
+    .pin-fill { top: 50%; left: 4%; }
+    .pin-fill::before { background: var(--text-mid) !important; box-shadow: none !important; }
+
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .specs-table tr { border-bottom: 1px solid var(--hairline); }
+    .specs-table td { padding: 14px 0; vertical-align: top; }
+    .specs-table td:first-child {
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      width: 38%;
+    }
+    .specs-table td:last-child {
+      color: var(--text-primary);
+      text-align: right;
+    }
+    .specs-table .ok { color: var(--signal-cyan); }
+    .specs-table .ko { color: var(--signal-rim); text-decoration: line-through; }
+
+    /* ─────────── SIGNATURE 3 — Interaction & craft signal ─────────── */
+    .sig-3-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .interaction-panel {
+      position: relative;
+      aspect-ratio: 16 / 11;
+      background:
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(91, 227, 255, 0.10), transparent 70%),
+        linear-gradient(160deg, var(--bg-surface), var(--bg-deep));
+      border: 1px solid var(--hairline-strong);
+      border-radius: 3px;
+      overflow: hidden;
+      padding: 20px;
+    }
+    .ip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+    .ip-header .dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--signal-cyan);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .object-stage {
+      position: relative;
+      height: calc(100% - 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .torus {
+      width: 60%;
+      aspect-ratio: 2 / 1;
+      position: relative;
+      transform: perspective(800px) rotateX(55deg);
+      border-radius: 50%;
+      border: 18px solid transparent;
+      background:
+        conic-gradient(
+          from 220deg,
+          #2a2e3c 0deg,
+          #6a7187 60deg,
+          #f4f3ee 90deg,
+          #c4c8d5 130deg,
+          #6a7187 200deg,
+          #2a2e3c 280deg,
+          #14161e 320deg,
+          #2a2e3c 360deg
+        );
+      mask: radial-gradient(ellipse closest-side at 50% 50%, transparent 55%, black 56%);
+      -webkit-mask: radial-gradient(ellipse closest-side at 50% 50%, transparent 55%, black 56%);
+      box-shadow: 0 30px 40px -10px rgba(0, 0, 0, 0.6);
+    }
+    .torus-rim {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 25% 30%, rgba(91, 227, 255, 0.25), transparent 50%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(255, 106, 42, 0.30), transparent 50%);
+      mix-blend-mode: screen;
+      transform: perspective(800px) rotateX(55deg);
+    }
+    .cursor-marker {
+      position: absolute;
+      top: 38%;
+      left: 62%;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--signal-cyan);
+      border-radius: 50%;
+      box-shadow: 0 1px 6px 0 rgba(91, 227, 255, 0.5);
+    }
+    .cursor-marker::after {
+      content: "drag";
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+      white-space: nowrap;
+    }
+    .ip-readout {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+    }
+    .ip-readout .v { color: var(--text-primary); }
+
+    /* ─────────── ATMOSPHÈRE ─────────── */
+    .atmosphere {
+      padding: 120px 0;
+      background:
+        radial-gradient(ellipse 50% 40% at 80% 0%, rgba(91, 227, 255, 0.10), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 10% 100%, rgba(255, 106, 42, 0.08), transparent 65%),
+        var(--bg-deep);
+      border-bottom: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .atmos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .atmos-stage {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(91, 227, 255, 0.18), transparent 60%),
+        linear-gradient(180deg, #0a0b10 0%, #14161e 100%);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .atmos-rings {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 75%, transparent 100px, rgba(91, 227, 255, 0.10) 101px, transparent 103px),
+        radial-gradient(circle at 50% 75%, transparent 160px, rgba(91, 227, 255, 0.07) 161px, transparent 163px),
+        radial-gradient(circle at 50% 75%, transparent 220px, rgba(91, 227, 255, 0.05) 221px, transparent 223px);
+    }
+    .atmos-object {
+      position: absolute;
+      top: 38%;
+      left: 50%;
+      width: 58%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border-radius: 28% 72% 65% 35% / 50% 50% 50% 50%;
+      background:
+        radial-gradient(circle at 35% 30%, #f8f6ee 0%, #a8aec0 18%, #2a2e3c 60%, #0a0b10 100%);
+      box-shadow:
+        0 30px 60px -10px rgba(0, 0, 0, 0.7),
+        inset -25px -35px 60px rgba(0, 0, 0, 0.5);
+      animation: none;
+    }
+    .atmos-object::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 70% 75%, rgba(255, 106, 42, 0.45), transparent 30%),
+        radial-gradient(circle at 30% 80%, rgba(91, 227, 255, 0.30), transparent 28%);
+      mix-blend-mode: screen;
+    }
+    .atmos-floor-line {
+      position: absolute;
+      bottom: 22%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--hairline-strong) 30%, var(--hairline-strong) 70%, transparent);
+    }
+
+    .atmos-text h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .atmos-text p { color: var(--text-mid); font-size: 16px; line-height: 1.6; margin-bottom: 16px; max-width: 460px; }
+    .atmos-text .usage {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 460px;
+    }
+    .usage-card {
+      padding: 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--hairline);
+      border-radius: 3px;
+    }
+    .usage-card .head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .usage-card.go .head { color: var(--signal-cyan); }
+    .usage-card.no .head { color: var(--signal-rim); }
+    .usage-card ul { list-style: none; }
+    .usage-card li { font-size: 13px; color: var(--text-mid); padding: 4px 0; }
+    .usage-card li::before { content: "— "; color: var(--text-dim); }
+
+    /* ─────────── FOOTER discret ─────────── */
+    .colophon {
+      padding: 40px 0 56px;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .colophon .stamp { color: var(--signal-cyan); }
+
+    @media (max-width: 880px) {
+      .wrap { padding: 0 24px; }
+      .hero-grid, .sig-1-grid, .sig-2-grid, .sig-3-grid, .atmos-grid { grid-template-columns: 1fr; gap: 48px; }
+      h1 { font-size: 48px; }
+      h2 { font-size: 30px; }
+      .scene-stage, .light-stage, .interaction-panel, .atmos-stage { aspect-ratio: 4 / 3; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+
+        <div class="hero-text">
+          <div class="meta-row">
+            <span>Style 21 / 34</span>
+            <span>Registre — Cinétique · Tech</span>
+            <span>Verdict — Actuel</span>
+          </div>
+
+          <h1>3D &amp;<br><em>Hyperrealism</em></h1>
+
+          <p class="lede">
+            La 3D temps-réel comme signal de craft. Three.js, Spline, R3F : vraies scènes interactives,
+            shaders custom, lumière physique. Le coût technique se voit — c'est précisément l'argument.
+          </p>
+
+          <div class="brand-line">
+            <strong>Helio</strong> — Studio R3F &amp; Spline production · Paris / Tokyo<br>
+            Pour marques qui assument que la profondeur soit éprouvée, pas mimée.
+          </div>
+        </div>
+
+        <div class="scene-stage">
+          <div class="scene-grid"></div>
+          <div class="ground-shadow"></div>
+          <div class="cube">
+            <div class="face top"></div>
+            <div class="face front"></div>
+            <div class="face right"></div>
+          </div>
+          <div class="hud">
+            <span>FPS <span class="val">60.0</span></span>
+            <span class="right">Draw calls <span class="val">14</span><br>Tris <span class="val">128k</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════ SIGNATURE 1 — VRAIE 3D vs MOCKUP ═══════════ -->
+  <section class="block">
+    <div class="wrap">
+      <div class="sig-1-grid">
+
+        <div>
+          <div class="eyebrow">Signature 01 — Vraie 3D</div>
+          <h2>Une scène interactive temps-réel, pas un PNG dans un cadre device.</h2>
+          <p class="body-text">
+            Le réflexe slop le plus répandu en 2025-2026 : déguiser un mockup plat en "3D" via une
+            ombre portée et un cadre iPhone. La signature du style est l'inverse : un canvas WebGL
+            qui rend une scène manipulable au curseur, au scroll, ou au drag.
+          </p>
+          <p class="body-text">
+            Ce n'est pas un effet décoratif. C'est un signal : la marque a payé pour du craft, et
+            l'assume comme une pièce d'identité.
+          </p>
+
+          <ul class="signature-rules">
+            <li><span class="num">01</span><span><strong>Three.js / R3F / Spline</strong>De la 3D rendue, pas de la 3D illustrée. Le canvas réagit au pointeur en moins de 16 ms.</span></li>
+            <li><span class="num">02</span><span><strong>Shaders custom</strong>GLSL écrit pour la scène, pas un preset Spline appliqué tel quel.</span></li>
+            <li><span class="num">03</span><span><strong>Performance mobile vérifiée</strong>60 fps testé sur appareil moyen-de-gamme, fallback assumé sinon.</span></li>
+          </ul>
+        </div>
+
+        <div class="compare">
+          <div class="compare-cell fake">
+            <span class="label">À éviter</span>
+            <div class="fake-mockup">
+              <div class="device-frame"></div>
+            </div>
+          </div>
+          <div class="compare-cell real">
+            <span class="label">Signature</span>
+            <div class="real-3d">
+              <div class="sphere"></div>
+              <div class="floor-shadow"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SIGNATURE 2 — LUMIÈRE PHYSIQUE ═══════════ -->
+  <section class="block">
+    <div class="wrap">
+      <div class="sig-2-grid">
+
+        <div class="light-stage">
+          <div class="material-block"></div>
+          <div class="light-rays"></div>
+          <div class="light-labels">
+            <span class="pin pin-key">Key light · cyan</span>
+            <span class="pin pin-rim warm">Rim light · 2700K</span>
+            <span class="pin pin-fill">Fill · ambient</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="eyebrow">Signature 02 — Lumière physique</div>
+          <h2>Trois sources nommées, des matériaux qui réfléchissent. Pas de "studio AI plat".</h2>
+          <p class="body-text">
+            La 3D crédible se construit avec un setup d'éclairage conscient : key light directionnelle,
+            rim light pour décoller le sujet du fond, fill ambiant pour boucher les noirs. Chaque
+            source a une température de couleur. Le matériau y répond — métal, verre, plastique —
+            avec un IOR, une rugosité, une réflexion spéculaire.
+          </p>
+          <p class="body-text">
+            Le marqueur slop opposé : un sujet uniformément éclairé, sans rim, avec des highlights
+            blancs centrés au milieu. Le réflexe "ChatGPT product render".
+          </p>
+
+          <table class="specs-table">
+            <tr><td>Setup lumière</td><td>3-point physique <span class="ok">✓</span></td></tr>
+            <tr><td>Matériau</td><td>PBR métal brossé · IOR 1.45</td></tr>
+            <tr><td>Ombres</td><td>Soft contact + bake AO</td></tr>
+            <tr><td>HDRI ambient</td><td><span class="ok">Custom studio</span></td></tr>
+            <tr><td>Highlights centrés plats</td><td><span class="ko">supprimé</span></td></tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SIGNATURE 3 — INTERACTION & CRAFT SIGNAL ═══════════ -->
+  <section class="block">
+    <div class="wrap">
+      <div class="sig-3-grid">
+
+        <div>
+          <div class="eyebrow">Signature 03 — Interaction</div>
+          <h2>L'objet réagit au curseur. Sans interaction, la 3D devient décor.</h2>
+          <p class="body-text">
+            Drag pour orbiter, scroll pour traverser la scène, hover pour révéler un matériau.
+            L'interaction est ce qui transforme un rendu en preuve : l'utilisateur sent que l'objet
+            existe dans un espace, qu'il peut le manipuler. C'est le coût qui devient narratif.
+          </p>
+          <p class="body-text">
+            Référence : Lacoste Members Experience (Merci-Michel), Boucheron Quatre 20th, Apple AR.
+            Le marqueur de pauvreté inverse : un objet 3D figé, isolé, qui n'attend rien du visiteur.
+          </p>
+        </div>
+
+        <div class="interaction-panel">
+          <div class="ip-header">
+            <span><span class="dot"></span>helio.scene · canvas</span>
+            <span>R3F · Three r0.169</span>
+          </div>
+          <div class="object-stage">
+            <div class="torus"></div>
+            <div class="torus-rim"></div>
+            <div class="cursor-marker"></div>
+          </div>
+          <div class="ip-readout">
+            <span>Rotation X <span class="v">42.7°</span></span>
+            <span>Y <span class="v">128.4°</span></span>
+            <span>Drag <span class="v">active</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ATMOSPHÈRE & USAGE ═══════════ -->
+  <section class="atmosphere">
+    <div class="wrap">
+      <div class="atmos-grid">
+
+        <div class="atmos-stage">
+          <div class="atmos-rings"></div>
+          <div class="atmos-floor-line"></div>
+          <div class="atmos-object"></div>
+        </div>
+
+        <div class="atmos-text">
+          <div class="eyebrow">Atmosphère</div>
+          <h3>Une nuit de studio, pas un fond blanc.</h3>
+          <p>
+            La couleur émotionnelle du style : noir profond, surfaces métal-graphite, éclairage
+            chirurgical. Le sujet flotte dans un espace sombre où la lumière sculpte la matière.
+            On reconnaît le studio photo de produit haut-de-gamme, transposé en temps réel.
+          </p>
+          <p>
+            Cyan et orange chauds sont les deux signaux récurrents — pas par mode, mais parce que
+            ce sont les températures qui complètent une scène monochromatique sombre sans la
+            colorier artificiellement.
+          </p>
+
+          <div class="usage">
+            <div class="usage-card go">
+              <div class="head">À utiliser pour</div>
+              <ul>
+                <li>Marques produit physique</li>
+                <li>Tech premium / hardware</li>
+                <li>Luxe maroquinerie / horlogerie</li>
+                <li>Aérospatial / mobilité</li>
+              </ul>
+            </div>
+            <div class="usage-card no">
+              <div class="head">À éviter pour</div>
+              <ul>
+                <li>Édition culturelle</li>
+                <li>Marques émotionnelles douces</li>
+                <li>Wellness / santé</li>
+                <li>Budget &lt; 6 chiffres</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ COLOPHON ═══════════ -->
+  <footer class="wrap">
+    <div class="colophon">
+      <span>Style Library · BIG · 21 / 34</span>
+      <span class="stamp">3D &amp; Hyperrealism — actuel 2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>

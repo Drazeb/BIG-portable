@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 28. Interactive Cursor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-ink:        #0E0E0E;
+      --color-ink-soft:   #1A1A1A;
+      --color-paper:      #F5F1EA;
+      --color-paper-deep: #ECE6DA;
+      --color-accent:     #E94E1B;   /* cinabre — accent unique, signal */
+      --color-mute:       #8A8480;
+      --color-rule:       rgba(14,14,14,0.12);
+
+      --font-display: "Instrument Serif", "Times New Roman", serif;
+      --font-body:    "Inter", system-ui, sans-serif;
+
+      --container: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--color-paper);
+      color: var(--color-ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Le cursor custom — visible uniquement sur pointer fin */
+    @media (hover: hover) and (pointer: fine) {
+      body { cursor: none; }
+    }
+
+    a, button, .magnetic { color: inherit; text-decoration: none; }
+
+    main {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 64px 48px 120px;
+    }
+
+    /* ------------ Hero ------------ */
+    .hero {
+      padding: 56px 0 88px;
+      border-bottom: 1px solid var(--color-rule);
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      margin-bottom: 56px;
+    }
+    .meta-row .brand { color: var(--color-ink); }
+    .meta-row .brand em {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 16px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--color-accent);
+      margin-left: 4px;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(64px, 11vw, 156px);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      max-width: 12ch;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    .lede {
+      max-width: 56ch;
+      margin-top: 36px;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--color-ink-soft);
+    }
+    .lede strong {
+      font-weight: 500;
+      color: var(--color-ink);
+      border-bottom: 1px dashed var(--color-rule);
+      padding-bottom: 1px;
+    }
+
+    /* ------------ Section générique ------------ */
+    section.signature, section.atmosphere {
+      padding: 88px 0;
+      border-bottom: 1px solid var(--color-rule);
+    }
+
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+      margin-bottom: 28px;
+    }
+    .label::before {
+      content: "";
+      width: 22px; height: 1px;
+      background: var(--color-mute);
+    }
+
+    .signature h2, .atmosphere h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(34px, 4.4vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      max-width: 22ch;
+    }
+    .signature h2 em, .atmosphere h2 em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    .signature .body, .atmosphere .body {
+      max-width: 60ch;
+      margin-top: 24px;
+      font-size: 17px;
+      color: var(--color-ink-soft);
+    }
+    .signature .body p + p { margin-top: 14px; }
+
+    /* ------------ Section 1 — Physics spring (terrain de jeu) ------------ */
+    .playground {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 48px;
+      align-items: stretch;
+    }
+
+    .field {
+      position: relative;
+      background: var(--color-ink);
+      color: var(--color-paper);
+      border-radius: 4px;
+      padding: 56px 40px;
+      min-height: 360px;
+      overflow: hidden;
+    }
+    .field::after {
+      content: "Survolez. Le curseur n'est pas à votre commande directe — il VOUS suit, en retard, en élan.";
+      position: absolute;
+      bottom: 28px; left: 40px; right: 40px;
+      font-size: 12px;
+      color: rgba(245,241,234,0.55);
+      font-style: italic;
+      max-width: 38ch;
+    }
+
+    .word-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      font-family: var(--font-display);
+      font-size: 38px;
+      line-height: 1.1;
+      color: var(--color-paper);
+    }
+    .word-grid .magnetic {
+      display: inline-block;
+      padding: 4px 6px;
+      transition: color 220ms ease, transform 380ms cubic-bezier(.2,.8,.2,1);
+      will-change: transform;
+    }
+    .word-grid .magnetic:hover { color: var(--color-accent); }
+
+    .specs {
+      background: var(--color-paper-deep);
+      border-radius: 4px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .specs h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: 24px;
+      color: var(--color-ink);
+      margin-bottom: 18px;
+    }
+    .specs dl {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      row-gap: 14px;
+      column-gap: 18px;
+      font-size: 14px;
+    }
+    .specs dt {
+      color: var(--color-mute);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 11px;
+      align-self: center;
+    }
+    .specs dd { color: var(--color-ink-soft); }
+    .specs dd code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      background: rgba(14,14,14,0.06);
+      padding: 1px 6px;
+      border-radius: 2px;
+    }
+
+    /* ------------ Section 2 — État contextuel du curseur ------------ */
+    .context-grid {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .context-card {
+      background: var(--color-paper-deep);
+      border-radius: 4px;
+      padding: 36px 28px 32px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .context-card .num {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--color-accent);
+    }
+    .context-card h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 26px;
+      line-height: 1.1;
+      margin-top: 8px;
+    }
+    .context-card p {
+      font-size: 14px;
+      color: var(--color-ink-soft);
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+    .context-card .demo-zone {
+      margin-top: 24px;
+      height: 90px;
+      border: 1px dashed var(--color-rule);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--color-mute);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .context-card[data-mode="link"] .demo-zone   { color: var(--color-accent); }
+    .context-card[data-mode="image"] .demo-zone  { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
+    .context-card[data-mode="text"] .demo-zone   { font-family: var(--font-display); font-style: italic; font-size: 22px; color: var(--color-ink); text-transform: none; letter-spacing: 0; }
+
+    /* ------------ Atmosphère ------------ */
+    .atmosphere .visual {
+      margin-top: 48px;
+      position: relative;
+      background: var(--color-ink);
+      color: var(--color-paper);
+      border-radius: 4px;
+      padding: 80px 56px 88px;
+      overflow: hidden;
+    }
+    .atmosphere .visual .trace {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(233,78,27,0.18), transparent 38%),
+        radial-gradient(circle at 78% 70%, rgba(245,241,234,0.05), transparent 50%);
+      pointer-events: none;
+    }
+    .atmosphere .visual h3 {
+      position: relative;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      max-width: 18ch;
+    }
+    .atmosphere .visual h3 em { font-style: italic; color: var(--color-accent); }
+
+    .usage {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+    .usage h4 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+    .usage .yes h4 { color: var(--color-ink); }
+    .usage .no  h4 { color: var(--color-accent); }
+    .usage p {
+      font-size: 15px;
+      color: var(--color-ink-soft);
+      max-width: 38ch;
+    }
+
+    /* ------------ Footer minimal ------------ */
+    footer {
+      margin-top: 80px;
+      padding-top: 28px;
+      border-top: 1px solid var(--color-rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-mute);
+    }
+
+    /* ------------ Custom cursor (DOM) ------------ */
+    .cursor-dot, .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-100px, -100px, 0);
+    }
+    .cursor-dot {
+      width: 6px; height: 6px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      mix-blend-mode: normal;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      margin-left: -15px; margin-top: -15px;
+      border: 1px solid var(--color-ink);
+      border-radius: 50%;
+      transition: width 280ms cubic-bezier(.2,.8,.2,1),
+                  height 280ms cubic-bezier(.2,.8,.2,1),
+                  border-color 240ms ease,
+                  background-color 240ms ease,
+                  margin 280ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    body.cursor-hover-link .cursor-ring {
+      width: 64px; height: 64px;
+      margin-left: -29px; margin-top: -29px;
+      border-color: var(--color-accent);
+      background: rgba(233,78,27,0.08);
+    }
+    body.cursor-hover-image .cursor-ring {
+      width: 96px; height: 96px;
+      margin-left: -45px; margin-top: -45px;
+      border-color: var(--color-paper);
+      background: rgba(245,241,234,0.12);
+    }
+    body.cursor-hover-text .cursor-ring {
+      width: 4px; height: 28px;
+      margin-left: -1px; margin-top: -11px;
+      border-radius: 1px;
+      border-color: transparent;
+      background: var(--color-ink);
+    }
+    body.cursor-hover-text .cursor-dot { opacity: 0; }
+    body.cursor-hover-image .cursor-dot { background: var(--color-paper); }
+
+    @media (hover: none), (pointer: coarse) {
+      .cursor-dot, .cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+
+    /* ------------ Responsive minimal ------------ */
+    @media (max-width: 880px) {
+      main { padding: 40px 24px 80px; }
+      .playground { grid-template-columns: 1fr; }
+      .context-grid { grid-template-columns: 1fr; }
+      .usage { grid-template-columns: 1fr; gap: 28px; }
+      .meta-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .word-grid { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor (DOM) -->
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <main>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="meta-row">
+        <span>Style 28 — Bibliothèque BIG</span>
+        <span class="brand">Helio Studio <em>— Portfolio d'auteur·ice</em></span>
+      </div>
+      <h1>Interactive <em>Cursor</em>.</h1>
+      <p class="lede">
+        Le pointeur cesse d'être un outil système pour devenir un <strong>signe propre à la marque</strong>.
+        Il suit la main avec un retard ressenti — un ressort, pas une translation. Il change de forme là où
+        il y a quelque chose à faire. Discret, mais présent à chaque seconde de la session.
+      </p>
+    </section>
+
+    <!-- ============ SIGNATURE 1 — Physics spring ============ -->
+    <section class="signature">
+      <span class="label">Signature 01 — Physique du retard</span>
+      <h2>Un ressort, <em>pas une translation</em>.</h2>
+      <div class="body">
+        <p>
+          La signature non négociable du style. Le curseur ne colle jamais au point exact de la souris :
+          il est tracté par un ressort numérique (lerp avec friction). Cette latence de quelques dizaines
+          de millisecondes signe la présence du studio — c'est ce qui fait dire « ici quelqu'un a pris soin ».
+        </p>
+        <p>
+          Une translation linéaire saccadée produit l'effet inverse : un site « daté », « lent », « cassé ».
+          La courbe ease-out spring est la frontière entre artisanat et bricolage.
+        </p>
+      </div>
+
+      <div class="playground">
+        <div class="field">
+          <div class="word-grid">
+            <span class="magnetic" data-magnetic>Spring</span>
+            <span class="magnetic" data-magnetic>Lerp</span>
+            <span class="magnetic" data-magnetic>Friction</span>
+            <span class="magnetic" data-magnetic>Lag</span>
+            <span class="magnetic" data-magnetic>Ressort</span>
+            <span class="magnetic" data-magnetic>Trace</span>
+            <span class="magnetic" data-magnetic>Élan</span>
+          </div>
+        </div>
+        <aside class="specs">
+          <div>
+            <h3>Recette canonique</h3>
+            <dl>
+              <dt>Type</dt>
+              <dd>Lerp avec damping <code>0.12 – 0.2</code></dd>
+              <dt>Magnétisme</dt>
+              <dd>Attraction <code>0.25 ⋅ (cible − souris)</code></dd>
+              <dt>Easing</dt>
+              <dd><code>cubic-bezier(.2,.8,.2,1)</code></dd>
+              <dt>Z-index</dt>
+              <dd>Au-dessus de tout, <code>pointer-events: none</code></dd>
+              <dt>Fallback</dt>
+              <dd>Mobile / pointer coarse → curseur natif</dd>
+            </dl>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ SIGNATURE 2 — Cursor contextuel ============ -->
+    <section class="signature">
+      <span class="label">Signature 02 — Forme contextuelle</span>
+      <h2>Il <em>change de rôle</em> avec ce qu'il survole.</h2>
+      <div class="body">
+        <p>
+          Le curseur lit le contexte. Sur un lien, il s'élargit en cible chaude, couleur d'accent.
+          Sur une image, il se transforme en disque qui suggère « cliquer pour voir plus grand ».
+          Sur un texte sélectionnable, il redevient un caret typographique. Trois états seulement,
+          jamais plus — sinon le système devient bruit.
+        </p>
+        <p>
+          La règle d'or : l'état du curseur DOIT correspondre à une intention possible de l'utilisateur.
+          Sinon c'est un gimmick décoratif, et le style s'effondre dans le slop.
+        </p>
+      </div>
+
+      <div class="context-grid">
+        <article class="context-card" data-mode="link">
+          <div>
+            <span class="num">État A</span>
+            <h3>Au-dessus d'un lien</h3>
+            <p>Anneau qui s'agrandit, prend la couleur d'accent. Le clic devient évident sans aucune indication textuelle.</p>
+          </div>
+          <div class="demo-zone" data-cursor="link">Survoler — état lien</div>
+        </article>
+
+        <article class="context-card" data-mode="image">
+          <div>
+            <span class="num">État B</span>
+            <h3>Au-dessus d'une image</h3>
+            <p>Disque large et clair sur fond sombre. Suggère agrandissement, navigation, lightbox — sans flèche bricolée.</p>
+          </div>
+          <div class="demo-zone" data-cursor="image">Survoler — état image</div>
+        </article>
+
+        <article class="context-card" data-mode="text">
+          <div>
+            <span class="num">État C</span>
+            <h3>Au-dessus d'un texte</h3>
+            <p>Retour au caret typographique vertical. Le système rend la main au système quand l'utilisateur lit.</p>
+          </div>
+          <div class="demo-zone" data-cursor="text">Survoler — état texte</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ ATMOSPHÈRE ============ -->
+    <section class="atmosphere">
+      <span class="label">Atmosphère & usage</span>
+      <h2>Une <em>présence permanente</em>, jamais bavarde.</h2>
+
+      <div class="visual">
+        <div class="trace"></div>
+        <h3>Le pointeur devient une <em>signature de studio</em> — visible chaque seconde, jamais commentée.</h3>
+      </div>
+
+      <div class="usage">
+        <div class="yes">
+          <h4>Quand l'utiliser</h4>
+          <p>
+            Portfolios d'auteur·ice (design, motion, photo), studios créatifs, marques d'agence,
+            sites éditoriaux haut de gamme, expériences narratives où l'on veut signaler un niveau
+            de craft dès la première seconde.
+          </p>
+        </div>
+        <div class="no">
+          <h4>Quand l'éviter</h4>
+          <p>
+            Outils SaaS, dashboards, e-commerce de masse, sites administratifs, tout produit où
+            le curseur natif est un repère utilitaire indispensable. Aussi : tout contexte mobile-first
+            (le style perd son intérêt sans pointer fin).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Helio Studio — Style Library</span>
+      <span>28 / Interactive Cursor</span>
+    </footer>
+
+  </main>
+
+  <script>
+    // Curseur custom — physics spring (lerp + friction)
+    (function () {
+      var ring = document.querySelector('.cursor-ring');
+      var dot  = document.querySelector('.cursor-dot');
+      if (!ring || !dot) return;
+
+      // Désactivation mobile / coarse
+      var hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (!hasFinePointer) return;
+
+      var mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+      var ringX = mouseX, ringY = mouseY;
+      var dotX = mouseX, dotY = mouseY;
+
+      window.addEventListener('mousemove', function (e) {
+        mouseX = e.clientX; mouseY = e.clientY;
+      });
+
+      function loop() {
+        // Le dot suit la souris quasi instantanément (mais lerp léger pour casser le pixel-perfect)
+        dotX += (mouseX - dotX) * 0.55;
+        dotY += (mouseY - dotY) * 0.55;
+        dot.style.transform = 'translate3d(' + dotX + 'px,' + dotY + 'px,0)';
+
+        // L'anneau a une vraie inertie (spring)
+        ringX += (mouseX - ringX) * 0.16;
+        ringY += (mouseY - ringY) * 0.16;
+        ring.style.transform = 'translate3d(' + ringX + 'px,' + ringY + 'px,0)';
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      // États contextuels : link / image / text
+      function setMode(mode) {
+        document.body.classList.remove('cursor-hover-link', 'cursor-hover-image', 'cursor-hover-text');
+        if (mode) document.body.classList.add('cursor-hover-' + mode);
+      }
+
+      document.querySelectorAll('[data-cursor]').forEach(function (el) {
+        el.addEventListener('mouseenter', function () { setMode(el.dataset.cursor); });
+        el.addEventListener('mouseleave', function () { setMode(null); });
+      });
+
+      // Magnétisme léger sur les mots du field
+      document.querySelectorAll('[data-magnetic]').forEach(function (el) {
+        el.addEventListener('mousemove', function (e) {
+          var rect = el.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var dx = (e.clientX - cx) * 0.25;
+          var dy = (e.clientY - cy) * 0.25;
+          el.style.transform = 'translate3d(' + dx + 'px,' + dy + 'px,0)';
+        });
+        el.addEventListener('mouseleave', function () {
+          el.style.transform = 'translate3d(0,0,0)';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

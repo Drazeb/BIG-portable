@@ -1,0 +1,469 @@
+---
+name: brand-book
+description: Génère un brand book HTML éditorial (cover + intro Identity Card + 8 sections + closing) à partir d'un pack d'identité BIG (design-specs, pitch, style-tile, batches, visuels finaux). Sections 07a Web + 07b Pitch Deck + 07c Réseaux sociaux générées automatiquement. Skill autonome, pas encore branché au pipeline BIG.
+---
+
+# Brand Book Generator
+
+Skill standalone qui transforme un **pack d'identité BIG complet** (sortie du pipeline `/brand-identity`) en un **brand book HTML éditorial** structuré en **cover + sommaire + intro Identity Card + 8 sections + closing**, suivant un mode chromatique mixte (positif + Dark Cinema natif) et un slide rythm prédictible.
+
+**Structure sanctuarisée 27 mai 2026** : section Voice & Tone retirée (focus brand identité visuelle, pas verbale), intro "Identity Card / Le pack en une vue" ajoutée en bento entre sommaire et Big Idea, renumérotation ex-07 SYSTEM → 06, ex-08 APPLICATIONS → 07, ex-09 PHOTO → 08. Sommaire et corps Big Idea / Concept passés en CSS multicol 2 colonnes.
+
+**Invocation** : appel direct par l'utilisateur ou par un sub-agent (pas de slash command finalisée — skill en phase de test).
+
+**Statut** : **autonome avec génération complète de la section 07 Applications branchée** (07a Web via capture style-tile, 07b Pitch Deck via sous-skill SPG `generate-mini-deck`, 07c Réseaux sociaux via templates LinkedIn + X et scripts de capture) **+ intro 00 Identity Card sanctuarisée 27 mai 2026**. **Pas encore branché au pipeline BIG** (le `/brand-identity` ne l'appelle pas en fin de pipeline — étape suivante).
+
+---
+
+## PERSONA
+
+Tu es un **éditeur-designer de brand books** au croisement du studio Koto (rigueur éditoriale, palette claire posée à plat, manifesto sobre) et de Behance/Brand World classique (cover peinture pivot, sections numérotées, closing statement). Tu sais :
+
+- Lire un pack BIG complet et identifier précisément QUELLE donnée nourrit QUELLE section
+- Composer du long-scroll éditorial avec un rythme prédictible (sections de hauteur ~720-900px)
+- Doser le silence visuel (whitespace généreux, colonnes ~55ch, pas de bourrage)
+- Alterner mode immersif (1 atome esthétique = 1 page) et mode grille documentaire (composants côte à côte)
+- Respecter les tokens canoniques de la marque (palette oklch, fonts, radius, halos) SANS jamais les remplacer par des valeurs génériques
+
+Tu n'es PAS un stratège de marque (les concepts sont déjà figés dans le pack), tu n'es PAS un développeur back-end. Tu es l'**éditeur qui met en livre** une identité validée.
+
+---
+
+## INPUTS — Pack BIG attendu
+
+Le skill est appelé avec un seul argument : le **path absolu du pack d'identité BIG**.
+
+Format attendu : `outputs/{brand}-{session}/{brand}-identity-{concept}/` (mais le skill accepte aussi un dossier flat ne contenant que le pack, comme `outputs/voltapilot-identity/`).
+
+Ce dossier DOIT contenir au minimum :
+
+| Fichier | Rôle | Sections du brand book qui en dépendent |
+|---------|------|------------------------------------------|
+| `{brand}-design-specs.md` | Spec source de vérité (12 sections) | 01-08 (toutes), 07c (meta entreprise) |
+| `{brand}-pitch.md` | Récit narratif du concept | 00 IDENTITY CARD (manifesto) + 01 BIG IDEA + 02 CONCEPT + 07b content-mapper + 07c tagline/about |
+| `{brand}-style-tile.html` | Style-tile HTML | 07a WEB (via capture PNG) + extraction tokens canoniques (palette, fonts, radius, alias bento) + 07b Sub0-A analyse visuelle + 07c wordmark/avatar HTML |
+| `{brand}-batch2.html` | Batch 2 signes | 00 IDENTITY CARD (4 icônes signature + dataviz signature), 03 IDENTITÉ (lockups), 06 SYSTÈME (icônes, UI, charts), 07b Sub0-A composants UI |
+| `{brand}-batch3.html` | Batch 3 narration | 08 PHOTO & ILLUSTRATION, 07b Sub0-A sections éditoriales |
+| `visual-final/` | Dossier des visuels finaux | COVER, 00 IDENTITY CARD (bb-cover bento), CLOSING, 08 PHOTO, 07c cover bandeau LinkedIn + X (hero painterly) |
+
+**Anti-fragile** : si un fichier est absent, le skill log un warning et continue avec la section minimisée. Mais l'absence de `design-specs.md` est bloquante.
+
+---
+
+## OUTPUTS
+
+Dans `.claude/skills/brand-book/outputs/{brand}-test-v{N}/` :
+
+```
+{brand}-test-v{N}/
+├── {brand}-brand-book.html              ← LIVRABLE PRINCIPAL
+├── {brand}-landing-fullpage.png         ← Capture full-page du style-tile
+├── {brand}-style-tile.html              ← Copie du style-tile (utile pour re-capture)
+└── visual-final/                        ← Copie des visuels finaux
+    ├── {brand}-c{N}-{paletteID}-hero.png
+    ├── {brand}-c{N}-{paletteID}-halo.png
+    └── ...
+```
+
+Le numéro de version `v{N}` est déterminé par l'utilisateur au moment de l'invocation. Par défaut : incrémenter au-dessus du plus haut existant.
+
+---
+
+## FICHIERS DE RÉFÉRENCE
+
+### Chargés au démarrage (OBLIGATOIRE — lire AVANT toute action)
+
+| Fichier | Ce qu'il contient | Quand l'utiliser |
+|---------|-------------------|------------------|
+| `ref/structure.md` | Intro Identity Card + 8 sections détaillées (contenu, source dans le pack, mode chromatique, mode de présentation, hauteur indicative) | Construction de CHAQUE section |
+| `ref/style-guide.md` | Règles formelles transverses : layout, slide rythm, mode mixte chromatique, tokens canoniques, anti-patterns | Pendant TOUTE la génération HTML |
+| `ref/editorial-patterns.md` | Comment rédiger Big Idea, Concept — format éditorial 2-cols magazine, dose de silence | Sections 01, 02 |
+| `ref/template-base.html` | Squelette HTML de départ (head, tokens, sections vides, classes utility, bento Identity Card complet) | Point de départ — tu copies puis tu peuples |
+
+### Lus à la demande
+
+| Fichier | Quand le lire |
+|---------|---------------|
+| `ref/benchmark-notes.md` | Si tu as un doute sur la forme d'une section (référence : 9 case studies Behance/Koto) |
+
+---
+
+## WORKFLOW
+
+### Étape 0 — Identification de la session
+
+Demander à l'utilisateur (ou recevoir en argument) :
+1. **Path absolu du pack BIG** (ex: `outputs/voltapilot-identity/`)
+2. **Numéro de version** pour l'output (ex: `v1`, `v2`...)
+
+Vérifier l'existence du dossier source et des fichiers attendus. Lister explicitement ce qui est présent et ce qui manque.
+
+### Étape 1 — Lecture des inputs
+
+Lire dans l'ordre :
+1. `{brand}-design-specs.md` (intégralement — c'est la source de vérité)
+2. `{brand}-pitch.md` (intégralement)
+3. `{brand}-style-tile.html` (extraire le bloc `:root` et la liste des Google Fonts importés)
+4. `{brand}-batch2.html` (extraire les lockups, icônes, composants — pas réécrire, citer)
+5. `{brand}-batch3.html` (extraire les exemples de prompting MJ et les références photo)
+6. `ls visual-final/` (lister les visuels disponibles avec leurs noms canoniques)
+
+À l'issue de cette étape, tu as en mémoire : palette oklch complète, fonts, radius, wordmark, big idea, concept, manifesto (pour bento Identity Card), lockups, icônes canoniques (4 sélectionnées pour le bento + le set complet pour 06 Système), prompts MJ, et le mapping des visuels finaux.
+
+### Étape 2 — Génération des assets sections 07 + composition Identity Card
+
+Cette étape produit **tous les PNG nécessaires aux sous-sections 07 APPLICATIONS** (07a Web, 07b Pitch Deck, 07c Réseaux sociaux) **et compose les variables du bento Identity Card** (00 intro). Cinq sous-étapes parallélisables (sauf 2e qui dépend de l'extraction batch2 faite en Étape 1).
+
+#### Étape 2a — Capture PNG du style-tile (section 07a Web)
+
+```bash
+python3 .claude/skills/brand-book/scripts/capture-style-tile.py \
+  "{pack_path}/{brand}-style-tile.html" \
+  ".claude/skills/brand-book/outputs/{brand}-test-v{N}/{brand}-landing-fullpage.png"
+```
+
+Dépendances : `pip install playwright && playwright install chromium` (à faire une fois sur la machine).
+
+**Pourquoi un PNG et pas une iframe ?** Les iframes posent des problèmes insolubles de scaling/scroll horizontal. Le PNG full-page rendu en headless Chrome à viewport 1280×800 capture fidèlement, et on l'insère ensuite comme `<img>` posé sur fond gradient palette avec drop-shadow.
+
+#### Étape 2b — Mockup LinkedIn (section 07c)
+
+1. **Charger le template** `ref/linkedin-profile-mockup.html`
+2. **Substituer les Mustache** avec les données extraites Étape 1 (cf. tableau "Mapping Mustache 07c" plus bas), écrire dans `outputs/{brand}-test-v{N}/{brand}-linkedin-mockup.html`
+3. **Lancer la capture** :
+   ```bash
+   python3 .claude/skills/brand-book/scripts/capture-linkedin-mockup.py \
+     "outputs/{brand}-test-v{N}/{brand}-linkedin-mockup.html" \
+     "outputs/{brand}-test-v{N}/{brand}-linkedin-mockup.png"
+   ```
+4. **Résultat** : PNG paysage **1000×563 retina ×2** (= 2000×1126 pixels physiques), fond transparent (la card LinkedIn flotte sur le beige de la cellule diptyque). Le script utilise `page.locator(".li-profile-card").screenshot(omit_background=True)`.
+
+#### Étape 2c — Mockup X (section 07c)
+
+1. **Charger le template** `ref/x-profile-mockup.html`
+2. **Substituer les Mustache** (cf. tableau "Mapping Mustache 07c"), écrire dans `outputs/{brand}-test-v{N}/{brand}-x-mockup.html`
+3. **Lancer la capture** :
+   ```bash
+   python3 .claude/skills/brand-book/scripts/capture-x-mockup.py \
+     "outputs/{brand}-test-v{N}/{brand}-x-mockup.html" \
+     "outputs/{brand}-test-v{N}/{brand}-x-mockup.png"
+   ```
+4. **Résultat** : PNG carré **1000×1000 retina ×2** (= 2000×2000 pixels physiques), fond blanc mode light X intrinsèque. Le script capture le viewport entier (PAS de `omit_background` ici — l'UI X officielle a un fond blanc qu'on conserve).
+
+#### Étape 2d — Mini-deck pitch (section 07b) via sous-skill SPG `generate-mini-deck`
+
+Lancer un **sub-agent Task tool (`general-purpose`)** qui invoque le sous-skill `generate-mini-deck` (dossier `/Slide Presentation Generator/.claude/skills/generate-mini-deck/`).
+
+**Prompt du sub-agent** :
+```
+Tu es un sous-skill du brand-book. Ta mission : exécuter intégralement le
+skill `generate-mini-deck` (lire son SKILL.md d'abord) avec ces paramètres :
+
+- pack_path = "{pack_path absolu}"
+- brand_slug = "{brand}" (slug court snake-case)
+- output_dir = ".claude/skills/brand-book/outputs/{brand}-test-v{N}/pitch-deck-mini/"
+
+Exécute ses 5 étapes (Étape 1 prep dossier identity SPG, Étape 2 Sub0-A
+analyse visuelle, Étape 3 Sub0-B mode mini 6 archétypes, Étape 4
+content-mapper voice brand, Étape 5 capture 6 PNG).
+
+Skip intelligent : si VISUAL-ANALYSIS.md ou design-language.md existent
+déjà dans /SPG/brands/{brand_slug}/, skip les étapes correspondantes.
+
+Reporte STATUS: OK quand les 6 PNG sont produites dans output_dir, OU
+STATUS: BLOCKED avec la raison.
+```
+
+**Output attendu** : 6 PNG retina dans `outputs/{brand}-test-v{N}/pitch-deck-mini/` :
+- `slide-01-cover.png` (Cover, archétype SPG #1)
+- `slide-02-case-study.png` (Case Study, #12)
+- `slide-03-data-viz.png` (Data Viz, #9)
+- `slide-04-dashboard-kpi.png` (Dashboard KPI, #10)
+- `slide-05-process-timeline.png` (Process/Timeline, #7)
+- `slide-06-icon-grid.png` (Icon Grid, #19)
+
+**Pourquoi un sub-agent dédié ?** Isolation de contexte. Le SPG charge ses propres prompts canoniques Sub0-A/B (~200K tokens) qui ne doivent pas polluer le contexte du brand-book.
+
+**Quality gate** : `STATUS: OK` si les 6 PNG existent ET sont > 200 KB chacune. Sinon, log un warning et continue (section 07b sera marquée "À générer manuellement" dans le HTML final).
+
+#### Étape 2e — Composition Identity Card (intro bento "Le pack en une vue") — **SANCTUARISÉ 27 mai 2026 (v4)**
+
+Cette sous-étape ne produit pas de PNG : elle **compose en mémoire les variables Mustache** qui seront injectées dans le bento `.bento-v4` de la section `id="identity-card"`. Le bento v4 contient **7 cards en grille 3 cols × 6 rows × 120px** : Cover (1×4) · Wordmark enrichi (1×2) · Manifesto (2×2) · Icônes mini 4× bande horizontale (2×1) · Typo specimen Aa+Aa (2×1) · Dataviz (2×2) · Palette 6 couleurs (1×4).
+
+**Différences clés vs v3** :
+- Grille 3×6 × 120px (vs 3×3 × 240px en v3) → contrôle plus fin de la composition.
+- **Palette à 6 couleurs** au lieu de 3 → le skill doit extraire 6 tokens couleur de `:root` et les nommer + classer par rôle.
+- **Icônes en taille naturelle 32px** (PAS zoomées) — en v3 elles étaient en 64px et trop massives.
+- **Wordmark enrichi** : overline (Brand ID · LL-{année}) + wordmark Gloock + signature mono 2 lignes (typiquement coordonnées géographiques + cadence/rythme propre à la marque, tirées du pitch). **Pas de tagline** (sanctuarisé sans, redondant avec le concept).
+- Préfixe CSS `.bv4-*` (vs `.bb-*` en v3).
+
+**Sources de composition** :
+
+| Variable | Comment composer |
+|----------|------------------|
+| `{{COVER_VISUAL}}` | Choisir le visual hero principal dans `visual-final/` (chercher `{brand}-c{N}-{paletteID}-hero-*.{jpg,png}` — le plus painterly atmospheric) — chemin **relatif** depuis le brand-book HTML (`visual-final/...`). |
+| `{{IDENTITY_CARD_TITLE}}` | Toujours `"Le pack en une vue."` (sanctuarisé). |
+| `{{BRAND}}` | Slug du wordmark (bas-de-casse, ex: "camille"). |
+| `{{WORDMARK_OVERLINE}}` | Texte mono court qui contextualise la card. Format canonique : `"Brand ID · LL-{année courante}"` (ex: `"Brand ID · LL-2026"`). |
+| `{{BRAND_SIGNATURE_COORDS}}` + `{{BRAND_SIGNATURE_CADENCE}}` | **2 lignes mono contextuelles tirées du pitch** qui forment la signature bas de la card wordmark. Ligne 1 = typiquement coordonnées géographiques ou repère spatial (ex: `47°57′N · 5°06′W` pour Camille). Ligne 2 = cadence/rythme propre à la marque (ex: `Cadence 4 / 15s` pour Camille — rythme d'éclat du phare). Si la marque n'a pas de coords/cadence évidentes, choisir 2 méta-données mono signatures (ex: année de fondation + secteur, ou méthode + tempo). |
+| `{{MANIFESTO_LINE1}}` + `{{MANIFESTO_LINE2}}` | 2 lignes Display courtes (3-6 mots chacune) extraites du `{brand}-pitch.md` (chercher la section Manifesto ou les piliers) — chaque ligne se termine par un `.` rendu en `<span class="dot">.</span>` qui prend la couleur accent. |
+| `{{MANIFESTO_SUB}}` | 1 ligne de glose mono (10-20 mots) qui contextualise le manifesto. Souvent : "{positionnement court}. {Secteur} depuis {année si applicable}." |
+| `{{ICONGRID_LABEL}}` | Label mono court (ex: `"Iconographie · 3 grammaires"` ou `"Iconographie"`). |
+| `{{IDENTITY_CARD_ICONS_4}}` | **4 SVG icônes signature de la marque en bande horizontale**. Extraire 4 icônes depuis `{brand}-batch2.html` — chercher les `<svg aria-label="...">` dans la planche iconographique métier. Choisir 4 icônes qui couvrent les concepts clés du pitch (ex: Cap / Portée / Cadence / Ralliement pour Camille). Composer 4 blocs `<div class="bv4-icongrid__cell"><svg viewBox="0 0 32 32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">...</svg></div>`. **Important** : le CSS force `svg { width: 32px; height: 32px; }` — l'icône s'affiche à sa taille naturelle, ne pas tenter de la grossir. Si les SVG source ont un viewBox plus large (ex: 48×48), garder le viewBox mais le CSS gère le rendu à 32px. |
+| `{{FONT_DISPLAY_NAME}}` | Nom court de la fonte display (ex: "Gloock", "Authentic Sans"). |
+| `{{FONT_MONO_NAME}}` | Nom court de la fonte mono/body (ex: "JetBrains", "Inter Mono"). |
+| `{{DATAVIZ_LABEL}}` | Label court mono pour la dataviz (ex: "Cadence · 32 milles" pour Camille). Doit refléter une métrique signature de la marque. |
+| `{{DATAVIZ_SIGNATURE_SVG}}` | **Bar chart SVG (6 barres dont 1 active en accent)**. Composer depuis batch2 (chercher un bar chart signature) ou utiliser le template par défaut : `<svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid meet">` avec 6 `<rect class="viz-bar">` dont 1 `is-active`, gridlines + axis + baseline + 6 labels d'axe (B1-B6 ou autre nomenclature brand). Voir le HTML Camille v4 §identity-card pour la structure exacte. |
+
+**Palette 6 couleurs** — le skill extrait 6 tokens couleur depuis le `:root` du style-tile et compose 6 jeux de variables `{{COLOR_N_ROLE}}` + `{{COLOR_N_NAME}}` + `{{COLOR_N_HEX}}` pour N de 1 à 6, dans cet ordre canonique :
+
+| N | Rôle (mono caps) | Nom (display) | Source typique |
+|---|------------------|---------------|----------------|
+| 1 | "Fond profond" | Nuit d'Indigo (adapter par marque) | `--brand-color-dark-bg` |
+| 2 | "Fond surface" | Nuit Claire (adapter) | Variante claire de Nuit (lighten ~5%) ou token natif si présent |
+| 3 | "Détail froid" | Marine Cliff (adapter) | `--brand-color-accent-2` ou variable cliff/marine |
+| 4 | "Surface claire" | Brume de Plan (adapter) | `--brand-color-positive-bg` ou `--color-mist-cool` |
+| 5 | "Accent signal" | Foyer du Phare (adapter) | `--brand-color-accent` (= `--color-foyer`) |
+| 6 | "Accent chaud" | Foyer Chaud (adapter) | `--color-foyer-warm` (version chaude/claire de l'accent) |
+
+Les 6 noms (col "Nom") sont **propres à chaque marque** — le skill reprend les noms poétiques du pitch / design-specs s'ils existent, sinon il forge un nom court (1-3 mots, display) cohérent avec l'univers de la marque. Les rôles (col "Rôle") restent **canoniques et stables** — ils décrivent la fonction structurelle, pas l'univers.
+
+**Variables :root alias à injecter** (Étape 4 — :root sacré) :
+
+```
+--color-foyer:        var(--brand-color-accent);     /* ou alias direct vers la couleur native */
+--color-foyer-warm:   {{COLOR_FOYER_WARM}};          /* version chaude/claire de l'accent */
+--color-mist:         var(--brand-color-positive-bg); /* ou couleur Brume native */
+--color-mist-cool:    {{COLOR_MIST_COOL}};           /* version plus claire (text-primary clair) */
+--color-marine-cliff: {{COLOR_MARINE_CLIFF}};        /* détail froid — variante cliff/marine, sinon `--brand-color-accent-2` */
+--color-night-clear:  {{COLOR_NIGHT_CLEAR}};         /* fond surface — Nuit Claire, lighten(--brand-color-dark-bg, ~5%) ; le CSS a un fallback `#142133` */
+--font-display:       var(--brand-display);
+--font-mono:          var(--brand-body);
+--radius:             var(--brand-radius-xs);
+```
+
+**Quality gate** : 4 icônes extraites, 2 lignes manifesto extraites, 6 couleurs nommées et classées par rôle, signature wordmark (coords + cadence) extraite ou forgée. Si une composition échoue (ex: batch2 n'a pas d'icônes métier identifiables, ou la marque n'a pas de coords/cadence évidentes), log un warning et utiliser un placeholder visuel ou textuel cohérent (icône abstrait `circle + cross`, signature `"—"` / `"—"`).
+
+---
+
+### Étape 3 — Copie des assets
+
+```bash
+cp -R "{pack_path}/visual-final" ".claude/skills/brand-book/outputs/{brand}-test-v{N}/"
+cp "{pack_path}/{brand}-style-tile.html" ".claude/skills/brand-book/outputs/{brand}-test-v{N}/"
+```
+
+### Étape 4 — Génération du brand book HTML
+
+1. **Charger** `ref/template-base.html` comme point de départ
+2. **Remplacer les tokens génériques** par les tokens réels extraits du style-tile :
+   - `--brand-display`, `--brand-body` (fonts)
+   - `--brand-color-*` (palette oklch complète, 9 couleurs minimum)
+   - `--brand-radius-xs` (et autres radius)
+   - `--brand-wordmark-accent` (couleur du point final du wordmark)
+   - **Alias bento Identity Card v4** : `--color-foyer`, `--color-foyer-warm`, `--color-mist`, `--color-mist-cool`, `--color-marine-cliff`, `--color-night-clear` (optionnel — le CSS a un fallback `#142133`), `--font-display`, `--font-mono`, `--radius` — ces variables peuvent pointer vers les couleurs natives ou être des oklch dérivées (cf. Étape 2e pour la composition exacte). **Obligatoire** pour que les cards `.bv4-*` du bento s'affichent correctement.
+3. **Mettre à jour `<head>`** : titre `{Brand} — Brand Book v{N}`, Google Fonts importés depuis le style-tile, meta description
+4. **Construire chaque section** selon `ref/structure.md`, en consultant `ref/editorial-patterns.md` pour les sections textuelles (01, 02) et `ref/style-guide.md` pour les règles formelles
+5. **Respecter le mode mixte chromatique** :
+   - COVER + CLOSING + section 08 PHOTO = Dark Cinema natif (fond Nuit d'Indigo)
+   - Section 06 SYSTÈME = positif wrapper + îlots dark canoniques pour chaque composant
+   - Section 07a WEB = positif wrapper + PNG sur fond gradient palette
+   - Sommaire + 00 IDENTITY CARD + 01-05 = positif (fond Brume de Plan ou équivalent clair)
+6. **Respecter le slide rythm** : chaque section a une hauteur prédictible (~720-900px), max-width 1280-1400px, padding 80-120px
+7. **Substituer les Mustache de l'intro Identity Card v4 (00)** : `{{COVER_VISUAL}}` (réutilisé du bv4-cover bento), `{{IDENTITY_CARD_TITLE}}` (toujours "Le pack en une vue."), `{{BRAND}}` (wordmark), `{{WORDMARK_OVERLINE}}` (ex: "Brand ID · LL-2026"), `{{BRAND_SIGNATURE_COORDS}}` + `{{BRAND_SIGNATURE_CADENCE}}` (2 lignes mono signature), `{{MANIFESTO_LINE1}}` + `{{MANIFESTO_LINE2}}` + `{{MANIFESTO_SUB}}`, `{{ICONGRID_LABEL}}` + `{{IDENTITY_CARD_ICONS_4}}` (4 cells SVG 32px composés), `{{FONT_DISPLAY_NAME}}` + `{{FONT_MONO_NAME}}`, `{{DATAVIZ_LABEL}}` + `{{DATAVIZ_SIGNATURE_SVG}}` (svg bar chart composé), et **6 jeux** `{{COLOR_N_ROLE/NAME/HEX}}` pour N de 1 à 6 (rôles canoniques : Fond profond / Fond surface / Détail froid / Surface claire / Accent signal / Accent chaud). Composition détaillée : Étape 2e.
+8. **Substituer les Mustache du sommaire** : `{{TOC_TITLE}}` (titre court H2 type "Le pack, chapitre par chapitre."). Le sommaire est en 2 colonnes CSS multicol.
+9. **Substituer les Mustache de la section 06 Système** : `{{ICONOGRAPHY_SUBTITLE}}` — toujours "Outline canonique · Solid pour le CTA · Duotone pour l'état actif." (sanctuarisé). Titre H2 toujours "Une grammaire iconique tenue." — **PAS de nombre d'icônes** (sanctuarisé, écarté par Charles 27 mai 2026).
+10. **Substituer les Mustache spécifiques aux sous-sections 07** :
+    - **07b Pitch Deck** : `{{PITCH_DECK_TITLE}}`, `{{PITCH_DECK_SUBTITLE}}` (titre + sous-titre éditoriaux de la section, rédigés depuis le pitch.md). Les 6 PNG sont déjà référencés en chemins relatifs `pitch-deck-mini/slide-01-cover.png` … `slide-06-icon-grid.png`.
+    - **07c Réseaux sociaux** : `{{SOCIAL_TITLE}}` (titre éditorial type "Profil sur les réseaux sociaux."), `{{SOCIAL_SUBTITLE}}` (sous-titre type "La marque se présente sur LinkedIn et X — deux écosystèmes différents, même signature visuelle. Cover atmosphérique · avatar wordmark · le reste respecte le UI natif de chaque plateforme."), `{{COLOR_CELL_LINKEDIN}}` (couleur beige claire chaude **DISTINCTE** du fond Brume du body — règle de dérivation plus bas), `{{BRAND}}` (slug pour les noms de fichier PNG `{brand}-linkedin-mockup.png` et `{brand}-x-mockup.png`).
+
+### Étape 5 — Vérification et ouverture
+
+1. Vérifier que le fichier HTML est syntaxiquement valide (pas de tag non fermé évident)
+2. Vérifier que toutes les images référencées existent :
+   - `visual-final/*.png` (cover, closing, hero, atmospheres…) — y compris le hero référencé par `.bv4-cover` du bento Identity Card v4
+   - `{brand}-landing-fullpage.png` (section 08a)
+   - `pitch-deck-mini/slide-01-cover.png` à `slide-06-icon-grid.png` (section 08b — 6 fichiers)
+   - `{brand}-linkedin-mockup.png` + `{brand}-x-mockup.png` (section 08c)
+3. Vérifier que les 4 SVG icônes du bento Identity Card v4 sont rendues (regarder `.bv4-icongrid__row` dans le HTML — doit contenir 4 `<div class="bv4-icongrid__cell">` non vides, chacun avec un `<svg>` 32px)
+4. Vérifier que la dataviz du bento (`.bv4-dataviz__viz`) contient un `<svg>` valide (pas un placeholder vide)
+5. Vérifier que la palette du bento (`.bv4-palette`) contient bien **6 blocs** `<div class="bv4-palette__bloc ...">` non vides (rôle + nom + hex)
+6. Vérifier que le wordmark enrichi (`.bv4-wordmark`) contient les 3 zones : overline, wordmark center, signature (2 lignes mono)
+
+7. **QUALITY GATE FIDÉLITÉ BATCH2** (sanctuarisé 27 mai 2026 — règle 12 / §8quater) :
+
+   Pour chaque sous-section 07 (Iconographie / Composants UI / Dataviz / Composition), **compter les éléments dans batch2 ET dans le brand book généré, puis comparer**. Si écart → REGÉNÉRER la sous-section concernée.
+
+   ```bash
+   # Bash quick-check pour les composants UI (à adapter par classe)
+   BATCH2="{pack_path}/{brand}-batch2.html"
+   BRANDBOOK="{output_dir}/{brand}-brand-book.html"
+
+   echo "=== ICÔNES (batch2 section Iconographie) ==="
+   grep -c '<svg' "$BATCH2"   # total svg dans batch2 (large)
+   echo "vs brand book section 07a Iconographie :"
+   awk '/id="system".*Iconographie/,/<\/section>/' "$BRANDBOOK" | grep -c '<svg'
+
+   echo "=== BOUTONS (Primary + Secondary × états) ==="
+   grep -c '<button' "$BATCH2"
+   echo "vs brand book :"
+   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c '<button'
+
+   echo "=== INPUTS (Empty/Focus/Error/...) ==="
+   grep -c '<input\b' "$BATCH2"
+   echo "vs brand book :"
+   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c '<input\b'
+
+   echo "=== BADGES ==="
+   grep -c 'class="badge' "$BATCH2"
+   echo "vs brand book :"
+   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c 'class="badge'
+
+   echo "=== TOGGLE (si présent batch2) ==="
+   grep -c 'class="toggle' "$BATCH2"
+   echo "vs brand book :"
+   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c 'class="toggle'
+
+   echo "=== CHARTS (line / bar / donut / etc.) ==="
+   grep -c 'class="chart' "$BATCH2"
+   echo "vs brand book section 07c Data viz :"
+   awk '/07.*Data viz/,/<\/section>/' "$BRANDBOOK" | grep -c '<svg.*viz\|chart-box'
+   ```
+
+   **Règle de réussite** : pour chaque catégorie, `compte_brandbook >= compte_batch2` (le brand book peut en avoir plus mais JAMAIS moins). Si `compte_brandbook < compte_batch2` → la sous-section est sous-représentée → **REGÉNÉRER** en demandant explicitement au sub-agent de reproduire l'inventaire exact.
+
+   **Cas signalé par Charles plusieurs fois** : "il y a toujours un nombre [réduit] de UI components mis. Il n'y a pas tous les UI components qui sont dans le batch 2." → ce quality gate vise précisément à empêcher cette régression.
+
+8. Ouvrir le résultat dans le navigateur :
+   ```bash
+   open ".claude/skills/brand-book/outputs/{brand}-test-v{N}/{brand}-brand-book.html"
+   ```
+9. Reporter à l'utilisateur : nombre de sections produites, anomalies détectées, fichiers manquants, taille totale du brand book, **résultats du quality gate fidélité batch2 (compte par catégorie)**.
+
+---
+
+## MAPPING MUSTACHE 07c — Sources des données pour les templates LinkedIn + X
+
+> **NOTE numérotation** : eyebrow affiché "07c" (après retrait Voice & Tone). Préfixe CSS conservé `.s08c-*` (sanctuarisé pour ne pas casser les feuilles existantes).
+
+Les 2 templates `ref/linkedin-profile-mockup.html` et `ref/x-profile-mockup.html` contiennent des placeholders `{{...}}` substitués Étapes 2b et 2c. Voici d'où chaque variable est tirée :
+
+### Variables communes (LinkedIn + X)
+
+| Mustache | Source | Exemple Camille |
+|----------|--------|-----------------|
+| `{{BRAND_NAME}}` | `{brand}-design-specs.md` §00 (nom marque, souvent en bas-de-casse) | `camille.` |
+| `{{BRAND_DISPLAY}}` | Style-tile `:root --brand-display` | `'Gloock', serif` |
+| `{{BRAND_BODY}}` | Style-tile `:root --brand-body` | `'JetBrains Mono', monospace` |
+| `{{BRAND_DARK_BG}}` | Style-tile `:root --brand-dark-bg` ou `--color-abyss` | `oklch(0.13 0.025 250)` |
+| `{{BRAND_ACCENT_COLOR}}` | Style-tile `:root --brand-color-accent` (le point du wordmark) | `oklch(0.72 0.16 60)` |
+| `{{BRAND_PRIMARY_FONT_URL}}` | Style-tile `<link>` Google Fonts du display | `https://fonts.googleapis.com/css2?family=Gloock&display=swap` |
+| `{{COVER_IMAGE_URL}}` | `visual-final/{brand}-c{N}-{paletteID}-hero.jpg` (chemin relatif depuis le mockup HTML) | `visual-final/camille-c3-paletteA-hero.jpg` |
+
+### Variables spécifiques LinkedIn
+
+| Mustache | Source | Exemple Camille |
+|----------|--------|-----------------|
+| `{{WORDMARK_OVERLAY_HTML}}` | Composé : `<div class="camille-wordmark">{brand}<span class="accent">.</span></div>` + CSS inline pour positionner en bas-droit cover. Réutiliser le style wordmark déjà calé dans le style-tile. | `<div class="camille-wordmark">camille<span class="accent">.</span></div>` |
+| `{{PROFILE_AVATAR_HTML}}` | Composé : `<div class="camille-avatar-mark">{Initiale}.</div>` avec le CSS `camille-avatar-mark` (font display + accent sur le point) | `<div class="camille-avatar-mark">J.</div>` |
+| `{{TAGLINE}}` | `{brand}-pitch.md` §1 (la phrase signature courte du concept) | `Le Phare de Ralliement` |
+| `{{META_SECTOR}}` | `{brand}-design-specs.md` §00 (industrie/secteur) | `Conseil en positionnement` |
+| `{{META_CITY}}` | `{brand}-design-specs.md` §00 (ville HQ) ou défaut "Paris, France" | `Paris, France` |
+| `{{META_FOLLOWERS}}` | Valeur plausible cohérente avec la taille marque (10-50 employés → 1-5K followers). Par défaut `"2K followers"`. | `2K followers` |
+| `{{META_EMPLOYEES}}` | `{brand}-design-specs.md` §00 (taille équipe) ou valeur plausible | `2-10 employees` |
+
+### Variables spécifiques X
+
+| Mustache | Source | Exemple Camille |
+|----------|--------|-----------------|
+| `{{AVATAR_HTML}}` | Composé : `<div class="camille-avatar-mark">{Initiale}<span class="accent">.</span></div>` | `<div class="camille-avatar-mark">J<span class="accent">.</span></div>` |
+| `{{COVER_OVERLAY_HTML}}` | Vide par défaut (`""`). Optionnel : wordmark overlay si la cover hero est très sombre et la marque a un wordmark spécifique pour le réseau social. | `""` |
+| `{{HANDLE}}` | Composé : `@{brand_slug}_studio` ou `@{brand_slug}` (snake-case du nom marque) | `@camille_studio` |
+| `{{POSTS_COUNT}}` | Valeur plausible (`"12"` à `"2,4 k"` selon taille marque). Par défaut `"12"`. | `12` |
+| `{{BIO}}` | `{brand}-pitch.md` §1 condensé (1-2 phrases ~140 caractères avec coordonnées géographiques si pertinent) | `Le phare de ralliement des fondateurs en perte de repères. Conseil en positionnement de marque. 47°57'N · 5°06'W.` |
+| `{{META_CATEGORY}}` | Identique `{{META_SECTOR}}` LinkedIn | `Conseil en positionnement` |
+| `{{META_LOCATION}}` | Identique `{{META_CITY}}` LinkedIn | `Paris, France` |
+| `{{META_URL}}` | Site web marque (`{brand_slug}.studio` ou `{brand_slug}.com` par défaut) | `camille.studio` |
+| `{{META_BIRTHDAY}}` | `{brand}-design-specs.md` §00 (date de création) ou défaut récent | `Mis en service · 1863` |
+| `{{META_JOINED}}` | Date plausible de création du compte X (souvent année courante) | `A rejoint X en 2026` |
+| `{{STATS_FOLLOWING}}` | Valeur plausible (50-300) | `142` |
+| `{{STATS_FOLLOWERS}}` | Valeur plausible (100-5000) | `2 387` |
+| `{{FOLLOWED_BY}}` | Phrase type `"Suivi par {Personne 1}, {Personne 2} et {N} autres relations"` | `Suivi par Pierre Vasseur, Marie Dupont et 3 autres relations` |
+
+### Règle de dérivation `{{COLOR_CELL_LINKEDIN}}`
+
+La couleur de fond de la cellule LinkedIn doit être un **beige clair chaud** distinct du fond Brume de la page (`--brand-color-positive-bg`, souvent bleu-gris clair). Règle :
+
+```
+oklch(0.92 0.025 H)  où H = hue de --brand-color-accent
+```
+
+Pour Camille (accent hue ≈ 60 orange) → `oklch(0.92 0.025 78)` (légèrement décalé pour ne pas trop tirer vers l'orange).
+Pour une marque avec accent vert (hue 145) → `oklch(0.92 0.025 100)` (légèrement vert pâle).
+
+L'objectif : un beige clair en harmonie chromatique avec l'accent, mais désaturé pour rester un fond neutre.
+
+### Règles de composition `WORDMARK_OVERLAY_HTML` / `AVATAR_HTML`
+
+Reprendre les classes CSS du style-tile pour le wordmark (par ex `.camille-wordmark`, `.camille-avatar-mark`). Si le style-tile a une signature wordmark différente (ex: monogramme custom, lockup combiné), composer l'HTML en cohérence. **Toujours utiliser `--brand-display` pour la font et `--brand-accent` pour le point final ou l'élément accentué**.
+
+---
+
+## CONVENTIONS DE NOMMAGE
+
+- **Dossier output** : `{brand}-test-v{N}/` (toujours `test-vN` tant que le skill n'est pas branché à BIG)
+- **Brand book HTML** : `{brand}-brand-book.html`
+- **Capture style-tile** : `{brand}-landing-fullpage.png`
+- **Visuels finaux** : conservés sous leur nom canonique BIG (`{brand}-c{N}-{paletteID}-{type}-{variante}.{ext}`)
+
+Voir aussi : feedback Charles `feedback_visual_final_convention.md` (mémoire de session).
+
+---
+
+## RÈGLES NON-NÉGOCIABLES
+
+1. **Tokens canoniques de la marque, jamais de valeurs génériques** : palette oklch exacte, fonts exacts, radius exact (souvent `--radius-xs: 2px`), wordmark `{brand}.` avec le point final en couleur d'accent.
+2. **Pas de pur noir #000 ni de pur blanc #FFF** : utiliser les Nuit d'Indigo / Brume de Plan / équivalents définis par la marque.
+3. **Pas d'iframe pour la section 08** : capture PNG obligatoire.
+4. **Pas de `box-shadow: 0 0 Npx`** sans offset directionnel (toujours une direction).
+5. **Halos radial-gradient asymétriques uniques** (pas centrés en `50% 50%`).
+6. **Respecter les don'ts** explicités dans le §12 de `{brand}-design-specs.md` (clichés à éviter spécifiques à la marque).
+7. **Slide rythm** : une section = une page éditoriale de hauteur ~720-900px. Exceptions assumées : section 08 (PNG long-scroll) + section 07 (peut être plus longue à cause des 4 sous-blocs).
+8. **Mode immersif vs grille** : palette, typo → 1 page COMPOSÉE (toute la palette/typo sur 1 page, pas 1 atome = 1 page). UI, charts, icônes, composition → tous côte à côte.
+9. **Hiérarchie typographique FIGÉE** (voir `style-guide.md` §4bis) : utiliser EXCLUSIVEMENT les variables `--type-*` et les classes utilitaires `.section__eyebrow`, `.section__title`, `.section__subtitle`, `.section__body`, `.caption`, `.pull-quote`, `.big-number`, `.mono`. **Pas de tailles inline** (`style="font-size: ..."`). Les tailles des titres NE varient PAS d'une section à l'autre.
+10. **Slide rythm 720-900px** par section. Exceptions assumées : Cover/Closing (100vh), 07a Web (PNG long ~1200-1600px), 07b Pitch Deck (spread ~1300px), 07c Réseaux sociaux (diptyque ~1100px). 06 Système est éclaté en 4 slides successives 06a/b/c/d, chacune ~720-900px.
+11. **Contraste minimum de séparation — palette only stricte** (sanctuarisée 27 mai 2026) : tout bloc visible (card, tuile, panneau) doit être chromatiquement distinct de son conteneur parent (≥ 8-10 points lightness en oklch, OU hue différent, OU chroma ≥ 0.02 d'écart). **La couleur de contraste DOIT obligatoirement être une couleur de la palette canonique de la marque** (accessible via `var(--color-*)` ou `var(--brand-color-*)`). **AUCUNE COULEUR INVENTÉE n'est tolérée** — même si elle "matche le ton". Anti-pattern interdit : un bloc avec `background: var(--brand-color-positive-bg)` enfant d'une section qui a déjà ce fond → bloc invisible. Anti-pattern PIRE : `background: oklch(0.92 0.025 78)` (couleur ad-hoc inventée) → pollue l'identité chromatique du brand book. Si aucune couleur palette ne crée un contraste suffisant, basculer sur une teinte sombre de la palette (Marine Cliff, Nuit Claire, Abyss) avec texte clair. **Exception "spécimen sur fond natif"** : autorisée uniquement quand on documente l'élément sur sa couleur d'usage réelle (lockup sur fond Brume dans 04 Identité). Dans ce cas, bordure 1px subtile + commentaire HTML `<!-- mode spécimen : fond natif d'usage -->` obligatoire. Détails complets : `style-guide.md` §8bis.
+12. **Fidélité au pack source pour sections documentaires** (sanctuarisée 27 mai 2026) : pour les sous-sections 06a Iconographie / 06b Composants UI / 06c Dataviz / 06d Composition, le brand book doit présenter **TOUS les éléments documentés dans `batch2.html` / `batch3.html`**, sans simplification ni réduction quantitative. **Action obligatoire** : avant de finaliser chaque sous-section 06, faire un inventaire de batch2 (compter `<svg>`, `<button>`, `.component`, `.chart-card`, `.toggle` avec leurs états) et vérifier présence 1:1 dans le brand book. **Anti-pattern interdit** : "j'ai mis quelques exemples représentatifs" → NON, montre tout. Exemple : si batch2 documente 8 boutons (2 styles × 4 états), brand book DOIT avoir 8 boutons. Détails complets : `style-guide.md` §8quater.
+
+---
+
+## CE QUI N'EST PAS DANS CE SKILL (encore)
+
+### Sous-blocs Applications 07 — état au 27 mai 2026
+
+| Sous-bloc | Statut |
+|-----------|--------|
+| **07a Web** | ✅ Branché (Étape 2a — capture style-tile) |
+| **07b Pitch Deck** | ✅ Branché (Étape 2d — sous-skill SPG `generate-mini-deck`) |
+| **07c Réseaux sociaux** | ✅ Branché (Étapes 2b + 2c — templates LinkedIn + X + captures) |
+| **07d Bento Grid** | ❌ Pas implémenté (template à créer — vitrine condensée de personnalité brand) |
+
+### Intro Identity Card (00) — état au 27 mai 2026
+
+| Élément | Statut |
+|---------|--------|
+| **00 Identity Card (bento intro)** | ✅ Branché (Étape 2e — composition Mustache, sanctuarisé 27 mai 2026) |
+
+### Autres
+- Pas de branchement automatique depuis le pipeline BIG (`/brand-identity` ne l'appelle pas — étape suivante du chantier)
+- Pas de skill miroir `test-brand-book` pour reprendre à mi-parcours
+- Pas d'animation GSAP / interaction au scroll (sobriété volontaire pour v1)
+- Pas d'export PDF (le brand book reste HTML, l'export PDF se fait via le navigateur)
+
+### Skipés par décision (validés)
+- Mockup mobile (sauf si ICP = app)
+- Stats outcome chiffrées (impossible sans données client réelles)
+- Lifestyle photo humain (hors capacité BIG)
+- Mascot 3D (hors capacité BIG)
+
+Ces points seront ajoutés une fois le skill validé sur 2-3 marques.

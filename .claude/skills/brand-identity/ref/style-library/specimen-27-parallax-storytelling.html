@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 27. Parallax Storytelling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique cinematic — référence SpaceX, Blue Desert (Adoratorio), Lacoste */
+      --color-void:        #0b0d10;   /* noir profond, scène de nuit */
+      --color-deep:        #161a1f;   /* couche profondeur 1 */
+      --color-mid:         #2a2520;   /* couche profondeur 2, terre brûlée */
+      --color-dune:        #d9c8ad;   /* crème désertique, plein soleil */
+      --color-ember:       #c4502b;   /* terracotta brûlé, signal narratif */
+      --color-haze:        #6f7a86;   /* gris atmosphérique, profondeur lointaine */
+      --color-text:        #e8e0d2;   /* texte principal sur fond sombre */
+      --color-text-soft:   #968e80;   /* texte secondaire */
+
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body:    "Inter", system-ui, sans-serif;
+
+      --maxw: 1280px;
+      --pad-x: clamp(24px, 5vw, 64px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--color-void);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding-left: var(--pad-x);
+      padding-right: var(--pad-x);
+    }
+
+    /* ===========================================
+       HERO — full-bleed photography simulée par gradients,
+       multi-speed parallax via animation-timeline
+       =========================================== */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      overflow: hidden;
+      isolation: isolate;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: clamp(48px, 8vh, 96px);
+    }
+
+    /* Couche Z1 — ciel/horizon, vitesse la plus lente */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -20% 0 0 0;
+      z-index: -3;
+      background:
+        radial-gradient(ellipse 100% 60% at 50% 30%, #3a2718 0%, transparent 65%),
+        linear-gradient(180deg, #1a1410 0%, #2a2520 55%, #d9c8ad 100%);
+      animation: drift-slow linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 200vh;
+    }
+
+    /* Couche Z2 — montagne lointaine, vitesse moyenne */
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 70% 30% at 30% 75%, rgba(11,13,16,0.85) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 28% at 75% 78%, rgba(11,13,16,0.7) 0%, transparent 65%);
+      animation: drift-mid linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 200vh;
+    }
+
+    /* Couche Z3 — premier plan, terracotta dense, vitesse rapide */
+    .hero-foreground {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 35%;
+      z-index: -1;
+      background:
+        linear-gradient(180deg, transparent 0%, var(--color-ember) 40%, #7a2f18 100%);
+      clip-path: polygon(0 35%, 8% 28%, 22% 40%, 35% 24%, 50% 32%, 68% 18%, 82% 30%, 100% 22%, 100% 100%, 0 100%);
+      animation: drift-fast linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 200vh;
+    }
+
+    @keyframes drift-slow { to { transform: translateY(-8vh); } }
+    @keyframes drift-mid  { to { transform: translateY(-22vh); } }
+    @keyframes drift-fast { to { transform: translateY(-40vh); } }
+
+    /* Fallback pour navigateurs sans animation-timeline (mobile inclus) */
+    @supports not (animation-timeline: scroll(root)) {
+      .hero::before, .hero::after, .hero-foreground { animation: none; }
+    }
+
+    .hero .wrap { position: relative; z-index: 1; width: 100%; }
+
+    .hero .brand {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-dune);
+      padding: 8px 0 10px;
+      border-top: 1px solid rgba(217,200,173,0.35);
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(56px, 9vw, 132px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--color-dune);
+      max-width: 14ch;
+      margin-bottom: 28px;
+      font-variation-settings: "opsz" 144;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-ember);
+    }
+
+    .hero .lede {
+      max-width: 52ch;
+      font-size: clamp(16px, 1.5vw, 19px);
+      color: var(--color-text);
+      opacity: 0.92;
+    }
+
+    .hero .scroll-cue {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-haze);
+      writing-mode: horizontal-tb;
+    }
+
+    /* ===========================================
+       SECTION INTERSTITIELLE — pacing intentionnel
+       Section très courte qui crée une respiration
+       =========================================== */
+    .interstitial {
+      background: var(--color-void);
+      padding: clamp(80px, 14vh, 180px) 0;
+      border-top: 1px solid rgba(232,224,210,0.06);
+      border-bottom: 1px solid rgba(232,224,210,0.06);
+    }
+
+    .interstitial p {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(22px, 2.6vw, 34px);
+      line-height: 1.3;
+      max-width: 38ch;
+      color: var(--color-text-soft);
+    }
+
+    .interstitial p::before {
+      content: "—";
+      display: block;
+      color: var(--color-ember);
+      font-style: normal;
+      margin-bottom: 18px;
+    }
+
+    /* ===========================================
+       SIGNATURE 1 — Multi-speed parallax démontré
+       Couches Z perceptibles avec vitesses différentes
+       =========================================== */
+    .signature {
+      position: relative;
+      padding: clamp(120px, 18vh, 220px) 0;
+      overflow: hidden;
+    }
+
+    .signature-1 {
+      background: linear-gradient(180deg, var(--color-void) 0%, var(--color-deep) 100%);
+    }
+
+    .sig-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 6vw, 96px);
+      align-items: start;
+    }
+
+    @media (max-width: 800px) {
+      .sig-grid { grid-template-columns: 1fr; }
+    }
+
+    .sig-text .label {
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-ember);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .sig-text h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(34px, 4.4vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--color-dune);
+      margin-bottom: 28px;
+      font-variation-settings: "opsz" 144;
+    }
+
+    .sig-text p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--color-text);
+      opacity: 0.85;
+      margin-bottom: 18px;
+    }
+
+    .sig-text p strong {
+      color: var(--color-dune);
+      font-weight: 600;
+    }
+
+    /* Démonstration visuelle des couches Z */
+    .layers-demo {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: var(--color-mid);
+      overflow: hidden;
+      border: 1px solid rgba(232,224,210,0.08);
+    }
+
+    .layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    .layer-z3 {
+      background: radial-gradient(ellipse 90% 60% at 50% 80%, #1a1410 0%, transparent 70%);
+      animation: layer-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 100%;
+      --shift: -8%;
+    }
+
+    .layer-z2 {
+      background:
+        radial-gradient(ellipse 50% 25% at 30% 60%, rgba(11,13,16,0.75) 0%, transparent 60%),
+        radial-gradient(ellipse 45% 22% at 75% 65%, rgba(11,13,16,0.6) 0%, transparent 65%);
+      animation: layer-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 100%;
+      --shift: -22%;
+    }
+
+    .layer-z1 {
+      background:
+        linear-gradient(180deg, transparent 60%, var(--color-ember) 95%);
+      clip-path: polygon(0 65%, 12% 60%, 28% 70%, 42% 55%, 58% 65%, 72% 50%, 88% 62%, 100% 55%, 100% 100%, 0 100%);
+      animation: layer-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 100%;
+      --shift: -40%;
+    }
+
+    .layer-marker {
+      position: absolute;
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-dune);
+      padding: 4px 8px;
+      background: rgba(11,13,16,0.6);
+      border-left: 2px solid var(--color-ember);
+    }
+    .layer-marker.m1 { top: 20px; left: 16px; }
+    .layer-marker.m2 { top: 50%; right: 16px; }
+    .layer-marker.m3 { bottom: 20px; left: 16px; }
+
+    @keyframes layer-drift {
+      to { transform: translateY(var(--shift)); }
+    }
+
+    @supports not (animation-timeline: view()) {
+      .layer-z1, .layer-z2, .layer-z3 { animation: none; }
+    }
+
+    /* ===========================================
+       SIGNATURE 2 — Pacing intentionnel
+       Démontré par variations de hauteur de section,
+       respiration entre blocs
+       =========================================== */
+    .signature-2 {
+      background: var(--color-deep);
+      padding: clamp(140px, 22vh, 260px) 0;
+    }
+
+    .pacing-stack {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(48px, 8vh, 120px);
+      max-width: 720px;
+    }
+
+    .pacing-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .pacing-row .timecode {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--color-ember);
+      padding-top: 6px;
+      border-top: 1px solid var(--color-ember);
+    }
+
+    .pacing-row .scene-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.15;
+      color: var(--color-dune);
+      margin-bottom: 14px;
+    }
+
+    .pacing-row .scene-body {
+      font-size: 16px;
+      color: var(--color-text);
+      opacity: 0.82;
+      line-height: 1.6;
+    }
+
+    .pacing-intro {
+      max-width: 56ch;
+      margin-bottom: clamp(56px, 10vh, 120px);
+    }
+
+    .pacing-intro .label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-ember);
+      margin-bottom: 24px;
+    }
+
+    .pacing-intro h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(34px, 4.4vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--color-dune);
+      margin-bottom: 24px;
+      font-variation-settings: "opsz" 144;
+    }
+
+    .pacing-intro p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--color-text);
+      opacity: 0.85;
+    }
+
+    /* ===========================================
+       ATMOSPHÈRE — full-bleed cinematic
+       =========================================== */
+    .atmosphere {
+      position: relative;
+      min-height: 80vh;
+      overflow: hidden;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      padding: clamp(80px, 12vh, 160px) 0;
+    }
+
+    .atmosphere::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 80% 50% at 70% 40%, rgba(196,80,43,0.55) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 40% at 20% 70%, rgba(217,200,173,0.18) 0%, transparent 60%),
+        linear-gradient(160deg, #1a1410 0%, #2a2520 50%, #0b0d10 100%);
+    }
+
+    .atmosphere::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(11,13,16,0.6) 100%);
+    }
+
+    .atmosphere-content {
+      max-width: 640px;
+    }
+
+    .atmosphere-content .label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-dune);
+      margin-bottom: 28px;
+    }
+
+    .atmosphere-content h2 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(40px, 5.5vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--color-dune);
+      margin-bottom: 32px;
+      font-variation-settings: "opsz" 144;
+    }
+
+    .usage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .usage-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    .usage-block .usage-label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-ember);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(196,80,43,0.4);
+    }
+
+    .usage-block p {
+      font-size: 15px;
+      color: var(--color-text);
+      opacity: 0.88;
+      line-height: 1.55;
+    }
+
+    /* ===========================================
+       FOOTER — minimal, cohérent avec l'esthétique cinématique
+       =========================================== */
+    footer {
+      background: var(--color-void);
+      padding: 48px 0 64px;
+      border-top: 1px solid rgba(232,224,210,0.08);
+    }
+
+    footer .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text-soft);
+    }
+
+    footer .meta span:last-child {
+      color: var(--color-ember);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================ -->
+  <!-- HERO — full-bleed cinematic + parallax 3 couches -->
+  <!-- ============================================ -->
+  <section class="hero">
+    <div class="hero-foreground"></div>
+    <div class="wrap">
+      <span class="brand">Helio — Récits cinétiques pour l'industrie spatiale</span>
+      <h1>Parallax <em>Storytelling.</em></h1>
+      <p class="lede">
+        Trois couches qui glissent à des vitesses différentes lorsque vous scrollez, et soudain l'écran respire comme une caméra. Le parallax cinématographique transforme une page en plan séquence — à condition que chaque vitesse soit calibrée, et que le mobile tienne la route.
+      </p>
+    </div>
+    <span class="scroll-cue">Scroll ↓</span>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- INTERSTITIEL — respiration, pacing intentionnel -->
+  <!-- ============================================ -->
+  <section class="interstitial">
+    <div class="wrap">
+      <p>
+        Le parallax mature ne consiste pas à faire bouger des éléments. Il consiste à décider où poser la caméra, et combien de temps la laisser respirer avant la coupe.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SIGNATURE 1 — Multi-speed layers démontrés -->
+  <!-- ============================================ -->
+  <section class="signature signature-1">
+    <div class="wrap">
+      <div class="sig-grid">
+        <div class="sig-text">
+          <span class="label">Signature 01 — Couches Z</span>
+          <h2>Trois vitesses, trois plans, une profondeur perceptible.</h2>
+          <p>
+            Le parallax bâclé fait défiler tous les éléments à la même vitesse, et l'effet ressemble à un fond animé. Le parallax mature distingue <strong>au moins trois couches</strong> : un arrière-plan lent (ciel, horizon), un plan moyen (formes lointaines), un premier plan rapide (texture, terrain). Chaque vitesse est une décision narrative.
+          </p>
+          <p>
+            La démo à droite isole les trois couches. Quand vous scrollez à travers la section, observez les marqueurs Z3 / Z2 / Z1 : le premier plan glisse cinq fois plus vite que l'horizon. C'est cette différence — et pas le mouvement en lui-même — qui crée l'illusion de profondeur.
+          </p>
+          <p>
+            Implémentation moderne : <strong>animation-timeline: view()</strong> en CSS pur, sans bibliothèque. Fallback statique sur les navigateurs sans support, jamais de scroll-jacking JavaScript.
+          </p>
+        </div>
+        <div class="layers-demo" aria-hidden="true">
+          <div class="layer layer-z3"></div>
+          <div class="layer layer-z2"></div>
+          <div class="layer layer-z1"></div>
+          <span class="layer-marker m1">Z3 — vitesse lente</span>
+          <span class="layer-marker m2">Z2 — vitesse moyenne</span>
+          <span class="layer-marker m3">Z1 — vitesse rapide</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SIGNATURE 2 — Pacing intentionnel comme arc dramatique -->
+  <!-- ============================================ -->
+  <section class="signature signature-2">
+    <div class="wrap">
+      <div class="pacing-intro">
+        <span class="label">Signature 02 — Pacing</span>
+        <h2>Le rythme du scroll est un montage.</h2>
+        <p>
+          Une page parallax bien faite n'est pas une suite uniforme de sections. Elle alterne plans larges (sections hautes, respirantes) et plans serrés (interstitiels courts, intenses), exactement comme un cut au cinéma. La hauteur de chaque section devient une décision de pacing.
+        </p>
+      </div>
+
+      <div class="pacing-stack">
+        <div class="pacing-row">
+          <span class="timecode">00:00</span>
+          <div>
+            <h3 class="scene-title">Plan large — l'horizon s'installe.</h3>
+            <p class="scene-body">Section haute (90vh+), peu de texte, beaucoup d'espace. Le scroll est lent parce que rien ne presse — la marque pose son décor.</p>
+          </div>
+        </div>
+        <div class="pacing-row">
+          <span class="timecode">00:18</span>
+          <div>
+            <h3 class="scene-title">Coupe — interstitiel, une phrase.</h3>
+            <p class="scene-body">Section courte (40vh), une seule idée tenue. C'est la respiration entre deux mouvements, le silence entre deux notes.</p>
+          </div>
+        </div>
+        <div class="pacing-row">
+          <span class="timecode">00:42</span>
+          <div>
+            <h3 class="scene-title">Plan rapproché — la couche rapide entre.</h3>
+            <p class="scene-body">Section moyenne (70vh), le premier plan accélère, le contenu devient précis, technique. L'œil passe en mode lecture.</p>
+          </div>
+        </div>
+        <div class="pacing-row">
+          <span class="timecode">01:12</span>
+          <div>
+            <h3 class="scene-title">Climax — full-bleed, atmosphère totale.</h3>
+            <p class="scene-body">Section pleine hauteur (100vh+), aucun texte ou presque, les couches saturent l'écran. C'est le plan-affiche que le visiteur retiendra.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ATMOSPHÈRE — climax visuel + usage typique -->
+  <!-- ============================================ -->
+  <section class="atmosphere">
+    <div class="wrap">
+      <div class="atmosphere-content">
+        <span class="label">Atmosphère du style</span>
+        <h2>Cinematic, terrestre, full-bleed.</h2>
+        <div class="usage-grid">
+          <div class="usage-block">
+            <span class="usage-label">Quand l'utiliser</span>
+            <p>Marques narratives qui ont une histoire à raconter sur la durée : aérospatial, automobile premium, voyage immersif, documentaires longs, portfolios créatifs Awwwards. Toute marque dont le récit vaut un scroll de plusieurs minutes.</p>
+          </div>
+          <div class="usage-block">
+            <span class="usage-label">Quand l'éviter</span>
+            <p>Outils SaaS B2B où l'utilisateur cherche une info précise, dashboards, e-commerce avec catalogue dense, contextes mobiles à connexion lente. Si le scroll-jacking devient nécessaire pour faire fonctionner l'effet, le style est mal choisi.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- FOOTER -->
+  <!-- ============================================ -->
+  <footer>
+    <div class="wrap">
+      <div class="meta">
+        <span>Style Library — 27 / Parallax Storytelling</span>
+        <span>Verdict ACTUEL — réf. SpaceX, The Goonies, Lacoste, Awwwards Parallax winners</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

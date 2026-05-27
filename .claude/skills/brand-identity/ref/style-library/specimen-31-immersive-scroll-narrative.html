@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 31. Immersive Scroll Narrative / Cinematic Scrolling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #0a0d12;
+      --color-deep: #050709;
+      --color-night: #131a24;
+      --color-cream: #f1ead8;
+      --color-text: #d6cfbe;
+      --color-mute: #7a7466;
+      --color-blood: #c2402b;
+      --color-amber: #e8a649;
+      --color-line: rgba(241, 234, 216, 0.12);
+
+      --font-display: "Fraunces", "Times New Roman", serif;
+      --font-body: "Inter Tight", system-ui, sans-serif;
+
+      --measure: 62ch;
+      --gutter: clamp(20px, 4vw, 56px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── PACE VARIABLE : sections de hauteurs intentionnellement différentes ─── */
+    section { padding: var(--gutter); position: relative; }
+    .hero { min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding-top: 8vh; padding-bottom: 6vh; }
+    .act-slow { min-height: 130svh; padding-block: 18vh; }
+    .act-fast { min-height: 65svh; padding-block: 8vh; }
+    .act-medium { min-height: 95svh; padding-block: 14vh; }
+    .atmosphere { min-height: 100svh; padding-block: 12vh; }
+
+    /* ─── HERO ─── */
+    .hero-frame {
+      position: absolute; inset: var(--gutter);
+      border: 1px solid var(--color-line);
+      pointer-events: none;
+    }
+    .hero-meta {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: var(--font-body); font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--color-mute);
+    }
+    .hero-meta .reel { color: var(--color-blood); }
+    .hero-center {
+      align-self: center; max-width: 920px; margin: 0 auto; text-align: left;
+    }
+    .hero-act {
+      font-family: var(--font-body); font-size: 12px; letter-spacing: 0.4em;
+      text-transform: uppercase; color: var(--color-amber);
+      display: inline-block; padding: 6px 0;
+      border-top: 1px solid var(--color-amber); margin-bottom: 28px;
+    }
+    h1 {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: clamp(48px, 8.5vw, 132px); line-height: 0.92;
+      letter-spacing: -0.035em; color: var(--color-cream);
+      font-variation-settings: "opsz" 144;
+    }
+    h1 em {
+      font-style: italic; font-weight: 400; color: var(--color-amber);
+      display: block;
+    }
+    .lede {
+      max-width: var(--measure); margin-top: 36px;
+      font-size: clamp(17px, 1.4vw, 21px); line-height: 1.55;
+      color: var(--color-text);
+    }
+    .hero-foot {
+      display: flex; justify-content: space-between; align-items: end;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--color-mute);
+    }
+    .hero-foot .scroll-cue { display: flex; align-items: center; gap: 14px; }
+    .scroll-line {
+      display: inline-block; width: 64px; height: 1px; background: var(--color-cream);
+      transform-origin: left;
+      animation: scrollPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleX(0.3); opacity: 0.4; }
+      50% { transform: scaleX(1); opacity: 1; }
+    }
+
+    /* ─── ACT I — narrative structurée ─── */
+    .act-label {
+      display: flex; align-items: baseline; gap: 24px;
+      font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--color-mute); margin-bottom: 64px;
+    }
+    .act-label .num {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: 56px; color: var(--color-blood); letter-spacing: -0.02em;
+    }
+    .act-label .rule {
+      flex: 1; height: 1px; background: var(--color-line);
+    }
+
+    .signature-grid {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start;
+    }
+    @media (max-width: 800px) { .signature-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+    .signature-h2 {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(36px, 4.2vw, 64px); line-height: 1.02;
+      letter-spacing: -0.025em; color: var(--color-cream);
+    }
+    .signature-h2 em { font-style: italic; color: var(--color-amber); }
+
+    .signature-body p {
+      max-width: var(--measure);
+      font-size: 16px; line-height: 1.7;
+    }
+    .signature-body p + p { margin-top: 18px; }
+
+    /* ─── PACE VARIABLE — démonstration visuelle (3 cellules de durée différente) ─── */
+    .pace-strip {
+      margin-top: 96px;
+      display: grid; grid-template-columns: 1fr 2.3fr 0.6fr; gap: 2px;
+      border: 1px solid var(--color-line);
+    }
+    .pace-cell {
+      padding: 28px 24px; background: var(--color-night);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .pace-cell .marker {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: 28px; color: var(--color-amber); letter-spacing: -0.02em;
+    }
+    .pace-cell .marker.fast { color: var(--color-blood); }
+    .pace-cell .marker.held { color: var(--color-cream); }
+    .pace-cell .label {
+      font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--color-mute);
+    }
+    .pace-cell .desc { font-size: 13px; line-height: 1.55; color: var(--color-text); }
+
+    /* ─── ACT II — Camera-like transition (zoom dolly) ─── */
+    .dolly-stage {
+      position: relative;
+      height: 90svh;
+      margin-top: 56px;
+      border: 1px solid var(--color-line);
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 110%, #1a232f 0%, var(--color-deep) 60%);
+    }
+    .dolly-target {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(80vw, 720px);
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(180deg, transparent 0 60%, rgba(0,0,0,0.6) 100%),
+        linear-gradient(135deg, #2c3a4d 0%, #11161e 100%);
+      border: 1px solid rgba(241, 234, 216, 0.18);
+      display: grid; place-items: end start; padding: 32px;
+
+      /* Scroll-driven dolly zoom (Chrome/Edge ; fallback statique ailleurs) */
+      animation: dollyZoom linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 80%;
+    }
+    @keyframes dollyZoom {
+      0%   { transform: translate(-50%, -50%) scale(0.6); filter: blur(6px); opacity: 0.4; }
+      40%  { transform: translate(-50%, -50%) scale(0.92); filter: blur(0px); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.18); filter: blur(0px); opacity: 0.85; }
+    }
+    .dolly-target .caption {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(20px, 2.4vw, 34px); color: var(--color-cream);
+      line-height: 1.15; max-width: 80%;
+    }
+    .dolly-target .timecode {
+      position: absolute; top: 18px; left: 22px;
+      font-family: var(--font-body); font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--color-amber);
+    }
+    .dolly-target .timecode::before {
+      content: "● "; color: var(--color-blood);
+    }
+    .dolly-stage .scrim-text {
+      position: absolute; bottom: 24px; left: 24px;
+      font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--color-mute);
+    }
+
+    /* ─── ACT III — Reveal masqué (pure CSS scroll-timeline) ─── */
+    .reveal-row {
+      margin-top: 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+    }
+    @media (max-width: 800px) { .reveal-row { grid-template-columns: 1fr; gap: 36px; } }
+
+    .reveal-card {
+      padding: 36px 32px; background: var(--color-night);
+      border-top: 1px solid var(--color-amber);
+      position: relative; overflow: hidden;
+    }
+    .reveal-card::before {
+      content: ""; position: absolute; inset: 0;
+      background: var(--color-bg); transform-origin: right;
+      animation: curtain linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+    @keyframes curtain { to { transform: scaleX(0); } }
+    .reveal-card .num {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: 14px; letter-spacing: 0.1em; color: var(--color-amber);
+    }
+    .reveal-card h3 {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(22px, 2.2vw, 32px); line-height: 1.1;
+      color: var(--color-cream); margin: 16px 0 18px;
+      letter-spacing: -0.02em;
+    }
+    .reveal-card p { font-size: 14.5px; line-height: 1.65; }
+
+    /* ─── ATMOSPHERE ─── */
+    .atmosphere {
+      background:
+        radial-gradient(ellipse at 18% 22%, rgba(232, 166, 73, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 84% 78%, rgba(194, 64, 43, 0.10) 0%, transparent 48%),
+        linear-gradient(180deg, var(--color-deep) 0%, var(--color-bg) 100%);
+      border-top: 1px solid var(--color-line);
+    }
+    .atm-grid {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-items: center;
+      max-width: 1280px; margin: 0 auto;
+    }
+    @media (max-width: 800px) { .atm-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+    .atm-visual {
+      position: relative; aspect-ratio: 4 / 5;
+      background: linear-gradient(180deg, #1c2230 0%, #060810 100%);
+      overflow: hidden; border: 1px solid var(--color-line);
+    }
+    .atm-visual::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(180deg, transparent 0 2px, rgba(241,234,216,0.025) 2px 3px),
+        radial-gradient(circle at 50% 35%, rgba(232,166,73,0.5) 0%, transparent 35%),
+        radial-gradient(circle at 50% 95%, rgba(194,64,43,0.4) 0%, transparent 50%);
+      mix-blend-mode: screen;
+    }
+    .atm-visual::after {
+      content: ""; position: absolute; left: 12%; right: 12%; top: 38%; bottom: 8%;
+      background: linear-gradient(180deg, rgba(241,234,216,0.85) 0%, rgba(241,234,216,0.05) 100%);
+      clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+      filter: blur(0.5px);
+    }
+    .atm-caption {
+      position: absolute; bottom: 14px; left: 14px;
+      font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--color-cream); z-index: 2;
+    }
+
+    .atm-text h2 {
+      font-family: var(--font-display); font-weight: 300;
+      font-size: clamp(28px, 3.6vw, 52px); line-height: 1.05;
+      letter-spacing: -0.025em; color: var(--color-cream);
+    }
+    .atm-text h2 em { font-style: italic; color: var(--color-amber); }
+    .atm-text p { margin-top: 24px; font-size: 16px; line-height: 1.7; }
+    .atm-text .when {
+      margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--color-line);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    }
+    @media (max-width: 600px) { .atm-text .when { grid-template-columns: 1fr; } }
+    .atm-text .when h4 {
+      font-family: var(--font-body); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .atm-text .when .use h4 { color: var(--color-amber); }
+    .atm-text .when .avoid h4 { color: var(--color-blood); }
+    .atm-text .when p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--color-text); }
+
+    /* ─── COLOPHON ─── */
+    footer {
+      padding: 48px var(--gutter);
+      border-top: 1px solid var(--color-line);
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--color-mute);
+    }
+    footer .helio { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 18px; letter-spacing: 0.04em; color: var(--color-cream); text-transform: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HERO — ouverture cinematic ========== -->
+  <section class="hero">
+    <div class="hero-frame"></div>
+    <div class="hero-meta">
+      <span>Style Library / 31</span>
+      <span class="reel">REEL 01 — OUVERTURE</span>
+      <span>Helio — Studio narratif</span>
+    </div>
+
+    <div class="hero-center">
+      <span class="hero-act">Acte I — Le scroll devient mise en scène</span>
+      <h1>
+        Immersive Scroll
+        <em>Narrative.</em>
+      </h1>
+      <p class="lede">
+        Le scroll n'est plus un défilement, c'est une chorégraphie. Chaque section a un tempo, une focale, une intention. Pas de reveals aléatoires : un montage pensé, où la durée d'une scène vaut autant que son contenu.
+      </p>
+    </div>
+
+    <div class="hero-foot">
+      <span>00:00:01 / 00:04:36</span>
+      <span class="scroll-cue">
+        <span class="scroll-line"></span>
+        Continuer la séquence
+      </span>
+      <span>2026</span>
+    </div>
+  </section>
+
+  <!-- ========== ACT I — Signature 1 : narrative structurée ========== -->
+  <section class="act-slow">
+    <div class="act-label">
+      <span class="num">i.</span>
+      <span>Signature 01 — Narrative structurée</span>
+      <span class="rule"></span>
+    </div>
+
+    <div class="signature-grid">
+      <h2 class="signature-h2">Un montage,<br><em>pas un défilement.</em></h2>
+      <div class="signature-body">
+        <p>
+          Le style refuse les animations déclenchées au hasard. Chaque entrée d'élément, chaque transition entre deux scènes, chaque pause répond à une intention narrative — comme un découpage de film. L'ordre des révélations construit une lecture, pas une décoration.
+        </p>
+        <p>
+          Cela suppose un travail amont : storyboarding, hiérarchie des moments forts, choix explicite de ce qu'on montre en premier, de ce qu'on retient pour le climax. Une page Immersive Scroll bien menée se relit comme un script.
+        </p>
+      </div>
+    </div>
+
+    <!-- Démonstration visuelle de la signature 02 : pace variable -->
+    <div class="pace-strip" aria-label="Démonstration du pacing variable">
+      <div class="pace-cell">
+        <span class="marker fast">⟶</span>
+        <span class="label">Coupe rapide · 0.4s</span>
+        <span class="desc">Information dense livrée en flash. Pas de respiration. La durée brève signale qu'on enchaîne.</span>
+      </div>
+      <div class="pace-cell">
+        <span class="marker">⟶⟶⟶⟶⟶</span>
+        <span class="label">Plan tenu · 2.4s</span>
+        <span class="desc">Le moment qui doit infuser. Le scroll ralentit, la composition prend de l'espace, le lecteur reste avec l'image plus longtemps que prévu — c'est délibéré.</span>
+      </div>
+      <div class="pace-cell">
+        <span class="marker held">|</span>
+        <span class="label">Hold · ∞</span>
+        <span class="desc">Une pause. Rien ne bouge. Le silence visuel respire.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ACT II — Signature 2 : camera-like transitions ========== -->
+  <section class="act-medium">
+    <div class="act-label">
+      <span class="num">ii.</span>
+      <span>Signature 02 — Camera-like transitions</span>
+      <span class="rule"></span>
+    </div>
+
+    <div class="signature-grid">
+      <h2 class="signature-h2">Zooms, pans,<br><em>dolly.</em></h2>
+      <div class="signature-body">
+        <p>
+          Les transitions empruntent au vocabulaire cinéma : un zoom dolly qui rapproche un détail, un travelling latéral d'une section à l'autre, un fondu enchaîné entre deux ambiances chromatiques. La caméra n'existe pas — mais sa logique structure le mouvement.
+        </p>
+        <p>
+          Le panneau ci-dessous se rapproche au fur et à mesure du scroll, puis dépasse légèrement le cadre. C'est un effet de focale : on entre dans la scène avant qu'elle ne déborde.
+        </p>
+      </div>
+    </div>
+
+    <div class="dolly-stage">
+      <div class="dolly-target">
+        <span class="timecode">SCN 02 · 00:01:18</span>
+        <span class="caption">"On approche, on tient, on déborde — la caméra raconte avant le texte."</span>
+      </div>
+      <span class="scrim-text">Dolly zoom · scroll-driven</span>
+    </div>
+  </section>
+
+  <!-- ========== ACT III — Signature 3 : reveals chorégraphiés ========== -->
+  <section class="act-fast">
+    <div class="act-label">
+      <span class="num">iii.</span>
+      <span>Signature 03 — Reveals chorégraphiés</span>
+      <span class="rule"></span>
+    </div>
+
+    <div class="signature-grid">
+      <h2 class="signature-h2">Le rideau<br><em>se lève.</em></h2>
+      <div class="signature-body">
+        <p>
+          Plutôt qu'un fade-up générique, chaque bloc se découvre par un mouvement de masque — comme un rideau qui glisse. Le contenu était là, on le révèle. Cela suggère qu'une scène existait avant qu'on n'arrive : on entre dans un récit déjà en cours.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal-row">
+      <article class="reveal-card">
+        <span class="num">— scn. iii.a</span>
+        <h3>L'arrivée<br>en scène</h3>
+        <p>Le rideau se lève de droite à gauche au moment où le bloc entre dans la fenêtre. La vitesse du scroll détermine la vitesse du reveal : plus on défile vite, plus le rideau lève vite. Le mouvement reste lié au geste.</p>
+      </article>
+      <article class="reveal-card">
+        <span class="num">— scn. iii.b</span>
+        <h3>La sortie<br>en fondu</h3>
+        <p>Quand le bloc quitte le cadre, il ne s'éclipse pas brutalement : il reste dans l'arrière-plan visuel, comme un plan qu'on n'a pas tout à fait coupé. La continuité narrative l'emporte sur le reset.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== ATMOSPHERE — usage du style ========== -->
+  <section class="atmosphere">
+    <div class="atm-grid">
+      <div class="atm-visual" aria-hidden="true">
+        <span class="atm-caption">Atmosphère · clair-obscur ambré</span>
+      </div>
+      <div class="atm-text">
+        <h2>Le tempo<br><em>est l'identité.</em></h2>
+        <p>
+          La couleur émotionnelle d'un Immersive Scroll se joue dans la profondeur : palette resserrée, clair-obscur ambré, surfaces qui semblent éclairées par une seule source. La page n'est pas un document — c'est un espace traversé.
+        </p>
+        <div class="when">
+          <div class="use">
+            <h4>Quand l'utiliser</h4>
+            <p>Lancements premium, projets éditoriaux longs, marques narratives (cinéma, mode, architecture, art), portfolios studios créatifs.</p>
+          </div>
+          <div class="avoid">
+            <h4>Quand l'éviter</h4>
+            <p>Outils SaaS B2B utilitaires, e-commerce volume, dashboards opérationnels, sites où le temps de lecture doit rester court.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Style Library · Brand Identity Generator</span>
+    <span class="helio">Helio</span>
+    <span>Specimen 31 / 2026</span>
+  </footer>
+
+</body>
+</html>

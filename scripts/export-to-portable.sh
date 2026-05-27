@@ -34,6 +34,24 @@ SKILLS_TO_PORT=(
   "visual-prompt"
 )
 
+# Anonymisation des marques clientes utilisées comme cas d'étude.
+#
+# Convention : tout client dont le nom apparaît dans des REX, exemples ou
+# templates du sandbox DOIT être anonymisé au portage. Le sandbox garde les
+# vrais noms (utile en interne, historique des tests). Le portable les
+# remplace systématiquement par un pseudo.
+#
+# Format : "vrai_nom:pseudo" — appliqué case-sensitive sur les variations
+# courantes (Titre Case, lowercase, UPPERCASE) automatiquement.
+# Ajouter ici tout nouveau client utilisé comme cas d'étude.
+CLIENT_ANONYMIZATIONS=(
+  "Les Alchimistes:Atelier Vermeil"
+  "Alchimistes:Vermeil"
+  "Jacques:Camille"
+  "ChargePilot:VoltaPilot"
+  "Chargepilot:Voltapilot"
+)
+
 # Fichiers racine à porter (depuis le sandbox vers le portable)
 ROOT_FILES_TO_PORT=(
   "ARCHITECTURE.md:docs/ARCHITECTURE.md"
@@ -300,15 +318,97 @@ done
 echo
 
 # ─────────────────────────────────────────────────────────────────────────────
+# ANONYMISATION DES MARQUES CLIENTES
+# ─────────────────────────────────────────────────────────────────────────────
+# Convention : tout fichier porté qui mentionne un nom de marque cliente
+# utilisée comme cas d'étude DOIT être anonymisé. Voir CLIENT_ANONYMIZATIONS
+# en tête de script. On applique 3 variantes de casse pour chaque mapping
+# (Title Case, lowercase, UPPERCASE) afin de couvrir : noms propres, slugs,
+# titres CSS-friendly, etc.
+#
+# Auto-exclusion : le script s'exclut lui-même (il contient les patterns).
+
+if [ "$APPLY" -eq 1 ]; then
+  echo -e "${BOLD}── Anonymisation des marques clientes ──${NC}"
+
+  # Construction de la liste des fichiers texte à traiter (exclut binaires
+  # et le script lui-même)
+  TARGET_FILES=$(find "$PORTABLE" \
+    -type f \
+    \( -name "*.md" -o -name "*.html" -o -name "*.py" -o -name "*.mjs" \
+       -o -name "*.js" -o -name "*.css" -o -name "*.sh" -o -name "*.json" \
+       -o -name "*.txt" -o -name "*.yml" -o -name "*.yaml" \) \
+    -not -path "$PORTABLE/.git/*" \
+    -not -path "$PORTABLE/scripts/export-to-portable.sh" \
+    2>/dev/null)
+
+  TOTAL_REPLACEMENTS=0
+
+  for mapping in "${CLIENT_ANONYMIZATIONS[@]}"; do
+    REAL="${mapping%%:*}"
+    FAKE="${mapping##*:}"
+
+    # Variantes de casse (Title Case, lowercase, UPPERCASE)
+    REAL_LOWER=$(echo "$REAL" | tr '[:upper:]' '[:lower:]')
+    REAL_UPPER=$(echo "$REAL" | tr '[:lower:]' '[:upper:]')
+    FAKE_LOWER=$(echo "$FAKE" | tr '[:upper:]' '[:lower:]')
+    FAKE_UPPER=$(echo "$FAKE" | tr '[:lower:]' '[:upper:]')
+
+    echo -e "  ${BLUE}→${NC} $REAL → $FAKE (+ variantes lower/UPPER)"
+
+    COUNT=0
+    while IFS= read -r file; do
+      [ -z "$file" ] && continue
+      # 3 passes par fichier (Title, lower, UPPER) — perl -pi pour cross-platform
+      MATCHES=$(perl -pi -e "
+        BEGIN { \$c=0; }
+        \$c += s/\Q$REAL\E/$FAKE/g;
+        \$c += s/\Q$REAL_LOWER\E/$FAKE_LOWER/g;
+        \$c += s/\Q$REAL_UPPER\E/$FAKE_UPPER/g;
+        END { print STDERR \$c if \$c > 0; }
+      " "$file" 2>&1 1>/dev/null || true)
+      if [ -n "$MATCHES" ]; then
+        COUNT=$((COUNT + MATCHES))
+      fi
+    done <<< "$TARGET_FILES"
+
+    if [ "$COUNT" -gt 0 ]; then
+      echo -e "      ${GREEN}✓${NC} $COUNT remplacements"
+      TOTAL_REPLACEMENTS=$((TOTAL_REPLACEMENTS + COUNT))
+    else
+      echo -e "      (aucune occurrence)"
+    fi
+  done
+
+  echo -e "  ${BOLD}Total : $TOTAL_REPLACEMENTS remplacements${NC}"
+  echo
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
 # CHECKS POST-SYNC (uniquement en mode apply)
 # ─────────────────────────────────────────────────────────────────────────────
 
 if [ "$APPLY" -eq 1 ]; then
   echo -e "${BOLD}── Vérifications post-sync ──${NC}"
 
-  # 1. Aucun brief client n'a fui
-  echo -ne "  Aucun brief confidentiel exposé... "
-  LEAKS=$(grep -rl "Jacques Brief\|Les Alchimistes" "$PORTABLE" 2>/dev/null | grep -v "/docs/internal/" || true)
+  # 1. Aucun nom client réel n'a fui (dynamique : construit depuis
+  # CLIENT_ANONYMIZATIONS pour rester synchronisé automatiquement)
+  echo -ne "  Aucun nom client réel exposé... "
+  # On exclut docs/internal/ (lore assumé) ET le script lui-même (faux positif :
+  # il contient les patterns de détection)
+  LEAK_PATTERN=""
+  for mapping in "${CLIENT_ANONYMIZATIONS[@]}"; do
+    REAL="${mapping%%:*}"
+    if [ -z "$LEAK_PATTERN" ]; then
+      LEAK_PATTERN="$REAL"
+    else
+      LEAK_PATTERN="$LEAK_PATTERN\\|$REAL"
+    fi
+  done
+  LEAKS=$(grep -rl "$LEAK_PATTERN" "$PORTABLE" 2>/dev/null \
+    | grep -v "/docs/internal/" \
+    | grep -v "/scripts/export-to-portable.sh" \
+    || true)
   if [ -z "$LEAKS" ]; then
     echo -e "${GREEN}✓${NC}"
   else

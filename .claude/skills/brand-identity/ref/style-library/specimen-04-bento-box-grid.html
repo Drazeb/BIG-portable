@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 04. Bento Box Grid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Bento — neutres tech doux + tuiles différenciées */
+      --bg-page: #F4F5F7;            /* ardoise très claire, pas blanc pur */
+      --tile-base: #FFFFFF;
+      --tile-tint-cyan: #E8F2FB;     /* tuile data primaire */
+      --tile-tint-graphite: #1B1F26; /* tuile dominante sombre */
+      --tile-tint-lime: #ECF7DC;     /* tuile métrique positive */
+      --tile-tint-amber: #FCEFD8;    /* tuile signal/alerte douce */
+      --tile-tint-mist: #EEF0F4;     /* tuile neutre froide */
+
+      --ink-primary: #0F1115;
+      --ink-secondary: #4A5260;
+      --ink-muted: #8A93A2;
+      --ink-on-dark: #F0F2F5;
+      --ink-on-dark-muted: #9AA3B2;
+
+      --accent-signal: #2462E0;      /* bleu signal — pas indigo Tailwind */
+      --accent-lime: #6BA51A;
+      --accent-amber: #D78A1A;
+      --hairline: #E2E5EB;
+      --hairline-strong: #C8CDD6;
+
+      --radius-tile: 22px;
+      --radius-inner: 12px;
+
+      --font-display: "Manrope", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-page);
+      color: var(--ink-primary);
+      font-family: var(--font-display);
+      font-weight: 500;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      padding: 56px 40px 80px;
+    }
+
+    .wrap { max-width: 1180px; margin: 0 auto; }
+
+    /* ─── HERO ─────────────────────────────────────────────── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: 32px;
+    }
+    .hero .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .hero .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-signal); }
+    .hero h1 {
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      font-weight: 800;
+      max-width: 18ch;
+    }
+    .hero .lede {
+      font-size: 19px;
+      color: var(--ink-secondary);
+      max-width: 64ch;
+      line-height: 1.55;
+    }
+    .hero .brand {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* ─── COMPOSANT 1 : LA GRILLE BENTO SIGNATURE ───────────── */
+    .signature-1 { margin-top: 48px; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 18px;
+    }
+    .section-head h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.012em;
+    }
+    .section-head .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .section-intro {
+      font-size: 15px;
+      color: var(--ink-secondary);
+      max-width: 70ch;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: 150px;
+      gap: 14px;
+    }
+    .tile {
+      border-radius: var(--radius-tile);
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* La tuile DOMINANTE — 3× plus large + 2 lignes — porte le narratif principal */
+    .tile-hero {
+      grid-column: span 4;
+      grid-row: span 2;
+      background: var(--tile-tint-graphite);
+      color: var(--ink-on-dark);
+      padding: 32px;
+    }
+    .tile-hero .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-muted);
+    }
+    .tile-hero .headline {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.018em;
+      line-height: 1.1;
+      max-width: 22ch;
+      margin-top: 14px;
+    }
+    .tile-hero .headline em {
+      color: #6FB5FF;
+      font-style: normal;
+      font-weight: 700;
+    }
+    .tile-hero .footline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink-on-dark-muted);
+    }
+    .tile-hero .footline .arrow {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--accent-signal);
+      color: white;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+
+    /* Tuile métrique chiffrée */
+    .tile-metric {
+      grid-column: span 2;
+      grid-row: span 1;
+      background: var(--tile-tint-lime);
+    }
+    .tile-metric .num {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--ink-primary);
+      line-height: 1;
+    }
+    .tile-metric .delta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent-lime);
+      font-weight: 600;
+    }
+    .tile-metric .caption {
+      font-size: 13px;
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+
+    /* Tuile mini-chart SVG */
+    .tile-chart {
+      grid-column: span 2;
+      grid-row: span 1;
+      background: var(--tile-tint-cyan);
+    }
+    .tile-chart .label {
+      font-size: 12px;
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+    .tile-chart svg {
+      width: 100%;
+      height: 56px;
+      display: block;
+    }
+
+    /* Tuile texte / quote */
+    .tile-quote {
+      grid-column: span 3;
+      grid-row: span 1;
+      background: var(--tile-base);
+      border: 1px solid var(--hairline);
+    }
+    .tile-quote p {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--ink-primary);
+      font-weight: 500;
+    }
+    .tile-quote .author {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Tuile illustration CSS pure — petit motif radial pour évoquer un pulse data */
+    .tile-illu {
+      grid-column: span 3;
+      grid-row: span 1;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(36, 98, 224, 0.18), transparent 38%),
+        radial-gradient(circle at 80% 60%, rgba(215, 138, 26, 0.15), transparent 40%),
+        var(--tile-tint-mist);
+      border: 1px solid var(--hairline);
+    }
+    .tile-illu .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .tile-illu .small-text {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      max-width: 32ch;
+      line-height: 1.5;
+    }
+
+    /* ─── COMPOSANT 2 : ANATOMIE D'UNE TUILE ────────────────── */
+    .signature-2 { margin-top: 64px; }
+    .anatomy {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    .anatomy-tile {
+      background: var(--tile-base);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-tile);
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+    .anatomy-tile .tag {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-signal);
+      background: rgba(36, 98, 224, 0.08);
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .anatomy-tile .role {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.012em;
+      line-height: 1.15;
+    }
+    .anatomy-tile .desc {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      line-height: 1.55;
+    }
+    .anatomy-tile .specs {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--hairline-strong);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-secondary);
+    }
+    .anatomy-tile .specs li::before {
+      content: "→ ";
+      color: var(--accent-signal);
+      margin-right: 6px;
+    }
+
+    .anatomy-rules {
+      background: var(--tile-tint-graphite);
+      color: var(--ink-on-dark);
+      border-radius: var(--radius-tile);
+      padding: 28px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .anatomy-rules h3 {
+      font-size: 14px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6FB5FF;
+      font-weight: 500;
+    }
+    .anatomy-rules .rule {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .anatomy-rules .rule .n {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-on-dark-muted);
+      padding-top: 2px;
+    }
+    .anatomy-rules .rule p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink-on-dark);
+    }
+    .anatomy-rules .rule p strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    /* ─── ATMOSPHÈRE / USAGE ────────────────────────────────── */
+    .atmosphere { margin-top: 64px; }
+    .atmosphere-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .atmosphere-visual {
+      border-radius: var(--radius-tile);
+      padding: 36px;
+      min-height: 240px;
+      background:
+        linear-gradient(135deg, var(--tile-tint-cyan) 0%, var(--tile-base) 50%, var(--tile-tint-amber) 100%);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .atmosphere-visual .mini {
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .atmosphere-visual .mini.dark { background: var(--tile-tint-graphite); border: none; }
+    .atmosphere-visual .mini.cyan { background: var(--accent-signal); opacity: 0.85; }
+    .atmosphere-visual .mini.lime { background: var(--accent-lime); opacity: 0.7; }
+    .atmosphere-visual .mini.amber { background: var(--accent-amber); opacity: 0.8; }
+    /* placements pour évoquer une bento miniature */
+    .m1 { grid-column: span 2; grid-row: span 2; }
+    .m2 { grid-column: span 2; grid-row: span 1; }
+    .m3 { grid-column: span 1; grid-row: span 1; }
+    .m4 { grid-column: span 1; grid-row: span 2; }
+    .m5 { grid-column: span 2; grid-row: span 1; }
+    .m6 { grid-column: span 1; grid-row: span 1; }
+    .m7 { grid-column: span 2; grid-row: span 1; }
+
+    .atmosphere-text {
+      background: var(--tile-base);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-tile);
+      padding: 32px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .atmosphere-text h3 {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+    .atmosphere-text .use, .atmosphere-text .avoid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .atmosphere-text .use h4, .atmosphere-text .avoid h4 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .atmosphere-text .use h4::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-lime);
+    }
+    .atmosphere-text .avoid h4::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-amber);
+    }
+    .atmosphere-text p {
+      font-size: 14px;
+      color: var(--ink-secondary);
+      line-height: 1.55;
+    }
+
+    /* footer-ish */
+    .colophon {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 880px) {
+      body { padding: 32px 20px 60px; }
+      .bento { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 140px; }
+      .tile-hero { grid-column: span 2; grid-row: span 2; }
+      .tile-metric, .tile-chart, .tile-quote, .tile-illu { grid-column: span 2; }
+      .anatomy, .atmosphere-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span>Style Library · 04 / 34</span>
+        <span>Registre — Tech / Minimaliste</span>
+      </div>
+      <h1>Bento Box Grid.</h1>
+      <p class="lede">L'information dense organisée en tuiles modulaires de tailles variables — chaque module porte une donnée distincte, scannable d'un seul regard. Une tuile domine, les autres orbitent : la hiérarchie est dans la proportion, pas dans le poids typographique.</p>
+      <p class="brand">Helio — Plateforme analytique B2B</p>
+    </section>
+
+    <!-- COMPOSANT 1 — la grille signature -->
+    <section class="signature-1">
+      <div class="section-head">
+        <h2>La grille asymétrique en action</h2>
+        <span class="meta">SIGNATURE #1</span>
+      </div>
+      <p class="section-intro">Le Bento ne vit pas dans la grille 3×3 régulière — c'est ce qui le différencie d'un mur de cards Pinterest. Une tuile dominante (2-3× plus grande) capte le regard en premier, puis l'œil descend par paliers vers les satellites de tailles décroissantes. Les contenus sont délibérément hétérogènes : un chiffre, un graphe, une citation, une illustration.</p>
+
+      <div class="bento">
+        <!-- Tuile dominante : narratif principal -->
+        <div class="tile tile-hero">
+          <span class="label">01 — Tuile dominante</span>
+          <h3 class="headline">Une seule donnée porte le récit. <em>Tout le reste l'éclaire.</em></h3>
+          <div class="footline">
+            <span class="arrow">→</span>
+            <span>Hiérarchie par la proportion, pas par la taille de police</span>
+          </div>
+        </div>
+
+        <!-- Métrique chiffrée -->
+        <div class="tile tile-metric">
+          <span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-secondary); text-transform: uppercase; letter-spacing: 0.08em;">02 — Métrique</span>
+          <div>
+            <div class="num">+47%</div>
+            <div class="delta">▲ dwell time vs hero classique</div>
+          </div>
+          <div class="caption">Source senorit.de, étude top 100 SaaS ProductHunt 2025.</div>
+        </div>
+
+        <!-- Mini-chart SVG inline -->
+        <div class="tile tile-chart">
+          <span class="label">03 — Trend</span>
+          <svg viewBox="0 0 200 56" preserveAspectRatio="none">
+            <polyline points="0,42 25,38 50,30 75,32 100,22 125,18 150,12 175,16 200,8"
+                      fill="none" stroke="#2462E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="200" cy="8" r="3.5" fill="#2462E0"/>
+          </svg>
+          <span style="font-size: 12px; color: var(--ink-secondary);">Adoption du pattern, 2023→2026</span>
+        </div>
+
+        <!-- Citation / proof -->
+        <div class="tile tile-quote">
+          <p>"Apple a popularisé la bento en 2023 sur ses pages produit ; depuis, 67% des SaaS ProductHunt l'ont adoptée. Le pattern est devenu le langage par défaut pour montrer 'nous faisons beaucoup, mais c'est lisible'."</p>
+          <span class="author">— Catalogue BIG, fiche #39</span>
+        </div>
+
+        <!-- Illustration / atmosphere mini -->
+        <div class="tile tile-illu">
+          <span class="label">05 — Densité contrôlée</span>
+          <p class="small-text">Chaque tuile respire — paddings généreux à l'intérieur, gaps de 14-20px à l'extérieur. Le Bento dense ≠ Bento tassé.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 2 — anatomie + règles -->
+    <section class="signature-2">
+      <div class="section-head">
+        <h2>Anatomie d'une tuile, règles d'or</h2>
+        <span class="meta">SIGNATURE #2</span>
+      </div>
+      <p class="section-intro">Une tuile Bento n'est pas une "card" générique. Elle a un rôle précis dans la composition d'ensemble — USP, social proof, métrique, CTA secondaire. Le border-radius, les paddings et la teinte de fond sont cohérents entre toutes les tuiles, mais leur contenu est radicalement différent.</p>
+
+      <div class="anatomy">
+        <div class="anatomy-tile">
+          <span class="tag">Tuile USP — exemple</span>
+          <div class="role">Réduisez de 6 jours le délai entre data brute et décision opérationnelle.</div>
+          <p class="desc">Une tuile = une promesse. Le copy y est dense mais autosuffisant — la tuile doit pouvoir être lue isolément, sans contexte des voisines. C'est la condition de la scannabilité.</p>
+          <ul class="specs">
+            <li>border-radius : 22px (cohérent sur toute la grille)</li>
+            <li>padding : 28-32px (jamais &lt; 22px)</li>
+            <li>fond : teinté ou neutre, jamais blanc pur</li>
+            <li>bordure : 1px hairline ou aucune (pas d'ombre)</li>
+          </ul>
+        </div>
+
+        <div class="anatomy-rules">
+          <h3>Les 4 règles non négociables</h3>
+          <div class="rule">
+            <span class="n">01</span>
+            <p><strong>Tailles variées obligatoires.</strong> Une grille 3×3 uniforme = anti-bento. Au minimum une tuile 2×2 entourée de tuiles 1×1 ou 2×1.</p>
+          </div>
+          <div class="rule">
+            <span class="n">02</span>
+            <p><strong>Contenus hétérogènes.</strong> Chiffre + texte + graphe + citation. Si toutes les tuiles ont icône+titre+texte, c'est un mur de cards déguisé.</p>
+          </div>
+          <div class="rule">
+            <span class="n">03</span>
+            <p><strong>Border-radius cohérent.</strong> Si la dominante est à 22px, toutes les autres aussi. L'incohérence trahit le copier-coller.</p>
+          </div>
+          <div class="rule">
+            <span class="n">04</span>
+            <p><strong>Pas de gradient violet.</strong> Le purple-to-blue dans une tuile est le marqueur AI-slop le plus daté de 2025.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE / USAGE -->
+    <section class="atmosphere">
+      <div class="section-head">
+        <h2>Couleur émotionnelle &amp; usages</h2>
+        <span class="meta">ATMOSPHÈRE</span>
+      </div>
+
+      <div class="atmosphere-grid">
+        <div class="atmosphere-visual" aria-hidden="true">
+          <div class="mini m1 dark"></div>
+          <div class="mini m2 cyan"></div>
+          <div class="mini m3"></div>
+          <div class="mini m4 amber"></div>
+          <div class="mini m5"></div>
+          <div class="mini m6 lime"></div>
+          <div class="mini m7"></div>
+        </div>
+
+        <div class="atmosphere-text">
+          <h3>Mode d'emploi</h3>
+          <div class="use">
+            <h4>Quand utiliser ce style</h4>
+            <p>SaaS B2B, dashboards analytiques, plateformes de données, pages produit Tech qui doivent montrer beaucoup d'USP en un seul écran. Idéal quand la marque doit dire "nous faisons N choses, et chacune mérite votre attention".</p>
+          </div>
+          <div class="avoid">
+            <h4>Quand l'éviter</h4>
+            <p>Édition culturelle, marques émotionnelles, parfumeries, sites artistiques. Le Bento parle data — il refroidit ce qui devrait chauffer. Évitez aussi en 2026 si la marque cherche à se différencier visuellement : 67% des SaaS l'utilisent déjà, le risque de banalisation est élevé.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="colophon">
+      <span>Style Library · BIG</span>
+      <span>04 / Bento Box Grid · Tech-Minimaliste</span>
+    </div>
+
+  </div>
+</body>
+</html>

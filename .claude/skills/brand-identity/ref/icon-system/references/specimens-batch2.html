@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Spécimens — familles 01, 02, 03, 05, 07, 08</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 40px; font-family: 'Inter', sans-serif; background: #faf8f3; }
+  h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 22px; margin: 40px 0 16px; padding-top: 24px; border-top: 1px solid #ddd; }
+  .specimens { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .spec { background: white; padding: 32px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; gap: 16px; min-height: 280px; justify-content: center; }
+  .spec.dark { background: #0d1623; color: #f0eee8; }
+  .spec.terminal { background: #0a0a0a; color: #7eef41; font-family: 'JetBrains Mono', monospace; }
+  .spec.sticker-bg { background: #f5f1e8; }
+  .spec-name { font-family: 'DM Serif Display', serif; font-size: 16px; text-align: center; color: #1a1a1a; }
+  .spec.dark .spec-name, .spec.terminal .spec-name { color: inherit; font-family: 'Inter', sans-serif; }
+  .spec-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #888; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ============= F01 PICTOGRAMME GÉO ============= -->
+<h2>01 — Pictogramme géométrique propre</h2>
+<div class="specimens">
+  <div class="spec">
+    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Optical compensation + stroke variable (SIG-01, SIG-03) -->
+      <circle cx="11" cy="11" r="7" stroke-width="2"/>
+      <line x1="16.5" y1="16.5" x2="20" y2="20" stroke-width="1.5"/>
+    </svg>
+    <div class="spec-name">Loupe (Lucide-style)</div>
+    <div class="spec-label">SIG-01 stroke contrasté · SIG-03 optical</div>
+  </div>
+  <div class="spec">
+    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round">
+      <!-- Joints open délibérés (SIG-02) -->
+      <path d="M5 7h14M5 12h11M5 17h9" stroke-width="2"/>
+      <path d="M19 14l2 2-4 4" stroke-width="1.2"/>
+    </svg>
+    <div class="spec-name">Liste avec action</div>
+    <div class="spec-label">SIG-02 joints open · stroke mix</div>
+  </div>
+</div>
+
+<!-- ============= F02 ISOMÉTRIQUE ============= -->
+<h2>02 — Isométrique / 3D</h2>
+<div class="specimens">
+  <div class="spec dark">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Serveur iso wireframe (SIG-02) + mode sombre (SIG-01) -->
+      <g stroke="#dde5ee" stroke-width="1" fill="none">
+        <polygon points="60,20 95,40 60,60 25,40"/>
+        <polygon points="60,60 95,40 95,75 60,95"/>
+        <polygon points="60,60 25,40 25,75 60,95"/>
+        <line x1="40" y1="50" x2="50" y2="55"/>
+        <line x1="70" y1="55" x2="80" y2="50"/>
+      </g>
+      <circle cx="60" cy="55" r="2.5" fill="#E89248"/>
+    </svg>
+    <div class="spec-name">Server rack wireframe</div>
+    <div class="spec-label">SIG-01 mode sombre · SIG-02 wireframe</div>
+  </div>
+  <div class="spec dark">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Cube iso aplats nuancés (SIG-03 sujet métier + grain SIG-04) -->
+      <defs>
+        <filter id="iso-grain">
+          <feTurbulence baseFrequency="0.7" numOctaves="2" seed="5"/>
+          <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+      </defs>
+      <polygon points="60,25 95,45 60,65 25,45" fill="#dde5ee"/>
+      <polygon points="60,65 95,45 95,80 60,100" fill="#aab8cc"/>
+      <polygon points="60,65 25,45 25,80 60,100" fill="#7a8a9e"/>
+      <line x1="45" y1="50" x2="55" y2="56" stroke="#1a2d40" stroke-width="0.8"/>
+      <line x1="75" y1="56" x2="65" y2="62" stroke="#1a2d40" stroke-width="0.8"/>
+      <rect x="0" y="0" width="120" height="120" fill="white" filter="url(#iso-grain)"/>
+    </svg>
+    <div class="spec-name">Object iso + grain</div>
+    <div class="spec-label">SIG-04 grain · 3 polygones face</div>
+  </div>
+</div>
+
+<!-- ============= F03 PIXEL ART ============= -->
+<h2>03 — Pixel art</h2>
+<div class="specimens">
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <!-- Sword pixel 8-bit style (SIG-01 crisp + SIG-02 palette restreinte) -->
+      <g fill="#1a1a1a">
+        <rect x="7" y="1" width="2" height="9"/>
+        <rect x="6" y="2" width="1" height="7"/>
+        <rect x="9" y="2" width="1" height="7"/>
+      </g>
+      <g fill="#c5772e">
+        <rect x="5" y="9" width="6" height="1"/>
+        <rect x="6" y="10" width="4" height="1"/>
+        <rect x="7" y="11" width="2" height="3"/>
+      </g>
+      <g fill="#888">
+        <rect x="7" y="2" width="2" height="7"/>
+        <rect x="7" y="3" width="1" height="1" fill="#dde5ee"/>
+      </g>
+    </svg>
+    <div class="spec-name">Sword 16×16</div>
+    <div class="spec-label">SIG-01 crispEdges · SIG-02 palette 4</div>
+  </div>
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 12 12" shape-rendering="crispEdges">
+      <!-- Heart 1-bit Game Boy-like (SIG-04 1-bit variant) -->
+      <g fill="#1a1a1a">
+        <rect x="2" y="2" width="2" height="1"/>
+        <rect x="8" y="2" width="2" height="1"/>
+        <rect x="1" y="3" width="4" height="2"/>
+        <rect x="7" y="3" width="4" height="2"/>
+        <rect x="1" y="5" width="10" height="2"/>
+        <rect x="2" y="7" width="8" height="1"/>
+        <rect x="3" y="8" width="6" height="1"/>
+        <rect x="4" y="9" width="4" height="1"/>
+        <rect x="5" y="10" width="2" height="1"/>
+      </g>
+    </svg>
+    <div class="spec-name">Heart 1-bit Game Boy</div>
+    <div class="spec-label">SIG-04 variante 1-bit stricte</div>
+  </div>
+</div>
+
+<!-- ============= F05 ORNEMENTAL ============= -->
+<h2>05 — Ornemental (art déco)</h2>
+<div class="specimens">
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Symétrie radiale art déco + bichromie cuivre patiné (SIG-01, SIG-03) -->
+      <g fill="none" stroke="#1a1a1a" stroke-width="1.4">
+        <circle cx="60" cy="60" r="44"/>
+        <circle cx="60" cy="60" r="34"/>
+        <polygon points="60,20 70,60 60,100 50,60"/>
+        <polygon points="20,60 60,50 100,60 60,70"/>
+      </g>
+      <g fill="#a86e2c">
+        <polygon points="60,40 62,60 60,80 58,60"/>
+        <polygon points="40,60 60,58 80,60 60,62"/>
+      </g>
+      <g stroke="#1a1a1a" stroke-width="0.6" fill="none">
+        <line x1="60" y1="14" x2="60" y2="20"/>
+        <line x1="60" y1="100" x2="60" y2="106"/>
+        <line x1="14" y1="60" x2="20" y2="60"/>
+        <line x1="100" y1="60" x2="106" y2="60"/>
+      </g>
+    </svg>
+    <div class="spec-name">Rose des vents art déco</div>
+    <div class="spec-label">SIG-01 géométrie · SIG-03 bichromie cuivre</div>
+  </div>
+  <div class="spec">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <!-- Coins coupés art déco + symétrie axiale (SIG-02, SIG-05) -->
+      <polygon points="20,30 35,15 85,15 100,30 100,90 85,105 35,105 20,90"
+               fill="none" stroke="#1a1a1a" stroke-width="1.4"/>
+      <polygon points="26,33 38,21 82,21 94,33 94,87 82,99 38,99 26,87"
+               fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+      <!-- Motif central symétrie axiale -->
+      <polygon points="60,38 70,58 60,52 50,58" fill="#1a1a1a"/>
+      <polygon points="60,82 50,62 60,68 70,62" fill="#1a1a1a"/>
+      <line x1="60" y1="40" x2="60" y2="80" stroke="#a86e2c" stroke-width="1"/>
+      <!-- Asymétrie calculée -->
+      <circle cx="60" cy="60" r="3" fill="#a86e2c"/>
+      <circle cx="60" cy="60" r="5" fill="none" stroke="#a86e2c" stroke-width="0.6"/>
+    </svg>
+    <div class="spec-name">Cartouche chamfered</div>
+    <div class="spec-label">SIG-05 coins coupés · SIG-02 symétrie axiale</div>
+  </div>
+</div>
+
+<!-- ============= F07 STICKER ============= -->
+<h2>07 — Sticker / cut-out</h2>
+<div class="specimens">
+  <div class="spec sticker-bg">
+    <svg width="120" height="120" viewBox="0 0 120 120" style="transform: rotate(-4deg);">
+      <!-- Sticker silhouette + détail (SIG-01 double drop-shadow + SIG-02 rotation + SIG-04 détail) -->
+      <g style="filter: drop-shadow(0 4px 0 white) drop-shadow(0 6px 6px rgba(0,0,0,0.18))">
+        <polygon points="60,18 78,42 105,46 85,68 90,95 60,82 30,95 35,68 15,46 42,42" fill="#E89248"/>
+      </g>
+      <g fill="white">
+        <polygon points="60,40 65,52 60,48 55,52"/>
+        <circle cx="60" cy="60" r="3"/>
+      </g>
+    </svg>
+    <div class="spec-name">Star achievement</div>
+    <div class="spec-label">SIG-01 double shadow · SIG-02 rotation -4°</div>
+  </div>
+  <div class="spec sticker-bg">
+    <svg width="120" height="120" viewBox="0 0 120 120" style="transform: rotate(5deg);">
+      <!-- Sticker badge avec contour blanc épais (SIG-03 saturé) -->
+      <g style="filter: drop-shadow(0 5px 0 white) drop-shadow(0 7px 6px rgba(0,0,0,0.2))">
+        <circle cx="60" cy="60" r="42" fill="#4a5d52"/>
+      </g>
+      <g fill="white">
+        <text x="60" y="68" text-anchor="middle" font-family="Inter" font-size="20" font-weight="700">v2</text>
+      </g>
+    </svg>
+    <div class="spec-name">Release badge v2</div>
+    <div class="spec-label">SIG-03 saturé · SIG-04 silhouette + détail</div>
+  </div>
+</div>
+
+<!-- ============= F08 BRUTALISTE ============= -->
+<h2>08 — Brutaliste / ASCII</h2>
+<div class="specimens">
+  <div class="spec terminal">
+    <pre style="margin: 0; font-size: 16px; line-height: 1.1;">┌──────────┐
+│ ████████ │
+│ ██    ██ │
+│ ████████ │
+│ ██    ██ │
+│ ██    ██ │
+└──────────┘
+   [icon]</pre>
+    <div class="spec-name">Icon ASCII boxed</div>
+    <div class="spec-label">SIG-01 monospace · SIG-02 Unicode struct</div>
+  </div>
+  <div class="spec terminal">
+    <pre style="margin: 0; font-size: 14px; line-height: 1.1;">██████████
+██░░░░░░██
+██░██████░██
+██░██  ██░██
+██░██████░██
+██░░░░░░██
+██████████
+ > diagnostic</pre>
+    <div class="spec-name">Diagnostic terminal</div>
+    <div class="spec-label">SIG-03 bichromie · SIG-05 grille caractère</div>
+  </div>
+</div>
+
+</body>
+</html>

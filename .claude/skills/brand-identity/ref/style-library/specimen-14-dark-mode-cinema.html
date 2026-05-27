@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 14. Dark Mode Cinema</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Dark Mode Cinema — fond teinté + accent chaud */
+      --bg-deep: #0E1014;          /* fond principal teinté bleu-nuit, jamais #000 pur */
+      --bg-elev: #161A21;          /* surface élevée */
+      --bg-card: #1C2129;          /* carte / panneau */
+      --line: #2A3038;             /* séparateur subtil */
+      --text-cream: #ECE6DA;       /* texte principal — crème, pas blanc pur */
+      --text-mute: #8A8579;        /* texte secondaire désaturé */
+      --accent-amber: #E8A74B;     /* accent chaud signature */
+      --accent-ember: #C9482A;     /* accent terracotta — halos profonds */
+      --accent-glow: rgba(232,167,75,0.18);
+
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body: "Inter", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+      --max-w: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-deep);
+      color: var(--text-cream);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      /* Halos chauds intentionnels — création de profondeur, pas de l'ornement */
+      background:
+        radial-gradient(ellipse 700px 420px at 78% -8%, rgba(232,167,75,0.12), transparent 60%),
+        radial-gradient(ellipse 900px 600px at -10% 35%, rgba(201,72,42,0.08), transparent 65%),
+        var(--bg-deep);
+      min-height: 100vh;
+      padding: 48px 32px 96px;
+    }
+
+    .wrap { max-width: var(--max-w); margin: 0 auto; }
+
+    /* ─────────── HERO ─────────── */
+    .hero {
+      padding: 88px 0 96px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+    .hero .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-mute);
+      margin-bottom: 40px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .hero .meta .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-amber);
+      box-shadow: 0 0 12px 2px var(--accent-glow);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(56px, 9vw, 132px);
+      letter-spacing: -0.035em;
+      line-height: 0.92;
+      color: var(--text-cream);
+      font-variation-settings: "opsz" 144;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent-amber);
+      font-weight: 400;
+    }
+    .hero .lede {
+      max-width: 640px;
+      margin-top: 36px;
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--text-cream);
+      font-weight: 300;
+    }
+    .hero .lede strong {
+      color: var(--accent-amber);
+      font-weight: 500;
+    }
+    .hero .brand {
+      position: absolute;
+      top: 0; right: 0;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: var(--text-mute);
+    }
+    .hero .brand b { color: var(--text-cream); font-weight: 500; }
+
+    /* ─────────── SIGNATURE 1 — Tension lumineuse ─────────── */
+    .signature {
+      padding: 96px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .sig-head {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 32px;
+      margin-bottom: 56px;
+      align-items: baseline;
+    }
+    .sig-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-mute);
+      letter-spacing: 0.1em;
+    }
+    .sig-title {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(32px, 4.5vw, 52px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--text-cream);
+    }
+
+    .luminance-stage {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .lum-dark {
+      background:
+        radial-gradient(circle at 70% 50%, rgba(232,167,75,0.22), transparent 50%),
+        var(--bg-deep);
+      padding: 72px 56px;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .lum-dark .frame-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-mute);
+      text-transform: uppercase;
+    }
+    .lum-dark h3 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: 38px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text-cream);
+      max-width: 22ch;
+    }
+    .lum-dark .signal {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent-amber);
+    }
+    .lum-dark .signal::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--accent-amber);
+    }
+
+    .lum-bright {
+      background:
+        radial-gradient(circle at 30% 30%, rgba(232,167,75,0.32), transparent 65%),
+        linear-gradient(135deg, #2A1F12 0%, #1A130A 100%);
+      padding: 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+      border-left: 1px solid var(--line);
+    }
+    .lum-bright .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+    }
+    .lum-bright p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--text-cream);
+    }
+
+    .sig-comment {
+      margin-top: 40px;
+      max-width: 680px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-cream);
+    }
+    .sig-comment .pull {
+      color: var(--accent-amber);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* ─────────── SIGNATURE 2 — Typo cinematic ─────────── */
+    .typo-stage {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 56px;
+    }
+    .typo-line {
+      padding: 32px 0;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 80px 1fr 200px;
+      gap: 32px;
+      align-items: baseline;
+    }
+    .typo-line .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-mute);
+      letter-spacing: 0.15em;
+    }
+    .typo-line .specs {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-mute);
+      text-align: right;
+      line-height: 1.6;
+    }
+    .typo-display {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(48px, 7vw, 96px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--text-cream);
+      font-variation-settings: "opsz" 144;
+    }
+    .typo-display em { font-style: italic; color: var(--accent-amber); font-weight: 400; }
+    .typo-subhead {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: 28px;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--text-cream);
+      font-style: italic;
+    }
+    .typo-body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 60ch;
+      color: var(--text-cream);
+    }
+    .typo-mono {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+    }
+
+    /* ─────────── SIGNATURE 3 — Surfaces & profondeur ─────────── */
+    .surface-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .surface-card {
+      background: var(--bg-elev);
+      padding: 40px 32px;
+      min-height: 220px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .surface-card.deeper { background: var(--bg-deep); }
+    .surface-card.elev   { background: var(--bg-card); }
+    .surface-card.lit {
+      background:
+        radial-gradient(circle at 100% 0%, rgba(232,167,75,0.18), transparent 55%),
+        var(--bg-card);
+    }
+    .surface-card .role {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-mute);
+    }
+    .surface-card .hex {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-cream);
+      letter-spacing: 0.05em;
+    }
+    .surface-card .desc {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 20px;
+      line-height: 1.3;
+      color: var(--text-cream);
+      margin-top: 8px;
+    }
+    .surface-card.lit .desc { color: var(--accent-amber); }
+
+    /* ─────────── ATMOSPHÈRE ─────────── */
+    .atmosphere {
+      padding: 96px 0 0;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 64px;
+      align-items: stretch;
+    }
+    .atm-visual {
+      position: relative;
+      min-height: 460px;
+      background:
+        radial-gradient(ellipse 480px 320px at 30% 70%, rgba(232,167,75,0.45), transparent 60%),
+        radial-gradient(ellipse 420px 280px at 75% 25%, rgba(201,72,42,0.32), transparent 65%),
+        radial-gradient(ellipse 600px 400px at 50% 100%, rgba(20,18,14,1), transparent 70%),
+        linear-gradient(180deg, #0A0C10 0%, #18120A 100%);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 48px;
+    }
+    .atm-visual::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-amber), transparent);
+      opacity: 0.4;
+    }
+    .atm-visual .scene-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      position: absolute;
+      top: 32px; right: 28px;
+    }
+    .atm-visual .scene-text {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 32px;
+      line-height: 1.2;
+      color: var(--text-cream);
+      max-width: 18ch;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.6);
+    }
+    .atm-visual .timecode {
+      position: absolute;
+      bottom: 24px; right: 32px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-mute);
+    }
+
+    .atm-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 32px;
+    }
+    .atm-text h3 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: 36px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text-cream);
+    }
+    .atm-text .usage {
+      border-left: 1px solid var(--accent-amber);
+      padding-left: 20px;
+    }
+    .atm-text .usage .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-amber);
+      margin-bottom: 8px;
+    }
+    .atm-text .usage p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-cream);
+    }
+    .atm-text .usage.avoid { border-color: var(--accent-ember); }
+    .atm-text .usage.avoid .label { color: var(--accent-ember); }
+    .atm-text .refs {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-mute);
+      letter-spacing: 0.05em;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 900px) {
+      .luminance-stage,
+      .atmosphere,
+      .surface-grid { grid-template-columns: 1fr; }
+      .lum-bright { border-left: none; border-top: 1px solid var(--line); }
+      .typo-line { grid-template-columns: 60px 1fr; }
+      .typo-line .specs { grid-column: 1 / -1; text-align: left; }
+      .hero .brand { position: static; margin-bottom: 24px; }
+      .sig-head { grid-template-columns: 1fr; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <p class="brand">Helio Studio &nbsp;·&nbsp; <b>Outils créatifs nocturnes</b></p>
+      <div class="meta">
+        <span class="dot"></span>
+        <span>Style Library · 14</span>
+        <span>OLED · Cinematic · Tech Premium</span>
+      </div>
+      <h1>Dark Mode <em>Cinema</em></h1>
+      <p class="lede">
+        Un sombre <strong>teinté</strong>, jamais noir pur. Un texte <strong>crème</strong>, jamais blanc clinique.
+        Des halos chauds qui sculptent la profondeur comme une lumière de plateau&nbsp;: la marque ne s'affiche pas, elle se met en scène.
+      </p>
+    </section>
+
+    <!-- SIGNATURE 1 — Tension lumineuse -->
+    <section class="signature">
+      <div class="sig-head">
+        <div class="sig-num">01 / Signature</div>
+        <h2 class="sig-title">La tension lumière comme matériau premier</h2>
+      </div>
+
+      <div class="luminance-stage">
+        <div class="lum-dark">
+          <span class="frame-tag">Frame · Nocturne</span>
+          <h3>Le sombre n'est pas une absence. C'est une scène.</h3>
+          <span class="signal">Lumière chaude entrante</span>
+        </div>
+        <div class="lum-bright">
+          <span class="label">Halo · 2700 K</span>
+          <p>"Une seule source chaude suffit à donner du volume à toute la composition."</p>
+        </div>
+      </div>
+
+      <p class="sig-comment">
+        <span class="pull">→ Pourquoi cette signature appartient au style&nbsp;:</span>
+        Dark Mode Cinema refuse l'esthétique "fond noir + carte plate" du SaaS générique. La profondeur naît d'un
+        <em>contraste local</em>&nbsp;: une zone très éclairée par un radial-gradient chaud, le reste retenu dans la
+        pénombre teintée. C'est le langage de la photographie en clair-obscur, transposé à l'écran.
+      </p>
+    </section>
+
+    <!-- SIGNATURE 2 — Typo cinematic -->
+    <section class="signature">
+      <div class="sig-head">
+        <div class="sig-num">02 / Signature</div>
+        <h2 class="sig-title">Une typographie de salle, pas de tableau de bord</h2>
+      </div>
+
+      <div class="typo-stage">
+        <div class="typo-line">
+          <span class="tag">Display</span>
+          <div class="typo-display">Long-métrage<br><em>format écran</em></div>
+          <div class="specs">Fraunces 300 · italic 400<br>opsz 144 · -0.04em</div>
+        </div>
+        <div class="typo-line">
+          <span class="tag">Subhead</span>
+          <div class="typo-subhead">Une serif à grand contraste, posée large, qui respire&nbsp;— la voix calme du narrateur.</div>
+          <div class="specs">Fraunces italic 300<br>28 px · 1.2 lh</div>
+        </div>
+        <div class="typo-line">
+          <span class="tag">Body</span>
+          <div class="typo-body">Inter 300 en corps, généreux dans l'interlignage, jamais blanc pur sur fond noir pur. La lisibilité prime sur l'effet&nbsp;: dans le sombre, le contraste violent fatigue avant d'impressionner.</div>
+          <div class="specs">Inter 300<br>16 px · 1.7 lh · #ECE6DA</div>
+        </div>
+        <div class="typo-line">
+          <span class="tag">Caption</span>
+          <div class="typo-mono">Mono · Tracking 0.1em · Accent ambre</div>
+          <div class="specs">JetBrains Mono 500<br>13 px · uppercase</div>
+        </div>
+      </div>
+
+      <p class="sig-comment">
+        <span class="pull">→ Anti-slop&nbsp;:</span>
+        Pas de mono-Inter qui hurle "AI default". Le couple <em>serif display à fort opsz</em> + <em>sans humanist</em>
+        + <em>mono d'accent</em> donne au sombre la texture d'un générique de film, pas d'un dashboard.
+      </p>
+    </section>
+
+    <!-- SIGNATURE 3 — Surfaces et profondeur -->
+    <section class="signature">
+      <div class="sig-head">
+        <div class="sig-num">03 / Signature</div>
+        <h2 class="sig-title">Trois sombres, jamais un seul</h2>
+      </div>
+
+      <div class="surface-grid">
+        <div class="surface-card deeper">
+          <span class="role">Plan profond</span>
+          <div>
+            <p class="desc">Fond scène, jamais touché par la lumière directe.</p>
+          </div>
+          <span class="hex">#0E1014</span>
+        </div>
+        <div class="surface-card elev">
+          <span class="role">Plan moyen</span>
+          <div>
+            <p class="desc">Surface des panneaux, à peine décollée du fond.</p>
+          </div>
+          <span class="hex">#1C2129</span>
+        </div>
+        <div class="surface-card lit">
+          <span class="role">Plan éclairé</span>
+          <div>
+            <p class="desc">Zone touchée par la source chaude — le héros de la scène.</p>
+          </div>
+          <span class="hex">#1C2129 + halo ambre</span>
+        </div>
+      </div>
+
+      <p class="sig-comment">
+        <span class="pull">→ Règle d'élévation&nbsp;:</span>
+        on n'élève pas une carte avec une <em>box-shadow glow</em> sans offset (marqueur slop documenté).
+        On l'éclaire avec un radial-gradient chaud, on la sépare par 1 px de séparateur teinté, on la fait
+        respirer dans son propre sombre. La hiérarchie est <em>cinétique-lumineuse</em>, pas dépressive.
+      </p>
+    </section>
+
+    <!-- ATMOSPHÈRE -->
+    <section class="atmosphere">
+      <div class="atm-visual">
+        <span class="scene-tag">Scene · 14 — Ambient</span>
+        <p class="scene-text">"L'écran sombre comme une salle juste avant la projection."</p>
+        <span class="timecode">00:14:22 — int. nuit</span>
+      </div>
+
+      <div class="atm-text">
+        <h3>Une atmosphère de salle obscure, pas de fond d'écran cassé.</h3>
+
+        <div class="usage">
+          <div class="label">Quand l'utiliser</div>
+          <p>Outils créatifs premium, plateformes développeurs, crypto haut de gamme, marques tech qui revendiquent une posture <em>narrative</em>&nbsp;: Linear, Vercel, Resend, Apple Pro Display, SpaceX. Tout ce qui cherche la gravité plutôt que la transparence.</p>
+        </div>
+
+        <div class="usage avoid">
+          <div class="label">Quand l'éviter</div>
+          <p>Marques famille, e-commerce grand public, services médicaux, edutech enfance. Tout contexte où la lumière directe et la lisibilité égale priment sur l'ambiance. Et tout brief qui ne supporte pas la gravité&nbsp;: Dark Mode Cinema impose un ton.</p>
+        </div>
+
+        <div class="refs">
+          Refs · Linear / Vercel / Resend / SpaceX / Apple Pro Display
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

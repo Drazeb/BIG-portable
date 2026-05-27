@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 22. Motion-Driven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --c-ink: #0A0A0B;
+      --c-paper: #F5F4F0;
+      --c-bone: #E6E3DA;
+      --c-signal: #FF4A1C;       /* orange cinétique — accent SpaceX/Wodwo */
+      --c-trail: #2A2440;        /* violet profond justifié = trace de mouvement, pas accent générique */
+      --c-line: rgba(10,10,11,.16);
+      --c-mute: rgba(10,10,11,.55);
+
+      --font-display: "Manrope", system-ui, sans-serif;
+      --font-body: "Inter", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+      /* Easings physiques nommés — pas de defaults */
+      --ease-launch:  cubic-bezier(.22, .68, 0, 1);    /* sortie franche, atterrissage doux */
+      --ease-brake:   cubic-bezier(.62, .04, .14, 1);  /* freinage marqué */
+      --ease-overshoot: cubic-bezier(.34, 1.56, .64, 1); /* léger dépassement physique */
+
+      --grid-gutter: clamp(16px, 2.4vw, 32px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--c-ink);
+      background: var(--c-paper);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ===== Layout ===== */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--grid-gutter); }
+    section { padding: clamp(64px, 10vw, 140px) 0; border-top: 1px solid var(--c-line); }
+
+    .meta-row {
+      display: flex; gap: 18px; align-items: baseline;
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--c-mute); text-transform: uppercase; letter-spacing: .12em;
+    }
+    .meta-row .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c-signal); display: inline-block; }
+
+    /* ===== HERO ===== */
+    .hero { padding-top: clamp(80px, 12vw, 180px); border-top: 0; }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(56px, 11vw, 168px);
+      line-height: .92;
+      letter-spacing: -0.04em;
+      margin: 24px 0 32px;
+    }
+    .hero h1 .word { display: inline-block; overflow: hidden; vertical-align: top; }
+    .hero h1 .word > span {
+      display: inline-block;
+      transform: translateY(110%);
+      will-change: transform;
+    }
+    .hero h1 .word.accent > span { color: var(--c-signal); }
+
+    .hero .lede {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(20px, 2.2vw, 30px);
+      max-width: 60ch;
+      line-height: 1.35;
+      color: var(--c-ink);
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    .hero .lede em { font-style: normal; color: var(--c-signal); font-weight: 500; }
+    .hero .brand {
+      margin-top: 56px;
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--c-mute);
+    }
+
+    /* ===== Choreography rail (signature 1) ===== */
+    .choreo .head { display: flex; flex-wrap: wrap; gap: 32px; align-items: end; justify-content: space-between; margin-bottom: 56px; }
+    .choreo h2, .stage h2, .easings h2, .atmo h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(32px, 4.4vw, 60px);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      max-width: 18ch;
+    }
+    .choreo .commentary { max-width: 46ch; color: var(--c-mute); font-size: 16px; line-height: 1.55; }
+    .choreo .commentary strong { color: var(--c-ink); font-weight: 500; }
+
+    .rail {
+      position: relative;
+      height: 280px;
+      border: 1px solid var(--c-line);
+      background:
+        repeating-linear-gradient(90deg, transparent 0 79px, var(--c-line) 79px 80px),
+        var(--c-paper);
+      overflow: hidden;
+    }
+    .rail .ticks {
+      position: absolute; left: 0; right: 0; bottom: 8px;
+      display: flex; justify-content: space-between;
+      padding: 0 8px;
+      font-family: var(--font-mono); font-size: 10px; color: var(--c-mute);
+      letter-spacing: .1em;
+    }
+    .rail .ticks span { opacity: .7; }
+    .puck {
+      position: absolute;
+      top: 50%;
+      left: 4%;
+      width: 56px; height: 56px;
+      transform: translateY(-50%);
+      background: var(--c-ink);
+      border-radius: 4px;
+      will-change: transform, background-color, border-radius;
+    }
+    .puck.s { width: 16px; height: 16px; top: 38%; background: var(--c-signal); }
+    .puck.t { width: 36px; height: 36px; top: 62%; background: var(--c-trail); border-radius: 50%; }
+
+    .rail.is-running .puck {
+      animation: puck-launch 2200ms var(--ease-launch) forwards;
+    }
+    .rail.is-running .puck.s {
+      animation: puck-signal 2200ms var(--ease-overshoot) 120ms forwards;
+    }
+    .rail.is-running .puck.t {
+      animation: puck-trail 2200ms var(--ease-brake) 240ms forwards;
+    }
+
+    @keyframes puck-launch {
+      0%   { transform: translate(0, -50%) rotate(0deg); border-radius: 4px; }
+      35%  { transform: translate(38vw, -50%) rotate(0deg); border-radius: 4px; }
+      55%  { transform: translate(38vw, -50%) rotate(45deg); border-radius: 50%; background: var(--c-signal); }
+      100% { transform: translate(72vw, -50%) rotate(45deg); border-radius: 50%; background: var(--c-signal); }
+    }
+    @keyframes puck-signal {
+      0%   { transform: translate(0, -50%) scale(1); }
+      45%  { transform: translate(28vw, -50%) scale(1.3); }
+      100% { transform: translate(70vw, -50%) scale(1); }
+    }
+    @keyframes puck-trail {
+      0%   { transform: translate(0, -50%) scale(.6); opacity: 0; }
+      30%  { transform: translate(20vw, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(74vw, -50%) scale(.4); opacity: .25; }
+    }
+
+    .rail-ctrl {
+      margin-top: 18px;
+      display: flex; gap: 12px; align-items: center;
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .rail-ctrl button {
+      font: inherit; text-transform: inherit; letter-spacing: inherit;
+      background: var(--c-ink); color: var(--c-paper);
+      border: 0; padding: 12px 20px;
+      cursor: pointer;
+      transition: background-color 240ms var(--ease-brake);
+    }
+    .rail-ctrl button:hover { background: var(--c-signal); }
+    .rail-ctrl .label { color: var(--c-mute); }
+
+    /* ===== Pacing partition (signature 2) ===== */
+    .stage .head { display: flex; flex-wrap: wrap; gap: 32px; align-items: end; justify-content: space-between; margin-bottom: 56px; }
+    .stage .commentary { max-width: 46ch; color: var(--c-mute); font-size: 16px; line-height: 1.55; }
+    .stage .commentary strong { color: var(--c-ink); font-weight: 500; }
+
+    .partition {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0;
+      border: 1px solid var(--c-line);
+      background: var(--c-paper);
+    }
+    .bar {
+      display: contents;
+    }
+    .bar .tag {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--c-mute);
+      padding: 18px 14px;
+      border-top: 1px solid var(--c-line);
+      display: flex; align-items: center;
+    }
+    .bar:first-child .tag { border-top: 0; }
+    .bar .timeline {
+      position: relative;
+      padding: 18px 0;
+      border-top: 1px solid var(--c-line);
+      border-left: 1px solid var(--c-line);
+    }
+    .bar:first-child .timeline { border-top: 0; }
+    .bar .block {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 18px;
+      background: var(--c-ink);
+    }
+    .bar .block.signal { background: var(--c-signal); }
+    .bar .block.trail  { background: var(--c-trail); height: 8px; }
+    .bar .pause {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      height: 38px; width: 1px;
+      background: var(--c-line);
+    }
+    .bar .label-mini {
+      position: absolute;
+      bottom: -2px;
+      font-family: var(--font-mono); font-size: 10px; color: var(--c-mute);
+      letter-spacing: .08em;
+    }
+
+    /* ===== Easings (signature 3) ===== */
+    .easings .head { display: flex; flex-wrap: wrap; gap: 32px; align-items: end; justify-content: space-between; margin-bottom: 48px; }
+    .easings .commentary { max-width: 46ch; color: var(--c-mute); font-size: 16px; line-height: 1.55; }
+
+    .easing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--c-line);
+      border: 1px solid var(--c-line);
+    }
+    .easing-card {
+      background: var(--c-paper);
+      padding: 32px 28px 28px;
+      display: flex; flex-direction: column; gap: 20px;
+      min-height: 280px;
+    }
+    .easing-card h3 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 22px; letter-spacing: -0.01em;
+    }
+    .easing-card .formula {
+      font-family: var(--font-mono); font-size: 12px; color: var(--c-mute);
+      letter-spacing: .04em;
+      word-break: break-all;
+    }
+    .easing-card .demo {
+      position: relative; height: 64px; margin-top: auto;
+      border-top: 1px solid var(--c-line);
+    }
+    .easing-card .marker {
+      position: absolute;
+      top: 50%;
+      width: 14px; height: 14px;
+      background: var(--c-ink);
+      transform: translateY(-50%);
+      will-change: transform, background-color;
+    }
+    .easing-card[data-ease="launch"] .marker { animation-timing-function: var(--ease-launch); }
+    .easing-card[data-ease="brake"]  .marker { animation-timing-function: var(--ease-brake); }
+    .easing-card[data-ease="over"]   .marker { animation-timing-function: var(--ease-overshoot); }
+
+    .easing-card.is-running .marker {
+      animation-name: travel;
+      animation-duration: 1400ms;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+    }
+    @keyframes travel {
+      0%   { left: 0; background: var(--c-ink); }
+      100% { left: calc(100% - 14px); background: var(--c-signal); }
+    }
+    .easing-card .commentary-mini {
+      font-size: 13px; line-height: 1.5; color: var(--c-mute);
+    }
+
+    /* ===== Atmosphere ===== */
+    .atmo .head { display: flex; flex-wrap: wrap; gap: 32px; align-items: end; justify-content: space-between; margin-bottom: 56px; }
+    .atmo .commentary { max-width: 46ch; color: var(--c-mute); font-size: 16px; line-height: 1.55; }
+
+    .atmo-canvas {
+      position: relative;
+      height: 360px;
+      background: var(--c-ink);
+      overflow: hidden;
+    }
+    .atmo-canvas .streak {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--c-signal) 35%, var(--c-paper) 70%, transparent 100%);
+      transform-origin: left center;
+      will-change: transform, opacity;
+    }
+    .atmo-canvas .streak.s1 { top: 22%; left: -10%; width: 70%; transform: scaleX(0); }
+    .atmo-canvas .streak.s2 { top: 48%; left: -10%; width: 90%; transform: scaleX(0); background: linear-gradient(90deg, transparent 0%, var(--c-trail) 35%, var(--c-paper) 70%, transparent 100%); }
+    .atmo-canvas .streak.s3 { top: 71%; left: -10%; width: 60%; transform: scaleX(0); }
+    .atmo-canvas .frame-counter {
+      position: absolute; right: 24px; bottom: 20px;
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--c-paper); opacity: .6; letter-spacing: .14em;
+    }
+    .atmo-canvas .axis-label {
+      position: absolute; left: 24px; top: 20px;
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--c-paper); opacity: .55; letter-spacing: .14em;
+    }
+    .atmo-canvas.is-running .streak.s1 { animation: streak 1600ms var(--ease-launch) forwards; }
+    .atmo-canvas.is-running .streak.s2 { animation: streak 1600ms var(--ease-launch) 180ms forwards; }
+    .atmo-canvas.is-running .streak.s3 { animation: streak 1600ms var(--ease-launch) 320ms forwards; }
+    @keyframes streak {
+      0%   { transform: scaleX(0); opacity: 0; }
+      40%  { opacity: 1; }
+      100% { transform: scaleX(1); opacity: .9; }
+    }
+
+    .usage {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;
+      margin-top: 40px;
+    }
+    .usage h4 {
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--c-mute);
+      margin-bottom: 12px;
+    }
+    .usage p { font-size: 16px; line-height: 1.55; }
+    .usage .when strong { color: var(--c-signal); }
+
+    /* ===== Footer ===== */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--c-line);
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--c-mute); letter-spacing: .14em; text-transform: uppercase;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+
+    @media (max-width: 720px) {
+      .easing-grid { grid-template-columns: 1fr; }
+      .usage { grid-template-columns: 1fr; }
+      .partition { grid-template-columns: 56px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .hero h1 .word > span { transform: translateY(0); }
+      .hero .lede { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="meta-row">
+        <span class="dot"></span>
+        <span>Style 22 / 34</span>
+        <span>Registre — Cinétique</span>
+        <span>Verdict — Actuel</span>
+      </div>
+
+      <h1 aria-label="Motion-Driven">
+        <span class="word"><span>Motion</span></span>
+        <span class="word accent"><span>Driven</span></span>
+      </h1>
+
+      <p class="lede">
+        Le mouvement n'est pas une décoration : c'est <em>la grammaire</em> qui transporte le sens.
+        Chaque transition est <em>chorégraphiée</em>, chaque easing porte une intention physique,
+        chaque pause est <em>écrite</em>.
+      </p>
+
+      <p class="brand">Helio — Studio cinétique &nbsp;·&nbsp; Spécimen permanent</p>
+    </section>
+
+    <!-- SIGNATURE 1 — choreography -->
+    <section class="choreo">
+      <div class="head">
+        <h2>Une animation = une phrase</h2>
+        <p class="commentary">
+          La signature dominante de Motion-Driven, c'est la <strong>chorégraphie multi-corps</strong> :
+          plusieurs propriétés bougent simultanément, en décalages calibrés, pour raconter une seule action.
+          Cliquez le bouton — trois corps, trois rôles, un seul geste continu de gauche à droite.
+        </p>
+      </div>
+
+      <div class="rail" id="rail">
+        <div class="puck"></div>
+        <div class="puck s"></div>
+        <div class="puck t"></div>
+        <div class="ticks">
+          <span>0.0s</span><span>0.5s</span><span>1.0s</span><span>1.5s</span><span>2.0s</span><span>2.2s</span>
+        </div>
+      </div>
+
+      <div class="rail-ctrl">
+        <button type="button" id="rail-play">Lancer la séquence</button>
+        <span class="label">3 corps · 3 easings · 1 lecture</span>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 2 — pacing partition -->
+    <section class="stage">
+      <div class="head">
+        <h2>Le pacing s'écrit comme une partition</h2>
+        <p class="commentary">
+          Motion-Driven refuse les <strong>fade-up staggered génériques</strong>. Le rythme alterne
+          accélérations courtes, pauses tenues, et rappels. C'est cette ponctuation qui sépare
+          l'animation choisie de l'animation par défaut.
+        </p>
+      </div>
+
+      <div class="partition" aria-label="Partition pacing — démonstration statique">
+        <div class="bar">
+          <div class="tag">A · entrée</div>
+          <div class="timeline" style="height: 56px;">
+            <div class="block" style="left: 2%; width: 18%;"></div>
+            <div class="pause" style="left: 22%;"></div>
+            <span class="label-mini" style="left: 2%;">launch · 320ms</span>
+          </div>
+        </div>
+        <div class="bar">
+          <div class="tag">B · accent</div>
+          <div class="timeline" style="height: 56px;">
+            <div class="block signal" style="left: 26%; width: 8%;"></div>
+            <div class="pause" style="left: 36%;"></div>
+            <span class="label-mini" style="left: 26%;">overshoot · 180ms</span>
+          </div>
+        </div>
+        <div class="bar">
+          <div class="tag">— · pause</div>
+          <div class="timeline" style="height: 56px;">
+            <div class="pause" style="left: 50%;"></div>
+            <span class="label-mini" style="left: 38%;">silence tenu · 480ms</span>
+          </div>
+        </div>
+        <div class="bar">
+          <div class="tag">C · trace</div>
+          <div class="timeline" style="height: 56px;">
+            <div class="block trail" style="left: 64%; width: 30%;"></div>
+            <span class="label-mini" style="left: 64%;">brake · 540ms</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 3 — easings -->
+    <section class="easings">
+      <div class="head">
+        <h2>Trois easings, trois physiques</h2>
+        <p class="commentary">
+          Pas de <strong>ease-in-out par défaut</strong>. Motion-Driven nomme ses courbes —
+          chacune incarne une physique : décollage franc, freinage marqué, dépassement contrôlé.
+          Survolez une carte pour rejouer la course.
+        </p>
+      </div>
+
+      <div class="easing-grid" id="easings">
+        <article class="easing-card" data-ease="launch">
+          <h3>Launch</h3>
+          <p class="formula">cubic-bezier(.22, .68, 0, 1)</p>
+          <p class="commentary-mini">Sortie franche, atterrissage suspendu. Pour les éléments qui <em>arrivent</em> dans la scène.</p>
+          <div class="demo"><span class="marker"></span></div>
+        </article>
+        <article class="easing-card" data-ease="brake">
+          <h3>Brake</h3>
+          <p class="formula">cubic-bezier(.62, .04, .14, 1)</p>
+          <p class="commentary-mini">Démarrage rapide, freinage net. Pour les transitions qui <em>se posent</em> avec poids.</p>
+          <div class="demo"><span class="marker"></span></div>
+        </article>
+        <article class="easing-card" data-ease="over">
+          <h3>Overshoot</h3>
+          <p class="formula">cubic-bezier(.34, 1.56, .64, 1)</p>
+          <p class="commentary-mini">Léger dépassement physique. Réservé aux <em>accents</em>, jamais à la structure.</p>
+          <div class="demo"><span class="marker"></span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ATMOSPHERE -->
+    <section class="atmo">
+      <div class="head">
+        <h2>Atmosphère : sillages, pas de feux d'artifice</h2>
+        <p class="commentary">
+          La couleur émotionnelle de Motion-Driven, c'est le <strong>sillage</strong> :
+          des traces qui se déposent dans une intention de lecture. Densité sombre, accents tenus,
+          contrôle total. Aucun élément ne boucle "pour faire vivre".
+        </p>
+      </div>
+
+      <div class="atmo-canvas" id="atmo">
+        <span class="axis-label">VECTEUR — Z+ → X+</span>
+        <span class="streak s1"></span>
+        <span class="streak s2"></span>
+        <span class="streak s3"></span>
+        <span class="frame-counter">FRAME 048 / 088 · 24fps</span>
+      </div>
+
+      <div class="usage">
+        <div class="when">
+          <h4>Quand utiliser</h4>
+          <p>Marques produit où <strong>la fonctionnalité <em>est</em> le geste</strong> : aérospatial, mobilité, hardware, plateformes vidéo, agences cinétiques. Tout ce dont la valeur tient à <strong>la transformation visible</strong>.</p>
+        </div>
+        <div class="avoid">
+          <h4>Quand l'éviter</h4>
+          <p>Sites institutionnels longs à lire, presse écrite numérique, services publics, e-commerce mass-market. Partout où la lecture froide prime sur la mise en scène.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Style Library — BIG · 22 / 34</span>
+      <span>Motion-Driven · spécimen pédagogique</span>
+    </footer>
+
+  </div>
+
+  <script>
+    // ============================================================
+    //  Motion-Driven specimen — choreography contrôlée
+    //  Toutes les animations sont déclenchées par intention
+    //  (clic, hover, ou entrée dans le viewport via IntersectionObserver).
+    //  Aucune boucle infinie décorative.
+    // ============================================================
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 1) Hero — révélation chorégraphiée des mots + lede
+    (function heroReveal () {
+      const words = document.querySelectorAll('.hero h1 .word > span');
+      const lede = document.querySelector('.hero .lede');
+      if (reduce) {
+        words.forEach(w => w.style.transform = 'translateY(0)');
+        if (lede) { lede.style.opacity = 1; lede.style.transform = 'none'; }
+        return;
+      }
+      words.forEach((w, i) => {
+        w.animate(
+          [{ transform: 'translateY(110%)' }, { transform: 'translateY(0%)' }],
+          { duration: 900, delay: 120 + i * 140, easing: 'cubic-bezier(.22,.68,0,1)', fill: 'forwards' }
+        );
+      });
+      if (lede) {
+        lede.animate(
+          [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 800, delay: 480, easing: 'cubic-bezier(.22,.68,0,1)', fill: 'forwards' }
+        );
+      }
+    })();
+
+    // 2) Rail — bouton "Lancer la séquence" déclenche la chorégraphie
+    (function rail () {
+      const rail = document.getElementById('rail');
+      const btn = document.getElementById('rail-play');
+      if (!rail || !btn) return;
+
+      function play () {
+        rail.classList.remove('is-running');
+        // reflow forcé pour rejouer les @keyframes
+        void rail.offsetWidth;
+        rail.classList.add('is-running');
+      }
+
+      btn.addEventListener('click', play);
+
+      // Premier déclenchement automatique à l'entrée dans le viewport — UNE FOIS.
+      if (!reduce && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { play(); obs.unobserve(e.target); }
+          });
+        }, { threshold: 0.4 });
+        io.observe(rail);
+      }
+    })();
+
+    // 3) Easings — chaque carte rejoue sa course au hover (intention utilisateur)
+    (function easings () {
+      const cards = document.querySelectorAll('#easings .easing-card');
+      cards.forEach(card => {
+        const trigger = () => {
+          card.classList.remove('is-running');
+          void card.offsetWidth;
+          card.classList.add('is-running');
+        };
+        card.addEventListener('mouseenter', trigger);
+        card.addEventListener('focusin', trigger);
+        card.tabIndex = 0;
+      });
+
+      // Démo initiale séquencée à l'entrée dans le viewport
+      if (!reduce && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              cards.forEach((c, i) => setTimeout(() => {
+                c.classList.add('is-running');
+              }, i * 220));
+              obs.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.35 });
+        io.observe(document.getElementById('easings'));
+      }
+    })();
+
+    // 4) Atmosphere — sillages déclenchés à l'entrée, une seule fois
+    (function atmo () {
+      const canvas = document.getElementById('atmo');
+      if (!canvas) return;
+      if (reduce) {
+        canvas.querySelectorAll('.streak').forEach(s => { s.style.transform = 'scaleX(1)'; s.style.opacity = .9; });
+        return;
+      }
+      if (!('IntersectionObserver' in window)) {
+        canvas.classList.add('is-running');
+        return;
+      }
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            canvas.classList.add('is-running');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      io.observe(canvas);
+    })();
+  </script>
+
+</body>
+</html>

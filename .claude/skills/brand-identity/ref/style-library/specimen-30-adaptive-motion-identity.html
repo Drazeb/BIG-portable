@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 30. Adaptive Motion Identity / Living Brand Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;500;700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette contextuelle — chaque rôle peut basculer selon la section */
+      --ink-deep:        #0B1116;    /* fond froid */
+      --ink-warm:        #1A0D08;    /* fond chaud */
+      --paper:           #F4EFE6;    /* fond clair */
+      --signal-cyan:     #00E0FF;    /* froid électrique */
+      --signal-magenta:  #FF2E88;    /* contraste vivant */
+      --signal-amber:    #FF7A1A;    /* chaud */
+      --signal-lime:     #C6FF3D;    /* respiration tertiaire */
+      --type-light:      #F4EFE6;
+      --type-dark:       #0B1116;
+      --rule:            rgba(244,239,230,0.14);
+
+      --font-display: "Sora", "Helvetica Neue", sans-serif;
+      --font-body:    "Manrope", "Helvetica Neue", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { background: var(--ink-deep); color: var(--type-light); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+    body { font-size: 16px; line-height: 1.55; overflow-x: hidden; }
+
+    /* ───── HERO ───── */
+    .hero {
+      position: relative;
+      padding: 56px 64px 80px;
+      border-bottom: 1px solid var(--rule);
+      overflow: hidden;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+      margin-bottom: 64px;
+    }
+    .hero-meta .brand { color: var(--type-light); opacity: 0.7; letter-spacing: 0.08em; text-transform: none; font-family: var(--font-body); font-size: 13px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(240px, 320px) 1fr;
+      gap: 56px;
+      align-items: end;
+    }
+
+    /* Logomark vivant — SVG animé natif, déformation continue */
+    .logomark {
+      width: 220px;
+      height: 220px;
+      filter: drop-shadow(8px 12px 0 rgba(255,46,136,0.18));
+    }
+    .logomark .blob-a { fill: var(--signal-cyan); mix-blend-mode: screen; }
+    .logomark .blob-b { fill: var(--signal-magenta); mix-blend-mode: screen; }
+    .logomark .blob-c { fill: var(--signal-amber); mix-blend-mode: screen; }
+
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(44px, 5.6vw, 84px);
+      line-height: 0.94;
+      letter-spacing: -0.025em;
+      max-width: 14ch;
+    }
+    /* Wordmark vivant — chaque lettre respire à un tempo différent */
+    h1 .live-letter {
+      display: inline-block;
+      transform-origin: 50% 65%;
+      animation: stretch 6.4s ease-in-out infinite;
+    }
+    h1 .live-letter:nth-child(2) { animation-delay: -0.6s; animation-duration: 7.1s; color: var(--signal-cyan); }
+    h1 .live-letter:nth-child(3) { animation-delay: -1.2s; animation-duration: 5.8s; color: var(--signal-magenta); }
+    h1 .live-letter:nth-child(4) { animation-delay: -2.0s; animation-duration: 6.9s; color: var(--signal-amber); }
+    h1 .live-letter:nth-child(5) { animation-delay: -2.7s; animation-duration: 7.4s; }
+
+    @keyframes stretch {
+      0%, 100% { transform: scaleY(1) scaleX(1); }
+      35%      { transform: scaleY(1.18) scaleX(0.93); }
+      70%      { transform: scaleY(0.88) scaleX(1.06); }
+    }
+
+    .lede {
+      margin-top: 28px;
+      font-family: var(--font-body);
+      font-size: 19px;
+      line-height: 1.5;
+      color: rgba(244,239,230,0.78);
+      max-width: 56ch;
+    }
+
+    /* ───── SIGNATURE 1 — Logo system qui vit (SVG animé natif) ───── */
+    .sig-living-logo {
+      padding: 96px 64px;
+      background: var(--ink-deep);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+    .sig-living-logo .stage {
+      aspect-ratio: 4 / 3;
+      background: radial-gradient(120% 80% at 30% 20%, rgba(0,224,255,0.12), transparent 60%),
+                  radial-gradient(90% 70% at 80% 90%, rgba(255,46,136,0.10), transparent 60%),
+                  #060A0E;
+      border: 1px solid var(--rule);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .sig-living-logo .stage svg {
+      width: 78%;
+      height: 78%;
+    }
+    .sig-living-logo .label {
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+    }
+
+    .section-tag {
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+      margin-bottom: 22px;
+      display: inline-block;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid var(--signal-cyan);
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin-bottom: 20px;
+      max-width: 22ch;
+    }
+    .copy {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(244,239,230,0.78);
+      max-width: 50ch;
+    }
+    .copy + .copy { margin-top: 14px; }
+
+    /* ───── SIGNATURE 2 — Palette flexible par contexte ───── */
+    .sig-context {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--rule);
+    }
+    .ctx {
+      padding: 80px 56px;
+      min-height: 480px;
+      position: relative;
+      transition: background 1.2s ease;
+    }
+    .ctx-cold {
+      background:
+        radial-gradient(80% 60% at 20% 20%, rgba(0,224,255,0.22), transparent 65%),
+        radial-gradient(60% 50% at 90% 90%, rgba(198,255,61,0.10), transparent 65%),
+        var(--ink-deep);
+      color: var(--type-light);
+    }
+    .ctx-warm {
+      background:
+        radial-gradient(70% 60% at 80% 25%, rgba(255,122,26,0.30), transparent 65%),
+        radial-gradient(60% 60% at 15% 85%, rgba(255,46,136,0.20), transparent 65%),
+        var(--ink-warm);
+      color: var(--type-light);
+    }
+    .ctx h3 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 44px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 22px;
+    }
+    .ctx-cold h3 { color: var(--signal-cyan); }
+    .ctx-warm h3 { color: var(--signal-amber); }
+    .ctx p {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      max-width: 38ch;
+      color: rgba(244,239,230,0.85);
+    }
+    .ctx .swatches {
+      margin-top: 36px;
+      display: flex;
+      gap: 0;
+    }
+    .ctx .sw {
+      width: 56px;
+      height: 56px;
+      animation: morph-radius 5.6s ease-in-out infinite;
+    }
+    .ctx .sw:nth-child(2) { animation-delay: -0.8s; }
+    .ctx .sw:nth-child(3) { animation-delay: -1.6s; }
+    .ctx .sw:nth-child(4) { animation-delay: -2.4s; }
+    .ctx .sw:nth-child(5) { animation-delay: -3.2s; }
+
+    @keyframes morph-radius {
+      0%, 100% { border-radius: 50% 50% 50% 50%; }
+      33%      { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      66%      { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
+    }
+
+    .ctx-cold .sw:nth-child(1) { background: var(--signal-cyan); }
+    .ctx-cold .sw:nth-child(2) { background: #4DEAFF; }
+    .ctx-cold .sw:nth-child(3) { background: var(--signal-lime); }
+    .ctx-cold .sw:nth-child(4) { background: #1A2832; }
+    .ctx-cold .sw:nth-child(5) { background: var(--paper); }
+
+    .ctx-warm .sw:nth-child(1) { background: var(--signal-amber); }
+    .ctx-warm .sw:nth-child(2) { background: var(--signal-magenta); }
+    .ctx-warm .sw:nth-child(3) { background: #FFB46B; }
+    .ctx-warm .sw:nth-child(4) { background: #2E1A12; }
+    .ctx-warm .sw:nth-child(5) { background: var(--paper); }
+
+    .ctx .ctx-tag {
+      position: absolute;
+      top: 28px;
+      left: 56px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
+
+    /* ───── SIGNATURE 3 — Motion intégré à l'identité ───── */
+    .sig-motion {
+      padding: 96px 64px;
+      background: var(--ink-deep);
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+    .motion-stage {
+      aspect-ratio: 16 / 11;
+      background: #060A0E;
+      border: 1px solid var(--rule);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Trame de mouvement intégrée — barres qui pulsent comme un signal vital */
+    .pulse-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(14, 1fr);
+      gap: 10px;
+      padding: 36px;
+      align-items: end;
+    }
+    .pulse-grid span {
+      display: block;
+      width: 100%;
+      height: 12%;
+      background: var(--signal-cyan);
+      transform-origin: bottom;
+      animation: pulse-bar 3.4s ease-in-out infinite;
+    }
+    .pulse-grid span:nth-child(odd)  { background: var(--signal-magenta); }
+    .pulse-grid span:nth-child(3n)   { background: var(--signal-amber); }
+    .pulse-grid span:nth-child(5n)   { background: var(--signal-lime); }
+    .pulse-grid span:nth-child(1)  { animation-delay: 0s; }
+    .pulse-grid span:nth-child(2)  { animation-delay: -0.18s; }
+    .pulse-grid span:nth-child(3)  { animation-delay: -0.36s; }
+    .pulse-grid span:nth-child(4)  { animation-delay: -0.54s; }
+    .pulse-grid span:nth-child(5)  { animation-delay: -0.72s; }
+    .pulse-grid span:nth-child(6)  { animation-delay: -0.90s; }
+    .pulse-grid span:nth-child(7)  { animation-delay: -1.08s; }
+    .pulse-grid span:nth-child(8)  { animation-delay: -1.26s; }
+    .pulse-grid span:nth-child(9)  { animation-delay: -1.44s; }
+    .pulse-grid span:nth-child(10) { animation-delay: -1.62s; }
+    .pulse-grid span:nth-child(11) { animation-delay: -1.80s; }
+    .pulse-grid span:nth-child(12) { animation-delay: -1.98s; }
+    .pulse-grid span:nth-child(13) { animation-delay: -2.16s; }
+    .pulse-grid span:nth-child(14) { animation-delay: -2.34s; }
+    @keyframes pulse-bar {
+      0%, 100% { transform: scaleY(0.18); opacity: 0.55; }
+      50%      { transform: scaleY(2.4); opacity: 1; }
+    }
+
+    .motion-overlay-tag {
+      position: absolute;
+      top: 18px;
+      left: 22px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--signal-cyan);
+    }
+    .motion-overlay-tag .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: var(--signal-magenta);
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+      animation: blink 1.6s steps(2, end) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.2; } }
+
+    /* ───── ATMOSPHÈRE ───── */
+    .atmosphere {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 460px;
+    }
+    .atmosphere-visual {
+      position: relative;
+      overflow: hidden;
+      background: var(--ink-warm);
+    }
+    /* Champs de couleur fluides — la "couleur émotionnelle" du style */
+    .atmosphere-visual::before,
+    .atmosphere-visual::after {
+      content: '';
+      position: absolute;
+      width: 70%;
+      height: 70%;
+      border-radius: 50%;
+      filter: blur(40px);
+      mix-blend-mode: screen;
+      animation: drift 14s ease-in-out infinite;
+    }
+    .atmosphere-visual::before {
+      background: radial-gradient(circle, var(--signal-magenta) 0%, transparent 65%);
+      top: -10%;
+      left: -10%;
+    }
+    .atmosphere-visual::after {
+      background: radial-gradient(circle, var(--signal-amber) 0%, transparent 65%);
+      bottom: -15%;
+      right: -10%;
+      animation-delay: -7s;
+    }
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(8%, 6%) scale(1.18); }
+    }
+    .atmosphere-visual .glyph {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+    }
+    .atmosphere-visual .glyph svg {
+      width: 56%;
+      height: auto;
+      animation: rotate-slow 28s linear infinite;
+    }
+    @keyframes rotate-slow {
+      to { transform: rotate(360deg); }
+    }
+
+    .atmosphere-text {
+      padding: 80px 56px;
+      background: var(--paper);
+      color: var(--type-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .atmosphere-text .section-tag { color: #B23A1A; border-bottom-color: #B23A1A; }
+    .atmosphere-text h2 { color: var(--type-dark); }
+    .atmosphere-text .copy { color: rgba(11,17,22,0.78); max-width: 44ch; }
+    .atmosphere-text .when {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(11,17,22,0.15);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px 18px;
+    }
+    .atmosphere-text .when dt {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #B23A1A;
+      padding-top: 2px;
+    }
+    .atmosphere-text .when dd {
+      font-family: var(--font-body);
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: rgba(11,17,22,0.82);
+    }
+
+    /* ───── COLOPHON ───── */
+    .colophon {
+      padding: 28px 64px;
+      background: #060A0E;
+      color: rgba(244,239,230,0.55);
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Accessibilité motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001s !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    /* Responsive simple */
+    @media (max-width: 900px) {
+      .hero { padding: 32px 24px 48px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+      .logomark { width: 160px; height: 160px; }
+      .sig-living-logo, .sig-motion { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px; }
+      .sig-context, .atmosphere { grid-template-columns: 1fr; }
+      .ctx, .atmosphere-text { padding: 56px 24px; }
+      .colophon { padding: 20px 24px; flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ───── HERO ───── -->
+  <section class="hero">
+    <div class="hero-meta">
+      <span>Style Library · 30 / 34</span>
+      <span class="brand">Helio — Identité de marque vivante</span>
+      <span>Cinétique · Actuel</span>
+    </div>
+
+    <div class="hero-grid">
+      <!-- Logomark vivant : SVG natif animé, pas Lottie -->
+      <svg class="logomark" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-label="Helio logomark">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+            <feColorMatrix in="blur" mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+            <feBlend in="SourceGraphic" in2="goo"/>
+          </filter>
+        </defs>
+        <g filter="url(#goo)">
+          <circle class="blob-a" cx="120" cy="120" r="58">
+            <animate attributeName="cx" values="120;90;130;120" dur="6s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="120;100;140;120" dur="7s" repeatCount="indefinite"/>
+            <animate attributeName="r"  values="58;72;52;58"     dur="5.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle class="blob-b" cx="150" cy="100" r="44">
+            <animate attributeName="cx" values="150;130;170;150" dur="7.4s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="100;150;110;100" dur="6.8s" repeatCount="indefinite"/>
+            <animate attributeName="r"  values="44;36;52;44"     dur="5.6s" repeatCount="indefinite"/>
+          </circle>
+          <circle class="blob-c" cx="92" cy="138" r="38">
+            <animate attributeName="cx" values="92;120;80;92"    dur="6.2s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="138;120;150;138" dur="7.8s" repeatCount="indefinite"/>
+            <animate attributeName="r"  values="38;48;30;38"     dur="6s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+
+      <div>
+        <h1>
+          <span class="live-letter">L</span><span class="live-letter">i</span><span class="live-letter">v</span><span class="live-letter">i</span><span class="live-letter">n</span>g&nbsp;Brand&nbsp;Systems
+        </h1>
+        <p class="lede">
+          Une identité qui n'est plus un logo figé : un système qui respire, se déforme, change de température et de tempo selon le contexte. La marque devient une présence — sentie, jamais déposée comme un sticker.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── SIGNATURE 1 — Logo system qui vit (SVG natif) ───── -->
+  <section class="sig-living-logo">
+    <div class="stage">
+      <!-- Mark fluide avec metaballs SMIL — variation continue -->
+      <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <filter id="goo2">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5"/>
+            <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"/>
+          </filter>
+        </defs>
+        <g filter="url(#goo2)">
+          <ellipse cx="100" cy="120" rx="56" ry="46" fill="#00E0FF">
+            <animate attributeName="rx" values="56;72;46;56" dur="5s" repeatCount="indefinite"/>
+            <animate attributeName="ry" values="46;38;58;46" dur="6.4s" repeatCount="indefinite"/>
+            <animate attributeName="cx" values="100;120;88;100" dur="7s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="200" cy="120" rx="52" ry="50" fill="#FF2E88">
+            <animate attributeName="rx" values="52;42;64;52" dur="6s" repeatCount="indefinite"/>
+            <animate attributeName="ry" values="50;58;42;50" dur="5.4s" repeatCount="indefinite"/>
+            <animate attributeName="cx" values="200;180;220;200" dur="7.6s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="160" cy="80"  rx="32" ry="32" fill="#FF7A1A">
+            <animate attributeName="cy" values="80;160;80" dur="8s" repeatCount="indefinite"/>
+            <animate attributeName="rx" values="32;26;38;32" dur="5.8s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+      </svg>
+      <span class="label">Mark · live state</span>
+    </div>
+
+    <div>
+      <span class="section-tag">Signature 01 — Logo system qui vit</span>
+      <h2>Le logo n'est plus un fichier. C'est un comportement.</h2>
+      <p class="copy">
+        Trois formes primitives — cyan, magenta, ambre — fusionnent et se séparent en continu via un filtre SVG natif (gooey). Aucun framework, aucun Lottie : du SMIL et du CSS, embarqués dans le mark lui-même. Le mark a un état "live" et un état "frozen" ; les deux sont cohérents.
+      </p>
+      <p class="copy">
+        Studio Dumbar (Holland Festival, D&amp;AD) systématise ce principe depuis 2023. Interbrand l'a généralisé en 2026 sous le terme <em>living brand systems</em>. The Branding Journal résume : "from fixed systems to lived sensations".
+      </p>
+    </div>
+  </section>
+
+  <!-- ───── SIGNATURE 2 — Palette flexible par contexte ───── -->
+  <section class="sig-context">
+    <div class="ctx ctx-cold">
+      <span class="ctx-tag">Contexte · Produit data</span>
+      <h3>Froid<br>opérationnel</h3>
+      <p>Quand l'identité atterrit dans une console analytique, elle bascule sur sa température froide : cyan signal + lime respiration + paper. Lisibilité dense, neutralité émotionnelle.</p>
+      <div class="swatches" aria-hidden="true">
+        <span class="sw"></span><span class="sw"></span><span class="sw"></span><span class="sw"></span><span class="sw"></span>
+      </div>
+    </div>
+    <div class="ctx ctx-warm">
+      <span class="ctx-tag">Contexte · Brand storytelling</span>
+      <h3>Chaud<br>narratif</h3>
+      <p>Sur un manifeste, la même identité passe en température chaude : ambre + magenta + rouge profond. Mêmes valeurs structurelles, autre charge émotionnelle. La palette n'est pas figée — elle est <em>contextuelle</em>.</p>
+      <div class="swatches" aria-hidden="true">
+        <span class="sw"></span><span class="sw"></span><span class="sw"></span><span class="sw"></span><span class="sw"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── SIGNATURE 3 — Motion intégré à l'identité ───── -->
+  <section class="sig-motion">
+    <div class="motion-stage">
+      <div class="motion-overlay-tag"><span class="dot"></span>Identity signal · live</div>
+      <div class="pulse-grid" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div>
+      <span class="section-tag">Signature 02 — Motion = identité</span>
+      <h2>Le mouvement n'est pas une décoration ajoutée. C'est l'identité elle-même.</h2>
+      <p class="copy">
+        La trame ci-contre n'est pas un effet "qui anime la page" : c'est la <em>signature vitale</em> de la marque — un battement de couleurs et de hauteurs qui appartient au système autant que le logo. Coupez le mouvement, vous coupez l'identité.
+      </p>
+      <p class="copy">
+        Différence avec un Motion-Driven générique : ici la cinétique est <strong>intrinsèque</strong> (vit dans la marque), pas <strong>posée</strong> (un Lottie collé au scroll). Texture, mouvement et son sont conçus ensemble, dans un même <em>brand kit cinétique</em>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ───── ATMOSPHÈRE — Quand l'utiliser / l'éviter ───── -->
+  <section class="atmosphere">
+    <div class="atmosphere-visual" aria-hidden="true">
+      <div class="glyph">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" stroke="#F4EFE6" stroke-width="1.2" opacity="0.75">
+            <circle cx="100" cy="100" r="80"/>
+            <circle cx="100" cy="100" r="60"/>
+            <circle cx="100" cy="100" r="40"/>
+            <line x1="20" y1="100" x2="180" y2="100"/>
+            <line x1="100" y1="20" x2="100" y2="180"/>
+            <line x1="35" y1="35"  x2="165" y2="165"/>
+            <line x1="35" y1="165" x2="165" y2="35"/>
+          </g>
+          <circle cx="100" cy="100" r="6" fill="#F4EFE6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="atmosphere-text">
+      <span class="section-tag">Atmosphère &amp; usage</span>
+      <h2>Une marque qui se sent vivante avant d'être lue.</h2>
+      <p class="copy">
+        L'effet recherché est sensoriel : on perçoit un organisme avant un sigle. Couleur qui mute, formes qui se tendent, signal qui bat — l'identité existe à la frontière du graphique et du comportement.
+      </p>
+      <dl class="when">
+        <dt>Utiliser</dt>
+        <dd>Marques médias, plateformes culturelles, studios créatifs, scale-ups tech qui veulent rompre avec le logo-bloc statique. Tout client qui peut soutenir une exécution motion sur tous ses points de contact.</dd>
+        <dt>Éviter</dt>
+        <dd>Marques institutionnelles à fort héritage (banque, assurance, santé publique), contextes imprimés dominants, secteurs où la stabilité visuelle = signal de confiance. Le mouvement y est lu comme désinvolture.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <span>Style 30 · Adaptive Motion Identity / Living Brand Systems</span>
+    <span>Réf. Studio Dumbar · Interbrand 2026 · The Branding Journal</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 25. Dimensional Layering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette inspirée des portfolios Awwwards 2025 — Blue Desert (Adoratorio) + Mid Mountain */
+      --ink:        #0E1218;   /* fond principal, presque noir bleuté */
+      --ink-deep:   #060910;   /* couche la plus basse */
+      --paper:      #EFE7D9;   /* sable / crème, texte principal */
+      --paper-soft: #C9BFAE;   /* texte secondaire */
+      --sand:       #B69672;   /* accent chaud, signal */
+      --sky:        #6E8DBF;   /* accent froid, second plan */
+      --rust:       #8C4A2B;   /* accent profond, ponctuation */
+      --line:       rgba(239, 231, 217, 0.14);
+
+      --font-display: "Instrument Serif", Georgia, serif;
+      --font-body:    "Inter Tight", -apple-system, sans-serif;
+      --font-mono:    "JetBrains Mono", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      max-width: 100%;
+      padding: 64px clamp(24px, 6vw, 96px) 96px;
+    }
+
+    /* ========================================================
+       HERO — Trois couches qui se chevauchent intentionnellement
+       Z-index PERCEPTIBLE, pas accidentel.
+       ======================================================== */
+    .hero {
+      position: relative;
+      min-height: 78vh;
+      padding-top: 64px;
+      isolation: isolate;
+    }
+
+    .hero__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--paper-soft);
+      padding-bottom: 56px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero__meta span:last-child { color: var(--sand); }
+
+    /* Couche 1 — la plus profonde : un mot fantôme énorme */
+    .hero__ghost {
+      position: absolute;
+      top: 26%;
+      left: -4%;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(180px, 32vw, 480px);
+      line-height: 0.85;
+      color: var(--ink-deep);
+      -webkit-text-stroke: 1px rgba(110, 141, 191, 0.22);
+      letter-spacing: -0.04em;
+      z-index: 1;
+      pointer-events: none;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 80%, rgba(0,0,0,0) 100%);
+      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 80%, rgba(0,0,0,0) 100%);
+    }
+
+    /* Couche 2 — médiane : titre principal qui chevauche la couche 1 */
+    .hero__title {
+      position: relative;
+      z-index: 3;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(64px, 10vw, 168px);
+      line-height: 0.94;
+      letter-spacing: -0.025em;
+      max-width: 14ch;
+      margin-top: 80px;
+      color: var(--paper);
+    }
+
+    .hero__title em {
+      font-style: italic;
+      color: var(--sand);
+      display: inline-block;
+      transform: translateY(-0.08em) translateX(-0.04em);
+    }
+
+    /* Couche 3 — surface : carte info qui flotte par-dessus le titre */
+    .hero__card {
+      position: relative;
+      z-index: 4;
+      margin: -120px 0 0 auto;
+      max-width: 360px;
+      padding: 28px 28px 32px;
+      background: rgba(14, 18, 24, 0.62);
+      backdrop-filter: blur(18px) saturate(120%);
+      -webkit-backdrop-filter: blur(18px) saturate(120%);
+      border: 1px solid var(--line);
+      border-top: 1px solid rgba(239, 231, 217, 0.32);
+      transform: translateX(-12%);
+    }
+
+    .hero__card h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sand);
+      margin-bottom: 16px;
+    }
+
+    .hero__card p {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--paper-soft);
+    }
+
+    .hero__card p strong { color: var(--paper); font-weight: 500; }
+
+    .hero__lede {
+      position: relative;
+      z-index: 3;
+      max-width: 52ch;
+      margin-top: 56px;
+      font-size: clamp(18px, 1.6vw, 22px);
+      line-height: 1.45;
+      color: var(--paper-soft);
+    }
+
+    .hero__lede strong { color: var(--paper); font-weight: 500; }
+
+    /* ========================================================
+       SECTION SIGNATURE — Z-INDEX
+       Démontre la spatialisation des couches via une stack visible.
+       ======================================================== */
+    .signature {
+      margin-top: 160px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 96px);
+      align-items: center;
+    }
+
+    .signature__index {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 24px;
+    }
+
+    .signature__title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 4.6vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--paper);
+      margin-bottom: 28px;
+    }
+
+    .signature__title em { font-style: italic; color: var(--sand); }
+
+    .signature__text {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--paper-soft);
+      max-width: 44ch;
+    }
+
+    .signature__text + .signature__text { margin-top: 18px; }
+
+    /* Démo visuelle : 4 plaques empilées avec décalage */
+    .stack {
+      position: relative;
+      height: 480px;
+      isolation: isolate;
+    }
+
+    .stack__layer {
+      position: absolute;
+      width: 78%;
+      height: 240px;
+      border: 1px solid var(--line);
+      padding: 24px;
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stack__layer .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--paper-soft);
+      letter-spacing: 0.08em;
+    }
+
+    .stack__layer .num {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 88px;
+      line-height: 1;
+      color: var(--sand);
+    }
+
+    .stack__layer--01 {
+      top: 0; left: 0;
+      background: var(--ink-deep);
+      z-index: 1;
+      transform: rotate(-1.5deg);
+    }
+    .stack__layer--02 {
+      top: 70px; left: 14%;
+      background: #14202E;
+      z-index: 2;
+      border-top: 1px solid rgba(110, 141, 191, 0.3);
+    }
+    .stack__layer--03 {
+      top: 150px; left: 4%;
+      background: linear-gradient(165deg, #1B2434 0%, #0F1620 100%);
+      z-index: 3;
+      border-top: 1px solid rgba(239, 231, 217, 0.18);
+    }
+    .stack__layer--04 {
+      top: 230px; left: 18%;
+      background: var(--paper);
+      color: var(--ink);
+      z-index: 4;
+      border: none;
+    }
+    .stack__layer--04 .tag { color: var(--ink); opacity: 0.6; }
+    .stack__layer--04 .num { color: var(--rust); }
+
+    /* ========================================================
+       SECTION OVERLAPPING — Composition typographique entrelacée
+       ======================================================== */
+    .overlap {
+      margin-top: 200px;
+      position: relative;
+      isolation: isolate;
+      padding: 80px 0 40px;
+      border-top: 1px solid var(--line);
+    }
+
+    .overlap__intro {
+      max-width: 56ch;
+      margin-bottom: 64px;
+    }
+
+    .overlap__intro h2 {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 16px;
+    }
+
+    .overlap__intro p {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height: 1.18;
+      color: var(--paper);
+      letter-spacing: -0.015em;
+    }
+
+    .overlap__intro p em { font-style: italic; color: var(--sand); }
+
+    .overlap__stage {
+      position: relative;
+      height: 380px;
+    }
+
+    .overlap__bigword {
+      position: absolute;
+      bottom: -40px;
+      left: -2%;
+      font-family: var(--font-display);
+      font-size: clamp(140px, 22vw, 320px);
+      line-height: 1;
+      color: var(--paper);
+      letter-spacing: -0.04em;
+      z-index: 2;
+      mask-image: linear-gradient(160deg, rgba(0,0,0,1) 30%, rgba(0,0,0,0.15) 90%);
+      -webkit-mask-image: linear-gradient(160deg, rgba(0,0,0,1) 30%, rgba(0,0,0,0.15) 90%);
+    }
+
+    .overlap__plate {
+      position: absolute;
+      top: 60px;
+      right: 0;
+      width: 46%;
+      padding: 36px 32px;
+      background: var(--rust);
+      color: var(--paper);
+      z-index: 3;
+      transform: rotate(2deg);
+    }
+
+    .overlap__plate h4 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      opacity: 0.75;
+    }
+
+    .overlap__plate p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .overlap__chip {
+      position: absolute;
+      bottom: 80px;
+      left: 32%;
+      padding: 14px 22px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      z-index: 4;
+    }
+
+    /* ========================================================
+       BLOC ATMOSPHÈRE — Profondeur lumineuse via gradients non-centrés
+       ======================================================== */
+    .atmosphere {
+      margin-top: 200px;
+      position: relative;
+      padding: 96px clamp(24px, 5vw, 80px);
+      background:
+        radial-gradient(900px 500px at 12% 110%, rgba(140, 74, 43, 0.45) 0%, rgba(140, 74, 43, 0) 60%),
+        radial-gradient(700px 600px at 88% -20%, rgba(110, 141, 191, 0.32) 0%, rgba(110, 141, 191, 0) 65%),
+        radial-gradient(500px 400px at 70% 80%, rgba(182, 150, 114, 0.18) 0%, rgba(182, 150, 114, 0) 70%),
+        var(--ink-deep);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .atmosphere__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .atmosphere__left h3 {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sand);
+      margin-bottom: 24px;
+    }
+
+    .atmosphere__left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 5.5vw, 76px);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--paper);
+      margin-bottom: 32px;
+    }
+
+    .atmosphere__left h2 em { font-style: italic; color: var(--sky); }
+
+    .atmosphere__left p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--paper-soft);
+      max-width: 38ch;
+    }
+
+    .atmosphere__usage {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .atmosphere__usage > div {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .atmosphere__usage > div:first-child { border-top: 1px solid rgba(239, 231, 217, 0.25); }
+
+    .atmosphere__usage h4 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .atmosphere__usage .yes h4 { color: var(--sand); }
+    .atmosphere__usage .no h4  { color: var(--paper-soft); }
+
+    .atmosphere__usage p {
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.32;
+      color: var(--paper);
+    }
+
+    .atmosphere__usage .no p { color: var(--paper-soft); font-style: italic; }
+
+    /* Plaque flottante par-dessus l'atmosphère pour incarner la couche supérieure */
+    .atmosphere__plate {
+      position: absolute;
+      bottom: -30px;
+      right: -30px;
+      width: 280px;
+      padding: 22px 24px;
+      background: var(--paper);
+      color: var(--ink);
+      z-index: 3;
+      transform: rotate(-2deg);
+    }
+
+    .atmosphere__plate small {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .atmosphere__plate p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    /* ========================================================
+       FOOTER MINIMAL
+       ======================================================== */
+    footer {
+      margin-top: 120px;
+      padding-top: 32px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--paper-soft);
+    }
+
+    footer span:last-child { color: var(--sand); }
+
+    /* ========================================================
+       RESPONSIVE — repli simple, on garde l'esprit des couches
+       ======================================================== */
+    @media (max-width: 900px) {
+      .hero__card { transform: none; margin-top: 32px; }
+      .signature, .atmosphere__grid { grid-template-columns: 1fr; }
+      .stack { height: 420px; }
+      .overlap__plate { width: 70%; }
+      .atmosphere__plate { position: relative; bottom: 0; right: 0; transform: none; margin-top: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__meta">
+      <span>Style Library — 25 / 34</span>
+      <span>Helio · Studio numérique</span>
+    </div>
+
+    <div class="hero__ghost" aria-hidden="true">depth</div>
+
+    <h1 class="hero__title">
+      Dimensional<br>
+      <em>Layering</em>
+    </h1>
+
+    <aside class="hero__card">
+      <h3>Couche 04 · Surface</h3>
+      <p><strong>Profondeur sans 3D réelle.</strong> Le z-index devient une intention de composition : chaque couche occupe un plan perceptible, comme dans une scénographie de vitrine.</p>
+    </aside>
+
+    <p class="hero__lede">
+      Un style qui pense l'écran comme un <strong>volume habité</strong>, pas comme une feuille. Les éléments se chevauchent, des masques fondent les couches entre elles, le scroll dévoile un <strong>parallax subtil multi-vitesse</strong>. Tout est CSS — aucun moteur 3D, aucune gymnastique WebGL.
+    </p>
+  </section>
+
+  <!-- ============ SIGNATURE 1 — Z-INDEX INTENTIONNEL ============ -->
+  <section class="signature">
+    <div>
+      <p class="signature__index">Signature 01</p>
+      <h2 class="signature__title">Le z-index <em>se voit.</em></h2>
+      <p class="signature__text">
+        Là où la plupart des sites empilent leurs éléments sans hiérarchie spatiale, Dimensional Layering rend la pile <strong style="color: var(--paper);">perceptible</strong>. Chaque couche porte un rôle : fond, médian, surface, point focal. L'œil lit la profondeur avant de lire le texte.
+      </p>
+      <p class="signature__text">
+        Quatre plans suffisent. Au-delà, la composition se brouille. En deçà, on retombe sur du flat layout déguisé.
+      </p>
+    </div>
+
+    <div class="stack" aria-hidden="true">
+      <div class="stack__layer stack__layer--01">
+        <span class="tag">Plan 01 · Fond</span>
+        <span class="num">01</span>
+      </div>
+      <div class="stack__layer stack__layer--02">
+        <span class="tag">Plan 02 · Atmosphère</span>
+        <span class="num">02</span>
+      </div>
+      <div class="stack__layer stack__layer--03">
+        <span class="tag">Plan 03 · Médian</span>
+        <span class="num">03</span>
+      </div>
+      <div class="stack__layer stack__layer--04">
+        <span class="tag">Plan 04 · Surface</span>
+        <span class="num">04</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SIGNATURE 2 — OVERLAPPING ============ -->
+  <section class="overlap">
+    <div class="overlap__intro">
+      <h2>Signature 02 · Overlapping contrôlé</h2>
+      <p>
+        Les éléments <em>se chevauchent volontairement</em>. Une plaque colorée mord sur un titre, un chip de typo flotte sur la jonction de deux blocs : la composition gagne en densité spatiale sans devenir illisible.
+      </p>
+    </div>
+
+    <div class="overlap__stage" aria-hidden="true">
+      <div class="overlap__bigword">Strata</div>
+      <div class="overlap__plate">
+        <h4>Plaque flottante</h4>
+        <p>« La couche supérieure mord sur la couche médiane. »</p>
+      </div>
+      <div class="overlap__chip">Z-INDEX · 04</div>
+    </div>
+  </section>
+
+  <!-- ============ ATMOSPHÈRE + USAGE ============ -->
+  <section class="atmosphere">
+    <div class="atmosphere__grid">
+      <div class="atmosphere__left">
+        <h3>Atmosphère · Profondeur lumineuse</h3>
+        <h2>Les sources de <em>lumière</em> ne sont jamais centrées.</h2>
+        <p>
+          La lumière vient des coins, des hors-champs, des plans bas. Trois radial-gradients décalés suffisent à créer un volume atmosphérique — pas trois blobs centrés violet-rose, qui sont le marqueur d'aurora générique.
+        </p>
+      </div>
+
+      <div class="atmosphere__usage">
+        <div class="yes">
+          <h4>Quand l'utiliser</h4>
+          <p>Portfolios créatifs, studios design, marques cinéma/photo, cas clients premium, micro-sites éditoriaux qui veulent du <em>geste spatial</em>.</p>
+        </div>
+        <div class="no">
+          <h4>Quand l'éviter</h4>
+          <p>Dashboards data-dense, e-commerce volume, B2B SaaS scannable rapide, formulaires longs : la profondeur fatigue la lecture utilitaire.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="atmosphere__plate">
+      <small>Référence</small>
+      <p>« Awwwards 2025 — Adoratorio, Blue Desert, Mid Mountain. »</p>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span>BIG · Style Library · 25 / 34</span>
+    <span>Dimensional Layering · Cinétique</span>
+  </footer>
+
+</body>
+</html>

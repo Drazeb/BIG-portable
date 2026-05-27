@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 29. 3D Product Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #0e0f12;
+      --color-surface: #16181c;
+      --color-surface-2: #1d2025;
+      --color-text: #f4f3ef;
+      --color-text-muted: #8a8d94;
+      --color-text-faint: #4d5159;
+      --color-accent: #c8a16a;        /* laiton brossé — lumière chaude studio */
+      --color-line: rgba(244, 243, 239, 0.08);
+      --color-line-strong: rgba(244, 243, 239, 0.18);
+
+      --font-display: "Instrument Serif", "Times New Roman", serif;
+      --font-body: "Inter", system-ui, sans-serif;
+
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 40px;
+      --space-5: 64px;
+      --space-6: 96px;
+
+      --radius-sm: 4px;
+      --radius-md: 10px;
+      --radius-lg: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.005em;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-4);
+    }
+
+    /* ─────── Hero ─────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: var(--space-5);
+      align-items: center;
+      padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .hero-meta {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .hero-meta::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--color-text-faint);
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(48px, 6.4vw, 88px);
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+    .hero .lede {
+      font-size: 17px;
+      color: var(--color-text-muted);
+      margin-top: var(--space-3);
+      max-width: 38ch;
+      line-height: 1.6;
+    }
+    .hero .brand {
+      margin-top: var(--space-4);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+    }
+
+    /* ─────── Visualiseur produit (CSS-only) ─────── */
+    .viewer {
+      position: relative;
+      aspect-ratio: 5 / 4;
+      background:
+        radial-gradient(ellipse 70% 55% at 50% 30%, rgba(255, 240, 220, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0,0,0,0.55) 0%, transparent 70%),
+        linear-gradient(180deg, #1a1c20 0%, #0c0d10 100%);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      perspective: 1400px;
+      isolation: isolate;
+    }
+
+    /* studio rim light en haut */
+    .viewer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 18%);
+      pointer-events: none;
+    }
+
+    /* sol réfléchissant */
+    .viewer::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 38%;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 100%);
+      pointer-events: none;
+    }
+
+    .product {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 56%;
+      aspect-ratio: 1 / 1;
+      transform: translate(-50%, -55%) rotateX(8deg) rotateY(-22deg);
+      transform-style: preserve-3d;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    /* Une bouteille / flacon en CSS pur — empilement de cylindres */
+    .bottle {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+    }
+    .bottle .cap {
+      position: absolute;
+      top: 4%;
+      left: 38%;
+      width: 24%;
+      height: 14%;
+      background: linear-gradient(90deg, #6b5236 0%, #c8a16a 35%, #f4dba8 50%, #c8a16a 65%, #6b5236 100%);
+      border-radius: 2px 2px 0 0;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.4);
+    }
+    .bottle .neck {
+      position: absolute;
+      top: 16%;
+      left: 40%;
+      width: 20%;
+      height: 8%;
+      background: linear-gradient(90deg,
+        rgba(180, 195, 200, 0.15) 0%,
+        rgba(220, 230, 235, 0.55) 35%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(220, 230, 235, 0.55) 65%,
+        rgba(180, 195, 200, 0.15) 100%);
+    }
+    .bottle .body {
+      position: absolute;
+      top: 24%;
+      left: 18%;
+      width: 64%;
+      height: 70%;
+      background:
+        linear-gradient(90deg,
+          rgba(20, 28, 36, 0.85) 0%,
+          rgba(60, 78, 92, 0.7) 25%,
+          rgba(180, 200, 215, 0.85) 48%,
+          rgba(255, 255, 255, 0.95) 52%,
+          rgba(180, 200, 215, 0.85) 56%,
+          rgba(60, 78, 92, 0.7) 75%,
+          rgba(20, 28, 36, 0.85) 100%);
+      border-radius: 6px 6px 14px 14px;
+      box-shadow:
+        inset 0 2px 0 rgba(255,255,255,0.25),
+        inset 0 -8px 12px rgba(0,0,0,0.45),
+        0 30px 40px -10px rgba(0,0,0,0.65);
+    }
+    .bottle .label {
+      position: absolute;
+      top: 48%;
+      left: 28%;
+      width: 44%;
+      height: 22%;
+      background: linear-gradient(90deg,
+        rgba(244, 243, 239, 0.0) 0%,
+        rgba(244, 243, 239, 0.92) 50%,
+        rgba(244, 243, 239, 0.0) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #1a1c20;
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+    .bottle .label span {
+      font-family: var(--font-body);
+      font-size: 8px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #6b5236;
+      margin-top: 2px;
+    }
+
+    /* ombre projetée au sol */
+    .product-shadow {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      width: 38%;
+      height: 14px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.7) 0%, transparent 70%);
+      transform: translateX(-50%);
+      filter: blur(8px);
+    }
+
+    @keyframes drift {
+      0%   { transform: translate(-50%, -55%) rotateX(8deg) rotateY(-22deg); }
+      100% { transform: translate(-50%, -55%) rotateX(6deg) rotateY(18deg); }
+    }
+
+    /* HUD du viewer */
+    .viewer-hud {
+      position: absolute;
+      bottom: var(--space-3);
+      left: var(--space-3);
+      right: var(--space-3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+    .viewer-hud .drag-hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .viewer-hud .drag-hint::before {
+      content: "↻";
+      font-size: 14px;
+      color: var(--color-accent);
+    }
+    .viewer-hud .meta {
+      font-feature-settings: "tnum";
+      color: var(--color-text-faint);
+    }
+
+    /* ─────── Section header générique ─────── */
+    .section {
+      padding: var(--space-6) 0;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-tag {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .section-tag .num {
+      color: var(--color-accent);
+      font-feature-settings: "tnum";
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      max-width: 22ch;
+      margin-bottom: var(--space-4);
+    }
+    .section-title em { font-style: italic; color: var(--color-accent); }
+
+    /* ─────── Signature 1 — Lumière physique ─────── */
+    .light-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: var(--space-5);
+      align-items: start;
+    }
+
+    .light-stage {
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 50% 50% at 30% 30%, rgba(255, 220, 180, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 60% at 75% 70%, rgba(120, 160, 220, 0.12) 0%, transparent 60%),
+        linear-gradient(160deg, #1a1c20 0%, #0c0d10 100%);
+    }
+
+    /* sphère HDR-lit en CSS pur */
+    .sphere {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 28%, #ffffff 0%, #f4dba8 8%, #c8a16a 22%, #6b5236 55%, #1a1410 95%);
+      box-shadow:
+        inset -20px -25px 40px rgba(0,0,0,0.6),
+        0 40px 60px -20px rgba(0,0,0,0.7);
+      position: relative;
+    }
+    .sphere::after {
+      content: "";
+      position: absolute;
+      top: 18%; left: 22%;
+      width: 22%;
+      height: 14%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.65) 0%, transparent 70%);
+      filter: blur(2px);
+    }
+    .sphere-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ground reflection */
+    .light-stage::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 35%;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
+    }
+
+    .light-text h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1.15;
+      margin-bottom: var(--space-3);
+      color: var(--color-text);
+    }
+    .light-text p {
+      color: var(--color-text-muted);
+      font-size: 15px;
+      margin-bottom: var(--space-3);
+    }
+    .light-text .note {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--color-text-faint);
+      border-left: 2px solid var(--color-accent);
+      padding-left: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    /* ─────── Signature 2 — Drag/Rotate + Fallback ─────── */
+    .twin {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .twin-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .twin-card .card-tag {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-3);
+    }
+    .twin-card h4 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1.2;
+      margin-bottom: var(--space-2);
+    }
+    .twin-card p {
+      color: var(--color-text-muted);
+      font-size: 14px;
+    }
+
+    .interact-canvas {
+      margin-top: var(--space-4);
+      aspect-ratio: 16 / 10;
+      border-radius: var(--radius-sm);
+      background:
+        repeating-linear-gradient(0deg, var(--color-line) 0 1px, transparent 1px 32px),
+        repeating-linear-gradient(90deg, var(--color-line) 0 1px, transparent 1px 32px),
+        radial-gradient(ellipse at 50% 50%, rgba(200, 161, 106, 0.08), transparent 60%),
+        var(--color-surface-2);
+      position: relative;
+      overflow: hidden;
+    }
+    .interact-canvas .axis {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 60%;
+      height: 1px;
+      background: var(--color-line-strong);
+      transform: translate(-50%, -50%);
+    }
+    .interact-canvas .axis.y { width: 1px; height: 60%; }
+    .interact-canvas .pivot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 8px; height: 8px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 4px rgba(200, 161, 106, 0.15);
+    }
+    .interact-canvas .arc {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 50%;
+      aspect-ratio: 1;
+      border: 1px dashed var(--color-line-strong);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .interact-canvas .label-coord {
+      position: absolute;
+      bottom: 10px; right: 12px;
+      font-size: 10px;
+      font-feature-settings: "tnum";
+      letter-spacing: 0.1em;
+      color: var(--color-text-faint);
+    }
+
+    .fallback-stack {
+      margin-top: var(--space-4);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-1);
+    }
+    .fallback-step {
+      padding: var(--space-2);
+      background: var(--color-surface-2);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+    }
+    .fallback-step .num {
+      display: block;
+      color: var(--color-accent);
+      font-feature-settings: "tnum";
+      margin-bottom: 4px;
+    }
+    .fallback-step.active {
+      background: linear-gradient(180deg, var(--color-surface-2), #0c0d10);
+      border: 1px solid var(--color-line-strong);
+      color: var(--color-text);
+    }
+
+    /* ─────── Atmosphère ─────── */
+    .atmosphere {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--space-5);
+      align-items: stretch;
+    }
+    .atmosphere-visual {
+      aspect-ratio: 16 / 11;
+      border-radius: var(--radius-md);
+      background:
+        radial-gradient(ellipse 40% 30% at 30% 40%, rgba(200, 161, 106, 0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 40% at 75% 60%, rgba(70, 110, 160, 0.2) 0%, transparent 65%),
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,0,0,0.6), transparent 60%),
+        linear-gradient(165deg, #1a1c20 0%, #0a0b0e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .atmosphere-visual .floating {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 32%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(200, 161, 106, 0.6) 35%, rgba(20, 18, 14, 0.95) 90%);
+      transform: translate(-50%, -50%);
+      box-shadow:
+        inset -12px -16px 24px rgba(0,0,0,0.55),
+        0 30px 60px -10px rgba(0,0,0,0.7),
+        0 0 80px rgba(200, 161, 106, 0.18);
+    }
+    .atmosphere-visual .floating::after {
+      content: "";
+      position: absolute;
+      bottom: -36px;
+      left: 50%;
+      width: 65%;
+      height: 12px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.65), transparent 70%);
+      transform: translateX(-50%);
+      filter: blur(6px);
+    }
+    .atmosphere-visual .ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 70%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(200, 161, 106, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotateX(75deg);
+    }
+    .atmosphere-visual .ring.b {
+      width: 50%;
+      border-color: rgba(244, 243, 239, 0.08);
+      transform: translate(-50%, -50%) rotateX(75deg) rotateZ(35deg);
+    }
+
+    .atmosphere-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 32px;
+      line-height: 1.1;
+      margin-bottom: var(--space-3);
+    }
+    .atmosphere-text .when {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-line);
+    }
+    .atmosphere-text .when dt {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 4px;
+      margin-top: var(--space-2);
+    }
+    .atmosphere-text .when dd {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    /* ─────── Footer ─────── */
+    footer {
+      padding: var(--space-4) 0 var(--space-5);
+      border-top: 1px solid var(--color-line);
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+    }
+
+    @media (max-width: 880px) {
+      .hero, .light-grid, .twin, .atmosphere {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero">
+      <div class="hero-text">
+        <p class="hero-meta">Style Library · 29 / 34</p>
+        <h1>3D Product <em>Preview</em></h1>
+        <p class="lede">L'objet posé au centre, tournant sous une lumière de studio. Le visiteur saisit, fait pivoter, inspecte — la fiche produit devient une vitrine physique, plus une photo.</p>
+        <p class="brand">Helio · Maison d'objets manufacturés</p>
+      </div>
+
+      <div class="viewer" aria-label="Aperçu 3D produit">
+        <div class="product">
+          <div class="bottle">
+            <div class="cap"></div>
+            <div class="neck"></div>
+            <div class="body"></div>
+            <div class="label">Helio<span>Édition 04</span></div>
+          </div>
+        </div>
+        <div class="product-shadow"></div>
+        <div class="viewer-hud">
+          <div class="drag-hint">Glisser pour faire pivoter</div>
+          <div class="meta">RX 8° · RY −22° · 60 fps</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SIGNATURE 1 — Lumière physique ═══════════ -->
+    <section class="section">
+      <p class="section-tag"><span class="num">01</span> · Signature</p>
+      <h2 class="section-title">Lumière physique <em>réaliste</em>, pas un éclairage générique trois-points.</h2>
+
+      <div class="light-grid">
+        <div class="light-stage">
+          <div class="sphere-wrap"><div class="sphere"></div></div>
+        </div>
+        <div class="light-text">
+          <h3>Le HDR fait la moitié du travail</h3>
+          <p>Une 3D produit lit une vraie environment map : la lumière vient d'une scène réelle (studio, ciel, intérieur), pas de lampes inventées. L'objet capte les reflets de son contexte — c'est ce qui le fait paraître présent dans la page.</p>
+          <p>Concrètement : matériaux PBR (metallic + roughness), exposition calibrée, ombres de contact douces et nettes à la fois. Pas de glow décoratif, pas de halo coloré : la lumière sert l'objet.</p>
+          <p class="note">Marqueur slop évité : pas de spotlight violet centré sur le produit, pas de glow `box-shadow: 0 0 80px` posé en arrière-plan.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SIGNATURE 2 — Drag + Fallback ═══════════ -->
+    <section class="section">
+      <p class="section-tag"><span class="num">02</span> · Signature</p>
+      <h2 class="section-title">Manipulation directe, et un <em>filet de sécurité</em> pour tout le monde.</h2>
+
+      <div class="twin">
+
+        <div class="twin-card">
+          <p class="card-tag">Interaction</p>
+          <h4>Drag intuitif, axes contraints</h4>
+          <p>Le geste premier est la rotation libre sur Y. Le tilt vertical est borné (±20°) pour éviter de retourner l'objet. Le zoom est progressif, le double-tap recadre. Aucune surprise pour le visiteur.</p>
+          <div class="interact-canvas" aria-hidden="true">
+            <div class="axis"></div>
+            <div class="axis y"></div>
+            <div class="arc"></div>
+            <div class="pivot"></div>
+            <div class="label-coord">θ 142° · φ 8°</div>
+          </div>
+        </div>
+
+        <div class="twin-card">
+          <p class="card-tag">Robustesse</p>
+          <h4>Fallback image, toujours présent</h4>
+          <p>Avant que le moteur 3D charge, et pour tous les contextes où il ne chargera pas (data limitée, navigateur ancien, accessibilité), une photo studio prend le relais. Le visiteur ne voit jamais une zone vide.</p>
+          <div class="fallback-stack">
+            <div class="fallback-step active"><span class="num">01</span>Image studio servie immédiatement</div>
+            <div class="fallback-step"><span class="num">02</span>Modèle 3D en téléchargement asynchrone</div>
+            <div class="fallback-step"><span class="num">03</span>Bascule au premier geste utilisateur</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════ ATMOSPHÈRE ═══════════ -->
+    <section class="section">
+      <p class="section-tag"><span class="num">03</span> · Atmosphère</p>
+      <h2 class="section-title">L'objet seul, suspendu dans son <em>espace négatif</em>.</h2>
+
+      <div class="atmosphere">
+        <div class="atmosphere-visual" aria-hidden="true">
+          <div class="ring"></div>
+          <div class="ring b"></div>
+          <div class="floating"></div>
+        </div>
+        <div class="atmosphere-text">
+          <h3>Une scène, pas un décor</h3>
+          <p>L'arrière-plan est tenu sombre et calme pour que l'objet capte toute la lumière. Pas de motif, pas de photo de contexte, pas de gradient marketing — juste une scène réelle dans laquelle l'objet flotte, avec son ombre et ses reflets.</p>
+          <dl class="when">
+            <dt>Quand utiliser</dt>
+            <dd>E-commerce premium (mode, beauté, horlogerie, mobilier), configurateurs produits, fiches d'objets manufacturés où la matière compte autant que la fonction.</dd>
+            <dt>Quand l'éviter</dt>
+            <dd>Catalogues larges et froids (logistique B2B), produits dématérialisés (SaaS, services), sites éditoriaux où l'objet n'est pas le sujet.</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Style Library · BIG</span>
+      <span>29 — 3D Product Preview · Registre Tech / Cinétique</span>
+    </footer>
+
+  </main>
+</body>
+</html>

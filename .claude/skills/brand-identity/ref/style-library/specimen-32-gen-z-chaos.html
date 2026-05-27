@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 32. Gen Z Chaos / Maximalism</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,500;10..48,800&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Gen Z Chaos — multi-accents saturés non-Tailwind */
+      --ink: #0E0E10;            /* noir profond, pas pur */
+      --paper: #F4EFE6;          /* crème internet 2002 */
+      --lime: #C8FF00;            /* vert acide — registre Bottega */
+      --magenta: #FF2E7E;          /* rose hot saturé */
+      --electric: #1F2BFF;         /* bleu électrique franc */
+      --signal: #FFD600;           /* jaune signal */
+      --poppy: #FF5A1F;            /* orange poppy */
+      --shadow-ink: #0E0E10;       /* ombres dures, jamais blur */
+
+      --font-display: "Bricolage Grotesque", "Helvetica Neue", sans-serif;
+      --font-clash: "DM Serif Display", "Times New Roman", serif;
+      --font-mono: "Space Mono", ui-monospace, monospace;
+      --font-hand: "Caveat", "Marker Felt", cursive;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-mono);
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Halftone subtil sur le body — chaos calculé, pas filtre AI */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+      background-size: 6px 6px;
+      opacity: 0.04;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 32px 28px 96px;
+    }
+
+    /* ============ HERO — typographies clashantes CHOISIES ============ */
+    .hero {
+      position: relative;
+      padding: 48px 0 72px;
+      border-top: 3px solid var(--ink);
+      border-bottom: 3px solid var(--ink);
+      margin-bottom: 56px;
+    }
+
+    .hero .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 28px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .hero .tag {
+      padding: 6px 10px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+    .hero .tag.is-lime { background: var(--lime); }
+    .hero .tag.is-magenta { background: var(--magenta); color: var(--paper); }
+    .hero .tag.is-electric { background: var(--electric); color: var(--paper); }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-variation-settings: "opsz" 48;
+      font-size: clamp(56px, 11vw, 168px);
+      line-height: 0.86;
+      letter-spacing: -0.035em;
+      margin: 0 0 24px;
+      text-transform: none;
+    }
+    .hero h1 .gen {
+      display: inline-block;
+      transform: rotate(-3deg);
+      background: var(--lime);
+      padding: 0 14px 6px;
+      box-shadow: 8px 8px 0 var(--shadow-ink);
+      margin: 0 8px 12px 0;
+    }
+    .hero h1 .z {
+      display: inline-block;
+      font-family: var(--font-clash);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--magenta);
+      padding: 0 4px;
+    }
+    .hero h1 .chaos {
+      display: inline-block;
+      transform: rotate(2deg) translateY(8px);
+      text-decoration: underline wavy var(--electric);
+      text-decoration-thickness: 4px;
+      text-underline-offset: 8px;
+    }
+    .hero h1 .slash {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--poppy);
+      padding: 0 8px;
+    }
+    .hero h1 .max {
+      display: inline-block;
+      background: var(--electric);
+      color: var(--signal);
+      padding: 0 12px 4px;
+      transform: rotate(-1.5deg);
+      letter-spacing: -0.05em;
+    }
+
+    .hero .lede {
+      font-family: var(--font-clash);
+      font-style: italic;
+      font-size: clamp(20px, 2.4vw, 30px);
+      line-height: 1.25;
+      max-width: 780px;
+      margin: 0 0 20px;
+      color: var(--ink);
+    }
+    .hero .lede em {
+      font-style: normal;
+      background: var(--signal);
+      padding: 0 6px;
+    }
+
+    .hero .brand {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 8px 12px;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* sticker absolu hero */
+    .hero .sticker {
+      position: absolute;
+      top: 28px;
+      right: 24px;
+      width: 110px;
+      height: 110px;
+      background: var(--magenta);
+      color: var(--paper);
+      border-radius: 50%;
+      border: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: var(--font-hand);
+      font-size: 22px;
+      line-height: 1.05;
+      transform: rotate(12deg);
+      box-shadow: 6px 6px 0 var(--shadow-ink);
+    }
+
+    /* ============ SECTION TITRE — réutilisable ============ */
+    .sec-label {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      padding: 5px 10px;
+      background: var(--ink);
+      color: var(--paper);
+      margin-bottom: 20px;
+    }
+    .sec-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin: 0 0 24px;
+    }
+
+    /* ============ SIGNATURE 1 — Anti-grille : composition rotée/superposée ============ */
+    .sig-antigrid {
+      position: relative;
+      margin-bottom: 80px;
+      padding: 40px 0;
+    }
+    .antigrid-stage {
+      position: relative;
+      min-height: 460px;
+      margin-top: 24px;
+    }
+    .antigrid-card {
+      position: absolute;
+      border: 3px solid var(--ink);
+      padding: 18px 20px;
+      box-shadow: 8px 8px 0 var(--shadow-ink);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .ag-1 {
+      top: 0; left: 2%;
+      width: 280px;
+      background: var(--lime);
+      transform: rotate(-4deg);
+    }
+    .ag-2 {
+      top: 60px; left: 26%;
+      width: 320px;
+      background: var(--paper);
+      transform: rotate(2deg);
+      z-index: 2;
+    }
+    .ag-2 .ag-h {
+      font-family: var(--font-clash);
+      font-style: italic;
+      font-size: 28px;
+      line-height: 1.05;
+      margin: 0 0 8px;
+    }
+    .ag-3 {
+      top: 200px; left: 8%;
+      width: 220px;
+      background: var(--magenta);
+      color: var(--paper);
+      transform: rotate(-2deg);
+      z-index: 3;
+    }
+    .ag-4 {
+      top: 180px; left: 42%;
+      width: 240px;
+      background: var(--ink);
+      color: var(--signal);
+      transform: rotate(3deg);
+      z-index: 1;
+    }
+    .ag-5 {
+      top: 80px; right: 4%;
+      width: 220px;
+      background: var(--electric);
+      color: var(--paper);
+      transform: rotate(-1.5deg);
+    }
+    .ag-5 .ag-h {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 22px;
+      line-height: 1;
+      margin: 0 0 6px;
+    }
+    .ag-6 {
+      top: 280px; right: 12%;
+      width: 200px;
+      background: var(--signal);
+      transform: rotate(5deg);
+      font-family: var(--font-hand);
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .ag-tag {
+      display: inline-block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 3px 6px;
+      border: 2px solid currentColor;
+      margin-bottom: 8px;
+    }
+
+    .sig-antigrid .commentary {
+      max-width: 640px;
+      margin: 32px 0 0;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.55;
+      padding: 18px 22px;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-left: 12px solid var(--electric);
+    }
+    .sig-antigrid .commentary strong { background: var(--lime); padding: 0 4px; }
+
+    /* ============ SIGNATURE 2 — Typographies clashantes ============ */
+    .sig-typo {
+      margin-bottom: 80px;
+      padding: 40px 0;
+    }
+    .typo-stage {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    @media (max-width: 760px) {
+      .typo-stage { grid-template-columns: 1fr; }
+    }
+    .typo-clash {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 32px 28px;
+      border: 3px solid var(--ink);
+      box-shadow: 10px 10px 0 var(--magenta);
+      position: relative;
+    }
+    .typo-clash .line-1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(40px, 6vw, 76px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--paper);
+      margin: 0;
+    }
+    .typo-clash .line-2 {
+      font-family: var(--font-clash);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(36px, 5.4vw, 68px);
+      line-height: 0.95;
+      color: var(--lime);
+      margin: 4px 0 0 36px;
+    }
+    .typo-clash .line-3 {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: clamp(20px, 2.8vw, 34px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin: 14px 0 0 4px;
+    }
+    .typo-clash .line-4 {
+      font-family: var(--font-hand);
+      font-size: clamp(28px, 3.6vw, 44px);
+      line-height: 0.9;
+      color: var(--magenta);
+      margin: 6px 0 0 60px;
+      transform: rotate(-2deg);
+      display: inline-block;
+    }
+    .typo-clash .badge {
+      position: absolute;
+      top: -16px;
+      right: 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      background: var(--lime);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+    }
+
+    .typo-explain {
+      background: var(--paper);
+      padding: 28px 26px;
+      border: 3px solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .typo-explain h3 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      line-height: 1.05;
+      margin: 0;
+    }
+    .typo-explain p {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 0;
+    }
+    .typo-explain .ingredient {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+    .typo-explain .ingredient .name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .typo-explain .ingredient.is-display .sample {
+      font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1;
+    }
+    .typo-explain .ingredient.is-clash .sample {
+      font-family: var(--font-clash); font-style: italic; font-size: 28px; line-height: 1;
+    }
+    .typo-explain .ingredient.is-mono .sample {
+      font-family: var(--font-mono); font-weight: 700; font-size: 16px; text-transform: uppercase;
+    }
+    .typo-explain .ingredient.is-hand .sample {
+      font-family: var(--font-hand); font-size: 26px; line-height: 1;
+    }
+
+    /* ============ SIGNATURE 3 — Stickers / glitch ponctuels ============ */
+    .sig-stickers {
+      margin-bottom: 80px;
+      padding: 40px 0;
+    }
+    .stickers-stage {
+      position: relative;
+      min-height: 320px;
+      padding: 32px;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      box-shadow: 12px 12px 0 var(--lime);
+    }
+    .stickers-stage .article {
+      max-width: 540px;
+      margin: 0;
+      font-family: var(--font-clash);
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+    .stickers-stage .article p { margin: 0 0 14px; }
+    .stickers-stage .article .hl {
+      background: var(--signal);
+      padding: 0 6px;
+    }
+    .stickers-stage .article .strike {
+      text-decoration: line-through;
+      text-decoration-color: var(--magenta);
+      text-decoration-thickness: 3px;
+      opacity: 0.75;
+    }
+
+    .stk {
+      position: absolute;
+      font-family: var(--font-hand);
+      border: 3px solid var(--ink);
+      padding: 8px 12px;
+      box-shadow: 5px 5px 0 var(--shadow-ink);
+    }
+    .stk-1 {
+      top: -18px; right: 20px;
+      background: var(--magenta);
+      color: var(--paper);
+      transform: rotate(8deg);
+      font-size: 22px;
+    }
+    .stk-2 {
+      bottom: 28px; right: 36px;
+      background: var(--signal);
+      transform: rotate(-6deg);
+      font-size: 20px;
+      max-width: 200px;
+      text-align: center;
+    }
+    .stk-3 {
+      top: 110px; right: -14px;
+      background: var(--lime);
+      transform: rotate(4deg);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 6px 8px;
+    }
+    .stk-glitch {
+      position: absolute;
+      top: 24px;
+      right: 200px;
+      width: 90px;
+      height: 28px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          var(--electric) 0 4px,
+          var(--magenta) 4px 8px,
+          var(--signal) 8px 12px,
+          var(--ink) 12px 14px,
+          transparent 14px 18px
+        );
+      border: 2px solid var(--ink);
+      transform: rotate(-3deg);
+    }
+
+    .sig-stickers .commentary {
+      max-width: 640px;
+      margin: 28px 0 0;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.55;
+      padding: 18px 22px;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-left: 12px solid var(--magenta);
+    }
+    .sig-stickers .commentary strong { background: var(--lime); padding: 0 4px; }
+
+    /* ============ ATMOSPHÈRE — couleur émotionnelle + usage ============ */
+    .atmosphere {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      border: 3px solid var(--ink);
+    }
+    @media (max-width: 760px) {
+      .atmosphere { grid-template-columns: 1fr; }
+    }
+
+    .atmosphere-visual {
+      position: relative;
+      min-height: 360px;
+      background:
+        /* halftone dur */
+        radial-gradient(var(--ink) 1.5px, transparent 1.6px) 0 0/10px 10px,
+        /* blocs francs (PAS aurora floue) */
+        linear-gradient(135deg, var(--magenta) 0 35%, transparent 35%),
+        linear-gradient(225deg, var(--lime) 0 30%, transparent 30%),
+        linear-gradient(45deg, var(--electric) 0 25%, transparent 25%),
+        var(--signal);
+      overflow: hidden;
+      border-right: 3px solid var(--ink);
+    }
+    @media (max-width: 760px) {
+      .atmosphere-visual { border-right: none; border-bottom: 3px solid var(--ink); }
+    }
+    .atmosphere-visual::before {
+      content: "GEN/Z/CHAOS";
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 56px;
+      line-height: 0.9;
+      color: var(--ink);
+      letter-spacing: -0.04em;
+      transform: rotate(-3deg);
+      mix-blend-mode: multiply;
+    }
+    .atmosphere-visual::after {
+      content: "♥ ✦ ※ ☻ ✿";
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      font-family: var(--font-mono);
+      font-size: 22px;
+      letter-spacing: 0.4em;
+      color: var(--paper);
+      transform: rotate(6deg);
+    }
+
+    .atmosphere-text {
+      padding: 32px 28px;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 28px;
+      line-height: 1;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .atmosphere-text .usage-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 12px;
+      align-items: start;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .atmosphere-text .pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border: 2px solid var(--ink);
+      text-align: center;
+    }
+    .pill.use { background: var(--lime); }
+    .pill.avoid { background: var(--magenta); color: var(--paper); }
+
+    /* ============ FOOTER spec ============ */
+    .footer-meta {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 2px dashed var(--ink);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="meta-row">
+        <span class="tag">Style 32 / 34</span>
+        <span class="tag is-lime">Registre · Crafty / Cinétique</span>
+        <span class="tag is-magenta">Cyclique · Pic 2024-2025</span>
+        <span class="tag is-electric">Verdict · CHAOS CALCULÉ</span>
+      </div>
+
+      <h1>
+        <span class="gen">Gen</span><span class="z">Z</span>
+        <span class="slash">/</span>
+        <span class="chaos">Chaos</span>
+        <br>
+        <span class="max">Maximalism</span>
+      </h1>
+
+      <p class="lede">
+        Layouts <em>anti-grille</em>, typographies clashantes <em>choisies</em>, couleurs saturées multi-accents,
+        compositions denses chargées. Le chaos n'est pas généré au hasard — il est <em>composé note à note</em>
+        comme un sample pack.
+      </p>
+
+      <span class="brand">Helio — Drop culture &amp; playlists internet</span>
+
+      <div class="sticker">drop new every<br>FRIDAY 6pm</div>
+    </section>
+
+    <!-- ============ SIGNATURE 1 — Anti-grille ============ -->
+    <section class="sig-antigrid">
+      <span class="sec-label">Signature 01 · Anti-grille</span>
+      <h2 class="sec-title">Pas de colonnes.<br>Des pièces qui se chevauchent.</h2>
+
+      <div class="antigrid-stage" aria-hidden="true">
+        <div class="antigrid-card ag-1">
+          <span class="ag-tag">tile · 01</span>
+          <strong>Rotation -4°.</strong> La carte n'est pas alignée parce que le contenu ne l'est pas non plus.
+        </div>
+        <div class="antigrid-card ag-2">
+          <p class="ag-h">Une grille rangée, c'est une promesse de Big Four consultancy.</p>
+          <span class="ag-tag">manifesto</span>
+        </div>
+        <div class="antigrid-card ag-3">
+          <span class="ag-tag">tile · 03</span>
+          Z-index assumé. Les pièces se montent comme un collage de magazine, pas comme un wireframe.
+        </div>
+        <div class="antigrid-card ag-4">
+          <span class="ag-tag" style="border-color: var(--signal); color: var(--signal);">tile · 04</span>
+          <strong style="color: var(--signal);">Bord à bord interdit.</strong>
+          Toujours un décrochage de quelques pixels — sinon le collage devient un mur de carrelage.
+        </div>
+        <div class="antigrid-card ag-5">
+          <p class="ag-h">No align-items: center.</p>
+          <span class="ag-tag">rule · 05</span>
+        </div>
+        <div class="antigrid-card ag-6">
+          PS : reste<br>maximaliste,<br>pas désordonné.
+        </div>
+      </div>
+
+      <p class="commentary">
+        L'anti-grille de ce style n'est pas une absence de système. C'est un <strong>système d'évitement</strong> :
+        chaque rotation, chevauchement, décalage est composé pour que l'œil danse au lieu de scanner.
+        Si le résultat ressemble à un Behance moodboard auto-généré, c'est raté — il faut sentir la
+        <strong>main qui place chaque pièce</strong>.
+      </p>
+    </section>
+
+    <!-- ============ SIGNATURE 2 — Typographies clashantes ============ -->
+    <section class="sig-typo">
+      <span class="sec-label">Signature 02 · Typo clash</span>
+      <h2 class="sec-title">Quatre voix tipographiques, une seule phrase.</h2>
+
+      <div class="typo-stage">
+        <div class="typo-clash">
+          <span class="badge">read aloud</span>
+          <p class="line-1">FRIDAY DROP</p>
+          <p class="line-2">— c'est <em>déjà</em> sold out</p>
+          <p class="line-3">tap to join the waitlist ↓</p>
+          <p class="line-4">(don't sleep)</p>
+        </div>
+
+        <div class="typo-explain">
+          <h3>Le clash est une décision, pas un accident.</h3>
+          <p>
+            Quatre familles tipographiques cohabitent dans le même bloc. Chacune porte un registre
+            de voix différent — l'annonce, le commentaire, l'instruction, l'aparté. Le lecteur Gen Z
+            parcourt le bloc comme un message Discord à 4 amis qui parlent en même temps.
+          </p>
+          <div class="ingredient is-display">
+            <span class="name">Display<br>shout</span>
+            <span class="sample">Bricolage Grotesque</span>
+          </div>
+          <div class="ingredient is-clash">
+            <span class="name">Serif italic<br>commentaire</span>
+            <span class="sample">DM Serif</span>
+          </div>
+          <div class="ingredient is-mono">
+            <span class="name">Mono caps<br>instruction</span>
+            <span class="sample">SPACE MONO</span>
+          </div>
+          <div class="ingredient is-hand">
+            <span class="name">Hand<br>aparté</span>
+            <span class="sample">Caveat note</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SIGNATURE 3 — Stickers / glitch ponctuels ============ -->
+    <section class="sig-stickers">
+      <span class="sec-label">Signature 03 · Stickers &amp; glitch ponctuel</span>
+      <h2 class="sec-title">Le commentaire est dans la marge.<br>Pas dans le footer.</h2>
+
+      <div class="stickers-stage">
+        <div class="article">
+          <p>
+            On ne <span class="strike">pitch pas</span> notre roadmap dans une section "About".
+            On la <span class="hl">colle au-dessus</span> du paragraphe, en biais, avec une petite note manuscrite.
+          </p>
+          <p>
+            Le sticker est le <span class="hl">CTA secondaire</span> du style. Il ajoute une voix
+            sans s'ajouter au flux principal. Lu en deuxième passage, jamais en premier.
+          </p>
+        </div>
+
+        <div class="stk stk-1">limited<br>!! </div>
+        <div class="stk stk-2">if you scroll past this<br>we will know</div>
+        <div class="stk stk-3">v3.2 · build 0429</div>
+        <div class="stk-glitch" aria-hidden="true"></div>
+      </div>
+
+      <p class="commentary">
+        Stickers, GIFs, glitch ponctuels = <strong>signaux de présence humaine</strong>.
+        Ils ne décorent pas, ils <strong>commentent</strong>. La règle : un sticker = une voix,
+        et cette voix dit ce que le texte principal n'a pas le droit de dire (ironie, urgence, aveu).
+        Sans cette double-couche, le maximalisme retombe en kitsch corporate.
+      </p>
+    </section>
+
+    <!-- ============ ATMOSPHÈRE ============ -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual" aria-hidden="true"></div>
+      <div class="atmosphere-text">
+        <h3>Quand l'utiliser, quand l'éviter.</h3>
+
+        <div class="usage-row">
+          <span class="pill use">Utiliser</span>
+          <p>
+            Creator economy, drops culture, plateformes musique indie, marques mode jeunes,
+            zines digitaux, internet humour culture (MSCHF, Bottega web, Glossier early).
+            Toute marque qui parle <strong>à</strong> Gen Z, pas <strong>pour</strong>.
+          </p>
+        </div>
+
+        <div class="usage-row">
+          <span class="pill avoid">Éviter</span>
+          <p>
+            B2B finance, healthtech, services aux personnes âgées, institutions publiques,
+            édition juridique. Tout contexte où le maximalisme lit comme du <strong>bruit</strong>
+            et pas comme une voix.
+          </p>
+        </div>
+
+        <div class="usage-row">
+          <span class="pill" style="background: var(--electric); color: var(--paper); border-color: var(--ink);">Risque</span>
+          <p>
+            Saturation. Si chaque élément crie, plus aucun ne s'entend. Règle de survie :
+            au moins <strong>30 % de respiration</strong> (zones calmes) entre les pics.
+            Le chaos a besoin de silence pour exister.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER META ============ -->
+    <footer class="footer-meta">
+      <span>BIG · Style Library · 32/34</span>
+      <span>Bricolage Grotesque · DM Serif Display · Space Mono · Caveat</span>
+      <span>Réf : MSCHF · Bottega Veneta · Glossier (early) · indie music sites</span>
+    </footer>
+
+  </main>
+</body>
+</html>

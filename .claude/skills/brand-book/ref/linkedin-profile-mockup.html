@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{BRAND_NAME}} — LinkedIn profile mockup</title>
+    <meta name="viewport" content="width=1000, initial-scale=1">
+
+    <!-- Fonts marque (à substituer par la marque) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="{{BRAND_PRIMARY_FONT_URL}}" rel="stylesheet">
+
+    <!-- Fonts LinkedIn (Source Sans 3 = équivalent libre du Source Sans utilisé par LinkedIn) -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================================
+           VARIABLES MARQUE — substituées par Mustache à la génération.
+           Le template les expose via :root pour que les blocs WORDMARK et AVATAR
+           injectés puissent réutiliser les mêmes valeurs sans dupliquer.
+           ========================================================================= */
+        :root {
+            --brand-display: {{BRAND_DISPLAY}};
+            --brand-body: {{BRAND_BODY}};
+            --brand-accent: {{BRAND_ACCENT_COLOR}};
+            --brand-dark-bg: {{BRAND_DARK_BG}};
+
+            /* Couleurs LinkedIn (constantes, ne pas surcharger par la marque) */
+            --li-bg: #F4F2EE;
+            --li-card: #FFFFFF;
+            --li-blue: #0A66C2;
+            --li-text-primary: #000000E6;
+            --li-text-secondary: #00000099;
+            --li-text-tertiary: #00000073;
+            --li-border: #00000014;
+            --li-nav-bg: #FFFFFF;
+            --li-search-bg: #EDF3F8;
+        }
+
+        /* =========================================================================
+           Reset + base
+           ========================================================================= */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: transparent; /* la card flotte directement sur le fond beige de la cellule diptyque brand book */
+            color: var(--li-text-primary);
+            min-width: 1000px;
+        }
+
+        /* =========================================================================
+           Barre de navigation LinkedIn (top bar)
+           ========================================================================= */
+        .li-topnav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 52px;
+            background: var(--li-nav-bg);
+            border-bottom: 1px solid var(--li-border);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+        .li-topnav-inner {
+            width: 100%;
+            max-width: 1128px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 24px;
+        }
+        .li-logo {
+            width: 34px;
+            height: 34px;
+            background: var(--li-blue);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 900;
+            font-size: 16px;
+            font-family: 'Source Sans 3', sans-serif;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+        .li-search {
+            flex: 0 0 280px;
+            height: 34px;
+            background: var(--li-search-bg);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+            color: var(--li-text-secondary);
+            font-size: 14px;
+        }
+        .li-search-icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .li-nav-items {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .li-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            min-width: 72px;
+            color: var(--li-text-tertiary);
+            cursor: default;
+        }
+        .li-nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .li-nav-item .li-nav-label {
+            font-size: 12px;
+            line-height: 1.2;
+            margin-top: 2px;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+
+        /* =========================================================================
+           Conteneur profil — card unique (PAS de About card sous, format naturel
+           paysage de la card LinkedIn ~1000×563). Capture ciblée sur .li-profile-card
+           via locator → PNG paysage 1000×563. Cf. spec sanctuarisée 27 mai 2026.
+           Body transparent : la card flotte sur le fond beige de la cellule diptyque.
+           ========================================================================= */
+        .li-profile-card {
+            width: 100%;
+            max-width: 920px;
+            background: var(--li-card);
+            border: 1px solid var(--li-border);
+            border-radius: 8px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* =========================================================================
+           Cover bandeau 1584×396 — image marque + wordmark overlay
+           ========================================================================= */
+        .li-cover {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1584 / 396;
+            background-image: url('{{COVER_IMAGE_URL}}');
+            background-size: cover;
+            background-position: center;
+            background-color: var(--brand-dark-bg);
+        }
+        /* Slot pour le wordmark overlay (injecté par {{WORDMARK_OVERLAY_HTML}}) */
+        .li-cover-wordmark {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        /* =========================================================================
+           Header info (photo profil + nom + tagline + méta)
+           ========================================================================= */
+        .li-header {
+            position: relative;
+            padding: 0 24px 24px;
+        }
+        .li-avatar-wrap {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-top: -80px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            background: var(--li-card);
+            padding: 4px;
+            box-shadow: 0 0 0 1px var(--li-border);
+        }
+        .li-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--avatar-bg, var(--brand-dark, #142133));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .li-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 4px;
+        }
+        .li-name {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: clamp(28px, 2.2vw, 34px);
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--li-text-primary);
+            letter-spacing: -0.01em;
+        }
+        .li-name .li-name-accent {
+            color: var(--brand-accent);
+        }
+        .li-badge {
+            width: 22px;
+            height: 22px;
+            color: var(--li-blue);
+            flex-shrink: 0;
+        }
+
+        .li-tagline {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: clamp(16px, 1.1vw, 18px);
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--li-text-primary);
+            margin: 0 0 12px;
+        }
+
+        .li-meta {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: clamp(13px, 0.95vw, 14px);
+            color: var(--li-text-secondary);
+            margin: 0 0 16px;
+            line-height: 1.5;
+        }
+        .li-meta .li-meta-sep {
+            margin: 0 6px;
+            color: var(--li-text-tertiary);
+        }
+        .li-meta .li-meta-followers {
+            color: var(--li-blue);
+            font-weight: 600;
+        }
+
+        /* Boutons d'action LinkedIn (Follow / Visit website / More) */
+        .li-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .li-btn {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 24px;
+            cursor: default;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .li-btn-primary {
+            background: var(--li-blue);
+            color: #fff;
+            border: 1px solid var(--li-blue);
+        }
+        .li-btn-secondary {
+            background: transparent;
+            color: var(--li-blue);
+            border: 1px solid var(--li-blue);
+        }
+        .li-btn-tertiary {
+            background: transparent;
+            color: var(--li-text-secondary);
+            border: 1px solid var(--li-text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====================================================================
+         PROFIL ENTREPRISE — card unique (pas de About card sous, format naturel
+         paysage de la card LinkedIn). La capture cible juste cette card via
+         locator → PNG paysage ~1000×563.
+         ==================================================================== -->
+    <article class="li-profile-card">
+
+        <!-- COVER bandeau image marque + wordmark overlay -->
+        <div class="li-cover">
+            <div class="li-cover-wordmark">
+                {{WORDMARK_OVERLAY_HTML}}
+            </div>
+        </div>
+
+        <!-- HEADER : avatar + nom + tagline + méta + actions -->
+        <header class="li-header">
+            <div class="li-avatar-wrap">
+                <div class="li-avatar">
+                    {{PROFILE_AVATAR_HTML}}
+                </div>
+            </div>
+
+            <div class="li-name-row">
+                <h1 class="li-name">{{BRAND_NAME}}</h1>
+                <!-- Badge "Verified" LinkedIn (bouclier avec coche) -->
+                <svg class="li-badge" viewBox="0 0 24 24" fill="currentColor" aria-label="Verified">
+                    <path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"/>
+                    <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <p class="li-tagline">{{TAGLINE}}</p>
+
+            <p class="li-meta">
+                <span>{{META_SECTOR}}</span>
+                <span class="li-meta-sep">·</span>
+                <span>{{META_CITY}}</span>
+                <span class="li-meta-sep">·</span>
+                <span class="li-meta-followers">{{META_FOLLOWERS}}</span>
+                <span class="li-meta-sep">·</span>
+                <span>{{META_EMPLOYEES}}</span>
+            </p>
+
+            <div class="li-actions">
+                <button class="li-btn li-btn-primary">+ Follow</button>
+                <button class="li-btn li-btn-secondary">Visit website</button>
+                <button class="li-btn li-btn-tertiary">More</button>
+            </div>
+        </header>
+
+    </article>
+
+</body>
+</html>

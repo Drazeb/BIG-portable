@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 18. Warmth Minimalism / Quiet Luxury Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette — chaude PRÉCISE (Mocha Mousse Pantone 2025 + miel + crème ivoire) */
+      --color-cream: #F4ECE0;          /* crème ivoire — fond principal */
+      --color-cream-deep: #EADFCE;     /* crème renforcé pour surfaces */
+      --color-mocha: #A47864;          /* Pantone Mocha Mousse 17-1230 (Couleur 2025) */
+      --color-honey: #C89263;          /* miel cuit, accent chaud */
+      --color-terracotta: #B86A4A;     /* terracotta douce, ponctuation */
+      --color-cocoa: #3E2C20;          /* brun profond, jamais #000 — texte */
+      --color-cocoa-soft: #6B5444;     /* brun adouci, texte secondaire */
+
+      /* Typo — serif EXPRESSIF + humanist sans chaud (jamais Inter par défaut) */
+      --font-display: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+      --font-body: "DM Sans", "SF Pro Text", -apple-system, sans-serif;
+    }
+
+    /* RESET sobre */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 17px; }
+    body {
+      font-family: var(--font-body);
+      font-weight: 400;
+      background: var(--color-cream);
+      color: var(--color-cocoa);
+      line-height: 1.6;
+      letter-spacing: 0.005em;
+      /* Lumière naturelle latérale matin (pas studio perfect) + grain analogique léger */
+      background-image:
+        radial-gradient(ellipse 70% 55% at 8% 5%, rgba(255, 245, 225, 0.85), transparent 55%),
+        radial-gradient(ellipse 80% 60% at 100% 95%, rgba(164, 120, 100, 0.10), transparent 60%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.24  0 0 0 0 0.17  0 0 0 0 0.12  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+      background-size: auto, auto, 240px 240px;
+      background-attachment: fixed, fixed, scroll;
+    }
+
+    /* Conteneur — paddings massifs, ancrage gauche (pas multi-cols denses) */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 112px 72px 120px;
+      position: relative;
+    }
+
+    /* HERO — composition ancrée gauche, espace blanc actif */
+    .hero {
+      padding: 64px 0 96px;
+      max-width: 78%;
+    }
+    .eyebrow {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-mocha);
+      margin-bottom: 56px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: var(--color-mocha);
+      opacity: 0.7;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(3.6rem, 8vw, 6.8rem);
+      line-height: 0.96;
+      letter-spacing: -0.018em;
+      color: var(--color-cocoa);
+      margin-bottom: 44px;
+    }
+    .hero h1 .roman {
+      font-style: normal;
+      font-weight: 400;
+    }
+    .hero h1 em {
+      color: var(--color-mocha);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .hero .lede {
+      font-family: var(--font-body);
+      font-size: 1.18rem;
+      font-weight: 300;
+      max-width: 52ch;
+      color: var(--color-cocoa-soft);
+      line-height: 1.55;
+      margin-bottom: 56px;
+    }
+    .hero .brand {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      color: var(--color-cocoa);
+      text-transform: uppercase;
+    }
+    .hero .brand .sep {
+      margin: 0 14px;
+      color: var(--color-mocha);
+      font-weight: 300;
+    }
+
+    /* SECTIONS communes — respiration extrême */
+    section.specimen {
+      padding: 96px 0;
+      border-top: 1px solid rgba(107, 84, 68, 0.18);
+    }
+    .section-label {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.20em;
+      color: var(--color-mocha);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(2.0rem, 3.6vw, 2.9rem);
+      line-height: 1.08;
+      letter-spacing: -0.012em;
+      color: var(--color-cocoa);
+      max-width: 26ch;
+      margin-bottom: 36px;
+    }
+    .section-prose {
+      font-family: var(--font-body);
+      font-size: 1.06rem;
+      font-weight: 300;
+      max-width: 58ch;
+      color: var(--color-cocoa-soft);
+      line-height: 1.65;
+    }
+    .section-prose p + p { margin-top: 18px; }
+
+    /* SIGNATURE 1 — la "photographie naturaliste" composée en CSS pur */
+    .signature-photo {
+      display: grid;
+      grid-template-columns: 1fr 0.95fr;
+      gap: 88px;
+      align-items: end;
+    }
+    .photo-frame {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      /* Lumière de fenêtre matin sur surface argile / lin — pas studio AI */
+      background:
+        radial-gradient(ellipse 65% 75% at 22% 18%, rgba(255, 240, 215, 0.65), transparent 58%),
+        radial-gradient(ellipse 100% 70% at 95% 95%, rgba(62, 44, 32, 0.45), transparent 60%),
+        linear-gradient(150deg, #C89263 0%, #A47864 50%, #6B5444 100%);
+      box-shadow:
+        24px 28px 60px -20px rgba(62, 44, 32, 0.25),
+        2px 4px 0 rgba(62, 44, 32, 0.08);
+      overflow: hidden;
+    }
+    /* Grain analogique léger (pas dominant) */
+    .photo-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' seed='14'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.30 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+      mix-blend-mode: overlay;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    /* Sujet : flacon en argile + ombre portée naturelle */
+    .photo-frame::before {
+      content: "";
+      position: absolute;
+      left: 30%;
+      bottom: 18%;
+      width: 40%;
+      height: 52%;
+      background:
+        radial-gradient(ellipse at 30% 25%, rgba(255, 230, 200, 0.55), transparent 50%),
+        linear-gradient(165deg, #D9A580 0%, #A47864 55%, #4A3525 100%);
+      border-radius: 42% 58% 35% 65% / 18% 22% 78% 82%;
+      box-shadow:
+        inset -10px -16px 32px rgba(62, 44, 32, 0.35),
+        inset 6px 8px 18px rgba(255, 230, 200, 0.20);
+    }
+    .photo-caption {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(107, 84, 68, 0.30);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--color-cocoa-soft);
+      letter-spacing: 0.05em;
+      max-width: 32ch;
+      line-height: 1.5;
+    }
+    .photo-caption strong {
+      font-weight: 500;
+      color: var(--color-cocoa);
+    }
+    .signature-photo .text-col {
+      padding-bottom: 18px;
+    }
+
+    /* SIGNATURE 2 — typographie serif expressive démontrée */
+    .signature-typo {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 88px;
+      align-items: start;
+    }
+    .typo-demo {
+      padding: 56px 56px 48px;
+      background: var(--color-cream-deep);
+      position: relative;
+    }
+    .typo-demo .specimen-letter {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 13rem;
+      line-height: 0.82;
+      color: var(--color-mocha);
+      letter-spacing: -0.05em;
+      margin-bottom: 18px;
+    }
+    .typo-demo .specimen-name {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      color: var(--color-cocoa-soft);
+      text-transform: uppercase;
+      padding-top: 18px;
+      border-top: 1px solid rgba(107, 84, 68, 0.30);
+      margin-bottom: 32px;
+    }
+    .typo-demo .specimen-line {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.55rem;
+      color: var(--color-cocoa);
+      line-height: 1.32;
+      letter-spacing: -0.005em;
+      margin-bottom: 12px;
+    }
+    .typo-demo .specimen-attr {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--color-cocoa-soft);
+      letter-spacing: 0.06em;
+      margin-top: 8px;
+    }
+
+    /* SIGNATURE 3 — palette chaude PRÉCISE (pas earth tones génériques) */
+    .signature-palette {
+      display: grid;
+      grid-template-columns: 0.9fr 1.3fr;
+      gap: 88px;
+      align-items: start;
+    }
+    .palette-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .palette-row {
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      align-items: center;
+      gap: 28px;
+      padding: 22px 0;
+      border-top: 1px solid rgba(107, 84, 68, 0.20);
+    }
+    .palette-row:last-child { border-bottom: 1px solid rgba(107, 84, 68, 0.20); }
+    .swatch {
+      width: 88px;
+      height: 56px;
+      box-shadow: inset 0 0 0 1px rgba(62, 44, 32, 0.12);
+    }
+    .swatch.mocha       { background: var(--color-mocha); }
+    .swatch.honey       { background: var(--color-honey); }
+    .swatch.terracotta  { background: var(--color-terracotta); }
+    .swatch.cocoa       { background: var(--color-cocoa); }
+    .swatch.cream-deep  { background: var(--color-cream-deep); }
+    .swatch.cream       { background: var(--color-cream); box-shadow: inset 0 0 0 1px rgba(62, 44, 32, 0.18); }
+    .palette-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .palette-meta .name {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.32rem;
+      color: var(--color-cocoa);
+      line-height: 1.1;
+    }
+    .palette-meta .origin {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--color-cocoa-soft);
+      letter-spacing: 0.04em;
+    }
+    .palette-row .hex {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--color-cocoa-soft);
+      letter-spacing: 0.10em;
+    }
+
+    /* ATMOSPHÈRE — surface tactile + usage */
+    .atmosphere {
+      padding: 112px 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 0.95fr;
+      gap: 88px;
+      align-items: center;
+      border-top: 1px solid rgba(107, 84, 68, 0.18);
+    }
+    .atmosphere-visual {
+      position: relative;
+      aspect-ratio: 5 / 4;
+      /* Tissu lin sous lumière de fenêtre + objet posé */
+      background:
+        radial-gradient(ellipse 65% 50% at 18% 12%, rgba(255, 245, 225, 0.65), transparent 55%),
+        radial-gradient(ellipse 90% 70% at 95% 100%, rgba(62, 44, 32, 0.40), transparent 60%),
+        linear-gradient(160deg, #E8D9C0 0%, #C89263 60%, #6B5444 100%);
+      box-shadow: 24px 30px 60px -20px rgba(62, 44, 32, 0.30);
+      overflow: hidden;
+    }
+    .atmosphere-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='a'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' seed='11'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.16  0 0 0 0.30 0'/></filter><rect width='100%' height='100%' filter='url(%23a)'/></svg>");
+      mix-blend-mode: multiply;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    /* Petit cercle "objet posé" — bougie ou bol */
+    .atmosphere-visual .object {
+      position: absolute;
+      bottom: 18%;
+      left: 32%;
+      width: 36%;
+      aspect-ratio: 1 / 1;
+      background:
+        radial-gradient(ellipse at 32% 28%, rgba(255, 235, 210, 0.65), transparent 50%),
+        radial-gradient(circle at 50% 50%, #B86A4A 0%, #8C4D33 60%, #3E2C20 100%);
+      border-radius: 50%;
+      box-shadow:
+        inset -14px -18px 36px rgba(62, 44, 32, 0.50),
+        inset 8px 10px 20px rgba(255, 230, 200, 0.18);
+    }
+
+    .atmosphere-text .section-title {
+      max-width: 22ch;
+    }
+    .atmosphere-text .usage-list {
+      list-style: none;
+      margin-top: 28px;
+    }
+    .atmosphere-text .usage-list li {
+      font-family: var(--font-body);
+      font-size: 1.0rem;
+      font-weight: 400;
+      color: var(--color-cocoa-soft);
+      padding: 14px 0 14px 32px;
+      border-top: 1px solid rgba(107, 84, 68, 0.18);
+      position: relative;
+      line-height: 1.45;
+    }
+    .atmosphere-text .usage-list li:last-child { border-bottom: 1px solid rgba(107, 84, 68, 0.18); }
+    .atmosphere-text .usage-list li::before {
+      position: absolute;
+      left: 0;
+      top: 14px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .atmosphere-text .usage-list li.yes::before { content: "Pour"; color: var(--color-mocha); }
+    .atmosphere-text .usage-list li.no::before { content: "Sauf"; color: var(--color-terracotta); }
+
+    /* COLOPHON */
+    .colophon {
+      margin-top: 96px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(107, 84, 68, 0.30);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      color: var(--color-cocoa-soft);
+      text-transform: uppercase;
+    }
+    .colophon .ref { color: var(--color-mocha); font-weight: 500; }
+
+    /* RESPONSIVE — repli mobile sobre */
+    @media (max-width: 820px) {
+      .page { padding: 64px 32px 88px; }
+      .hero { max-width: 100%; padding: 32px 0 64px; }
+      .signature-photo, .signature-typo, .signature-palette, .atmosphere {
+        grid-template-columns: 1fr;
+        gap: 56px;
+      }
+      section.specimen { padding: 64px 0; }
+      .typo-demo { padding: 36px 32px 32px; }
+      .typo-demo .specimen-letter { font-size: 9rem; }
+      .palette-row { grid-template-columns: 64px 1fr auto; gap: 18px; }
+      .swatch { width: 64px; height: 44px; }
+      .atmosphere { padding: 80px 0 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- HERO -->
+    <header class="hero">
+      <span class="eyebrow">Style № 18 · Bibliothèque BIG</span>
+      <h1>Le minimalisme<br><em>réchauffé</em> à la <span class="roman">main.</span></h1>
+      <p class="lede">Mocha Mousse, miel cuit, crème ivoire. Cormorant en italique posé dans des paddings qui respirent. Photographie de fenêtre, pas studio. Le minimalisme arrête d'avoir froid.</p>
+      <p class="brand">Helio Maison<span class="sep">·</span>Parfumerie d'auteur, distillation lente</p>
+    </header>
+
+    <!-- SIGNATURE 1 — Photo naturaliste + lumière de fenêtre -->
+    <section class="specimen signature-photo">
+      <div>
+        <figure class="photo-frame" aria-hidden="true"></figure>
+        <figcaption class="photo-caption">Flacon d'argile non émaillée, <strong>lumière nord-est, 9h12</strong>. Aucun gabarit studio, aucune retouche peau lisse. Le grain reste lisible.</figcaption>
+      </div>
+      <div class="text-col">
+        <p class="section-label">Signature 01 · Photographie naturaliste</p>
+        <h2 class="section-title">La lumière de fenêtre remplace le studio AI parfait.</h2>
+        <div class="section-prose">
+          <p>Quiet Luxury Digital refuse l'imagerie générique "diverse lifestyle stock". Elle photographie de vrais matériaux — lin, argile, marbre rose, bois clair — sous une lumière naturelle latérale du matin ou de fin d'après-midi.</p>
+          <p>Ce qu'Aesop fait depuis quinze ans, ce que The Row impose en e-commerce, ce que Le Labo signe en parfumerie : la photo est l'objet, pas une mise en scène. Le grain analogique reste perceptible, jamais lissé.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 2 — Serif EXPRESSIF posé dans l'espace -->
+    <section class="specimen signature-typo">
+      <div class="typo-demo">
+        <div class="specimen-letter">Aa</div>
+        <div class="specimen-name">Cormorant Garamond italic 300 · 2015 → ce matin</div>
+        <p class="specimen-line">«&nbsp;Le luxe contemporain ne s'annonce plus. Il se reconnaît à la lenteur qu'il impose.&nbsp;»</p>
+        <p class="specimen-attr">— Studio Apartamento, manifeste éditorial 2024</p>
+      </div>
+      <div>
+        <p class="section-label">Signature 02 · Serif expressif respiré</p>
+        <h2 class="section-title">Une serif vivante, jamais Inter par défaut.</h2>
+        <div class="section-prose">
+          <p>Cormorant, Söhne Serif, GT Sectra, Fraunces — ce sont des serif aux contre-formes ouvertes, aux italiques inclinées vives, qui portent une voix humaine sans crier. Le poids reste léger (300-400), l'interlignage reste large.</p>
+          <p>L'erreur de Quiet Luxury Digital : tomber dans Times New Roman ou Inter en body. Le premier est mort, le second sonne SaaS. Ce style demande un sans humanist chaud (DM Sans, Söhne, Inter Tight si vraiment) en complément, jamais en solo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 3 — Palette chaude PRÉCISE -->
+    <section class="specimen signature-palette">
+      <div>
+        <p class="section-label">Signature 03 · Palette chaude précise</p>
+        <h2 class="section-title">Mocha Mousse, miel cuit, terracotta. Pas "earth tones génériques".</h2>
+        <div class="section-prose">
+          <p>Pantone a élu Mocha Mousse Couleur de l'Année 2025 ; ce n'est pas une mode passagère mais un signal lourd : l'industrie du luxe digital s'écarte du blanc froid SaaS et du violet AI. La palette doit être chaude, mais précise — chaque ton a un nom et une origine.</p>
+          <p>Aucun <code>#6366f1</code>. Aucun gradient mesh aurora. Le contraste vient de la profondeur du cocoa contre la chaleur du miel, pas d'un blanc pur agressif.</p>
+        </div>
+      </div>
+      <div class="palette-stack">
+        <div class="palette-row">
+          <div class="swatch mocha" aria-hidden="true"></div>
+          <div class="palette-meta">
+            <span class="name">Mocha Mousse</span>
+            <span class="origin">Pantone 17-1230 · Couleur de l'Année 2025</span>
+          </div>
+          <span class="hex">#A47864</span>
+        </div>
+        <div class="palette-row">
+          <div class="swatch honey" aria-hidden="true"></div>
+          <div class="palette-meta">
+            <span class="name">Miel cuit</span>
+            <span class="origin">Accent chaud · ponctuation cta &amp; titres</span>
+          </div>
+          <span class="hex">#C89263</span>
+        </div>
+        <div class="palette-row">
+          <div class="swatch terracotta" aria-hidden="true"></div>
+          <div class="palette-meta">
+            <span class="name">Terracotta douce</span>
+            <span class="origin">Pigment céramique cuite, signal "sauf"</span>
+          </div>
+          <span class="hex">#B86A4A</span>
+        </div>
+        <div class="palette-row">
+          <div class="swatch cocoa" aria-hidden="true"></div>
+          <div class="palette-meta">
+            <span class="name">Cocoa profond</span>
+            <span class="origin">Texte principal — jamais #000, le noir blesse</span>
+          </div>
+          <span class="hex">#3E2C20</span>
+        </div>
+        <div class="palette-row">
+          <div class="swatch cream-deep" aria-hidden="true"></div>
+          <div class="palette-meta">
+            <span class="name">Crème renforcé</span>
+            <span class="origin">Surfaces secondaires, modules posés</span>
+          </div>
+          <span class="hex">#EADFCE</span>
+        </div>
+        <div class="palette-row">
+          <div class="swatch cream" aria-hidden="true"></div>
+          <div class="palette-meta">
+            <span class="name">Crème ivoire</span>
+            <span class="origin">Fond principal · jamais #FFFFFF</span>
+          </div>
+          <span class="hex">#F4ECE0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual" aria-hidden="true">
+        <div class="object"></div>
+      </div>
+      <div class="atmosphere-text">
+        <p class="section-label">Atmosphère · Quand ce style fonctionne</p>
+        <h2 class="section-title">Là où la lenteur, la matière et la confiance valent plus que la pédagogie produit.</h2>
+        <ul class="usage-list">
+          <li class="yes">Maisons de parfumerie, cosmétique avancée, spa, hôtellerie indépendante</li>
+          <li class="yes">Marques alimentaires premium — chocolat d'origine, vin nature, huile de presse</li>
+          <li class="yes">Wellness, méditation, retraites — toute marque qui vend du temps long</li>
+          <li class="yes">Art de vivre, mobilier, céramique, parfumerie d'intérieur</li>
+          <li class="no">SaaS B2B analytique — la chaleur sonne déguisement</li>
+          <li class="no">Fintech, infra cloud, cybersécurité — registre incompatible</li>
+          <li class="no">E-commerce de masse rapide — la lenteur visuelle freine la conversion</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COLOPHON -->
+    <footer class="colophon">
+      <span>Bibliothèque BIG · Style № 18</span>
+      <span class="ref">Warmth Minimalism / Quiet Luxury Digital · Verdict ACTUEL</span>
+      <span>Source · Pantone 2025 / Aesop / The Row</span>
+    </footer>
+
+  </main>
+</body>
+</html>

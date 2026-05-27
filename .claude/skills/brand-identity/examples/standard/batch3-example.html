@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltaPilot — Narration & Espace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* === PALETTE — MYCELIUM === */
+            --color-primary: #3D6B4F;
+            --color-primary-light: #86EFAC;
+            --color-primary-dark: #14532D;
+            --color-accent: #C2410C;
+            --color-accent-light: #FDBA74;
+            --color-accent-dark: #7C2D12;
+            --color-surface: #F0FDF4;
+            --color-surface-alt: #DCFCE7;
+            --color-depth: #1A2E1F;
+            --color-neutral-900: #1A2E1F;
+            --color-neutral-700: #374B3D;
+            --color-neutral-500: #6B8070;
+            --color-neutral-300: #B5C5B9;
+            --color-neutral-100: #EFF5F1;
+            --color-text-primary: #1A2E1F;
+            --color-text-secondary: #6B8070;
+            --color-text-on-dark: #EFF5F1;
+            --color-text-on-primary: #F0FDF4;
+            --color-success: #16A34A;
+            --color-warning: #EA580C;
+            --color-error: #DC2626;
+            --color-info: #2563EB;
+            --color-dataviz-1: #3D6B4F;
+            --color-dataviz-2: #C2410C;
+            --color-dataviz-3: #86EFAC;
+            --color-dataviz-4: #A16207;
+
+            /* === TYPOGRAPHIE === */
+            --font-display: 'DM Serif Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+            /* === TYPE SCALE (Ratio 1.250 — Major Third) === */
+            --type-scale-ratio: 1.250;
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.25rem;
+            --text-xl: 1.563rem;
+            --text-2xl: 1.953rem;
+            --text-3xl: 2.441rem;
+            --text-4xl: 3.052rem;
+
+            /* === CODE CIVIL ATOMIQUE === */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            --shadow-subtle: 0 1px 2px rgba(26,46,31,.05), 0 6px 24px rgba(26,46,31,.04);
+            --shadow-medium: 0 1px 3px rgba(26,46,31,.06), 0 4px 12px rgba(26,46,31,.05), 0 12px 36px rgba(26,46,31,.03);
+            --shadow-elevated: 0 2px 4px rgba(26,46,31,.05), 0 8px 20px rgba(26,46,31,.06), 0 20px 48px rgba(26,46,31,.03);
+
+            --space-unit: 8px;
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 40px;
+            --space-xl: 64px;
+            --space-2xl: 104px;
+            --space-section: 96px;
+
+            --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
+            --ease-out-back: cubic-bezier(.34, 1.56, .64, 1);
+            --transition-fast: 120ms var(--ease-out-expo);
+            --transition-base: 250ms var(--ease-out-expo);
+            --transition-slow: 450ms cubic-bezier(.22, 1, .36, 1);
+            --transition-organic: 800ms var(--ease-out-back);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-text-primary);
+            background: var(--color-surface);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* === GLOBAL UTILITIES === */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-xl); }
+        .container--ch08 { padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); }
+        .container--ch09 { padding-top: var(--space-xl); padding-bottom: var(--space-xl); }
+        .container--ch10 { padding-top: var(--space-lg); padding-bottom: var(--space-lg); }
+
+        .chapter-header {
+            padding: var(--space-section) 0 var(--space-xl);
+            text-align: center;
+        }
+        .chapter-header__overline {
+            font-family: var(--font-body);
+            font-size: var(--text-xs); font-weight: 500;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: var(--space-sm);
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .chapter-header__overline::before,
+        .chapter-header__overline::after {
+            content: ''; width: 32px; height: 1.5px; background: var(--color-accent); opacity: 0.3;
+        }
+        .chapter-header__title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, var(--text-4xl));
+            font-weight: 400; line-height: 1.15;
+            color: var(--color-primary-dark);
+            margin-bottom: var(--space-sm);
+        }
+        .chapter-header__lead {
+            font-family: var(--font-body);
+            font-size: var(--text-lg); line-height: 1.6;
+            color: var(--color-text-secondary);
+            max-width: 52ch; margin: 0 auto;
+        }
+
+        .section-block {
+            padding: var(--space-xl) 0;
+            position: relative;
+        }
+        .section-block + .section-block::before {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 60%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-neutral-300), transparent);
+        }
+        .section-label {
+            font-family: var(--font-body);
+            font-size: var(--text-xs); font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: var(--space-md);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-label::before {
+            content: ''; width: 24px; height: 2px;
+            background: var(--color-primary); border-radius: 1px;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl); font-weight: 400;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-sm); line-height: 1.2;
+        }
+        .section-desc {
+            font-family: var(--font-body);
+            font-size: var(--text-base); line-height: 1.65;
+            color: var(--color-text-secondary);
+            max-width: 56ch; margin-bottom: var(--space-lg);
+        }
+
+        .chapter-divider {
+            height: 2px; border: none; margin: 0;
+            background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-accent-light), var(--color-primary), transparent);
+            opacity: 0.25;
+        }
+
+        /* =============================================
+           CHAPTER 08 — DIRECTION PHOTOGRAPHIQUE
+           ============================================= */
+
+        /* 08.1 — Moodboard photographique */
+        .moodboard-grid {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            grid-template-rows: 280px 280px;
+            gap: var(--space-md);
+        }
+        .mood-card {
+            border-radius: var(--radius-lg);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+            justify-content: flex-end; padding: var(--space-lg);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+        .mood-card:hover { transform: scale(1.01); box-shadow: var(--shadow-subtle); }
+        .mood-card__label {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+            color: rgba(255,255,255,0.7); margin-bottom: 6px;
+        }
+        .mood-card__title {
+            font-family: var(--font-display); font-size: var(--text-xl);
+            font-weight: 400; color: #fff; line-height: 1.2; margin-bottom: 4px;
+        }
+        .mood-card__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: rgba(255,255,255,0.55); line-height: 1.5; max-width: 36ch;
+        }
+
+        /* Simulated photo ambiances via CSS */
+        .mood-card--canopy {
+            grid-row: 1 / 3;
+            background:
+                radial-gradient(ellipse 60% 40% at 30% 20%, rgba(134,239,172,0.25) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 50% at 70% 70%, rgba(61,107,79,0.4) 0%, transparent 50%),
+                linear-gradient(170deg, #1A3A24 0%, #2D5640 40%, #3D6B4F 70%, #14532D 100%);
+        }
+        .mood-card--canopy::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                repeating-linear-gradient(105deg, transparent 0px, transparent 18px, rgba(134,239,172,0.04) 18px, rgba(134,239,172,0.04) 19px),
+                repeating-linear-gradient(75deg, transparent 0px, transparent 24px, rgba(240,253,244,0.02) 24px, rgba(240,253,244,0.02) 25px);
+            opacity: 0.8;
+        }
+        .mood-card--macro {
+            background:
+                radial-gradient(circle at 40% 50%, rgba(134,239,172,0.3) 0%, transparent 40%),
+                radial-gradient(circle at 65% 35%, rgba(61,107,79,0.5) 0%, transparent 30%),
+                radial-gradient(circle at 50% 80%, rgba(20,83,45,0.6) 0%, transparent 40%),
+                linear-gradient(135deg, #14532D 0%, #1A3A24 100%);
+        }
+        .mood-card--macro::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle 2px at 30% 25%, rgba(134,239,172,0.3) 0%, transparent 100%),
+                radial-gradient(circle 3px at 55% 40%, rgba(134,239,172,0.2) 0%, transparent 100%),
+                radial-gradient(circle 1.5px at 70% 60%, rgba(253,186,116,0.15) 0%, transparent 100%),
+                radial-gradient(circle 2px at 45% 70%, rgba(134,239,172,0.25) 0%, transparent 100%),
+                radial-gradient(circle 1px at 25% 55%, rgba(240,253,244,0.2) 0%, transparent 100%);
+        }
+        .mood-card--roots {
+            background:
+                linear-gradient(160deg, rgba(26,46,31,0.9) 0%, rgba(55,75,61,0.8) 50%, rgba(61,107,79,0.6) 100%),
+                repeating-conic-gradient(from 0deg at 50% 50%, rgba(134,239,172,0.03) 0deg 2deg, transparent 2deg 10deg);
+        }
+        .mood-card--roots::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(35deg, transparent 45%, rgba(194,65,12,0.06) 48%, transparent 52%),
+                linear-gradient(155deg, transparent 40%, rgba(134,239,172,0.05) 44%, transparent 48%),
+                linear-gradient(85deg, transparent 55%, rgba(194,65,12,0.04) 57%, transparent 60%);
+        }
+        .mood-card--morning {
+            background:
+                radial-gradient(ellipse 70% 50% at 80% 30%, rgba(253,186,116,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 60% at 20% 70%, rgba(61,107,79,0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #374B3D 0%, #2D5640 50%, #1A3A24 100%);
+        }
+
+        /* 08.2 — Traitement chromatique */
+        .grading-demo {
+            display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);
+        }
+        .grading-card {
+            border-radius: var(--radius-lg); overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+        }
+        .grading-card__visual {
+            height: 220px; position: relative; overflow: hidden;
+        }
+        .grading-card__info {
+            padding: var(--space-md); background: #fff;
+        }
+        .grading-card__tag {
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 600;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            color: var(--color-accent); margin-bottom: 6px;
+        }
+        .grading-card__name {
+            font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400;
+            color: var(--color-text-primary); margin-bottom: 4px;
+        }
+        .grading-card__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: var(--color-text-secondary); line-height: 1.5;
+        }
+        .grading-before {
+            background:
+                linear-gradient(135deg, #6B7280 0%, #9CA3AF 40%, #D1D5DB 100%);
+        }
+        .grading-before::after {
+            content: 'Source'; position: absolute; top: var(--space-sm); left: var(--space-sm);
+            font-family: var(--font-body); font-size: 11px; font-weight: 600;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            background: rgba(0,0,0,0.35); color: #fff;
+            padding: 4px 12px; border-radius: var(--radius-full);
+        }
+        .grading-after {
+            background:
+                radial-gradient(ellipse 60% 50% at 40% 60%, rgba(61,107,79,0.35) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 40% at 70% 30%, rgba(253,186,116,0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #374B3D 0%, #3D6B4F 40%, #6B8070 100%);
+        }
+        .grading-after::after {
+            content: 'Filtre Mycelium'; position: absolute; top: var(--space-sm); left: var(--space-sm);
+            font-family: var(--font-body); font-size: 11px; font-weight: 600;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            background: var(--color-primary); color: var(--color-text-on-primary);
+            padding: 4px 12px; border-radius: var(--radius-full);
+        }
+        .grading-strip {
+            display: flex; height: 6px;
+        }
+        .grading-strip span { flex: 1; }
+
+        /* 08.3 — Scenographie produit */
+        .scenography-grid {
+            display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-md); align-items: start;
+        }
+        .device-frame {
+            background: #fff; border-radius: var(--radius-xl); padding: var(--space-md);
+            box-shadow: var(--shadow-elevated); position: relative; overflow: hidden;
+        }
+        .device-frame__screen {
+            border-radius: var(--radius-md); overflow: hidden; position: relative;
+        }
+        .device-topbar {
+            height: 28px; background: var(--color-depth);
+            display: flex; align-items: center; padding: 0 12px; gap: 6px;
+        }
+        .device-topbar__dot {
+            width: 8px; height: 8px; border-radius: 50%;
+        }
+        .device-topbar__dot--r { background: #EF4444; }
+        .device-topbar__dot--y { background: #F59E0B; }
+        .device-topbar__dot--g { background: #22C55E; }
+        .device-ui {
+            padding: var(--space-md); min-height: 260px;
+            background: var(--color-surface);
+            position: relative;
+        }
+        .device-ui__sidebar {
+            position: absolute; left: 0; top: 0; bottom: 0; width: 48px;
+            background: var(--color-primary-dark);
+            display: flex; flex-direction: column; align-items: center;
+            padding-top: var(--space-sm); gap: var(--space-xs);
+        }
+        .device-ui__sidebar-dot {
+            width: 24px; height: 24px; border-radius: var(--radius-sm);
+            background: rgba(134,239,172,0.1);
+        }
+        .device-ui__sidebar-dot--active {
+            background: rgba(134,239,172,0.2);
+            border: 1.5px solid rgba(134,239,172,0.3);
+        }
+        .device-ui__content {
+            margin-left: 60px;
+        }
+        .device-ui__row {
+            height: 10px; border-radius: 5px; margin-bottom: 8px;
+        }
+        .device-ui__row--title { width: 55%; background: var(--color-primary-dark); opacity: 0.15; height: 14px; margin-bottom: 12px; }
+        .device-ui__row--text { width: 80%; background: var(--color-neutral-300); opacity: 0.4; }
+        .device-ui__row--short { width: 45%; background: var(--color-neutral-300); opacity: 0.3; }
+        .device-ui__cards {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: var(--space-sm);
+        }
+        .device-ui__minicard {
+            height: 52px; border-radius: var(--radius-sm);
+            background: #fff; box-shadow: var(--shadow-subtle);
+            padding: 8px;
+        }
+        .device-ui__minicard-bar {
+            height: 4px; border-radius: 2px; margin-top: 6px;
+        }
+
+        .scene-cards {
+            display: flex; flex-direction: column; gap: var(--space-md);
+        }
+        .scene-card {
+            border-radius: var(--radius-lg); padding: var(--space-lg);
+            min-height: 180px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            transition: box-shadow var(--transition-base), background-color var(--transition-base);
+        }
+        .scene-card:hover { box-shadow: var(--shadow-medium); background-color: rgba(61,107,79,0.08); }
+        .scene-card--office {
+            background:
+                radial-gradient(ellipse 50% 60% at 70% 40%, rgba(134,239,172,0.15) 0%, transparent 50%),
+                linear-gradient(150deg, #374B3D 0%, #2D5640 50%, #3D6B4F 100%);
+        }
+        .scene-card--depot {
+            background:
+                radial-gradient(ellipse 60% 40% at 30% 70%, rgba(253,186,116,0.12) 0%, transparent 50%),
+                linear-gradient(135deg, #1A2E1F 0%, #374B3D 60%, #3D6B4F 100%);
+        }
+        .scene-card__title {
+            font-family: var(--font-display); font-size: var(--text-lg);
+            font-weight: 400; color: #fff; margin-bottom: 4px;
+        }
+        .scene-card__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: rgba(255,255,255,0.5); line-height: 1.5;
+        }
+
+        /* Tablet & Mobile mockups */
+        .devices-row {
+            display: flex; gap: var(--space-md); margin-top: var(--space-md); align-items: flex-end;
+        }
+        .device-tablet {
+            flex: 1; background: #fff; border-radius: var(--radius-lg);
+            padding: 10px; box-shadow: var(--shadow-medium);
+        }
+        .device-tablet__screen {
+            background: var(--color-surface); border-radius: var(--radius-sm);
+            height: 160px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; padding: var(--space-sm);
+        }
+        .device-mobile {
+            width: 100px; background: #fff; border-radius: var(--radius-lg);
+            padding: 6px; box-shadow: var(--shadow-medium);
+        }
+        .device-mobile__notch {
+            width: 40px; height: 4px; background: var(--color-neutral-100);
+            border-radius: 2px; margin: 0 auto 6px;
+        }
+        .device-mobile__screen {
+            background: var(--color-surface); border-radius: var(--radius-sm);
+            height: 180px; padding: 8px; overflow: hidden;
+        }
+        .device-mobile__row {
+            height: 6px; border-radius: 3px; margin-bottom: 5px;
+        }
+
+        /* 08.4 — Signature IA */
+        .prompt-block {
+            background: var(--color-depth); border-radius: var(--radius-xl);
+            padding: var(--space-xl); position: relative; overflow: hidden;
+        }
+        .prompt-block__glow {
+            position: absolute; top: -30%; right: -10%; width: 45%; height: 80%;
+            background: radial-gradient(ellipse, rgba(61,107,79,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .prompt-block__header {
+            display: flex; align-items: center; gap: var(--space-sm);
+            margin-bottom: var(--space-lg); position: relative; z-index: 1;
+        }
+        .prompt-block__icon {
+            width: 40px; height: 40px; border-radius: var(--radius-md);
+            background: rgba(134,239,172,0.1); border: 1.5px solid rgba(134,239,172,0.15);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .prompt-block__label {
+            font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+            color: var(--color-primary-light);
+        }
+        .prompt-block__sublabel {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: rgba(239,245,241,0.35);
+        }
+        .prompt-code {
+            background: rgba(134,239,172,0.04);
+            border: 1px solid rgba(134,239,172,0.08);
+            border-radius: var(--radius-md); padding: var(--space-md);
+            position: relative; z-index: 1; margin-bottom: var(--space-md);
+        }
+        .prompt-code__text {
+            font-family: var(--font-mono); font-size: var(--text-sm);
+            color: var(--color-text-on-dark); line-height: 1.75;
+            word-break: break-word;
+        }
+        .prompt-code__text .hl-green { color: var(--color-primary-light); }
+        .prompt-code__text .hl-orange { color: var(--color-accent-light); }
+        .prompt-code__text .hl-dim { color: rgba(239,245,241,0.35); }
+        .prompt-tags {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            position: relative; z-index: 1;
+        }
+        .prompt-tag {
+            font-family: var(--font-body); font-size: 11px; font-weight: 500;
+            padding: 5px 14px; border-radius: var(--radius-full);
+            background: rgba(134,239,172,0.06); color: rgba(239,245,241,0.5);
+            border: 1px solid rgba(134,239,172,0.08);
+        }
+        .prompt-tag--accent {
+            background: rgba(194,65,12,0.08); color: var(--color-accent-light);
+            border-color: rgba(194,65,12,0.12);
+        }
+
+        /* =============================================
+           CHAPTER 09 — COMPOSITION & RYTHME
+           ============================================= */
+
+        /* 09.1 — Architecture de grilles */
+        .grid-demo-wrapper {
+            background: #fff; border-radius: var(--radius-xl);
+            padding: var(--space-lg); box-shadow: var(--shadow-subtle);
+            position: relative; overflow: hidden;
+        }
+        .grid-overlay {
+            display: grid; grid-template-columns: repeat(12, 1fr);
+            gap: 0; height: 320px; position: relative;
+        }
+        .grid-col {
+            background: rgba(61,107,79,0.04);
+            border-left: 1px solid rgba(61,107,79,0.08);
+            border-right: 1px solid rgba(61,107,79,0.08);
+            position: relative;
+        }
+        .grid-col:first-child { border-left: 1px dashed rgba(194,65,12,0.15); }
+        .grid-col:last-child { border-right: 1px dashed rgba(194,65,12,0.15); }
+        .grid-content-block {
+            position: absolute; z-index: 2; border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-body); font-size: var(--text-xs); font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .grid-content-block--5col {
+            left: 0; top: 20px; width: calc(41.666% - 4px); height: 130px;
+            background: rgba(61,107,79,0.12); color: var(--color-primary);
+            border: 1.5px dashed var(--color-primary);
+        }
+        .grid-content-block--7col {
+            left: calc(41.666% + 20px); top: 20px; width: calc(58.333% - 24px); height: 130px;
+            background: rgba(194,65,12,0.06); color: var(--color-accent);
+            border: 1.5px dashed var(--color-accent);
+        }
+        .grid-content-block--full {
+            left: 0; top: 170px; width: 100%; height: 60px;
+            background: rgba(61,107,79,0.06); color: var(--color-primary);
+            border: 1.5px dashed rgba(61,107,79,0.2);
+        }
+        .grid-content-block--bento1 {
+            left: 0; top: 245px; width: calc(33.333% - 8px); height: 55px;
+            background: rgba(134,239,172,0.12); color: var(--color-primary);
+            border: 1.5px dashed rgba(134,239,172,0.3);
+        }
+        .grid-content-block--bento2 {
+            left: calc(33.333% + 8px); top: 245px; width: calc(33.333% - 16px); height: 55px;
+            background: rgba(134,239,172,0.12); color: var(--color-primary);
+            border: 1.5px dashed rgba(134,239,172,0.3);
+        }
+        .grid-content-block--bento3 {
+            left: calc(66.666% + 8px); top: 245px; width: calc(33.333% - 8px); height: 55px;
+            background: rgba(134,239,172,0.12); color: var(--color-primary);
+            border: 1.5px dashed rgba(134,239,172,0.3);
+        }
+        .grid-gutter-label {
+            position: absolute; top: -18px; font-family: var(--font-mono);
+            font-size: 10px; color: var(--color-text-secondary);
+            white-space: nowrap;
+        }
+        .grid-margin-label {
+            position: absolute; font-family: var(--font-mono);
+            font-size: 10px; color: var(--color-accent); white-space: nowrap;
+        }
+        .grid-specs-bar {
+            display: flex; gap: var(--space-lg); margin-top: var(--space-md);
+            padding-top: var(--space-sm);
+            border-top: 1px solid var(--color-neutral-100);
+        }
+        .grid-spec {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .grid-spec__dot {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .grid-spec__text {
+            font-family: var(--font-body); font-size: var(--text-xs);
+            color: var(--color-text-secondary); font-weight: 500;
+        }
+
+        /* 09.2 — Strategie de densite */
+        .density-comparison {
+            display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);
+        }
+        .density-card {
+            background: #fff; border-radius: var(--radius-lg);
+            overflow: hidden; box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(61,107,79,0.05);
+        }
+        .density-card__header {
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px solid var(--color-neutral-100);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .density-card__tag {
+            font-family: var(--font-body); font-size: 11px; font-weight: 600;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            padding: 3px 10px; border-radius: var(--radius-full);
+        }
+        .density-card__tag--airy {
+            background: rgba(134,239,172,0.1); color: var(--color-primary);
+        }
+        .density-card__tag--compact {
+            background: rgba(194,65,12,0.08); color: var(--color-accent);
+        }
+        .density-card__body {
+            padding: var(--space-md);
+        }
+        .density-card__body--airy {
+            padding: var(--space-xl) var(--space-lg);
+        }
+        .density-row {
+            display: flex; align-items: center; gap: var(--space-sm);
+            padding: var(--space-xs) 0;
+        }
+        .density-row--airy { padding: var(--space-sm) 0; }
+        .density-row__icon {
+            width: 32px; height: 32px; border-radius: var(--radius-sm);
+            background: var(--color-surface-alt); flex-shrink: 0;
+        }
+        .density-row__icon--lg {
+            width: 44px; height: 44px; border-radius: var(--radius-md);
+        }
+        .density-row__lines { flex: 1; }
+        .density-row__line {
+            height: 8px; border-radius: 4px; margin-bottom: 4px;
+        }
+        .density-row__line--title { width: 60%; background: var(--color-neutral-700); opacity: 0.12; height: 10px; }
+        .density-row__line--text { width: 90%; background: var(--color-neutral-300); opacity: 0.35; }
+        .density-row__line--short { width: 40%; background: var(--color-neutral-300); opacity: 0.25; }
+        .density-row__value {
+            font-family: var(--font-mono); font-size: var(--text-xs);
+            color: var(--color-primary); font-weight: 500; white-space: nowrap;
+        }
+
+        /* 09.3 — Patterns de mise en page */
+        .patterns-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md);
+        }
+        .pattern-card {
+            background: #fff; border-radius: var(--radius-lg);
+            overflow: hidden; box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(61,107,79,0.05);
+            transition: box-shadow var(--transition-base), border-color var(--transition-base);
+        }
+        .pattern-card:hover { box-shadow: var(--shadow-medium); border-color: rgba(61,107,79,0.15); }
+        .pattern-card__preview {
+            height: 200px; padding: var(--space-sm);
+            background: var(--color-neutral-100); position: relative;
+        }
+        .pattern-card__info {
+            padding: var(--space-md);
+        }
+        .pattern-card__name {
+            font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400;
+            color: var(--color-text-primary); margin-bottom: 4px;
+        }
+        .pattern-card__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: var(--color-text-secondary); line-height: 1.5;
+        }
+
+        /* Mini layout skeletons */
+        .mini-hero-split {
+            display: grid; grid-template-columns: 5fr 7fr; gap: 6px;
+            height: 100%; padding: 6px;
+        }
+        .mini-block {
+            border-radius: 6px;
+        }
+        .mini-block--text {
+            background: var(--color-surface); padding: 10px;
+            display: flex; flex-direction: column; justify-content: center; gap: 5px;
+        }
+        .mini-block--visual {
+            background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+            position: relative; overflow: hidden;
+        }
+        .mini-block--visual::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 60% 40%, rgba(134,239,172,0.15) 0%, transparent 50%);
+        }
+        .mini-line {
+            height: 5px; border-radius: 3px;
+        }
+        .mini-line--h1 { width: 70%; background: var(--color-primary-dark); opacity: 0.2; height: 8px; }
+        .mini-line--body { width: 90%; background: var(--color-neutral-300); opacity: 0.35; }
+        .mini-line--short { width: 50%; background: var(--color-neutral-300); opacity: 0.25; }
+        .mini-line--cta { width: 35%; background: var(--color-accent); opacity: 0.6; height: 7px; border-radius: 4px; }
+
+        .mini-bento {
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+            gap: 6px; height: 100%; padding: 6px;
+        }
+        .mini-bento-cell {
+            border-radius: 8px; background: var(--color-surface);
+            padding: 8px; display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        .mini-bento-cell--hero {
+            grid-column: 1 / 3;
+            background: linear-gradient(160deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        }
+        .mini-bento-cell--accent { background: var(--color-surface-alt); }
+
+        .mini-feature-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+            height: 100%; padding: 6px; grid-template-rows: 2fr 1fr;
+        }
+        .mini-feature-hero {
+            grid-column: 1 / 4; border-radius: 6px;
+            background: linear-gradient(170deg, var(--color-primary-dark), var(--color-primary));
+            padding: 10px; display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        .mini-feature-cell {
+            border-radius: 6px; background: var(--color-surface); padding: 6px;
+        }
+
+        /* 09.4 — Rythme vertical */
+        .rhythm-demo {
+            background: #fff; border-radius: var(--radius-xl);
+            padding: var(--space-lg); box-shadow: var(--shadow-subtle);
+            position: relative;
+        }
+        .rhythm-ruler {
+            position: absolute; left: 20px; top: var(--space-lg);
+            bottom: var(--space-lg); width: 32px;
+        }
+        .rhythm-ruler__line {
+            position: absolute; left: 0; right: 0;
+            border-bottom: 1px solid rgba(61,107,79,0.08);
+        }
+        .rhythm-ruler__line--accent {
+            border-bottom: 1px solid rgba(194,65,12,0.12);
+        }
+        .rhythm-ruler__label {
+            position: absolute; right: 0;
+            font-family: var(--font-mono); font-size: 9px; color: var(--color-neutral-500);
+            transform: translateY(-50%);
+        }
+        .rhythm-content {
+            margin-left: 64px;
+        }
+        .rhythm-section {
+            position: relative;
+        }
+        .rhythm-section__spacer {
+            position: relative;
+        }
+        .rhythm-section__spacer::before {
+            content: ''; position: absolute; left: -32px; top: 0; bottom: 0;
+            width: 1px; background: repeating-linear-gradient(to bottom, var(--color-primary-light) 0px, var(--color-primary-light) 2px, transparent 2px, transparent 6px);
+            opacity: 0.3;
+        }
+        .rhythm-block {
+            border-radius: var(--radius-md); padding: var(--space-md);
+        }
+        .rhythm-block--hero {
+            background: linear-gradient(160deg, var(--color-primary-dark), var(--color-primary));
+            min-height: 100px; display: flex; flex-direction: column; justify-content: center;
+        }
+        .rhythm-block--card {
+            background: var(--color-neutral-100);
+            min-height: 60px; display: flex; align-items: center; gap: var(--space-sm);
+        }
+        .rhythm-block--cta {
+            background: var(--color-surface-alt);
+            min-height: 48px; display: flex; align-items: center; justify-content: center;
+        }
+        .rhythm-annotation {
+            font-family: var(--font-mono); font-size: 11px;
+            color: var(--color-accent); position: absolute; right: -8px;
+            transform: translateX(100%); white-space: nowrap;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .rhythm-annotation::before {
+            content: ''; width: 12px; height: 1px; background: var(--color-accent-light);
+        }
+
+        /* =============================================
+           CHAPTER 10 — ILLUSTRATION NARRATIVE
+           ============================================= */
+
+        /* 10.1 — Angle de metaphore */
+        .metaphor-canvas {
+            background: linear-gradient(168deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, #2D6B4F 100%);
+            border-radius: var(--radius-xl); padding: var(--space-xl);
+            min-height: 420px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .metaphor-canvas__mesh {
+            position: absolute; inset: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 50% 50% at 20% 80%, rgba(134,239,172,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 40% at 80% 20%, rgba(253,186,116,0.03) 0%, transparent 50%);
+        }
+        .metaphor-canvas__title {
+            font-family: var(--font-display); font-size: var(--text-2xl);
+            font-weight: 400; color: var(--color-text-on-dark);
+            text-align: center; margin-bottom: var(--space-sm);
+            position: relative; z-index: 1;
+        }
+        .metaphor-canvas__sub {
+            font-family: var(--font-body); font-size: var(--text-base);
+            color: rgba(239,245,241,0.5); text-align: center;
+            max-width: 48ch; margin-bottom: var(--space-lg);
+            position: relative; z-index: 1; line-height: 1.6;
+        }
+        .metaphor-svg-wrap {
+            position: relative; z-index: 1; width: 100%; max-width: 700px;
+        }
+
+        /* 10.2 — Physique de l'illustration */
+        .physics-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md);
+        }
+        .physics-card {
+            background: #fff; border-radius: var(--radius-lg);
+            padding: var(--space-lg); box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(61,107,79,0.05);
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; transition: box-shadow var(--transition-base), background-color var(--transition-base);
+        }
+        .physics-card:hover { box-shadow: var(--shadow-medium); background-color: rgba(61,107,79,0.02); }
+        .physics-card__visual {
+            width: 100px; height: 100px; margin-bottom: var(--space-md);
+            position: relative;
+        }
+        .physics-card__name {
+            font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400;
+            color: var(--color-text-primary); margin-bottom: 4px;
+        }
+        .physics-card__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: var(--color-text-secondary); line-height: 1.5;
+        }
+
+        /* 10.3 — Character Design */
+        .character-showcase {
+            display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-md);
+        }
+        .character-panel {
+            background: linear-gradient(160deg, var(--color-primary-dark), #2D5640);
+            border-radius: var(--radius-xl); padding: var(--space-xl);
+            min-height: 360px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        .character-panel__mesh {
+            position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(ellipse 50% 50% at 60% 30%, rgba(134,239,172,0.08) 0%, transparent 50%);
+        }
+        .character-panel__figures {
+            position: relative; z-index: 1; margin-bottom: var(--space-lg);
+            display: flex; justify-content: center; gap: var(--space-lg);
+        }
+        .character-panel__info {
+            position: relative; z-index: 1;
+        }
+        .character-panel__title {
+            font-family: var(--font-display); font-size: var(--text-xl);
+            font-weight: 400; color: var(--color-text-on-dark); margin-bottom: 6px;
+        }
+        .character-panel__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: rgba(239,245,241,0.45); line-height: 1.6;
+        }
+        .character-principles {
+            display: flex; flex-direction: column; gap: var(--space-sm);
+        }
+        .char-principle {
+            background: #fff; border-radius: var(--radius-md); padding: var(--space-md);
+            box-shadow: var(--shadow-subtle); border: 1px solid rgba(61,107,79,0.05);
+        }
+        .char-principle__title {
+            font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+            color: var(--color-text-primary); margin-bottom: 4px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .char-principle__title::before {
+            content: ''; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--color-primary);
+        }
+        .char-principle__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: var(--color-text-secondary); line-height: 1.5;
+            padding-left: 16px;
+        }
+
+        /* 10.4 — Lois de composition */
+        .composition-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md);
+        }
+        .comp-card {
+            background: #fff; border-radius: var(--radius-lg);
+            overflow: hidden; box-shadow: var(--shadow-subtle);
+            border: 1px solid rgba(61,107,79,0.05);
+            transition: box-shadow var(--transition-base), background-color var(--transition-base);
+        }
+        .comp-card:hover { box-shadow: var(--shadow-medium); background-color: rgba(61,107,79,0.02); }
+        .comp-card__preview {
+            height: 220px; position: relative; overflow: hidden;
+        }
+        .comp-card__info {
+            padding: var(--space-md);
+        }
+        .comp-card__name {
+            font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400;
+            color: var(--color-text-primary); margin-bottom: 4px;
+        }
+        .comp-card__desc {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: var(--color-text-secondary); line-height: 1.5;
+        }
+
+        /* Composition preview layouts */
+        .comp-preview--hero {
+            background: var(--color-neutral-100); padding: 10px;
+            display: flex; flex-direction: column;
+        }
+        .comp-p-block {
+            border-radius: 6px;
+        }
+        .comp-preview--aside {
+            background: var(--color-neutral-100); padding: 10px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+        }
+        .comp-preview--overlay {
+            background: linear-gradient(160deg, var(--color-primary-dark), var(--color-primary));
+            padding: 10px; display: flex; flex-direction: column; justify-content: flex-end;
+            position: relative;
+        }
+
+        /* 10.5 — Directives de prompting illustration */
+        .illust-prompt-block {
+            background: var(--color-depth); border-radius: var(--radius-xl);
+            padding: var(--space-xl); position: relative; overflow: hidden;
+        }
+        .illust-prompt-block__glow {
+            position: absolute; bottom: -20%; left: -10%; width: 45%; height: 60%;
+            background: radial-gradient(ellipse, rgba(194,65,12,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .illust-prompt-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);
+            position: relative; z-index: 1;
+        }
+
+        /* === FOOTER === */
+        .batch-footer {
+            background: var(--color-depth); padding: var(--space-xl);
+            text-align: center; position: relative; overflow: hidden;
+        }
+        .batch-footer::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-accent-light), var(--color-primary), transparent);
+            opacity: 0.3;
+        }
+        .batch-footer__brand {
+            font-family: var(--font-display); font-size: var(--text-xl);
+            color: var(--color-text-on-dark); margin-bottom: 6px;
+        }
+        .batch-footer__sub {
+            font-family: var(--font-body); font-size: var(--text-sm);
+            color: rgba(239,245,241,0.25);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 960px) {
+            .moodboard-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .mood-card--canopy { grid-row: auto; min-height: 280px; }
+            .grading-demo { grid-template-columns: 1fr; }
+            .scenography-grid { grid-template-columns: 1fr; }
+            .density-comparison { grid-template-columns: 1fr; }
+            .patterns-grid { grid-template-columns: 1fr; }
+            .physics-grid { grid-template-columns: 1fr 1fr; }
+            .character-showcase { grid-template-columns: 1fr; }
+            .composition-grid { grid-template-columns: 1fr; }
+            .illust-prompt-grid { grid-template-columns: 1fr; }
+            .devices-row { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================
+         CHAPTER 08 — DIRECTION NARRATIVE & PHOTOGRAPHIQUE
+         ================================================================ -->
+    <div class="container container--ch08">
+        <div class="chapter-header">
+            <p class="chapter-header__overline">Chapitre 08</p>
+            <h1 class="chapter-header__title">Direction Narrative & Photographique</h1>
+            <p class="chapter-header__lead">
+                L'image raconte ce que les mots ne suffisent pas a dire.
+                Chaque photographie est un fragment de l'ecosysteme.
+            </p>
+        </div>
+
+        <!-- 08.1 — Style Photographique -->
+        <div class="section-block">
+            <p class="section-label">08.1 — Style Photographique</p>
+            <h2 class="section-title">Moodboard d'ambiance</h2>
+            <p class="section-desc">
+                La lumiere filtre a travers le feuillage. Les textures sont vivantes,
+                les cadrages naturels. Quatre univers complementaires composent
+                la grammaire visuelle de VoltaPilot.
+            </p>
+            <div class="moodboard-grid">
+                <div class="mood-card mood-card--canopy">
+                    <p class="mood-card__label">Ambiance principale</p>
+                    <h3 class="mood-card__title">Lumiere de canopee</h3>
+                    <p class="mood-card__desc">Eclairage doux et filtre, ombres vertes diffuses, la chaleur naturelle d'un sous-bois en fin de matinee.</p>
+                </div>
+                <div class="mood-card mood-card--macro">
+                    <p class="mood-card__label">Detail & texture</p>
+                    <h3 class="mood-card__title">Macro-nature</h3>
+                    <p class="mood-card__desc">Nervures de feuilles, mousse, structures cellulaires visibles a l'oeil.</p>
+                </div>
+                <div class="mood-card mood-card--roots">
+                    <p class="mood-card__label">Metaphore structurelle</p>
+                    <h3 class="mood-card__title">Reseaux racinaires</h3>
+                    <p class="mood-card__desc">Connexions souterraines, flux de nutriments, arborescences naturelles.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 08.2 — Traitement Chromatique -->
+        <div class="section-block">
+            <p class="section-label">08.2 — Traitement Chromatique</p>
+            <h2 class="section-title">Le filtre vegetal</h2>
+            <p class="section-desc">
+                Chaque image passe par un color grading qui desature les teintes froides
+                et renforce les verts doux et les ocres naturels. Le monde vu
+                a travers la canopee.
+            </p>
+            <div class="grading-demo">
+                <div class="grading-card">
+                    <div class="grading-card__visual grading-before"></div>
+                    <div class="grading-strip">
+                        <span style="background: #6B7280;"></span>
+                        <span style="background: #9CA3AF;"></span>
+                        <span style="background: #D1D5DB;"></span>
+                        <span style="background: #B0B8C1;"></span>
+                        <span style="background: #8B95A0;"></span>
+                    </div>
+                    <div class="grading-card__info">
+                        <p class="grading-card__tag">Avant traitement</p>
+                        <h3 class="grading-card__name">Image source neutre</h3>
+                        <p class="grading-card__desc">Tons gris-bleu standards, saturation uniforme, temperature froide.</p>
+                    </div>
+                </div>
+                <div class="grading-card">
+                    <div class="grading-card__visual grading-after"></div>
+                    <div class="grading-strip">
+                        <span style="background: var(--color-primary-dark);"></span>
+                        <span style="background: var(--color-primary);"></span>
+                        <span style="background: var(--color-neutral-500);"></span>
+                        <span style="background: var(--color-accent-light); opacity: 0.6;"></span>
+                        <span style="background: var(--color-surface-alt);"></span>
+                    </div>
+                    <div class="grading-card__info">
+                        <p class="grading-card__tag">Apres traitement</p>
+                        <h3 class="grading-card__name">Filtre Mycelium applique</h3>
+                        <p class="grading-card__desc">Verts mousse profonds, ombres chaudes, hautes lumieres vegetales. La temperature d'un sous-bois.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 08.3 — Scenographie Produit -->
+        <div class="section-block">
+            <p class="section-label">08.3 — Scenographie Produit</p>
+            <h2 class="section-title">L'interface dans son ecosysteme</h2>
+            <p class="section-desc">
+                Les devices ne flottent pas dans le vide. Ils vivent dans des espaces
+                ou la nature et le travail coexistent — bureaux vegetalises,
+                depots en lumiere matinale.
+            </p>
+            <div class="scenography-grid">
+                <div>
+                    <div class="device-frame">
+                        <div class="device-frame__screen">
+                            <div class="device-topbar">
+                                <span class="device-topbar__dot device-topbar__dot--r"></span>
+                                <span class="device-topbar__dot device-topbar__dot--y"></span>
+                                <span class="device-topbar__dot device-topbar__dot--g"></span>
+                            </div>
+                            <div class="device-ui">
+                                <div class="device-ui__sidebar">
+                                    <div class="device-ui__sidebar-dot device-ui__sidebar-dot--active"></div>
+                                    <div class="device-ui__sidebar-dot"></div>
+                                    <div class="device-ui__sidebar-dot"></div>
+                                    <div class="device-ui__sidebar-dot"></div>
+                                </div>
+                                <div class="device-ui__content">
+                                    <div class="device-ui__row device-ui__row--title"></div>
+                                    <div class="device-ui__row device-ui__row--text"></div>
+                                    <div class="device-ui__row device-ui__row--short"></div>
+                                    <div class="device-ui__cards">
+                                        <div class="device-ui__minicard">
+                                            <div class="device-ui__minicard-bar" style="width: 70%; background: var(--color-primary); opacity: 0.5;"></div>
+                                        </div>
+                                        <div class="device-ui__minicard">
+                                            <div class="device-ui__minicard-bar" style="width: 55%; background: var(--color-accent); opacity: 0.4;"></div>
+                                        </div>
+                                        <div class="device-ui__minicard">
+                                            <div class="device-ui__minicard-bar" style="width: 85%; background: var(--color-primary-light); opacity: 0.5;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="devices-row">
+                        <div class="device-tablet">
+                            <div class="device-tablet__screen">
+                                <div class="device-ui__row device-ui__row--title" style="width: 45%;"></div>
+                                <div class="device-ui__row device-ui__row--text" style="width: 75%;"></div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: auto;">
+                                    <div style="height: 40px; border-radius: 6px; background: var(--color-surface-alt);"></div>
+                                    <div style="height: 40px; border-radius: 6px; background: var(--color-surface-alt);"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-mobile">
+                            <div class="device-mobile__notch"></div>
+                            <div class="device-mobile__screen">
+                                <div class="device-mobile__row" style="width: 60%; background: var(--color-primary-dark); opacity: 0.12; height: 8px;"></div>
+                                <div class="device-mobile__row" style="width: 85%; background: var(--color-neutral-300); opacity: 0.3;"></div>
+                                <div class="device-mobile__row" style="width: 50%; background: var(--color-neutral-300); opacity: 0.2;"></div>
+                                <div style="height: 50px; border-radius: 6px; background: var(--color-surface-alt); margin-top: 8px;"></div>
+                                <div style="height: 50px; border-radius: 6px; background: var(--color-surface-alt); margin-top: 6px;"></div>
+                                <div style="margin-top: auto; height: 22px; border-radius: 4px; background: var(--color-accent); opacity: 0.5;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scene-cards">
+                    <div class="scene-card scene-card--office">
+                        <p class="scene-card__title">Bureau vegetalise</p>
+                        <p class="scene-card__desc">L'interface VoltaPilot sur un ecran de bureau, plantes en premier plan, lumiere naturelle laterale douce. Le digital au coeur du vivant.</p>
+                    </div>
+                    <div class="scene-card scene-card--depot">
+                        <p class="scene-card__title">Depot en lumiere matinale</p>
+                        <p class="scene-card__desc">Tablette en main, flotte en arriere-plan, lumiere dorée du matin filtrant par les baies. Le pilotage sur le terrain.</p>
+                    </div>
+                    <div class="mood-card mood-card--morning" style="min-height: 160px;">
+                        <p class="mood-card__label">Ambiance terrain</p>
+                        <h3 class="mood-card__title">Integration naturelle</h3>
+                        <p class="mood-card__desc">Le produit existe dans l'ecosysteme de travail, jamais isole sur un fond blanc.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 08.4 — Signature de Prompting IA -->
+        <div class="section-block">
+            <p class="section-label">08.4 — Signature de Prompting IA</p>
+            <h2 class="section-title">Generateur d'images aligne Mycelium</h2>
+            <p class="section-desc">
+                Un vocabulaire calibre pour que chaque image generee
+                par IA respecte l'univers photographique de la marque.
+            </p>
+            <div class="prompt-block">
+                <div class="prompt-block__glow" aria-hidden="true"></div>
+                <div class="prompt-block__header">
+                    <div class="prompt-block__icon">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L12.5 7.5L18 10L12.5 12.5L10 18L7.5 12.5L2 10L7.5 7.5L10 2Z" stroke="#86EFAC" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div>
+                        <p class="prompt-block__label">Prompt photographique type</p>
+                        <p class="prompt-block__sublabel">Midjourney / DALL-E / Firefly</p>
+                    </div>
+                </div>
+                <div class="prompt-code">
+                    <p class="prompt-code__text">
+                        <span class="hl-green">Macro photography</span> of moss-covered forest floor,
+                        <span class="hl-green">mycelium network visible</span>, soft filtered light
+                        through canopy, <span class="hl-orange">muted green and terracotta tones</span>,
+                        shallow depth of field, organic textures,
+                        <span class="hl-green">morning dew on leaves</span>,
+                        <span class="hl-dim">--ar 16:9 --style raw --v 6.1</span>
+                    </p>
+                </div>
+                <div class="prompt-code" style="margin-bottom: var(--space-lg);">
+                    <p class="prompt-code__text">
+                        <span class="hl-green">Professional workspace</span> with
+                        <span class="hl-green">living plants and natural light</span>,
+                        person using <span class="hl-orange">tablet showing dashboard interface</span>,
+                        warm morning light filtering through windows,
+                        <span class="hl-green">documentary style, non-posed, candid</span>,
+                        muted earth tones, soft shadows,
+                        <span class="hl-dim">--ar 3:2 --style raw --v 6.1</span>
+                    </p>
+                </div>
+                <div class="prompt-tags">
+                    <span class="prompt-tag">macro-nature</span>
+                    <span class="prompt-tag">filtered light</span>
+                    <span class="prompt-tag">moss tones</span>
+                    <span class="prompt-tag prompt-tag--accent">terracotta accents</span>
+                    <span class="prompt-tag">shallow DoF</span>
+                    <span class="prompt-tag">documentary</span>
+                    <span class="prompt-tag">non-posed</span>
+                    <span class="prompt-tag">organic textures</span>
+                    <span class="prompt-tag prompt-tag--accent">morning light</span>
+                    <span class="prompt-tag">canopy shadow</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="chapter-divider">
+
+    <!-- ================================================================
+         CHAPTER 09 — SYSTEME DE COMPOSITION & RYTHME
+         ================================================================ -->
+    <div class="container container--ch09">
+        <div class="chapter-header">
+            <p class="chapter-header__overline">Chapitre 09</p>
+            <h1 class="chapter-header__title">Systeme de Composition & Rythme</h1>
+            <p class="chapter-header__lead">
+                La grille est la structure souterraine de l'ecosysteme.
+                Invisible mais indispensable, elle organise le flux d'information
+                comme le mycelium organise le flux de nutriments.
+            </p>
+        </div>
+
+        <!-- 09.1 — Architecture de Grilles -->
+        <div class="section-block">
+            <p class="section-label">09.1 — Architecture de Grilles</p>
+            <h2 class="section-title">Asymetrie organique controlée</h2>
+            <p class="section-desc">
+                Une grille de 12 colonnes comme fondation, mais les contenus
+                se repartissent en asymetries 5/7 — le sentier etroit
+                a cote de la clairiere. Les gouttieres respirent entre 24 et 32 pixels.
+            </p>
+            <div class="grid-demo-wrapper">
+                <div class="grid-overlay">
+                    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+                    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+                    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+                    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+                    <div class="grid-content-block grid-content-block--5col">5 colonnes</div>
+                    <div class="grid-content-block grid-content-block--7col">7 colonnes</div>
+                    <div class="grid-content-block grid-content-block--full">12 colonnes — pleine largeur</div>
+                    <div class="grid-content-block grid-content-block--bento1">4 col</div>
+                    <div class="grid-content-block grid-content-block--bento2">4 col</div>
+                    <div class="grid-content-block grid-content-block--bento3">4 col</div>
+                </div>
+                <div class="grid-specs-bar">
+                    <div class="grid-spec">
+                        <span class="grid-spec__dot" style="background: var(--color-primary);"></span>
+                        <span class="grid-spec__text">Colonnes narratives (5/12)</span>
+                    </div>
+                    <div class="grid-spec">
+                        <span class="grid-spec__dot" style="background: var(--color-accent);"></span>
+                        <span class="grid-spec__text">Colonnes visuelles (7/12)</span>
+                    </div>
+                    <div class="grid-spec">
+                        <span class="grid-spec__dot" style="background: var(--color-primary-light);"></span>
+                        <span class="grid-spec__text">Bento organiques</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 09.2 — Strategie de Densite -->
+        <div class="section-block">
+            <p class="section-label">09.2 — Strategie de Densite</p>
+            <h2 class="section-title">Le meme contenu, deux respirations</h2>
+            <p class="section-desc">
+                L'ecosysteme s'adapte. En mode aere, l'information prend l'air
+                de la foret. En mode compact, les donnees se densifient
+                sans perdre leur lisibilite.
+            </p>
+            <div class="density-comparison">
+                <div class="density-card">
+                    <div class="density-card__header">
+                        <span class="density-card__tag density-card__tag--airy">Aere — Landing & narratif</span>
+                    </div>
+                    <div class="density-card__body density-card__body--airy">
+                        <div class="density-row density-row--airy">
+                            <div class="density-row__icon density-row__icon--lg"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                                <div class="density-row__line density-row__line--short"></div>
+                            </div>
+                        </div>
+                        <div style="height: 16px;"></div>
+                        <div class="density-row density-row--airy">
+                            <div class="density-row__icon density-row__icon--lg"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                                <div class="density-row__line density-row__line--short"></div>
+                            </div>
+                        </div>
+                        <div style="height: 16px;"></div>
+                        <div class="density-row density-row--airy">
+                            <div class="density-row__icon density-row__icon--lg"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="density-card">
+                    <div class="density-card__header">
+                        <span class="density-card__tag density-card__tag--compact">Compact — Dashboard & data</span>
+                    </div>
+                    <div class="density-card__body">
+                        <div class="density-row">
+                            <div class="density-row__icon"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                            </div>
+                            <span class="density-row__value">91%</span>
+                        </div>
+                        <div class="density-row">
+                            <div class="density-row__icon"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                            </div>
+                            <span class="density-row__value">2.4t</span>
+                        </div>
+                        <div class="density-row">
+                            <div class="density-row__icon"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                            </div>
+                            <span class="density-row__value">485</span>
+                        </div>
+                        <div class="density-row">
+                            <div class="density-row__icon"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--short"></div>
+                            </div>
+                            <span class="density-row__value">A+</span>
+                        </div>
+                        <div class="density-row">
+                            <div class="density-row__icon"></div>
+                            <div class="density-row__lines">
+                                <div class="density-row__line density-row__line--title"></div>
+                                <div class="density-row__line density-row__line--text"></div>
+                            </div>
+                            <span class="density-row__value">72%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 09.3 — Patterns de Mise en Page -->
+        <div class="section-block">
+            <p class="section-label">09.3 — Patterns de Mise en Page</p>
+            <h2 class="section-title">Trois ecritures spatiales</h2>
+            <p class="section-desc">
+                Chaque type de contenu appelle sa propre architecture.
+                Le Hero Split raconte, le Bento organise, le Feature Grid expose.
+            </p>
+            <div class="patterns-grid">
+                <div class="pattern-card">
+                    <div class="pattern-card__preview">
+                        <div class="mini-hero-split">
+                            <div class="mini-block mini-block--text">
+                                <div class="mini-line mini-line--h1"></div>
+                                <div class="mini-line mini-line--body"></div>
+                                <div class="mini-line mini-line--short"></div>
+                                <div style="height: 8px;"></div>
+                                <div class="mini-line mini-line--cta"></div>
+                            </div>
+                            <div class="mini-block mini-block--visual"></div>
+                        </div>
+                    </div>
+                    <div class="pattern-card__info">
+                        <h3 class="pattern-card__name">Hero Split 5/7</h3>
+                        <p class="pattern-card__desc">Asymetrie narrative. Le texte prend le sentier etroit, le visuel la clairiere.</p>
+                    </div>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card__preview">
+                        <div class="mini-bento">
+                            <div class="mini-bento-cell mini-bento-cell--hero">
+                                <div class="mini-line mini-line--h1" style="background: rgba(255,255,255,0.3);"></div>
+                                <div class="mini-line mini-line--body" style="background: rgba(255,255,255,0.15); margin-top: 4px;"></div>
+                            </div>
+                            <div class="mini-bento-cell">
+                                <div class="mini-line" style="width: 50%; height: 6px; background: var(--color-primary); opacity: 0.3;"></div>
+                            </div>
+                            <div class="mini-bento-cell mini-bento-cell--accent">
+                                <div class="mini-line" style="width: 60%; height: 6px; background: var(--color-accent); opacity: 0.3;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pattern-card__info">
+                        <h3 class="pattern-card__name">Bento Grid</h3>
+                        <p class="pattern-card__desc">Cards organiques de tailles variables. L'information pousse comme dans un ecosysteme.</p>
+                    </div>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card__preview">
+                        <div class="mini-feature-grid">
+                            <div class="mini-feature-hero">
+                                <div class="mini-line mini-line--h1" style="background: rgba(255,255,255,0.25);"></div>
+                                <div class="mini-line mini-line--body" style="background: rgba(255,255,255,0.12); margin-top: 4px;"></div>
+                            </div>
+                            <div class="mini-feature-cell">
+                                <div class="mini-line" style="width: 60%; height: 5px; background: var(--color-primary); opacity: 0.2;"></div>
+                            </div>
+                            <div class="mini-feature-cell">
+                                <div class="mini-line" style="width: 50%; height: 5px; background: var(--color-primary); opacity: 0.2;"></div>
+                            </div>
+                            <div class="mini-feature-cell">
+                                <div class="mini-line" style="width: 55%; height: 5px; background: var(--color-accent); opacity: 0.2;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pattern-card__info">
+                        <h3 class="pattern-card__name">Feature Grid</h3>
+                        <p class="pattern-card__desc">Hero dominant + cellules egalitaires. Pour presenter les capacites cle de la plateforme.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 09.4 — Rythme Vertical -->
+        <div class="section-block">
+            <p class="section-label">09.4 — Rythme Vertical</p>
+            <h2 class="section-title">La respiration de la page</h2>
+            <p class="section-desc">
+                Chaque espace vertical est un multiple de 8 pixels.
+                Les sections respirent entre 96 et 120 pixels de marge.
+                Le rythme est organique mais structure.
+            </p>
+            <div class="rhythm-demo">
+                <div class="rhythm-ruler" aria-hidden="true">
+                    <div class="rhythm-ruler__line" style="top: 0;"></div>
+                    <div class="rhythm-ruler__line" style="top: 96px;"><span class="rhythm-ruler__label" style="top: 0;">96</span></div>
+                    <div class="rhythm-ruler__line rhythm-ruler__line--accent" style="top: 196px;"><span class="rhythm-ruler__label" style="top: 0;">100</span></div>
+                    <div class="rhythm-ruler__line" style="top: 256px;"><span class="rhythm-ruler__label" style="top: 0;">60</span></div>
+                    <div class="rhythm-ruler__line rhythm-ruler__line--accent" style="top: 352px;"><span class="rhythm-ruler__label" style="top: 0;">96</span></div>
+                    <div class="rhythm-ruler__line" style="top: 400px;"><span class="rhythm-ruler__label" style="top: 0;">48</span></div>
+                </div>
+                <div class="rhythm-content">
+                    <!-- Hero section -->
+                    <div class="rhythm-section">
+                        <div class="rhythm-block rhythm-block--hero">
+                            <div class="mini-line mini-line--h1" style="background: rgba(255,255,255,0.3); margin-bottom: 8px;"></div>
+                            <div class="mini-line mini-line--body" style="background: rgba(255,255,255,0.15); width: 70%;"></div>
+                        </div>
+                    </div>
+                    <!-- Spacer 96px -->
+                    <div class="rhythm-section__spacer" style="height: 96px; position: relative;">
+                        <span class="rhythm-annotation" style="top: 50%; transform: translateX(100%) translateY(-50%);">Section padding</span>
+                    </div>
+                    <!-- Content card -->
+                    <div class="rhythm-section">
+                        <div class="rhythm-block rhythm-block--card">
+                            <div class="density-row__icon"></div>
+                            <div style="flex: 1;">
+                                <div class="mini-line mini-line--h1" style="width: 40%; margin-bottom: 6px;"></div>
+                                <div class="mini-line mini-line--body" style="width: 70%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Spacer 24px -->
+                    <div class="rhythm-section__spacer" style="height: 24px; position: relative;">
+                        <span class="rhythm-annotation" style="top: 50%; transform: translateX(100%) translateY(-50%);">Component gap</span>
+                    </div>
+                    <!-- Content card 2 -->
+                    <div class="rhythm-section">
+                        <div class="rhythm-block rhythm-block--card">
+                            <div class="density-row__icon"></div>
+                            <div style="flex: 1;">
+                                <div class="mini-line mini-line--h1" style="width: 50%; margin-bottom: 6px;"></div>
+                                <div class="mini-line mini-line--body" style="width: 65%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Spacer 96px -->
+                    <div class="rhythm-section__spacer" style="height: 96px; position: relative;">
+                        <span class="rhythm-annotation" style="top: 50%; transform: translateX(100%) translateY(-50%);">Section padding</span>
+                    </div>
+                    <!-- CTA -->
+                    <div class="rhythm-section">
+                        <div class="rhythm-block rhythm-block--cta">
+                            <div class="mini-line mini-line--cta" style="width: 25%; margin: 0;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="chapter-divider">
+
+    <!-- ================================================================
+         CHAPTER 10 — SYSTEME D'ILLUSTRATION NARRATIVE
+         ================================================================ -->
+    <div class="container container--ch10">
+        <div class="chapter-header">
+            <p class="chapter-header__overline">Chapitre 10</p>
+            <h1 class="chapter-header__title">Systeme d'Illustration Narrative</h1>
+            <p class="chapter-header__lead">
+                L'illustration n'est pas decorative. Elle est pedagogique.
+                Chaque forme raconte un flux, chaque courbe est un chemin
+                de redistribution.
+            </p>
+        </div>
+
+        <!-- 10.1 — Angle de Metaphore -->
+        <div class="section-block">
+            <p class="section-label">10.1 — Angle de Metaphore</p>
+            <h2 class="section-title">Le mycelium comme reseau de redistribution</h2>
+            <p class="section-desc">
+                La metaphore centrale : un reseau souterrain qui connecte,
+                redistribue et equilibre. Chaque noeud est un point de charge,
+                chaque filament est un flux d'energie.
+            </p>
+            <div class="metaphor-canvas">
+                <div class="metaphor-canvas__mesh" aria-hidden="true"></div>
+                <h3 class="metaphor-canvas__title">Redistribution Vivante</h3>
+                <p class="metaphor-canvas__sub">
+                    L'algorithme de VoltaPilot imite le mycelium : il detecte les besoins,
+                    identifie les surplus et redistribue l'energie a travers le reseau.
+                </p>
+                <div class="metaphor-svg-wrap">
+                    <svg viewBox="0 0 700 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Main trunk lines -->
+                        <path d="M350 240 C350 200, 350 180, 350 140" stroke="#86EFAC" stroke-width="2.5" opacity="0.6"/>
+                        <path d="M350 140 C320 110, 250 90, 180 70" stroke="#86EFAC" stroke-width="2" opacity="0.5"/>
+                        <path d="M350 140 C380 110, 450 90, 520 70" stroke="#86EFAC" stroke-width="2" opacity="0.5"/>
+                        <path d="M350 140 C340 100, 330 60, 350 30" stroke="#86EFAC" stroke-width="1.5" opacity="0.4"/>
+                        <!-- Secondary branches -->
+                        <path d="M180 70 C150 55, 110 50, 80 60" stroke="#86EFAC" stroke-width="1.2" opacity="0.35"/>
+                        <path d="M180 70 C170 45, 160 30, 140 20" stroke="#86EFAC" stroke-width="1" opacity="0.3"/>
+                        <path d="M520 70 C550 55, 580 50, 610 55" stroke="#86EFAC" stroke-width="1.2" opacity="0.35"/>
+                        <path d="M520 70 C530 45, 545 30, 560 20" stroke="#86EFAC" stroke-width="1" opacity="0.3"/>
+                        <!-- Tertiary filaments -->
+                        <path d="M280 105 C250 120, 210 140, 170 155" stroke="#86EFAC" stroke-width="0.8" opacity="0.2"/>
+                        <path d="M420 105 C450 120, 490 140, 530 155" stroke="#86EFAC" stroke-width="0.8" opacity="0.2"/>
+                        <path d="M350 180 C300 190, 240 195, 200 210" stroke="#FDBA74" stroke-width="0.8" opacity="0.15"/>
+                        <path d="M350 180 C400 190, 460 195, 500 210" stroke="#FDBA74" stroke-width="0.8" opacity="0.15"/>
+                        <!-- Root hub (central) -->
+                        <circle cx="350" cy="240" r="12" fill="none" stroke="#86EFAC" stroke-width="2" opacity="0.5"/>
+                        <circle cx="350" cy="240" r="6" fill="#86EFAC" opacity="0.7"/>
+                        <circle cx="350" cy="240" r="18" fill="none" stroke="#86EFAC" stroke-width="1" opacity="0.15">
+                            <animate attributeName="r" values="18;24;18" dur="3s" repeatCount="indefinite"/>
+                            <animate attributeName="opacity" values="0.15;0;0.15" dur="3s" repeatCount="indefinite"/>
+                        </circle>
+                        <!-- Primary nodes -->
+                        <circle cx="350" cy="140" r="7" fill="#86EFAC" opacity="0.6"/>
+                        <circle cx="180" cy="70" r="6" fill="#86EFAC" opacity="0.5"/>
+                        <circle cx="520" cy="70" r="6" fill="#86EFAC" opacity="0.5"/>
+                        <circle cx="350" cy="30" r="5" fill="#FDBA74" opacity="0.5"/>
+                        <!-- Secondary nodes -->
+                        <circle cx="80" cy="60" r="4" fill="#86EFAC" opacity="0.35"/>
+                        <circle cx="140" cy="20" r="3.5" fill="#86EFAC" opacity="0.3"/>
+                        <circle cx="610" cy="55" r="4" fill="#86EFAC" opacity="0.35"/>
+                        <circle cx="560" cy="20" r="3.5" fill="#FDBA74" opacity="0.3"/>
+                        <!-- Tertiary nodes -->
+                        <circle cx="170" cy="155" r="3" fill="#86EFAC" opacity="0.2"/>
+                        <circle cx="530" cy="155" r="3" fill="#86EFAC" opacity="0.2"/>
+                        <circle cx="200" cy="210" r="3" fill="#FDBA74" opacity="0.15"/>
+                        <circle cx="500" cy="210" r="3" fill="#FDBA74" opacity="0.15"/>
+                        <!-- Labels -->
+                        <text x="350" y="258" font-family="DM Sans, sans-serif" font-size="10" fill="#86EFAC" text-anchor="middle" font-weight="500" opacity="0.7">Source renouvelable</text>
+                        <text x="180" y="58" font-family="DM Sans, sans-serif" font-size="9" fill="rgba(239,245,241,0.5)" text-anchor="middle">Noeud A</text>
+                        <text x="520" y="58" font-family="DM Sans, sans-serif" font-size="9" fill="rgba(239,245,241,0.5)" text-anchor="middle">Noeud B</text>
+                        <text x="350" y="20" font-family="DM Sans, sans-serif" font-size="9" fill="rgba(253,186,116,0.6)" text-anchor="middle">Surplus</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10.2 — Physique de l'Illustration -->
+        <div class="section-block">
+            <p class="section-label">10.2 — Physique de l'Illustration</p>
+            <h2 class="section-title">Formes vivantes, jamais rigides</h2>
+            <p class="section-desc">
+                Les contours sont organiques, les remplissages sont des degrades naturels,
+                les textures portent un grain subtil. Chaque forme respire.
+            </p>
+            <div class="physics-grid">
+                <div class="physics-card">
+                    <div class="physics-card__visual">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50 10 C65 10, 80 20, 85 35 C90 50, 85 70, 70 80 C55 90, 35 90, 25 78 C15 66, 12 50, 18 35 C24 20, 38 10, 50 10Z" stroke="#3D6B4F" stroke-width="2" fill="none" opacity="0.6"/>
+                            <path d="M50 15 C62 15, 75 23, 80 36 C85 49, 80 66, 67 75 C54 84, 38 84, 28 74 C18 64, 16 50, 21 37 C26 24, 40 15, 50 15Z" fill="url(#grad-organic)" opacity="0.4"/>
+                            <defs>
+                                <radialGradient id="grad-organic" cx="50%" cy="40%" r="50%">
+                                    <stop offset="0%" stop-color="#86EFAC" stop-opacity="0.5"/>
+                                    <stop offset="100%" stop-color="#3D6B4F" stop-opacity="0.2"/>
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="physics-card__name">Contours organiques</h3>
+                    <p class="physics-card__desc">Courbes Bezier fluides, zero angle droit dans les formes illustratives.</p>
+                </div>
+                <div class="physics-card">
+                    <div class="physics-card__visual">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="35" fill="url(#grad-natural)"/>
+                            <defs>
+                                <radialGradient id="grad-natural" cx="35%" cy="35%" r="60%">
+                                    <stop offset="0%" stop-color="#86EFAC"/>
+                                    <stop offset="50%" stop-color="#3D6B4F"/>
+                                    <stop offset="100%" stop-color="#14532D"/>
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="physics-card__name">Degrades naturels</h3>
+                    <p class="physics-card__desc">Transitions douces inspirees de la lumiere filtree par le feuillage.</p>
+                </div>
+                <div class="physics-card">
+                    <div class="physics-card__visual">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="15" y="15" width="70" height="70" rx="16" fill="#3D6B4F" opacity="0.15"/>
+                            <rect x="15" y="15" width="70" height="70" rx="16" fill="url(#grain-pattern)" opacity="0.6"/>
+                            <filter id="grain-filter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+                            <rect x="15" y="15" width="70" height="70" rx="16" filter="url(#grain-filter)" opacity="0.06"/>
+                            <defs>
+                                <linearGradient id="grain-pattern" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#3D6B4F" stop-opacity="0.2"/>
+                                    <stop offset="100%" stop-color="#86EFAC" stop-opacity="0.1"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="physics-card__name">Grain subtil</h3>
+                    <p class="physics-card__desc">Texture de surface a 2-3% d'opacite. La matiere du papier, pas l'ecran lisse.</p>
+                </div>
+                <div class="physics-card">
+                    <div class="physics-card__visual">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 70 Q35 30, 50 50 T80 35" stroke="#3D6B4F" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M20 70 Q35 30, 50 50 T80 35" stroke="#86EFAC" stroke-width="1" stroke-linecap="round" stroke-dasharray="3 5" opacity="0.5"/>
+                            <circle cx="20" cy="70" r="4" fill="#C2410C" opacity="0.6"/>
+                            <circle cx="50" cy="50" r="3.5" fill="#3D6B4F" opacity="0.5"/>
+                            <circle cx="80" cy="35" r="4" fill="#86EFAC" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <h3 class="physics-card__name">Flux & connexions</h3>
+                    <p class="physics-card__desc">Les lignes relient, ne separent pas. Chaque trait est un chemin de redistribution.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10.3 — Character Design -->
+        <div class="section-block">
+            <p class="section-label">10.3 — Character Design</p>
+            <h2 class="section-title">Des humains en contexte, jamais en vitrine</h2>
+            <p class="section-desc">
+                Pas de personnages cartoon. Des silhouettes humaines en situation
+                de travail, en style documentaire — integrees dans l'ecosysteme,
+                jamais posees devant.
+            </p>
+            <div class="character-showcase">
+                <div class="character-panel">
+                    <div class="character-panel__mesh" aria-hidden="true"></div>
+                    <div class="character-panel__figures">
+                        <svg width="80" height="180" viewBox="0 0 80 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Silhouette 1: person looking at tablet -->
+                            <circle cx="40" cy="22" r="12" fill="rgba(239,245,241,0.15)"/>
+                            <path d="M25 42 C25 36, 55 36, 55 42 L58 95 C58 98, 22 98, 22 95Z" fill="rgba(239,245,241,0.1)"/>
+                            <rect x="28" y="58" width="20" height="14" rx="2" fill="rgba(134,239,172,0.2)" stroke="rgba(134,239,172,0.3)" stroke-width="1"/>
+                            <path d="M30 100 L28 160" stroke="rgba(239,245,241,0.1)" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M50 100 L52 160" stroke="rgba(239,245,241,0.1)" stroke-width="8" stroke-linecap="round"/>
+                        </svg>
+                        <svg width="80" height="180" viewBox="0 0 80 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Silhouette 2: person walking, looking away -->
+                            <circle cx="40" cy="22" r="11" fill="rgba(239,245,241,0.12)"/>
+                            <path d="M28 40 C28 35, 52 35, 52 40 L54 92 C54 95, 26 95, 26 92Z" fill="rgba(239,245,241,0.08)"/>
+                            <path d="M32 96 L24 162" stroke="rgba(239,245,241,0.08)" stroke-width="7" stroke-linecap="round"/>
+                            <path d="M48 96 L56 162" stroke="rgba(239,245,241,0.08)" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="character-panel__info">
+                        <h3 class="character-panel__title">Style documentaire</h3>
+                        <p class="character-panel__desc">Les personnes sont en activite, concentrees, naturelles. Le cadrage les situe dans leur environnement — jamais decontextualisees.</p>
+                    </div>
+                </div>
+                <div class="character-principles">
+                    <div class="char-principle">
+                        <p class="char-principle__title">Non-pose, non-souriant</p>
+                        <p class="char-principle__desc">Les visages sont naturels, les regards concentres. Pas de sourire corporate force. La dignite du travail reel.</p>
+                    </div>
+                    <div class="char-principle">
+                        <p class="char-principle__title">Integre dans l'ecosysteme</p>
+                        <p class="char-principle__desc">La personne est toujours montree dans un environnement complet — bureau, depot, vehicule. L'espace compte autant que le sujet.</p>
+                    </div>
+                    <div class="char-principle">
+                        <p class="char-principle__title">Silhouettes & gestes</p>
+                        <p class="char-principle__desc">En illustration, les humains sont des silhouettes avec des gestes lisibles : consulter un ecran, brancher un connecteur, observer un tableau de bord.</p>
+                    </div>
+                    <div class="char-principle">
+                        <p class="char-principle__title">Lumiere naturelle toujours</p>
+                        <p class="char-principle__desc">Pas de flash, pas d'eclairage studio. La lumiere vient de la fenetre, de la porte du depot, du soleil matinal. Coherence avec le filtre vegetal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10.4 — Lois de Composition -->
+        <div class="section-block">
+            <p class="section-label">10.4 — Lois de Composition</p>
+            <h2 class="section-title">L'illustration cohabite avec le texte</h2>
+            <p class="section-desc">
+                Trois strategies pour integrer les elements visuels
+                avec le texte et les appels a l'action,
+                sans que l'un n'etouffe l'autre.
+            </p>
+            <div class="composition-grid">
+                <div class="comp-card">
+                    <div class="comp-card__preview comp-preview--hero" style="background: var(--color-neutral-100); padding: 12px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 100%;">
+                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px;">
+                                <div class="mini-line mini-line--h1"></div>
+                                <div class="mini-line mini-line--body"></div>
+                                <div class="mini-line mini-line--short"></div>
+                                <div style="height: 6px;"></div>
+                                <div class="mini-line mini-line--cta"></div>
+                            </div>
+                            <div style="border-radius: 8px; overflow: hidden; position: relative;">
+                                <svg viewBox="0 0 200 200" fill="none" style="width: 100%; height: 100%;">
+                                    <rect width="200" height="200" fill="#DCFCE7"/>
+                                    <path d="M50 180 Q80 100, 100 120 T150 80 T190 60" stroke="#3D6B4F" stroke-width="2" opacity="0.3"/>
+                                    <circle cx="100" cy="100" r="30" fill="#3D6B4F" opacity="0.08"/>
+                                    <circle cx="130" cy="80" r="15" fill="#86EFAC" opacity="0.15"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comp-card__info">
+                        <h3 class="comp-card__name">Illustration laterale</h3>
+                        <p class="comp-card__desc">L'illustration vit dans sa colonne, le texte dans la sienne. Zero chevauchement.</p>
+                    </div>
+                </div>
+                <div class="comp-card">
+                    <div class="comp-card__preview" style="background: var(--color-neutral-100); padding: 12px; height: 220px;">
+                        <div style="height: 100%; display: flex; flex-direction: column;">
+                            <div style="flex: 1; border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 8px;">
+                                <svg viewBox="0 0 300 120" fill="none" style="width: 100%; height: 100%;">
+                                    <rect width="300" height="120" fill="#DCFCE7"/>
+                                    <path d="M0 80 Q50 40, 100 60 T200 30 T300 50" stroke="#3D6B4F" stroke-width="2" fill="none" opacity="0.25"/>
+                                    <path d="M0 90 Q75 60, 150 70 T300 45" stroke="#86EFAC" stroke-width="1.5" fill="none" opacity="0.2"/>
+                                    <circle cx="100" cy="60" r="4" fill="#C2410C" opacity="0.3"/>
+                                    <circle cx="200" cy="30" r="3" fill="#3D6B4F" opacity="0.3"/>
+                                </svg>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <div style="flex: 1;">
+                                    <div class="mini-line mini-line--h1" style="margin-bottom: 4px;"></div>
+                                    <div class="mini-line mini-line--body"></div>
+                                </div>
+                                <div class="mini-line mini-line--cta" style="width: 60px; flex-shrink: 0;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comp-card__info">
+                        <h3 class="comp-card__name">Illustration superieure</h3>
+                        <p class="comp-card__desc">Le visuel coiffe le texte et le CTA. L'image contextualise, le texte precise.</p>
+                    </div>
+                </div>
+                <div class="comp-card">
+                    <div class="comp-card__preview comp-preview--overlay">
+                        <div style="position: absolute; inset: 0;">
+                            <svg viewBox="0 0 300 220" fill="none" style="width: 100%; height: 100%;">
+                                <path d="M0 180 Q80 120, 150 140 T300 100" stroke="#86EFAC" stroke-width="1.5" opacity="0.15"/>
+                                <path d="M0 200 Q100 150, 200 170 T300 130" stroke="#86EFAC" stroke-width="1" opacity="0.1"/>
+                                <circle cx="150" cy="80" r="40" fill="#86EFAC" opacity="0.04"/>
+                                <circle cx="220" cy="60" r="25" fill="#FDBA74" opacity="0.03"/>
+                            </svg>
+                        </div>
+                        <div style="position: relative; z-index: 1;">
+                            <div class="mini-line mini-line--h1" style="background: rgba(255,255,255,0.3); margin-bottom: 6px;"></div>
+                            <div class="mini-line mini-line--body" style="background: rgba(255,255,255,0.15); margin-bottom: 10px;"></div>
+                            <div class="mini-line mini-line--cta" style="background: var(--color-accent); opacity: 0.7;"></div>
+                        </div>
+                    </div>
+                    <div class="comp-card__info">
+                        <h3 class="comp-card__name">Overlay subtil</h3>
+                        <p class="comp-card__desc">L'illustration passe en fond a faible opacite. Le texte reste maitre. L'ambiance infuse sans distraire.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10.5 — Directives de Prompting IA -->
+        <div class="section-block">
+            <p class="section-label">10.5 — Directives de Prompting IA</p>
+            <h2 class="section-title">Illustrations generees, univers preserve</h2>
+            <p class="section-desc">
+                Un cadre de prompting pour que chaque illustration IA
+                reste fidele au systeme biomorphique de Mycelium.
+            </p>
+            <div class="illust-prompt-block">
+                <div class="illust-prompt-block__glow" aria-hidden="true"></div>
+                <div class="illust-prompt-grid">
+                    <div>
+                        <div class="prompt-block__header">
+                            <div class="prompt-block__icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 16 C4 10, 10 4, 16 4" stroke="#86EFAC" stroke-width="1.5" stroke-linecap="round"/><path d="M6 16 C6 11, 11 6, 16 6" stroke="#86EFAC" stroke-width="1" stroke-linecap="round" opacity="0.5"/><circle cx="16" cy="4" r="2" fill="#FDBA74" opacity="0.6"/></svg>
+                            </div>
+                            <div>
+                                <p class="prompt-block__label">Prompt illustration type</p>
+                                <p class="prompt-block__sublabel">Midjourney / Illustrator IA</p>
+                            </div>
+                        </div>
+                        <div class="prompt-code">
+                            <p class="prompt-code__text">
+                                <span class="hl-green">Flat vector illustration</span>, biomorphic shapes,
+                                <span class="hl-green">organic flowing lines</span>, network of interconnected nodes,
+                                <span class="hl-orange">moss green and terracotta palette</span>,
+                                subtle grain texture, <span class="hl-green">natural growth patterns</span>,
+                                minimal, clean, no hard edges,
+                                <span class="hl-dim">--ar 16:9 --style raw --v 6.1 --s 200</span>
+                            </p>
+                        </div>
+                        <div class="prompt-code">
+                            <p class="prompt-code__text">
+                                <span class="hl-green">Abstract data visualization</span> as
+                                <span class="hl-green">mycelium root network</span>,
+                                branching tree structure, <span class="hl-orange">warm earth tones</span>,
+                                nodes connected by organic curves, soft shadows,
+                                <span class="hl-green">botanical scientific illustration style</span>,
+                                white background, elegant and minimal,
+                                <span class="hl-dim">--ar 4:3 --style raw --v 6.1</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="margin-bottom: var(--space-lg);">
+                            <p class="prompt-block__label" style="margin-bottom: var(--space-sm);">Mots-cles obligatoires</p>
+                            <div class="prompt-tags">
+                                <span class="prompt-tag">biomorphic</span>
+                                <span class="prompt-tag">organic curves</span>
+                                <span class="prompt-tag">mycelium network</span>
+                                <span class="prompt-tag">flowing lines</span>
+                                <span class="prompt-tag prompt-tag--accent">moss green</span>
+                                <span class="prompt-tag prompt-tag--accent">terracotta</span>
+                                <span class="prompt-tag">grain texture</span>
+                                <span class="prompt-tag">botanical</span>
+                                <span class="prompt-tag">natural growth</span>
+                                <span class="prompt-tag">interconnected</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="prompt-block__label" style="margin-bottom: var(--space-sm);">Mots-cles interdits</p>
+                            <div class="prompt-tags">
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">neon</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">electric blue</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">sharp angles</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">geometric rigid</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">cartoon</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">3D render glossy</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">cyberpunk</span>
+                                <span class="prompt-tag" style="border-color: rgba(220,38,38,0.15); color: rgba(239,245,241,0.35); text-decoration: line-through;">globe earth leaf</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="batch-footer">
+        <p class="batch-footer__brand">VoltaPilot</p>
+        <p class="batch-footer__sub">Narration & Espace — Systeme d'identite Mycelium</p>
+    </footer>
+
+</body>
+</html>

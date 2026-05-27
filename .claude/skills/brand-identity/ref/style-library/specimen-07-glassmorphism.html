@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 07. Glassmorphism (raffiné)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Glassmorphism raffiné 2026 — chromatique INTENTIONNELLE
+         (teal profond + corail chaud), volontairement NON-violet pour s'écarter
+         du combo AI-slop documenté.
+         Inspirée de Apple Liquid Glass iOS 26 + Awwwards HM Juin 2025. */
+      --bg-deep:        #0A2432;   /* fond océan profond */
+      --bg-mid:         #143C52;   /* halo médian */
+      --bg-warm:        #B85F3D;   /* halo corail chaud */
+      --bg-bright:      #2EA89B;   /* halo turquoise clair */
+      --bg-pearl:       #F2EAE0;   /* halo crème (réfraction chaude) */
+
+      --glass-fill:     rgba(255, 255, 255, 0.10);
+      --glass-fill-2:   rgba(255, 255, 255, 0.16);
+      --glass-stroke:   rgba(255, 255, 255, 0.22);
+      --glass-stroke-2: rgba(255, 255, 255, 0.34);
+      --glass-shadow:   0 14px 40px rgba(4, 18, 28, 0.35), 0 2px 6px rgba(4, 18, 28, 0.20);
+
+      --ink-on-dark:    #F4F7F8;
+      --ink-on-dark-2:  rgba(244, 247, 248, 0.78);
+      --ink-on-dark-3:  rgba(244, 247, 248, 0.55);
+      --ink-on-glass:   #FFFFFF;        /* contraste vérifié ≥ 7:1 sur fond -bg-deep */
+      --ink-on-glass-2: rgba(255, 255, 255, 0.82);
+
+      --accent-coral:   #FF8A5B;        /* CTA primaire — OPAQUE, jamais glass */
+      --accent-mint:    #6BE3CB;
+
+      --radius-card:    20px;
+      --radius-pill:    999px;
+
+      --font-display:   "Manrope", system-ui, sans-serif;
+      --font-body:      "Inter", system-ui, sans-serif;
+      --font-mono:      "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── FOND CHROMATIQUE INTENTIONNEL ─────────────────────────
+       4 halos décalés qui créent la "lecture" derrière le verre.
+       PAS d'aurora 3-blobs centrée violet/rose/bleu — palette
+       chaude/froide contrastée, halos asymétriques. */
+    body {
+      background:
+        radial-gradient(60% 50% at 12% 18%, rgba(46, 168, 155, 0.55) 0%, transparent 60%),
+        radial-gradient(55% 45% at 88% 12%, rgba(184, 95, 61, 0.55) 0%, transparent 65%),
+        radial-gradient(50% 40% at 78% 92%, rgba(242, 234, 224, 0.30) 0%, transparent 70%),
+        radial-gradient(40% 35% at 22% 78%, rgba(20, 60, 82, 0.85) 0%, transparent 70%),
+        var(--bg-deep);
+      color: var(--ink-on-dark);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 56px 40px 80px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Grain léger pour casser la perfection des gradients */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      opacity: 0.55;
+      mix-blend-mode: overlay;
+      z-index: 0;
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* ─── HERO ─────────────────────────────────────────────── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 40px;
+      margin-bottom: 36px;
+    }
+    .hero .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-3);
+      display: inline-flex;
+      gap: 14px;
+      align-items: center;
+      align-self: flex-start;
+      background: var(--glass-fill);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+    }
+    .hero .eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-mint);
+      box-shadow: 0 0 0 3px rgba(107, 227, 203, 0.18);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 6.5vw, 88px);
+      line-height: 0.98;
+      letter-spacing: -0.035em;
+      font-weight: 700;
+      max-width: 14ch;
+      color: var(--ink-on-glass);
+    }
+    .hero h1 .stroke {
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+      color: transparent;
+      font-weight: 600;
+    }
+    .hero .lede {
+      font-size: 19px;
+      color: var(--ink-on-dark-2);
+      max-width: 60ch;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    .hero .brand {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-on-dark-3);
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ─── COMPOSANT 1 : LES COUCHES DE PROFONDEUR ─────────── */
+    .signature-1 { margin-top: 32px; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.018em;
+      color: var(--ink-on-glass);
+    }
+    .section-head .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-on-dark-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .section-intro {
+      font-size: 15px;
+      color: var(--ink-on-dark-2);
+      max-width: 70ch;
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+
+    /* La scène à 3 plans : fond chromatique → carte arrière → carte avant */
+    .depth-scene {
+      position: relative;
+      min-height: 420px;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      isolation: isolate;
+      /* fond DIFFÉRENT du body — chromatique propre à ce composant
+         pour qu'on voie l'effet de réfraction du verre. */
+      background:
+        radial-gradient(60% 70% at 80% 20%, rgba(255, 138, 91, 0.55), transparent 60%),
+        radial-gradient(55% 60% at 18% 78%, rgba(46, 168, 155, 0.65), transparent 55%),
+        linear-gradient(135deg, #1A4A66 0%, #0E2C40 100%);
+      padding: 36px;
+    }
+
+    .depth-scene .layer-tag {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-3);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px 10px;
+      border-radius: 4px;
+      z-index: 5;
+    }
+    .depth-scene .layer-tag.l-back  { top: 50px; right: 36px; }
+    .depth-scene .layer-tag.l-mid   { top: 200px; right: 80px; }
+    .depth-scene .layer-tag.l-front { bottom: 36px; left: 36px; }
+
+    /* couche arrière — verre faible blur, semi-transparent */
+    .depth-back {
+      position: absolute;
+      top: 70px; right: 60px;
+      width: 340px; padding: 24px 26px;
+      background: var(--glass-fill);
+      backdrop-filter: blur(8px) saturate(130%);
+      -webkit-backdrop-filter: blur(8px) saturate(130%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-card);
+      color: var(--ink-on-glass-2);
+      box-shadow: 0 8px 24px rgba(4, 18, 28, 0.25);
+      z-index: 2;
+    }
+    .depth-back .small-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-3);
+      margin-bottom: 8px;
+    }
+    .depth-back h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink-on-glass);
+      margin-bottom: 6px;
+    }
+    .depth-back p {
+      font-size: 13px;
+      color: var(--ink-on-glass-2);
+      line-height: 1.5;
+    }
+
+    /* couche médiane — verre blur moyen, plus opaque */
+    .depth-mid {
+      position: absolute;
+      top: 160px; left: 80px;
+      width: 380px; padding: 26px 28px;
+      background: var(--glass-fill-2);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-card);
+      box-shadow: var(--glass-shadow);
+      z-index: 3;
+      /* Refraction sur le bord — gradient lumineux côté haut-gauche */
+      background-image:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 40%),
+        linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16));
+    }
+    .depth-mid .small-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-3);
+      margin-bottom: 8px;
+    }
+    .depth-mid h4 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink-on-glass);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .depth-mid p {
+      font-size: 13.5px;
+      color: var(--ink-on-glass);
+      line-height: 1.55;
+    }
+    .depth-mid .meta-row {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-on-dark-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .depth-mid .meta-row .pip {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent-mint);
+    }
+
+    /* couche avant — surface OPAQUE (la signature : on ne fait PAS du glass partout) */
+    .depth-front {
+      position: absolute;
+      bottom: 60px; left: 36px;
+      width: 320px;
+      padding: 18px 20px;
+      background: #FFFFFF;
+      color: #0A2432;
+      border-radius: var(--radius-card);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.30), 0 4px 12px rgba(0, 0, 0, 0.18);
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .depth-front .icon {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: var(--accent-coral);
+      flex-shrink: 0;
+      display: grid; place-items: center;
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .depth-front .text {
+      display: flex; flex-direction: column;
+    }
+    .depth-front .text strong {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+    }
+    .depth-front .text span {
+      font-size: 12px;
+      color: #4A5260;
+      line-height: 1.4;
+    }
+
+    /* commentaire technique sous la scène */
+    .depth-caption {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .depth-caption .item {
+      background: var(--glass-fill);
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .depth-caption .item .num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-3);
+      margin-bottom: 4px;
+    }
+    .depth-caption .item p {
+      font-size: 13px;
+      color: var(--ink-on-glass-2);
+      line-height: 1.5;
+    }
+    .depth-caption .item p strong {
+      color: var(--ink-on-glass);
+      font-weight: 600;
+    }
+
+    /* ─── COMPOSANT 2 : ANATOMIE DU VERRE ──────────────────── */
+    .signature-2 { margin-top: 64px; }
+
+    .anatomy {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    /* panneau gauche : démo blur 8 vs 12 vs 20 */
+    .blur-demo {
+      background: var(--glass-fill);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-card);
+      padding: 26px 28px;
+      box-shadow: var(--glass-shadow);
+    }
+    .blur-demo h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink-on-glass);
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+    .blur-demo .desc {
+      font-size: 13.5px;
+      color: var(--ink-on-glass-2);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      max-width: 50ch;
+    }
+    .blur-demo .scene {
+      position: relative;
+      height: 200px;
+      border-radius: 14px;
+      overflow: hidden;
+      background:
+        radial-gradient(40% 60% at 30% 50%, rgba(255, 138, 91, 0.7), transparent 60%),
+        radial-gradient(45% 60% at 75% 50%, rgba(46, 168, 155, 0.75), transparent 65%),
+        #0E2C40;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+    .blur-sample {
+      border-radius: 10px;
+      border: 1px solid var(--glass-stroke);
+      padding: 12px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--ink-on-glass);
+    }
+    .blur-sample .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-on-dark-2);
+    }
+    .blur-sample .label {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+    .blur-sample.b8  { background: rgba(255,255,255,0.10); backdrop-filter: blur(8px)  saturate(140%); -webkit-backdrop-filter: blur(8px)  saturate(140%); }
+    .blur-sample.b12 { background: rgba(255,255,255,0.14); backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%); }
+    .blur-sample.b22 { background: rgba(255,255,255,0.20); backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%); }
+    .blur-sample.b22 .label { color: rgba(255,255,255,0.88); } /* on voit déjà la baisse de lisibilité */
+    .blur-sample.b22::after {
+      content: "✗ ILLISIBLE";
+      position: absolute;
+      bottom: 6px; right: 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--accent-coral);
+      font-weight: 700;
+    }
+    .blur-sample.b22 { position: relative; }
+    .blur-sample.b12::after {
+      content: "✓ SWEET SPOT";
+      position: absolute;
+      bottom: 6px; right: 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--accent-mint);
+      font-weight: 700;
+    }
+    .blur-sample.b12 { position: relative; }
+
+    .blur-demo .verdict {
+      margin-top: 16px;
+      font-size: 12.5px;
+      color: var(--ink-on-glass-2);
+      line-height: 1.55;
+      font-family: var(--font-mono);
+      border-top: 1px dashed var(--glass-stroke);
+      padding-top: 12px;
+    }
+    .blur-demo .verdict strong { color: var(--ink-on-glass); font-weight: 600; }
+
+    /* panneau droit : règles non négociables */
+    .rules {
+      background: rgba(10, 36, 50, 0.70);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-card);
+      padding: 26px 28px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .rules h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-mint);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .rule-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .rule-row .n {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-on-dark-3);
+      padding-top: 2px;
+    }
+    .rule-row p {
+      font-size: 13.5px;
+      color: var(--ink-on-glass);
+      line-height: 1.55;
+    }
+    .rule-row p strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    /* ─── COMPOSANT 3 : LE CTA QUI N'EST PAS EN VERRE ──────── */
+    .signature-3 { margin-top: 64px; }
+
+    .cta-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .cta-card {
+      background: var(--glass-fill-2);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-card);
+      padding: 34px 32px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .cta-card .badge {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .cta-card.bad .badge { background: rgba(255, 138, 91, 0.18); color: var(--accent-coral); border: 1px solid rgba(255, 138, 91, 0.4); }
+    .cta-card.good .badge { background: rgba(107, 227, 203, 0.18); color: var(--accent-mint); border: 1px solid rgba(107, 227, 203, 0.4); }
+
+    .cta-card h4 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink-on-glass);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .cta-card p {
+      font-size: 13.5px;
+      color: var(--ink-on-glass-2);
+      line-height: 1.6;
+    }
+
+    /* CTA "anti" : verre sur verre, presque invisible */
+    .cta-bad-btn {
+      align-self: flex-start;
+      padding: 12px 22px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-stroke);
+      color: var(--ink-on-glass-2);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.005em;
+    }
+
+    /* CTA "right" : OPAQUE, contrastant */
+    .cta-good-btn {
+      align-self: flex-start;
+      padding: 14px 26px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-coral);
+      border: none;
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14.5px;
+      letter-spacing: -0.005em;
+      box-shadow: 0 6px 20px rgba(255, 138, 91, 0.45);
+      cursor: pointer;
+    }
+
+    /* ─── ATMOSPHÈRE / USAGE ────────────────────────────────── */
+    .atmosphere { margin-top: 64px; }
+
+    .atmosphere-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    /* visuel : carte miniature qui montre l'ambiance globale */
+    .atmosphere-visual {
+      border-radius: var(--radius-card);
+      min-height: 280px;
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(50% 60% at 75% 25%, rgba(255, 138, 91, 0.6), transparent 60%),
+        radial-gradient(55% 60% at 20% 80%, rgba(46, 168, 155, 0.7), transparent 60%),
+        linear-gradient(160deg, #143C52 0%, #0A2432 100%);
+      padding: 30px;
+      isolation: isolate;
+    }
+    .atmosphere-visual .floating-1 {
+      position: absolute;
+      top: 36px; left: 30px;
+      width: 200px; padding: 14px 16px;
+      background: var(--glass-fill);
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: 14px;
+      color: var(--ink-on-glass);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .atmosphere-visual .floating-1 .sub {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-on-dark-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .atmosphere-visual .floating-2 {
+      position: absolute;
+      top: 130px; right: 30px;
+      width: 180px; padding: 14px 16px;
+      background: var(--glass-fill-2);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: 14px;
+      color: var(--ink-on-glass);
+    }
+    .atmosphere-visual .floating-2 .num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .atmosphere-visual .floating-2 .lbl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-on-dark-2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+    }
+    .atmosphere-visual .floating-3 {
+      position: absolute;
+      bottom: 30px; left: 70px;
+      padding: 10px 18px;
+      background: var(--accent-coral);
+      border-radius: var(--radius-pill);
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgba(255, 138, 91, 0.45);
+    }
+
+    .atmosphere-text {
+      background: rgba(10, 36, 50, 0.55);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--glass-stroke);
+      border-radius: var(--radius-card);
+      padding: 30px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .atmosphere-text h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-on-dark-3);
+      font-weight: 500;
+    }
+    .atmosphere-text .use, .atmosphere-text .avoid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .atmosphere-text .use h4, .atmosphere-text .avoid h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink-on-glass);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.005em;
+    }
+    .atmosphere-text .use h4::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-mint);
+    }
+    .atmosphere-text .avoid h4::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-coral);
+    }
+    .atmosphere-text p {
+      font-size: 14px;
+      color: var(--ink-on-glass-2);
+      line-height: 1.6;
+    }
+
+    /* footer-ish */
+    .colophon {
+      margin-top: 56px;
+      padding-top: 22px;
+      border-top: 1px solid var(--glass-stroke);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-on-dark-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 880px) {
+      body { padding: 32px 18px 60px; }
+      .hero h1 { font-size: clamp(40px, 9vw, 64px); }
+      .depth-scene { min-height: auto; padding: 24px; }
+      .depth-back, .depth-mid, .depth-front {
+        position: static; width: 100%; margin-bottom: 14px;
+      }
+      .depth-scene .layer-tag { display: none; }
+      .depth-caption, .anatomy, .cta-demo, .atmosphere-grid {
+        grid-template-columns: 1fr;
+      }
+      .blur-demo .scene { grid-template-columns: 1fr; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span>Style Library · 07 / 34</span>
+        <span>Registre — Tech / Cinétique</span>
+      </div>
+      <h1>Glass<span class="stroke">morphism</span><br>raffiné.</h1>
+      <p class="lede">Le verre dépoli au service de la profondeur — backdrop-blur 10-15px maximum, fond chromatique propre à la marque, hiérarchie par couches. La version 2026 ne sature plus de violet : elle laisse la couleur de la marque traverser le flou.</p>
+      <p class="brand">Helio — Workspace collaboratif premium</p>
+    </section>
+
+    <!-- COMPOSANT 1 — LES COUCHES DE PROFONDEUR -->
+    <section class="signature-1">
+      <div class="section-head">
+        <h2>La hiérarchie par couches</h2>
+        <span class="meta">SIGNATURE #1</span>
+      </div>
+      <p class="section-intro">Le glass raffiné ne consiste pas à floutter une surface — c'est un système à plans multiples. Un fond chromatique riche, une carte arrière en verre faible blur, une carte médiane en verre moyen blur plus opaque, et — au premier plan — une surface OPAQUE qui porte l'action. C'est cette stratification qui crée la profondeur, pas l'effet appliqué uniformément.</p>
+
+      <div class="depth-scene">
+        <span class="layer-tag l-back">Plan 1 — fond chromatique</span>
+
+        <div class="depth-back">
+          <div class="small-label">Plan 2 — verre arrière (blur 8px)</div>
+          <h4>Notifications</h4>
+          <p>Cartes secondaires : faible opacité, faible blur. Le fond reste lisible derrière, le contenu de la carte est volontairement discret.</p>
+        </div>
+
+        <span class="layer-tag l-mid">Plan 3 — verre médian (blur 12px)</span>
+
+        <div class="depth-mid">
+          <div class="small-label">Plan 3 — verre médian + réfraction de bord</div>
+          <h4>Calendrier de l'équipe — Q2 2026</h4>
+          <p>Surface principale : opacité 16%, blur 12px, gradient de lumière en haut-gauche pour simuler la réfraction du verre épais. Le contraste texte est vérifié à 4.5:1 minimum.</p>
+          <div class="meta-row">
+            <span class="pip"></span>
+            <span>14 événements cette semaine</span>
+          </div>
+        </div>
+
+        <span class="layer-tag l-front">Plan 4 — surface opaque</span>
+
+        <div class="depth-front">
+          <div class="icon">+</div>
+          <div class="text">
+            <strong>Créer un événement</strong>
+            <span>Bouton primaire — surface opaque, jamais en verre</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="depth-caption">
+        <div class="item">
+          <div class="num">01 — Fond</div>
+          <p><strong>Chromatique INTENTIONNEL.</strong> Halos décalés (corail + turquoise + crème) — pas le combo violet/rose/bleu générique.</p>
+        </div>
+        <div class="item">
+          <div class="num">02 — Verre</div>
+          <p><strong>Blur entre 8 et 14px.</strong> Au-delà, le texte devient illisible et l'effet bascule en cliché 2021.</p>
+        </div>
+        <div class="item">
+          <div class="num">03 — Premier plan</div>
+          <p><strong>Opaque, contrasté.</strong> CTA et contrôles critiques sortent du système verre — sinon ils disparaissent.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 2 — ANATOMIE DU VERRE -->
+    <section class="signature-2">
+      <div class="section-head">
+        <h2>L'anatomie du verre, mesurée</h2>
+        <span class="meta">SIGNATURE #2</span>
+      </div>
+      <p class="section-intro">Le glassmorphism raffiné se joue à 4 paramètres : valeur du blur, opacité du fill, couleur de la bordure semi-transparente, et — souvent oublié — un gradient interne qui simule la réfraction. La différence entre élégant et daté tient dans 4 pixels de blur.</p>
+
+      <div class="anatomy">
+        <div class="blur-demo">
+          <h3>Démonstration : 8 / 12 / 22 px</h3>
+          <p class="desc">Trois surfaces identiques sur le même fond chromatique. Plus le blur monte, plus le contenu derrière disparaît — et le texte devant aussi. Le sweet spot est entre 10 et 14 px.</p>
+
+          <div class="scene">
+            <div class="blur-sample b8">
+              <span class="tag">blur 8</span>
+              <span class="label">Lisible</span>
+            </div>
+            <div class="blur-sample b12">
+              <span class="tag">blur 12</span>
+              <span class="label">Optimal</span>
+            </div>
+            <div class="blur-sample b22">
+              <span class="tag">blur 22</span>
+              <span class="label">Trop</span>
+            </div>
+          </div>
+
+          <p class="verdict"><strong>Règle de poche :</strong> backdrop-filter: blur(12px) saturate(150%) — la saturation rehausse les couleurs du fond après le flou et évite l'effet "verre sale".</p>
+        </div>
+
+        <div class="rules">
+          <h3>Les 5 règles non négociables</h3>
+          <div class="rule-row">
+            <span class="n">01</span>
+            <p><strong>Blur ≤ 15 px.</strong> Au-delà, c'est du Glassmorphism 2021 — daté et illisible. iOS 26 Liquid Glass tourne autour de 12-14.</p>
+          </div>
+          <div class="rule-row">
+            <span class="n">02</span>
+            <p><strong>Fond chromatique non-violet par défaut.</strong> Le combo blur 20+ + fond purple est l'AI-slop le plus documenté. Choisir une palette qui appartient à la marque.</p>
+          </div>
+          <div class="rule-row">
+            <span class="n">03</span>
+            <p><strong>Bordure semi-transparente obligatoire.</strong> Sans border 1px rgba blanc, le verre n'a pas d'arête — il flotte sans tenir.</p>
+          </div>
+          <div class="rule-row">
+            <span class="n">04</span>
+            <p><strong>Glass JAMAIS sur fond uni.</strong> Sans variation chromatique derrière, l'effet ne se voit pas — ça devient une carte translucide ratée.</p>
+          </div>
+          <div class="rule-row">
+            <span class="n">05</span>
+            <p><strong>CTA primaire OPAQUE.</strong> Le bouton qui doit être cliqué sort du verre — sinon il se fond dans la composition et perd sa fonction.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 3 — LE CTA QUI N'EST PAS EN VERRE -->
+    <section class="signature-3">
+      <div class="section-head">
+        <h2>Le CTA n'est jamais en verre</h2>
+        <span class="meta">SIGNATURE #3</span>
+      </div>
+      <p class="section-intro">C'est la règle qui sépare un design Glass professionnel d'un cliché 2021. Le verre est un système d'arrière-plan et de hiérarchisation — il n'est pas le langage des actions critiques. Comparer côte-à-côte rend la différence évidente.</p>
+
+      <div class="cta-demo">
+        <div class="cta-card bad">
+          <span class="badge">À éviter</span>
+          <h4>Bouton "verre sur verre"</h4>
+          <p>Ici, le CTA partage le même langage visuel que la carte qui le contient : verre clair, fond translucide, bordure semi-transparente. Résultat : il s'enfonce dans la surface, le contraste tombe à 2:1, le clic n'est plus évident.</p>
+          <button class="cta-bad-btn">Commencer maintenant</button>
+        </div>
+
+        <div class="cta-card good">
+          <span class="badge">À faire</span>
+          <h4>Bouton opaque, contrastant</h4>
+          <p>Le CTA sort du système verre : couleur d'accent saturée, fond opaque, ombre portée colorée. Le contraste texte/fond passe à 7.2:1, l'œil le repère en moins de 100 ms même au milieu d'une composition glass dense.</p>
+          <button class="cta-good-btn">Commencer maintenant →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE / USAGE -->
+    <section class="atmosphere">
+      <div class="section-head">
+        <h2>Couleur émotionnelle &amp; usages</h2>
+        <span class="meta">ATMOSPHÈRE</span>
+      </div>
+
+      <div class="atmosphere-grid">
+        <div class="atmosphere-visual" aria-hidden="true">
+          <div class="floating-1">
+            <span class="sub">Statut équipe</span>
+            En ligne · 4
+          </div>
+          <div class="floating-2">
+            <div class="num">98%</div>
+            <div class="lbl">Uptime — 30j</div>
+          </div>
+          <div class="floating-3">Ouvrir la session →</div>
+        </div>
+
+        <div class="atmosphere-text">
+          <h3>Mode d'emploi</h3>
+          <div class="use">
+            <h4>Quand utiliser ce style</h4>
+            <p>Workspaces premium (Linear, Stripe Dashboard, Notion-like), apps mobiles iOS-natives, OS-feel pour la couche système, dashboards où la profondeur visuelle aide à séparer le contexte du contenu actif. Excellent pour les marques qui vendent du "calme premium" et veulent une interface qui respire la qualité tactile.</p>
+          </div>
+          <div class="avoid">
+            <h4>Quand l'éviter</h4>
+            <p>Édition long-form, sites de contenu textuel dense (le verre fatigue à la lecture), B2B très conservateur (banque, assurance, santé), marques qui veulent du brut, du direct, du sans-effet. À éviter aussi sur les pages de checkout ou de formulaire critique : le contraste vacillant nuit à la confiance et à la compréhension des actions à effectuer.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="colophon">
+      <span>Style Library · BIG</span>
+      <span>07 / Glassmorphism (raffiné) · Tech-Cinétique</span>
+    </div>
+
+  </div>
+</body>
+</html>

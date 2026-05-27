@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 10. Neubrutalism</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Neubrutalism : primaires saturées non-Tailwind + noir d'encre + crème */
+      --ink: #111111;            /* noir d'encre, pas pur */
+      --paper: #FFF8EC;          /* crème — jamais blanc pur */
+      --paper-2: #F4ECD8;        /* crème ombrée */
+      --signal: #FFDC00;         /* jaune signal saturé */
+      --hot: #FF5C8A;            /* rose chaud — pas Tailwind pink */
+      --lime: #B8FF3B;           /* vert lime acide */
+      --sky: #4DD0E1;            /* cyan tuile */
+      --rule: 3px;               /* épaisseur bordure standard */
+      --offset: 6px;             /* offset shadow standard */
+      --radius-tile: 10px;       /* radius modéré 4-12px */
+      --radius-pill: 999px;      /* pills isolées OK */
+      --font-display: "Archivo Black", "Arial Black", sans-serif;
+      --font-body: "Space Grotesk", system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      /* Fond crème + grille points discrète, signature creator-economy */
+      background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+      background-size: 28px 28px;
+      background-position: -1px -1px;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 56px 32px 96px;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      background: var(--paper);
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      padding: 40px 36px 36px;
+      margin-bottom: 56px;
+      position: relative;
+    }
+
+    .hero .brand {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--signal);
+      border: var(--rule) solid var(--ink);
+      padding: 6px 12px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 7vw, 88px);
+      line-height: 0.95;
+      margin: 0 0 20px;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 .stamp {
+      display: inline-block;
+      background: var(--hot);
+      color: var(--ink);
+      padding: 0 14px;
+      transform: rotate(-2deg);
+      border: var(--rule) solid var(--ink);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      margin: 0 4px;
+    }
+
+    .hero .lede {
+      font-size: 19px;
+      max-width: 64ch;
+      margin: 0 0 28px;
+      font-weight: 500;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 8px 16px;
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-pill);
+      background: var(--paper);
+    }
+    .pill.lime { background: var(--lime); }
+    .pill.sky { background: var(--sky); }
+    .pill.signal { background: var(--signal); }
+
+    /* ---------- COMPOSANT 1 — Bordure + offset shadow ---------- */
+    .signature-1 {
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 0 0 18px;
+      padding-bottom: 8px;
+      border-bottom: var(--rule) solid var(--ink);
+      display: inline-block;
+      padding-right: 24px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.6vw, 40px);
+      line-height: 1.05;
+      margin: 0 0 16px;
+      text-transform: uppercase;
+    }
+
+    .section-intro {
+      font-size: 17px;
+      max-width: 70ch;
+      margin: 0 0 28px;
+    }
+
+    .blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .block {
+      background: var(--paper);
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      padding: 24px;
+    }
+    .block.b-signal { background: var(--signal); }
+    .block.b-hot   { background: var(--hot); color: var(--ink); }
+    .block.b-lime  { background: var(--lime); }
+
+    .block h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.05;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+    }
+    .block .meta {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0.8;
+    }
+    .block p {
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* ---------- COMPOSANT 2 — Typo bold assumée ---------- */
+    .signature-2 {
+      background: var(--ink);
+      color: var(--paper);
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--signal);
+      padding: 40px 36px;
+      margin-bottom: 56px;
+    }
+    .signature-2 .section-label {
+      color: var(--paper);
+      border-color: var(--paper);
+    }
+    .signature-2 .section-title {
+      color: var(--paper);
+    }
+    .signature-2 .section-intro {
+      color: var(--paper-2);
+    }
+
+    .typo-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 24px 32px;
+      align-items: baseline;
+      border-top: var(--rule) solid var(--paper);
+      padding-top: 24px;
+    }
+    .typo-grid + .typo-grid {
+      margin-top: 16px;
+    }
+    .typo-grid .label {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--signal);
+    }
+    .typo-grid .sample {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      line-height: 0.95;
+    }
+    .typo-grid .sample.s-xl { font-size: clamp(40px, 6vw, 72px); }
+    .typo-grid .sample.s-lg { font-size: clamp(28px, 3.6vw, 44px); }
+    .typo-grid .sample.s-md {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
+    /* ---------- COMPOSANT 3 — Boutons ---------- */
+    .signature-3 {
+      margin-bottom: 56px;
+    }
+    .button-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .btn {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 14px 22px;
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn.primary  { background: var(--signal); }
+    .btn.hot      { background: var(--hot); }
+    .btn.lime     { background: var(--lime); }
+    .btn.dark     { background: var(--ink); color: var(--paper); box-shadow: var(--offset) var(--offset) 0 var(--signal); }
+
+    .btn-note {
+      font-size: 13px;
+      color: var(--ink);
+      opacity: 0.75;
+      max-width: 60ch;
+      margin-top: 16px;
+    }
+
+    /* ---------- ATMOSPHERE ---------- */
+    .atmosphere {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .atmosphere-visual {
+      position: relative;
+      background: var(--paper);
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      min-height: 320px;
+      overflow: hidden;
+      padding: 28px;
+    }
+
+    .tile {
+      position: absolute;
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+    }
+    .tile.t1 { top: 32px;  left: 32px;  width: 44%; height: 44%; background: var(--signal); font-size: 22px; transform: rotate(-3deg); }
+    .tile.t2 { top: 36px;  right: 32px; width: 30%; height: 28%; background: var(--hot);    font-size: 16px; transform: rotate(2deg); }
+    .tile.t3 { bottom: 36px; left: 38%; width: 30%; height: 32%; background: var(--lime);   font-size: 16px; transform: rotate(-1deg); }
+    .tile.t4 { bottom: 32px; right: 32px; width: 26%; height: 36%; background: var(--sky);  font-size: 16px; transform: rotate(3deg); }
+    .tile.t5 { bottom: 32px; left: 32px;  width: 22%; height: 24%; background: var(--paper); font-size: 14px; }
+
+    .atmosphere-text {
+      background: var(--paper);
+      border: var(--rule) solid var(--ink);
+      border-radius: var(--radius-tile);
+      box-shadow: var(--offset) var(--offset) 0 var(--ink);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .atmosphere-text p {
+      margin: 0;
+      font-size: 15px;
+    }
+    .atmosphere-text .when {
+      border-top: var(--rule) solid var(--ink);
+      padding-top: 16px;
+    }
+    .atmosphere-text .when strong {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .when-use strong { color: var(--ink); }
+    .when-avoid { color: var(--ink); opacity: 0.85; }
+
+    /* ---------- FOOTER ANCRE ---------- */
+    .anchor {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: var(--rule) solid var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .anchor span { opacity: 0.75; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 880px) {
+      .blocks { grid-template-columns: 1fr; }
+      .typo-grid { grid-template-columns: 1fr; gap: 8px; }
+      .atmosphere { grid-template-columns: 1fr; }
+      .atmosphere-visual { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="brand">Helio Studio — Outils créatifs anti-template</span>
+      <h1>Neubrutalism<br><span class="stamp">se voit</span> de loin.</h1>
+      <p class="lede">Bordures noires épaisses, ombres décalées sans flou, couleurs primaires saturées : le style refuse la douceur consensuelle des SaaS pastel. Chaque bloc s'affirme, chaque tuile s'ancre. C'est la signature dominante de la creator economy 2025.</p>
+      <div class="hero-meta">
+        <span class="pill signal">38 · Catalogue BIG</span>
+        <span class="pill lime">Verdict ACTUEL</span>
+        <span class="pill sky">Registre brutaliste</span>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 1 — Tuiles bordures + offset -->
+    <section class="signature-1">
+      <span class="section-label">Signature 1 / Bordure & ombre offset</span>
+      <h2 class="section-title">La grammaire : 3px de bordure, 6px d'ombre, zéro flou.</h2>
+      <p class="section-intro">Chaque bloc est posé physiquement sur la page. La bordure noire (2-4px) délimite le territoire ; l'ombre offset (4-8px de décalage, blur 0) le décolle. C'est l'inverse du shadow doux SaaS — ici l'ombre est un trait, pas un halo.</p>
+      <div class="blocks">
+        <article class="block b-signal">
+          <p class="meta">Tuile / Donnée</p>
+          <h3>+184%</h3>
+          <p>Croissance des projets bouclés en 30 jours après bascule en Neubrutalism. Mesure interne sur 412 ateliers Helio.</p>
+        </article>
+        <article class="block b-hot">
+          <p class="meta">Tuile / Témoignage</p>
+          <h3>« Ça arrête le scroll. »</h3>
+          <p>L'ombre offset crée un relief tactile. Aucune feature visuelle n'agit aussi vite sur le taux de clic premier écran.</p>
+        </article>
+        <article class="block b-lime">
+          <p class="meta">Tuile / Règle</p>
+          <h3>Border 3px<br>Shadow 0 blur</h3>
+          <p>Si le shadow est flou, ce n'est plus du Neubrutalism — c'est du SaaS générique 2019. La nettteté est non-négociable.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 2 — Typo bold assumée -->
+    <section class="signature-2">
+      <span class="section-label">Signature 2 / Typographie assumée</span>
+      <h2 class="section-title">Une display BLACK, jamais elegant.</h2>
+      <p class="section-intro">Le Neubrutalism rejette les serifs élégantes et les sans-serifs neutres (Inter, Roboto = interdits par défaut). On choisit une display noire ou expressive (Archivo Black, Space Grotesk Bold, Druk) qui pèse sur la page et pose le ton avant même qu'on lise.</p>
+      <div class="typo-grid">
+        <span class="label">Display H1<br>Archivo Black</span>
+        <span class="sample s-xl">Loud &amp; Clear</span>
+      </div>
+      <div class="typo-grid">
+        <span class="label">Display H2<br>Archivo Black</span>
+        <span class="sample s-lg">Anti-template</span>
+      </div>
+      <div class="typo-grid">
+        <span class="label">Body<br>Space Grotesk 500</span>
+        <span class="sample s-md">Le corps de texte reste lisible — Space Grotesk en 500 amène la modernité sans casser le contraste avec la display. Inter et Roboto restent bannis : trop neutres, trop AI-default.</span>
+      </div>
+    </section>
+
+    <!-- COMPOSANT 3 — Boutons -->
+    <section class="signature-3">
+      <span class="section-label">Signature 3 / Boutons-objets</span>
+      <h2 class="section-title">Le bouton n'est pas un état CSS. C'est un objet.</h2>
+      <p class="section-intro">Dans le Neubrutalism, un bouton est un bloc avec ses bords, son ombre et sa couleur de fond saturée — pas un rectangle teint qui change d'opacité. L'utilisateur perçoit qu'il peut le pousser physiquement.</p>
+      <div class="button-row">
+        <a href="#" class="btn primary">Lancer un atelier</a>
+        <a href="#" class="btn hot">Voir les modèles</a>
+        <a href="#" class="btn lime">Télécharger</a>
+        <a href="#" class="btn dark">Mode focus</a>
+        <a href="#" class="btn">Documentation</a>
+      </div>
+      <p class="btn-note">Aucun translateY au survol, aucune ombre douce 0 0 Npx, aucune animation pulse infinie. Le style refuse les codes daté du SaaS 2018-2020 : c'est précisément ce refus qui le rend lisible aujourd'hui.</p>
+    </section>
+
+    <!-- ATMOSPHERE -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual" aria-hidden="true">
+        <div class="tile t1">Bento<br>Désordre</div>
+        <div class="tile t2">Tag</div>
+        <div class="tile t3">Sticker</div>
+        <div class="tile t4">Note</div>
+        <div class="tile t5">v.10</div>
+      </div>
+      <div class="atmosphere-text">
+        <h3>L'atmosphère : tableau d'atelier, pas dashboard d'entreprise.</h3>
+        <p>Les blocs se chevauchent légèrement, certains sont rotatés de 1 à 3 degrés. L'ensemble respire le mood-board imprimé, le post-it punaisé, l'autocollant collé un peu de travers. Le fond crème (jamais blanc pur) ajoute la chaleur d'un papier, pas la froideur d'un écran.</p>
+        <div class="when when-use">
+          <strong>Quand utiliser ce style</strong>
+          <p>Outils créatifs (Figma plugins, presets, packs), creator economy, plateformes Gen Z, marques anti-template qui veulent stopper le scroll. Aussi : startups produit qui veulent se distinguer du SaaS bleu-violet générique.</p>
+        </div>
+        <div class="when when-avoid">
+          <strong>Quand l'éviter</strong>
+          <p>Banque, assurance, santé, juridique : le style transmet ludique et anti-établi, ce qui contredit le besoin de sérieux institutionnel. Aussi : luxe contemplatif (le bruit visuel tue le silence) et éditorial culturel haut de gamme.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="anchor">
+      <span>Style Library · BIG</span>
+      <span>Réf. Toggl · Linear · Pika.art · Gumroad</span>
+    </footer>
+
+  </main>
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 12. Soft UI Evolution</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Soft UI Evolution — pastels CHOISIS, pas génériques.
+         Inspirée Calm/Headspace : pêche poudré, sauge, terre cuite désaturée,
+         ivoire chaud. Aucun violet/indigo Tailwind, aucun pastel Memphis. */
+      --color-bg: #F4EDE4;          /* ivoire chaud, fond principal */
+      --color-surface: #FAF5EE;     /* surface relief, légèrement plus clair que le bg */
+      --color-surface-deep: #ECE3D6; /* creux / inset */
+      --color-primary: #C97A5B;     /* terre cuite désaturée, accent principal */
+      --color-secondary: #8DA88A;   /* sauge, accent froid */
+      --color-tertiary: #E8B79A;    /* pêche poudré, micro-accent */
+      --color-text: #2E2A26;        /* presque noir chaud — contraste 12.4:1 sur bg WCAG AAA */
+      --color-text-muted: #5C544B;  /* contraste 6.8:1 sur bg WCAG AA Large + AAA Body */
+
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body: "Manrope", system-ui, sans-serif;
+
+      /* Reliefs multi-couches — JAMAIS le combo neumorphism strict
+         (white inner-glow + dark drop). Ici : ombres directionnelles douces,
+         lumière réelle 45° comme une nappe sur une table. */
+      --relief-raised:
+        0 1px 2px rgba(72, 56, 40, 0.04),
+        0 8px 24px -12px rgba(72, 56, 40, 0.10),
+        0 2px 6px -2px rgba(72, 56, 40, 0.06);
+      --relief-raised-strong:
+        0 2px 4px rgba(72, 56, 40, 0.05),
+        0 16px 40px -16px rgba(72, 56, 40, 0.14),
+        0 4px 12px -4px rgba(72, 56, 40, 0.08);
+      --relief-inset:
+        inset 0 1px 2px rgba(72, 56, 40, 0.08),
+        inset 0 2px 6px -2px rgba(72, 56, 40, 0.05);
+
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.55;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      padding: 56px 32px 96px;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      gap: 56px;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: 72px 64px 64px;
+      box-shadow: var(--relief-raised-strong);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      /* Lueur chaude diffuse — pas un blob aurora, pas centré, pas un glow décoratif :
+         une vraie source lumineuse en haut-droite, comme la lumière d'une fenêtre. */
+      content: "";
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(closest-side, rgba(232, 183, 154, 0.55), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .badge {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      background: var(--color-bg);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-pill);
+      box-shadow: var(--relief-inset);
+    }
+
+    .brand {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--color-text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(48px, 6.4vw, 88px);
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      margin-bottom: 24px;
+      color: var(--color-text);
+      font-variation-settings: "opsz" 96;
+      position: relative;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--color-primary);
+      font-weight: 400;
+    }
+
+    .lede {
+      font-family: var(--font-body);
+      font-size: clamp(17px, 1.5vw, 21px);
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      max-width: 640px;
+      position: relative;
+    }
+
+    /* ========== SIGNATURE 1 — relief subtil ========== */
+    .signature {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .signature.reverse {
+      grid-template-columns: 1.15fr 1fr;
+    }
+
+    .signature-text .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+      margin-bottom: 16px;
+    }
+
+    .signature-text h2 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(28px, 3vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin-bottom: 20px;
+      color: var(--color-text);
+    }
+
+    .signature-text p {
+      color: var(--color-text-muted);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .signature-text p + p {
+      margin-top: 14px;
+    }
+
+    /* Démo signature 1 : 3 cartes empilées à reliefs gradués —
+       montre l'échelle de profondeur SUBTILE (pas neumorphism dur). */
+    .relief-stack {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: var(--relief-raised);
+      display: grid;
+      gap: 16px;
+    }
+
+    .relief-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .relief-card.level-1 { box-shadow: var(--relief-inset); background: var(--color-surface-deep); }
+    .relief-card.level-2 { box-shadow: var(--relief-raised); }
+    .relief-card.level-3 { box-shadow: var(--relief-raised-strong); }
+
+    .relief-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--color-bg);
+    }
+
+    .level-1 .relief-icon { background: var(--color-secondary); }
+    .level-2 .relief-icon { background: var(--color-tertiary); color: var(--color-text); }
+    .level-3 .relief-icon { background: var(--color-primary); }
+
+    .relief-card .label {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--color-text);
+    }
+    .relief-card .meta {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .relief-card .info { flex: 1; }
+
+    .relief-card .pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--color-bg);
+      color: var(--color-text-muted);
+      box-shadow: var(--relief-inset);
+    }
+
+    /* ========== SIGNATURE 2 — hiérarchie explicite ========== */
+    .hierarchy-demo {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      box-shadow: var(--relief-raised);
+    }
+
+    .hier-h0 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--color-text);
+      margin-bottom: 4px;
+      font-variation-settings: "opsz" 96;
+    }
+    .hier-unit {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+    }
+    .hier-row {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      padding: 14px 0;
+      border-top: 1px dashed rgba(92, 84, 75, 0.18);
+    }
+    .hier-row:first-of-type { border-top: 0; padding-top: 0; }
+    .hier-label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      width: 130px;
+      flex-shrink: 0;
+    }
+    .hier-value {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .hier-row.h-1 .hier-value { font-size: 26px; font-family: var(--font-display); font-weight: 500; }
+    .hier-row.h-2 .hier-value { font-size: 19px; }
+    .hier-row.h-3 .hier-value { font-size: 16px; }
+    .hier-row.h-4 .hier-value { font-size: 14px; font-weight: 500; color: var(--color-text-muted); }
+
+    /* ========== SIGNATURE 3 — boutons & contrôles tactiles ========== */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+
+    .controls-demo {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: var(--relief-raised);
+      display: grid;
+      gap: 24px;
+    }
+
+    .ctrl-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .btn {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
+      border: 0;
+      cursor: pointer;
+      transition: box-shadow 200ms ease, background 200ms ease, color 200ms ease;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: #FFF6EE;
+      box-shadow: var(--relief-raised);
+    }
+    .btn-primary:hover {
+      background: #B86C4F;
+      box-shadow: var(--relief-raised-strong);
+    }
+    /* Pas de translateY au hover — on intensifie le relief, pas un saut. */
+
+    .btn-secondary {
+      background: var(--color-surface);
+      color: var(--color-text);
+      box-shadow: var(--relief-raised);
+    }
+    .btn-secondary:hover {
+      box-shadow: var(--relief-inset);
+      background: var(--color-surface-deep);
+    }
+    /* État pressé : on inverse vers l'inset — la nappe se creuse. */
+
+    .input {
+      flex: 1;
+      min-width: 200px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      border: 0;
+      background: var(--color-surface-deep);
+      color: var(--color-text);
+      box-shadow: var(--relief-inset);
+    }
+    .input::placeholder { color: var(--color-text-muted); }
+    .input:focus {
+      outline: 2px solid var(--color-secondary);
+      outline-offset: 2px;
+    }
+
+    .toggle {
+      width: 56px;
+      height: 32px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-deep);
+      box-shadow: var(--relief-inset);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .toggle .knob {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      box-shadow: 0 2px 6px rgba(72, 56, 40, 0.18), 0 1px 2px rgba(72, 56, 40, 0.10);
+      position: absolute;
+      top: 4px;
+      left: 28px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 14px;
+      color: var(--color-text-muted);
+    }
+    .toggle-row strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    /* ========== ATMOSPHÈRE ========== */
+    .atmosphere {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: 64px;
+      box-shadow: var(--relief-raised-strong);
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .atmosphere-visual {
+      position: relative;
+      height: 320px;
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(232, 183, 154, 0.55), transparent 55%),
+        radial-gradient(circle at 75% 65%, rgba(141, 168, 138, 0.40), transparent 60%),
+        linear-gradient(135deg, #F8EFE3, #ECE3D6);
+      box-shadow: var(--relief-inset);
+      display: grid;
+      place-items: center;
+    }
+
+    .breath {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      box-shadow:
+        0 4px 12px rgba(72, 56, 40, 0.08),
+        0 24px 60px -16px rgba(72, 56, 40, 0.18),
+        inset 0 -12px 24px rgba(232, 183, 154, 0.45);
+      display: grid;
+      place-items: center;
+    }
+    .breath-core {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(160deg, var(--color-tertiary), var(--color-primary));
+      box-shadow:
+        0 8px 20px rgba(201, 122, 91, 0.25),
+        inset 0 2px 4px rgba(255, 246, 238, 0.5);
+    }
+
+    .atmosphere-text h3 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 32px;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin-bottom: 20px;
+      color: var(--color-text);
+    }
+    .atmosphere-text p {
+      color: var(--color-text-muted);
+      margin-bottom: 14px;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+    .atmosphere-text .use-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .atmosphere-text .use-list li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 15px;
+      color: var(--color-text);
+    }
+    .atmosphere-text .use-list .tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      box-shadow: var(--relief-inset);
+      background: var(--color-bg);
+      margin-top: 2px;
+    }
+    .tag.use { color: #5A7A5A; }
+    .tag.avoid { color: #A35138; }
+
+    /* ========== FOOTER LIGNE ========== */
+    .colophon {
+      text-align: center;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 820px) {
+      body { padding: 32px 18px 64px; }
+      .hero { padding: 48px 32px 40px; }
+      .signature, .signature.reverse { grid-template-columns: 1fr; gap: 32px; }
+      .controls-grid { grid-template-columns: 1fr; gap: 32px; }
+      .atmosphere { grid-template-columns: 1fr; padding: 40px 28px; }
+      .atmosphere-visual { height: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-meta">
+        <span class="badge">Style 12 · Cyclique</span>
+        <span class="brand">Helio — Application de bien-être respiratoire</span>
+      </div>
+      <h1>Soft UI <em>Evolution</em></h1>
+      <p class="lede">L'héritier raisonné du neumorphism. Reliefs subtils, pastels choisis, hiérarchie explicite — un style tactile pour les interfaces qui doivent rassurer, sans renoncer à l'accessibilité ni à la lisibilité.</p>
+    </section>
+
+    <!-- SIGNATURE 1 — relief subtil -->
+    <section class="signature">
+      <div class="signature-text">
+        <p class="eyebrow">Signature 01 — Relief subtil</p>
+        <h2>Trois niveaux de profondeur, jamais quatre</h2>
+        <p>Le Soft UI Evolution s'éloigne du neumorphism pur. Là où l'original empilait inner-glow blanc et drop-shadow gris à parts égales — créant des surfaces qui ressemblaient à du caoutchouc moulé — la version 2026 utilise une lumière directionnelle douce, comme une nappe posée sur une table éclairée par une fenêtre.</p>
+        <p>Les ombres ont toujours un offset. La hiérarchie de profondeur reste lisible : creux (inset), surface, élévation. Au-delà de trois niveaux, le relief devient bruit visuel.</p>
+      </div>
+      <div class="relief-stack">
+        <div class="relief-card level-1">
+          <div class="relief-icon">i</div>
+          <div class="info">
+            <div class="label">Niveau creux — inset</div>
+            <div class="meta">Champs de saisie, états désactivés, contrôles enfoncés</div>
+          </div>
+          <span class="pill">−1</span>
+        </div>
+        <div class="relief-card level-2">
+          <div class="relief-icon">s</div>
+          <div class="info">
+            <div class="label">Niveau surface — relief doux</div>
+            <div class="meta">Cartes par défaut, tuiles d'information, conteneurs de contenu</div>
+          </div>
+          <span class="pill">0</span>
+        </div>
+        <div class="relief-card level-3">
+          <div class="relief-icon">e</div>
+          <div class="info">
+            <div class="label">Niveau élevé — relief renforcé</div>
+            <div class="meta">Modals, popovers, action principale, élément actif</div>
+          </div>
+          <span class="pill">+1</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 2 — hiérarchie explicite -->
+    <section class="signature reverse">
+      <div class="hierarchy-demo">
+        <div class="hier-h0">12.4<span style="font-size:24px;color:var(--color-text-muted);font-weight:500;margin-left:6px;">:1</span></div>
+        <div class="hier-unit">Ratio de contraste WCAG — texte principal sur fond</div>
+        <div class="hier-row h-1">
+          <span class="hier-label">Display 56 / 600</span>
+          <span class="hier-value">Respirer profondément</span>
+        </div>
+        <div class="hier-row h-2">
+          <span class="hier-label">Body large 19 / 500</span>
+          <span class="hier-value">Quatre temps d'inspiration</span>
+        </div>
+        <div class="hier-row h-3">
+          <span class="hier-label">Body 16 / 600</span>
+          <span class="hier-value">Maintenir sept secondes</span>
+        </div>
+        <div class="hier-row h-4">
+          <span class="hier-label">Caption 14 / 500</span>
+          <span class="hier-value">Expirer en huit temps</span>
+        </div>
+      </div>
+      <div class="signature-text">
+        <p class="eyebrow">Signature 02 — Hiérarchie explicite</p>
+        <h2>La taille et le poids font ce que le contraste ne peut plus faire</h2>
+        <p>Soft UI Evolution adoucit la palette — donc le contraste chromatique baisse mécaniquement. La hiérarchie ne peut plus reposer sur le rapport noir/blanc. Elle se reporte sur l'échelle typographique et le poids.</p>
+        <p>Le ratio de 1 à 4 entre le display et le caption reste obligatoire. Le contraste de luminance reste WCAG AA Body au minimum — vérifié au pixel, pas estimé à l'œil.</p>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 3 — contrôles tactiles -->
+    <section class="signature">
+      <div class="signature-text">
+        <p class="eyebrow">Signature 03 — Contrôles tactiles</p>
+        <h2>Le hover intensifie le relief, ne déplace pas la surface</h2>
+        <p>Le pattern translateY est le marqueur AI slop le plus répandu — un saut de 4 pixels au survol qui rend chaque bouton identique à tous les autres boutons du web. Soft UI Evolution remplace ce mouvement par une variation d'intensité du relief.</p>
+        <p>Au repos, l'élément flotte. Au survol, il se rapproche de la lumière. Pressé, il s'enfonce dans la surface. Le geste est physique, pas chorégraphié.</p>
+      </div>
+      <div class="controls-demo">
+        <div class="ctrl-row">
+          <button class="btn btn-primary">Commencer la séance</button>
+          <button class="btn btn-secondary">Plus tard</button>
+        </div>
+        <div class="ctrl-row">
+          <input class="input" type="text" placeholder="Comment vous sentez-vous aujourd'hui ?">
+        </div>
+        <div class="toggle-row">
+          <div class="toggle"><div class="knob"></div></div>
+          <div><strong>Rappel quotidien activé</strong> — chaque matin, 7h30</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPHÈRE -->
+    <section class="atmosphere">
+      <div class="atmosphere-visual">
+        <div class="breath">
+          <div class="breath-core"></div>
+        </div>
+      </div>
+      <div class="atmosphere-text">
+        <h3>Une atmosphère qui apaise sans endormir</h3>
+        <p>La couleur émotionnelle du Soft UI Evolution se situe entre la chaleur d'un intérieur et la douceur d'un coussin. Les pastels sont profonds, jamais délavés. Les surfaces ont une matière. La lumière a une direction.</p>
+        <ul class="use-list">
+          <li><span class="tag use">Quand</span><span>Wellness, méditation, fintech boutique, santé non-critique, cocooning premium, applications du quotidien lent.</span></li>
+          <li><span class="tag avoid">Éviter</span><span>SaaS B2B haute densité, dashboards analytiques, marques techniques, contextes où la rapidité de scan prime sur la sensation.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="colophon">Style Library — Brand Identity Generator · Spécimen permanent</p>
+
+  </main>
+</body>
+</html>

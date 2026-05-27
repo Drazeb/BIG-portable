@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 05. Exaggerated Minimalism</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,500;1,9..144,900&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette canonique Exaggerated Minimalism — 2-3 couleurs actives par vue, dont UNE seule signature couleur */
+      --paper:        #F2EFE9;   /* blanc cassé chaud, pas blanc pur (anti-AI) */
+      --ink:          #14110E;   /* noir d'encre légèrement chaud */
+      --ink-soft:     #6E665C;   /* gris brun pour texte secondaire rare */
+      --hairline:     #1411101A; /* trait extrêmement discret */
+      --signature:    #C9442B;   /* UN accent brûlé — signature Instrument/Fantasy */
+      --paper-deep:   #E8E3DA;   /* nuance papier pour le bloc atmosphère */
+
+      --font-display: "Fraunces", "Times New Roman", serif;
+      --font-body:    "Manrope", system-ui, sans-serif;
+
+      --pad-block-y:  22vh;     /* paddings massifs — chaque bloc respire */
+      --pad-side:     6vw;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    /* === HERO ============================================================= */
+    .hero {
+      min-height: 92vh;
+      padding: 12vh var(--pad-side) var(--pad-block-y);
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+    }
+
+    .hero__brand {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .hero__brand::before {
+      content: "";
+      width: 8px; height: 8px;
+      background: var(--signature);
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .hero__title {
+      /* Typographie display hypertrophiée — clamp 12vw → 22vw comme demandé */
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(72px, 19vw, 320px);
+      line-height: 0.85;
+      letter-spacing: -0.045em;
+      color: var(--ink);
+      align-self: end;
+      max-width: 14ch;
+      /* Asymétrie volontaire : le titre n'est pas centré, il prend la gauche et déborde optiquement */
+      margin-left: -0.06em;
+      margin-top: 8vh;
+    }
+
+    .hero__title em {
+      /* Détail typographique CHOISI : italique Fraunces opsz dramatique sur un mot pivot */
+      font-style: italic;
+      font-weight: 900;
+      color: var(--signature);
+      font-size: 0.82em;
+      vertical-align: -0.04em;
+    }
+
+    .hero__meta {
+      margin-top: 10vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 4vw;
+    }
+
+    .hero__lede {
+      font-family: var(--font-body);
+      font-size: clamp(15px, 1.15vw, 19px);
+      line-height: 1.55;
+      font-weight: 400;
+      color: var(--ink);
+      max-width: 38ch;
+      /* Tension par la PROPORTION : texte minuscule contre titre énorme */
+    }
+
+    .hero__index {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 14px;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+      align-self: end;
+      text-align: right;
+      line-height: 1.6;
+    }
+    .hero__index strong {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    /* === SIGNATURE 1 — Un seul élément fort par bloc ===================== */
+    .sig-one {
+      padding: var(--pad-block-y) var(--pad-side);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14vh;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .sig-one__caption {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .sig-one__statement {
+      /* L'ÉLÉMENT FORT : un disque coloré seul, asymétrie poussée à droite */
+      display: grid;
+      grid-template-columns: 0.42fr 0.58fr;
+      align-items: center;
+      gap: 4vw;
+    }
+
+    .sig-one__disc {
+      width: clamp(180px, 28vw, 480px);
+      aspect-ratio: 1 / 1;
+      background: var(--signature);
+      border-radius: 999px;
+      justify-self: end;
+    }
+
+    .sig-one__text {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(28px, 3.6vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 22ch;
+    }
+    .sig-one__text em {
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .sig-one__commentary {
+      max-width: 56ch;
+      margin-left: auto;
+      margin-right: 6vw;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink);
+      /* Asymétrie : commentaire poussé à droite, pas centré */
+    }
+    .sig-one__commentary p + p { margin-top: 1.1em; }
+
+    /* === SIGNATURE 2 — Typographie hypertrophiée comme matériau ========== */
+    .sig-typo {
+      padding: var(--pad-block-y) 0;
+      border-top: 1px solid var(--hairline);
+      overflow: hidden;
+    }
+
+    .sig-typo__caption {
+      padding: 0 var(--pad-side);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 14vh;
+    }
+
+    .sig-typo__monolith {
+      /* Un seul mot, énorme, débordant à gauche : signature exaggerated */
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-style: normal;
+      font-size: clamp(140px, 22vw, 380px);
+      line-height: 0.82;
+      letter-spacing: -0.055em;
+      color: var(--ink);
+      padding-left: var(--pad-side);
+      margin-left: -0.04em;
+      /* PAS de hover effect — l'objet typographique parle seul */
+    }
+
+    .sig-typo__monolith span.alt {
+      /* Variation dramatique de poids dans le même mot */
+      font-weight: 300;
+      font-style: italic;
+      color: var(--ink-soft);
+    }
+
+    .sig-typo__split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6vw;
+      padding: 12vh var(--pad-side) 0;
+      align-items: start;
+    }
+
+    .sig-typo__scale {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: var(--font-display);
+      color: var(--ink);
+    }
+    .sig-typo__scale .row {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 10px;
+    }
+    .sig-typo__scale .label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      min-width: 56px;
+    }
+    .sig-typo__scale .sample { font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+    .sig-typo__scale .s-xs { font-size: 14px; font-style: normal; font-weight: 400; }
+    .sig-typo__scale .s-s  { font-size: 22px; }
+    .sig-typo__scale .s-m  { font-size: 44px; font-style: italic; font-weight: 300; }
+    .sig-typo__scale .s-l  { font-size: 88px; font-weight: 900; letter-spacing: -0.04em; }
+    .sig-typo__scale .s-xl { font-size: 140px; font-style: italic; font-weight: 300; letter-spacing: -0.05em; line-height: 0.85; color: var(--signature); }
+
+    .sig-typo__commentary {
+      font-size: 15px;
+      line-height: 1.65;
+      max-width: 44ch;
+      color: var(--ink);
+    }
+    .sig-typo__commentary p + p { margin-top: 1.1em; }
+
+    /* === SIGNATURE 3 — Asymétrie & espace blanc actif ==================== */
+    .sig-asym {
+      padding: var(--pad-block-y) var(--pad-side);
+      border-top: 1px solid var(--hairline);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 6vh 4vw;
+    }
+
+    .sig-asym__caption {
+      grid-column: 1 / 2;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .sig-asym__numero {
+      grid-column: 3 / 4;
+      grid-row: 1 / 2;
+      justify-self: end;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .sig-asym__hero-word {
+      grid-column: 2 / 4;
+      grid-row: 2 / 3;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(60px, 9vw, 160px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      /* L'élément fort POUSSÉ à droite : tension par la position */
+    }
+
+    .sig-asym__hero-word u {
+      text-decoration: none;
+      color: var(--signature);
+      font-weight: 900;
+    }
+
+    .sig-asym__commentary {
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink);
+      max-width: 36ch;
+      /* Le commentaire est minuscule, en bas à gauche, sous le vide */
+    }
+    .sig-asym__commentary p + p { margin-top: 1em; }
+
+    .sig-asym__void {
+      grid-column: 2 / 4;
+      grid-row: 3 / 4;
+      /* Espace blanc ACTIF — composé, pas vide subi.
+         Marqué par un trait minuscule à droite, comme une signature de typographe */
+      position: relative;
+      min-height: 12vh;
+    }
+    .sig-asym__void::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 64px;
+      height: 1px;
+      background: var(--ink);
+    }
+
+    /* === ATMOSPHÈRE — usage typique du style ============================= */
+    .atmosphere {
+      padding: var(--pad-block-y) var(--pad-side);
+      background: var(--paper-deep);
+      border-top: 1px solid var(--hairline);
+      display: grid;
+      grid-template-columns: 0.55fr 0.45fr;
+      gap: 6vw;
+      align-items: center;
+    }
+
+    .atmosphere__visual {
+      /* Composition : un disque accent + un trait + un mot — vocabulaire pur du style */
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: var(--paper);
+      overflow: hidden;
+    }
+    .atmosphere__disc {
+      position: absolute;
+      width: 38%;
+      aspect-ratio: 1 / 1;
+      background: var(--signature);
+      border-radius: 999px;
+      top: 14%;
+      left: 10%;
+    }
+    .atmosphere__line {
+      position: absolute;
+      bottom: 18%;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: var(--ink);
+    }
+    .atmosphere__word {
+      position: absolute;
+      bottom: 4%;
+      left: 10%;
+      right: 10%;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(28px, 4.4vw, 64px);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+    .atmosphere__caption-tl {
+      position: absolute;
+      top: 4%;
+      right: 8%;
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .atmosphere__text h3 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(28px, 3vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 2.4em;
+    }
+    .atmosphere__text dl {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 24px;
+      row-gap: 14px;
+      font-size: 14.5px;
+      line-height: 1.55;
+    }
+    .atmosphere__text dt {
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-top: 3px;
+      white-space: nowrap;
+    }
+    .atmosphere__text dd { color: var(--ink); }
+    .atmosphere__text dd em {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--signature);
+      font-weight: 500;
+    }
+
+    /* === COLOPHON ======================================================== */
+    .colophon {
+      padding: 8vh var(--pad-side);
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .colophon strong { color: var(--ink); font-weight: 500; }
+    .colophon em {
+      font-family: var(--font-display);
+      font-style: italic;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    /* === Responsive — préserve la PROPORTION (signature du style) ======== */
+    @media (max-width: 720px) {
+      :root { --pad-block-y: 14vh; --pad-side: 5vw; }
+      .hero__meta { grid-template-columns: 1fr; gap: 4vh; }
+      .hero__index { text-align: left; }
+      .sig-one__statement { grid-template-columns: 1fr; gap: 4vh; }
+      .sig-one__disc { justify-self: start; width: 60vw; }
+      .sig-one__commentary { margin-right: 0; }
+      .sig-typo__split { grid-template-columns: 1fr; gap: 4vh; }
+      .sig-asym { grid-template-columns: 1fr; }
+      .sig-asym__numero, .sig-asym__hero-word, .sig-asym__commentary, .sig-asym__void {
+        grid-column: 1 / 2;
+      }
+      .sig-asym__numero { justify-self: start; }
+      .atmosphere { grid-template-columns: 1fr; gap: 6vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === HERO ============================================================ -->
+  <section class="hero">
+    <div class="hero__brand">Helio — Studio d'identités contemporaines</div>
+
+    <h1 class="hero__title">
+      Plus<br>
+      <em>peu</em>,<br>
+      plus fort.
+    </h1>
+
+    <div class="hero__meta">
+      <p class="hero__lede">
+        Exaggerated Minimalism pousse l'épure jusqu'à la tension. Un seul élément
+        par bloc — un mot, un disque, un trait — porté par un espace blanc actif
+        et une typographie display hypertrophiée. La signature des studios premium
+        (Instrument, Fantasy, Pentagram) sur leurs sites produit.
+      </p>
+      <p class="hero__index">
+        Bibliothèque de styles BIG<br>
+        N° <strong>05</strong> · Registre Minimaliste
+      </p>
+    </div>
+  </section>
+
+
+  <!-- === SIGNATURE 1 — UN SEUL ÉLÉMENT FORT ============================== -->
+  <section class="sig-one">
+    <div class="sig-one__caption">01 · Un seul élément par bloc</div>
+
+    <div class="sig-one__statement">
+      <div class="sig-one__disc" aria-hidden="true"></div>
+      <p class="sig-one__text">
+        Un disque. <em>Rien d'autre.</em>
+      </p>
+    </div>
+
+    <div class="sig-one__commentary">
+      <p>
+        Le bloc ne contient qu'un disque coloré et trois mots. C'est la règle
+        cardinale du style&nbsp;: chaque vue porte UN signe, et l'œil n'a aucun
+        endroit où se distraire. La densité d'information par écran est
+        volontairement faible — la richesse vient de la qualité du choix, pas
+        du nombre d'éléments.
+      </p>
+      <p>
+        Cette parcimonie distingue Exaggerated Minimalism du minimalisme
+        "propre et simple" (Swiss, Quiet Luxury). Ici, l'épure n'est pas un
+        confort de lecture, c'est une affirmation&nbsp;: ce signe, ce disque,
+        cette couleur — sont assez importants pour mériter cinquante pour cent
+        de la fenêtre.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- === SIGNATURE 2 — TYPOGRAPHIE HYPERTROPHIÉE ========================= -->
+  <section class="sig-typo">
+    <div class="sig-typo__caption">02 · Typographie hypertrophiée, choisie pour ses détails</div>
+
+    <h2 class="sig-typo__monolith">
+      Quiet<span class="alt">/loud</span>
+    </h2>
+
+    <div class="sig-typo__split">
+      <div class="sig-typo__scale" aria-hidden="true">
+        <div class="row"><span class="label">Caps</span><span class="sample s-xs">Helvetica par défaut, Inter en titre — refusés.</span></div>
+        <div class="row"><span class="label">Body</span><span class="sample s-s">Une display CHOISIE pour ses italiques, ses détails de fonderie.</span></div>
+        <div class="row"><span class="label">Lede</span><span class="sample s-m">Fraunces 9pt opsz</span></div>
+        <div class="row"><span class="label">Title</span><span class="sample s-l">Bold</span></div>
+        <div class="row"><span class="label">Hero</span><span class="sample s-xl">Italic</span></div>
+      </div>
+
+      <div class="sig-typo__commentary">
+        <p>
+          La typographie n'est pas un véhicule neutre&nbsp;: c'est le matériau
+          principal. Une display avec une vraie identité — Fraunces et son axe
+          optique dramatique, GT Sectra Display, ABC Diatype Mono Edu — choisie
+          pour ses détails de fonderie (italique, ligatures, axe SOFT).
+        </p>
+        <p>
+          Les variations d'échelle sont brutales&nbsp;: du caption 11&nbsp;px au
+          mot hero à 22&nbsp;vw, sans gradation douce intermédiaire. C'est ce
+          rapport de proportion 1&nbsp;:&nbsp;30 qui crée la tension — pas la
+          taille absolue.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- === SIGNATURE 3 — ASYMÉTRIE & ESPACE BLANC ACTIF ==================== -->
+  <section class="sig-asym">
+    <div class="sig-asym__caption">03 · Asymétries intentionnelles</div>
+    <div class="sig-asym__numero">№ 03</div>
+
+    <h2 class="sig-asym__hero-word">
+      Le vide est <u>composé</u>.
+    </h2>
+
+    <div class="sig-asym__commentary">
+      <p>
+        Ici, le commentaire est en bas à gauche, le titre poussé en bas à
+        droite, et la moitié supérieure de la grille est vide. Pas de centrage
+        Bootstrap. Pas de hero "titre + sous-titre + CTA" symétrique. La
+        composition impose un parcours&nbsp;: l'œil descend, traverse le vide,
+        atterrit sur le mot.
+      </p>
+      <p>
+        Ce vide n'est pas un défaut de remplissage — il est la matière première
+        du bloc. Sa fonction est aussi forte que celle du texte. C'est la
+        différence entre l'épure et la paresse.
+      </p>
+    </div>
+
+    <div class="sig-asym__void" aria-hidden="true"></div>
+  </section>
+
+
+  <!-- === ATMOSPHÈRE & USAGE ============================================= -->
+  <section class="atmosphere">
+    <div class="atmosphere__visual">
+      <span class="atmosphere__caption-tl">Atmosphère</span>
+      <div class="atmosphere__disc" aria-hidden="true"></div>
+      <div class="atmosphere__line" aria-hidden="true"></div>
+      <div class="atmosphere__word">silence.</div>
+    </div>
+
+    <div class="atmosphere__text">
+      <h3>Un signe, un vide, un accent. <em>Le minimum suffit.</em></h3>
+      <dl>
+        <dt>Quand utiliser</dt>
+        <dd>Studios créatifs, agences premium, portfolios d'auteur, marques de luxe digital, sites produit confidentiels (Linear early days, Vercel ship pages).</dd>
+
+        <dt>Quand éviter</dt>
+        <dd>SaaS B2B grand compte (densité d'info attendue), e-commerce volumique, pages marketing avec 12 sections de preuve sociale.</dd>
+
+        <dt>Force</dt>
+        <dd>Rareté visuelle assumée, impression de prix élevé, mémorabilité forte sur un seul écran.</dd>
+
+        <dt>Risque</dt>
+        <dd><em>L'épure subie</em>. Sans typographie choisie ni asymétrie composée, le style retombe en page Bootstrap vide. La discipline est dans le choix, pas dans la soustraction.</dd>
+      </dl>
+    </div>
+  </section>
+
+
+  <!-- === COLOPHON ======================================================== -->
+  <footer class="colophon">
+    <span><strong>Helio</strong> · Specimen 05 / 34</span>
+    <em>Plus peu, plus fort.</em>
+    <span>Bibliothèque BIG · Style Library</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Library — 02. Swiss Modernism 2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-ink: #111111;
+      --color-paper: #f6f4ef;
+      --color-paper-pure: #ffffff;
+      --color-text: #1a1a1a;
+      --color-muted: #6b6b6b;
+      --color-hairline: #d8d4cb;
+      --color-accent: #d72027;
+
+      --font-display: "Playfair Display", "Didot", "Bodoni 72", serif;
+      --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+      --grid-gap: 24px;
+      --grid-cols: 12;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--color-paper);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 32px 56px 96px;
+      position: relative;
+    }
+
+    /* ----- TOP META BAR (folio + rubrique + numéro de section) ----- */
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--color-ink);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    .topbar .left { color: var(--color-muted); }
+    .topbar .center {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: var(--color-ink);
+    }
+    .topbar .right {
+      text-align: right;
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ----- HERO ----- */
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--color-hairline);
+      position: relative;
+    }
+    .hero::before {
+      /* hairline verticale signature */
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0;
+      left: calc((100% - (var(--grid-cols) - 1) * var(--grid-gap)) / var(--grid-cols) * 8 + var(--grid-gap) * 8 - 1px);
+      width: 1px;
+      background: var(--color-hairline);
+    }
+    .hero .section-num {
+      grid-column: 1 / span 2;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--color-accent);
+      padding-top: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero h1 {
+      grid-column: 3 / span 8;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(56px, 9vw, 128px);
+      line-height: 0.94;
+      letter-spacing: -0.025em;
+      color: var(--color-ink);
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-accent);
+    }
+    .hero .lede {
+      grid-column: 3 / span 6;
+      margin-top: 28px;
+      font-size: 19px;
+      line-height: 1.45;
+      color: var(--color-text);
+      max-width: 64ch;
+    }
+    .hero .lede strong {
+      font-weight: 600;
+    }
+    .hero .meta-side {
+      grid-column: 11 / span 2;
+      margin-top: 28px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--color-muted);
+      border-left: 1px solid var(--color-hairline);
+      padding-left: 16px;
+    }
+    .hero .meta-side .label { color: var(--color-ink); display: block; margin-bottom: 4px; }
+    .hero .meta-side .val {
+      display: block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 14px;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--color-ink);
+      margin-bottom: 14px;
+    }
+
+    /* ----- SECTION SHELL ----- */
+    .section {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      padding: 64px 0;
+      border-bottom: 1px solid var(--color-hairline);
+    }
+    .sec-num {
+      grid-column: 1 / span 2;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+      border-top: 1px solid var(--color-ink);
+      padding-top: 10px;
+    }
+    .sec-title {
+      grid-column: 3 / span 5;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 36px;
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+      color: var(--color-ink);
+      border-top: 1px solid var(--color-ink);
+      padding-top: 10px;
+    }
+    .sec-title em { font-style: italic; font-weight: 400; }
+    .sec-body {
+      grid-column: 8 / span 5;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--color-text);
+      border-top: 1px solid var(--color-ink);
+      padding-top: 10px;
+    }
+    .sec-body p + p { margin-top: 14px; }
+
+    /* ----- SIGNATURE 1 — Grille démontrée ----- */
+    .grid-demo {
+      grid-column: 1 / -1;
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      position: relative;
+      padding-top: 14px;
+    }
+    .grid-demo .col {
+      height: 220px;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 31px,
+          var(--color-hairline) 31px,
+          var(--color-hairline) 32px
+        );
+      border-left: 1px solid var(--color-hairline);
+      position: relative;
+    }
+    .grid-demo .col:last-child { border-right: 1px solid var(--color-hairline); }
+    .grid-demo .col .num {
+      position: absolute;
+      top: -22px;
+      left: 4px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .grid-demo .overlay {
+      position: absolute;
+      inset: 14px 0 0 0;
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      pointer-events: none;
+    }
+    .grid-demo .overlay .block {
+      background: var(--color-ink);
+      color: var(--color-paper);
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+      align-self: start;
+    }
+    .grid-demo .overlay .block.headline {
+      grid-column: 3 / span 7;
+      background: transparent;
+      color: var(--color-ink);
+      padding: 0;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+    .grid-demo .overlay .block.headline em { font-style: italic; font-weight: 400; color: var(--color-accent); }
+    .grid-demo .overlay .block.tag {
+      grid-column: 11 / span 2;
+      background: transparent;
+      color: var(--color-accent);
+      padding: 0;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-align: right;
+    }
+    .grid-demo .overlay .block.note {
+      grid-column: 3 / span 4;
+      margin-top: 84px;
+      background: transparent;
+      color: var(--color-text);
+      padding: 0;
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .grid-demo .overlay .block.figure {
+      grid-column: 8 / span 4;
+      margin-top: 84px;
+      background: transparent;
+      color: var(--color-ink);
+      padding: 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .grid-demo .overlay .block.figure span {
+      display: block;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      margin-top: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ----- SIGNATURE 2 — Typographie expressive (italique vs droit) ----- */
+    .typo-demo {
+      grid-column: 1 / -1;
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      align-items: end;
+    }
+    .typo-demo .big {
+      grid-column: 1 / span 9;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(64px, 11vw, 156px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--color-ink);
+    }
+    .typo-demo .big em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-accent);
+    }
+    .typo-demo .caption {
+      grid-column: 10 / span 3;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--color-muted);
+      border-top: 1px solid var(--color-ink);
+      padding-top: 10px;
+    }
+    .typo-demo .caption strong {
+      display: block;
+      color: var(--color-ink);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      margin-bottom: 6px;
+    }
+
+    /* ----- SIGNATURE 3 — Numérotation tabulaire / data ----- */
+    .data-demo {
+      grid-column: 1 / -1;
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      border-top: 1px solid var(--color-ink);
+      padding-top: 18px;
+    }
+    .data-demo .item {
+      grid-column: span 3;
+      border-right: 1px solid var(--color-hairline);
+      padding-right: 16px;
+    }
+    .data-demo .item:last-child { border-right: none; }
+    .data-demo .item .k {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .data-demo .item .v {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--color-ink);
+      font-variant-numeric: tabular-nums;
+      display: block;
+    }
+    .data-demo .item .u {
+      display: inline;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      color: var(--color-muted);
+      margin-left: 4px;
+    }
+    .data-demo .item .l {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+    .data-demo .item.accent .v { color: var(--color-accent); }
+
+    /* ----- ATMOSPHÈRE ----- */
+    .atmosphere {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      padding: 80px 0 40px;
+      border-bottom: 1px solid var(--color-hairline);
+    }
+    .atmosphere .num {
+      grid-column: 1 / span 2;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+      border-top: 1px solid var(--color-ink);
+      padding-top: 10px;
+    }
+    .atmosphere .visual {
+      grid-column: 3 / span 5;
+      aspect-ratio: 4 / 5;
+      background: var(--color-paper-pure);
+      border: 1px solid var(--color-hairline);
+      position: relative;
+      overflow: hidden;
+    }
+    .atmosphere .visual .grid-lines {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, var(--color-hairline) 1px, transparent 1px) 0 0 / calc(100% / 6) 100%,
+        linear-gradient(to bottom, var(--color-hairline) 1px, transparent 1px) 0 0 / 100% calc(100% / 8);
+      opacity: 0.7;
+    }
+    .atmosphere .visual .word {
+      position: absolute;
+      left: 8.33%;
+      top: 38%;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(64px, 12vw, 140px);
+      line-height: 0.88;
+      letter-spacing: -0.03em;
+      color: var(--color-ink);
+    }
+    .atmosphere .visual .word em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-accent);
+      display: block;
+    }
+    .atmosphere .visual .corner-tl,
+    .atmosphere .visual .corner-br {
+      position: absolute;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .atmosphere .visual .corner-tl { top: 14px; left: 14px; }
+    .atmosphere .visual .corner-br { bottom: 14px; right: 14px; }
+    .atmosphere .visual .accent-bar {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      width: 56px;
+      height: 4px;
+      background: var(--color-accent);
+    }
+    .atmosphere .commentary {
+      grid-column: 9 / span 4;
+      border-top: 1px solid var(--color-ink);
+      padding-top: 10px;
+    }
+    .atmosphere .commentary h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--color-ink);
+      margin-bottom: 18px;
+    }
+    .atmosphere .commentary h3 em { font-style: italic; font-weight: 400; }
+    .atmosphere .commentary p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-text);
+    }
+    .atmosphere .commentary p + p { margin-top: 12px; }
+    .atmosphere .commentary .label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--color-accent);
+      margin-bottom: 6px;
+      margin-top: 18px;
+    }
+
+    /* ----- COLOPHON ----- */
+    .colophon {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: var(--grid-gap);
+      padding: 32px 0 0;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+    .colophon .a { grid-column: 1 / span 4; }
+    .colophon .b {
+      grid-column: 5 / span 4;
+      text-align: center;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: var(--color-ink);
+    }
+    .colophon .c { grid-column: 9 / span 4; text-align: right; font-variant-numeric: tabular-nums; }
+
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- Top meta bar : folio + rubrique + section technique -->
+    <header class="topbar">
+      <div class="left">Helio · Revue de design contemporain · N&deg; 02</div>
+      <div class="center">Style Library / <em>Volume 02</em></div>
+      <div class="right">P. 002 — 008 · Mai 2026</div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="section-num">— 01 / Couverture</div>
+      <h1>Swiss <em>Modernism</em><br>2.0</h1>
+      <p class="lede">
+        L'<strong>héritage suisse</strong> mis &agrave; jour pour 2026&nbsp;: grille rigoureuse de douze colonnes, espace blanc structurant, <strong>une seule couleur</strong> active par vue. La version 2.0 ajoute une typographie variable Didone exploit&eacute;e en <em>italique expressif</em> pour faire dialoguer droit et inclin&eacute;.
+      </p>
+      <aside class="meta-side">
+        <span class="label">Registre</span>
+        <span class="val">&Eacute;ditorial</span>
+        <span class="label">Verdict</span>
+        <span class="val">Intemporel</span>
+        <span class="label">R&eacute;f&eacute;rences</span>
+        <span class="val">Pentagram&nbsp;· Studio Size · Bureau Mirko Borsche</span>
+      </aside>
+    </section>
+
+    <!-- SIGNATURE 1 — Grille -->
+    <section class="section">
+      <div class="sec-num">— 02 / Signature</div>
+      <h2 class="sec-title">La grille n'est pas <em>cach&eacute;e</em> : elle se voit, elle compose.</h2>
+      <div class="sec-body">
+        <p>Dans Swiss Modernism 2.0, la grille de douze colonnes est l'ossature visible de la page. Les hairlines verticales d'1&nbsp;pixel ne sont pas un accident&nbsp;: elles signalent la rigueur du syst&egrave;me et autorisent les compositions <em>asym&eacute;triques contr&ocirc;l&eacute;es</em>.</p>
+        <p>Aucun &eacute;l&eacute;ment ne flotte. Tout s'aligne sur une colonne, tout commence ou se termine sur une ligne du module. La libert&eacute; vient du choix des combinaisons, pas de l'absence de r&egrave;gle.</p>
+      </div>
+
+      <!-- D&eacute;monstration visuelle de la grille 12 colonnes -->
+      <div class="grid-demo" aria-hidden="true">
+        <div class="col"><span class="num">01</span></div>
+        <div class="col"><span class="num">02</span></div>
+        <div class="col"><span class="num">03</span></div>
+        <div class="col"><span class="num">04</span></div>
+        <div class="col"><span class="num">05</span></div>
+        <div class="col"><span class="num">06</span></div>
+        <div class="col"><span class="num">07</span></div>
+        <div class="col"><span class="num">08</span></div>
+        <div class="col"><span class="num">09</span></div>
+        <div class="col"><span class="num">10</span></div>
+        <div class="col"><span class="num">11</span></div>
+        <div class="col"><span class="num">12</span></div>
+
+        <div class="overlay">
+          <div class="block headline">Composer <em>asym&eacute;trique</em>, aligner parfait.</div>
+          <div class="block tag">— Module 03/12</div>
+          <div class="block note">L'objet visuel commence colonne&nbsp;3, le titre s'arr&ecirc;te colonne&nbsp;9, la l&eacute;gende habite la marge droite. Trois d&eacute;cisions, une seule grille.</div>
+          <div class="block figure">12<span>colonnes &middot; gouttière 24px</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 2 — Typographie -->
+    <section class="section">
+      <div class="sec-num">— 03 / Typographie</div>
+      <h2 class="sec-title">Un Didone variable. Le droit pose, l'<em>italique</em> chante.</h2>
+      <div class="sec-body">
+        <p>La signature 2.0 par rapport au Swiss original&nbsp;: <strong>l'italique d'un mot</strong> dans le titre. Pas une fioriture, une opposition. Le droit affirme la stabilit&eacute; du syst&egrave;me, l'italique l&egrave;ve un mot pour porter la tension &eacute;ditoriale.</p>
+        <p>Choix de fontes&nbsp;: Playfair Display (Didone, axes ital + wght) en display ; Inter en corps. Aucune fonte d&eacute;corative. Aucune troisi&egrave;me famille. La rigueur typographique fait le travail.</p>
+      </div>
+
+      <div class="typo-demo">
+        <div class="big">
+          Tension par<br>l'<em>italique</em>.
+        </div>
+        <div class="caption">
+          <strong>Display / Didone variable</strong>
+          Playfair Display 600 droit + 400 italique. L'italique sert &agrave; isoler un mot, jamais une phrase enti&egrave;re. C'est l'accent &eacute;ditorial signature de la version 2.0.
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE 3 — Donn&eacute;es / chiffres tabulaires -->
+    <section class="section">
+      <div class="sec-num">— 04 / Vocabulaire</div>
+      <h2 class="sec-title">Chiffres <em>tabulaires</em>, micro-labels, num&eacute;rotation technique.</h2>
+      <div class="sec-body">
+        <p>Le vocabulaire emprunt&eacute; &agrave; l'imprim&eacute; — folio, rubrique, num&eacute;ro de section, l&eacute;gende — n'est pas d&eacute;coratif&nbsp;: il <em>structure</em> la lecture. Les chiffres sont en font-variant tabulaire pour s'aligner verticalement sans effort.</p>
+        <p>Une seule couleur active par vue. Ici, le rouge signal n'apparait que sur les italiques et les marqueurs critiques — deux ou trois fois maximum.</p>
+      </div>
+
+      <div class="data-demo">
+        <div class="item">
+          <span class="k">— 01 &middot; Colonnes</span>
+          <span class="v">12<span class="u">/grille</span></span>
+          <span class="l">Module fixe. Toutes les compositions se posent sur ces douze colonnes, jamais en dehors.</span>
+        </div>
+        <div class="item">
+          <span class="k">— 02 &middot; Hairlines</span>
+          <span class="v">1<span class="u">px</span></span>
+          <span class="l">S&eacute;parateurs structurels, jamais d&eacute;coratifs. Toujours d'1&nbsp;pixel, jamais &eacute;pais.</span>
+        </div>
+        <div class="item accent">
+          <span class="k">— 03 &middot; Accent</span>
+          <span class="v">01<span class="u">couleur</span></span>
+          <span class="l">Une seule couleur active par vue. Deux usages maximum. La parcimonie chromatique fait l'autorit&eacute;.</span>
+        </div>
+        <div class="item">
+          <span class="k">— 04 &middot; Radius</span>
+          <span class="v">00<span class="u">px</span></span>
+          <span class="l">Angles droits. Aucune courbe non fonctionnelle. Aucun border-radius arrondi.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATMOSPH&Egrave;RE -->
+    <section class="atmosphere">
+      <div class="num">— 05 / Atmosph&egrave;re</div>
+
+      <div class="visual" aria-hidden="true">
+        <div class="grid-lines"></div>
+        <div class="corner-tl">N&deg; 02 &middot; Specimen</div>
+        <div class="word">Helio<em>type</em></div>
+        <div class="accent-bar"></div>
+        <div class="corner-br">P. 008 / 008</div>
+      </div>
+
+      <div class="commentary">
+        <h3>Couleur &eacute;motionnelle&nbsp;: silence <em>structur&eacute;</em>, autorit&eacute; calme.</h3>
+        <p>Papier cr&egrave;me, encre noire, un seul rouge signal&nbsp;: la palette d'une revue qui ne crie pas mais qui prend la parole. La temp&eacute;rature est froide-stable, l'&eacute;nergie vient des contrastes typographiques et des vides.</p>
+
+        <span class="label">Quand utiliser</span>
+        <p>&Eacute;dition num&eacute;rique, magazines en ligne, fonds documentaires, archives savantes, marques culturelles &agrave; voix forte. Plateformes &eacute;ditoriales B2B premium. Sites d'agences cr&eacute;atives, studios de design, cabinets d'architectes.</p>
+
+        <span class="label">Quand l'&eacute;viter</span>
+        <p>Marques pop &eacute;motionnelles, e-commerce de masse, SaaS B2B densit&eacute;-data (pr&eacute;f&eacute;rer Bento). &Eacute;galement &agrave; &eacute;viter pour les jeunes marques qui doivent prouver leur l&eacute;gitimit&eacute; par la chaleur — Swiss demande l'autorit&eacute; calme.</p>
+      </div>
+    </section>
+
+    <!-- COLOPHON -->
+    <footer class="colophon">
+      <div class="a">Style Library &middot; BIG</div>
+      <div class="b">Specimen <em>02</em> / 34</div>
+      <div class="c">Mai 2026 &middot; Version 1.0</div>
+    </footer>
+
+  </main>
+</body>
+</html>
