@@ -46,6 +46,25 @@ ROOT_FILES_TO_PORT=(
 # adapté manuellement (références persos à Charles à retirer). Voir étape
 # manuelle dans le plan.
 
+# Overrides "version publique" — fichiers du sandbox qui ont une version
+# interne (détails sous le capot, infos privées) et une version publique
+# (user-facing). Le script EXCLUT la version interne du rsync et copie la
+# version publique en la renommant.
+#
+# Format : "chemin_source_dans_sandbox:chemin_destination_dans_portable"
+# La source DOIT exister dans le sandbox (sinon warning skip).
+# La destination écrase ce qui aurait été synchronisé via rsync.
+PUBLIC_OVERRIDES=(
+  ".claude/skills/brand-identity/ref/pipeline-overview-public.md:.claude/skills/brand-identity/ref/pipeline-overview.md"
+)
+
+# Fichiers EXCLUS du rsync brut (parce qu'ils sont remplacés par leur version
+# publique via PUBLIC_OVERRIDES). Doit être maintenu en cohérence avec
+# PUBLIC_OVERRIDES — chaque entrée correspond à la destination.
+RSYNC_EXTRA_EXCLUDES_FROM_OVERRIDES=(
+  "ref/pipeline-overview.md"
+)
+
 # Exclusions dans tout dossier copié (parasites, sensibles, etc.)
 RSYNC_EXCLUDES=(
   # macOS
@@ -158,6 +177,13 @@ for exclude in "${RSYNC_EXCLUDES[@]}"; do
   RSYNC_OPTS+=(--exclude="$exclude")
 done
 
+# Exclusions supplémentaires liées aux overrides "version publique"
+# (on évite que rsync copie la version interne par-dessus la version publique
+# qu'on injectera ensuite via la boucle PUBLIC_OVERRIDES)
+for exclude in "${RSYNC_EXTRA_EXCLUDES_FROM_OVERRIDES[@]}"; do
+  RSYNC_OPTS+=(--exclude="$exclude")
+done
+
 # ─────────────────────────────────────────────────────────────────────────────
 # BANNER
 # ─────────────────────────────────────────────────────────────────────────────
@@ -196,6 +222,49 @@ for skill in "${SKILLS_TO_PORT[@]}"; do
   echo -e "  ${BLUE}→${NC} $skill"
   mkdir -p "$DST"
   rsync "${RSYNC_OPTS[@]}" "$SRC" "$DST" | sed 's/^/      /'
+done
+echo
+
+# ─────────────────────────────────────────────────────────────────────────────
+# OVERRIDES VERSION PUBLIQUE
+# ─────────────────────────────────────────────────────────────────────────────
+# Pour chaque entrée de PUBLIC_OVERRIDES, on copie la version publique
+# (`*-public.md` dans le sandbox) vers son emplacement final dans le portable
+# (sans le suffixe). La version interne du sandbox a été exclue du rsync brut
+# via RSYNC_EXTRA_EXCLUDES_FROM_OVERRIDES.
+#
+# Si la version publique n'existe pas encore dans le sandbox (Charles ne l'a
+# pas encore rédigée), on warn et on skip — la destination dans le portable
+# restera dans son état précédent (ou inexistante au premier sync).
+
+echo -e "${BOLD}── Overrides version publique ──${NC}"
+if [ ${#PUBLIC_OVERRIDES[@]} -eq 0 ]; then
+  echo -e "  ${YELLOW}(aucun override configuré)${NC}"
+fi
+for mapping in "${PUBLIC_OVERRIDES[@]}"; do
+  SRC_REL="${mapping%%:*}"
+  DST_REL="${mapping##*:}"
+  SRC="$SANDBOX/$SRC_REL"
+  DST="$PORTABLE/$DST_REL"
+
+  if [ ! -f "$SRC" ]; then
+    echo -e "  ${YELLOW}⚠ $SRC_REL — version publique absente du sandbox${NC}"
+    echo -e "    ${YELLOW}(la destination $DST_REL ne sera pas mise à jour)${NC}"
+    continue
+  fi
+
+  echo -e "  ${BLUE}→${NC} $SRC_REL ${NC}→${NC} $DST_REL"
+  mkdir -p "$(dirname "$DST")"
+
+  if [ "$APPLY" -eq 1 ]; then
+    cp "$SRC" "$DST"
+  else
+    if [ ! -f "$DST" ] || ! cmp -s "$SRC" "$DST"; then
+      echo -e "      ${YELLOW}(would copy)${NC}"
+    else
+      echo -e "      (identique, no-op)"
+    fi
+  fi
 done
 echo
 
