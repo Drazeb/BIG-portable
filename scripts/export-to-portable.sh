@@ -78,9 +78,12 @@ PUBLIC_OVERRIDES=(
 
 # Fichiers EXCLUS du rsync brut (parce qu'ils sont remplacés par leur version
 # publique via PUBLIC_OVERRIDES). Doit être maintenu en cohérence avec
-# PUBLIC_OVERRIDES — chaque entrée correspond à la destination.
+# PUBLIC_OVERRIDES — chaque entrée correspond à la destination + on exclut
+# aussi le fichier source `-public.md` du sandbox (sinon il se retrouve aussi
+# copié à côté du fichier sans suffixe, ce qui est redondant).
 RSYNC_EXTRA_EXCLUDES_FROM_OVERRIDES=(
   "ref/pipeline-overview.md"
+  "ref/pipeline-overview-public.md"
 )
 
 # Exclusions dans tout dossier copié (parasites, sensibles, etc.)

@@ -33,12 +33,28 @@ Le processus est guidé étape par étape — je te demanderai tes inputs et val
 
 `/brand-identity` est le pipeline principal de création d'identité. D'autres skills le complètent ou peuvent être invoqués indépendamment :
 
+- **`/test-big`** — Test runner pour reprendre le pipeline BIG à partir d'une phase spécifique sur la base d'une session existante. Utile si tu veux itérer sur la Phase 4 sans refaire le brief et le scoping, ou si le pipeline a planté en cours et que tu veux reprendre là où il s'est arrêté.
 - **`/brand-book`** — Génère un brand book HTML éditorial à partir d'un pack BIG complet : cover painterly + intro Identity Card bento + 8 sections documentaires (Big Idea, Concept, Identité, Palette, Typographie, Système, Applications, Photo & Illustration) + closing. Invoqué automatiquement en Phase 8 de BIG, mais peut aussi être lancé seul sur un pack existant.
-- **`/landing-page`** — Génère des landing pages HTML auto-portées depuis un brief, un design system, ou directement depuis un pack BIG.
+- **`/landing-page`** — Génère des landing pages HTML auto-portées depuis un brief, un design system, ou directement depuis un pack BIG. *(disponible dans un repo séparé, à venir)*
 - **`/visual-brief`** — Génère les prompts visuels (MidJourney / Recraft / Nano Banana 2) pour un projet BIG, analyse les images résultantes et prépare leur intégration pour la Phase 4. Utilisé en Phase 3C de BIG, invocable seul.
 - **`/visual-prompt`** — Workflow itératif MidJourney → Nano Banana 2 → animation Recraft pour produire des visuels IA niveau Awards. Tourne en session parallèle, sans dépendance aux fichiers BIG.
-- **`/audit-elite`** — Juge **relatif** : compare un style-tile BIG aux étalons Awards et prescrit les corrections pour atteindre le niveau élite.
-- **`/audit-slop`** — Juge **absolu** : évalue un style-tile contre 4 grilles de règles universelles (Craft Moderne / Vercel / BIG Pipeline / Perplexity Temporel) et produit un verdict consolidé. Complémentaire à `/audit-elite`.
+- **`/audit-elite`** — Juge **relatif** : compare un style-tile BIG aux étalons Awards et prescrit les corrections pour atteindre le niveau élite. *(disponible dans un repo séparé, à venir)*
+- **`/audit-slop`** — Juge **absolu** : évalue un style-tile contre 4 grilles de règles universelles (Craft Moderne / Vercel / BIG Pipeline / Perplexity Temporel) et produit un verdict consolidé. Complémentaire à `/audit-elite`. *(disponible dans un repo séparé, à venir)*
+
+---
+
+## Phase 0 — Preflight Check
+
+Avant la collecte du brief, je lance une **vérification automatique** des dépendances installées sur ta machine. Tu vois :
+
+- Ce qui est **bloquant** (Node, Python, git — sans ça le pipeline ne tourne pas) et ce qui te manque éventuellement, avec la commande d'install pour chaque
+- Ce qui est **optionnel** (vtracer pour les logos, abonnements MidJourney / Recraft / Perplexity / Nano Banana 2 pour les visuels, SPG-portable pour le brand book final) — chaque dep est rattachée à la phase qui en a besoin, donc tu peux skipper la phase si tu ne veux pas installer
+- L'**état du repo** vs GitHub (combien de commits de retard si tu n'as pas pull récemment)
+
+Tu peux répondre "continue" pour démarrer (je skip automatiquement les phases dont les deps manquent), ou lister les phases que tu veux skipper explicitement (`skip logo`, `skip visuels`, etc.).
+
+*Skip pour le mainteneur : la variable d'environnement `BIG_SKIP_PREFLIGHT=1` saute la Phase 0 — utile en dev pour itérer rapidement sans repasser par la checklist.*
+→ Ton input : **"continue"** ou liste des phases à skipper
 
 ---
 
