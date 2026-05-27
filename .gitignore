@@ -1,0 +1,63 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Sessions outputs (générés à l'usage, jamais versionnés)
+.claude/skills/*/outputs/
+outputs/
+
+# Briefs clients (confidentiels — ne jamais committer)
+.claude/skills/*/briefs/
+briefs/
+
+# Backups internes du sandbox (parasites)
+*.bak
+*.bak-pre-*
+*.backup
+
+# Fichiers temporaires
+.tmp-*
+*.tmp
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+.npm/
+
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+*-api-key*
+
+# Assets binaires lourds (sauf whitelist explicite via .gitkeep dans un sous-dossier)
+*.b64
+
+# Logs
+*.log
+.progress-*.log
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Système
+Thumbs.db
+ehthumbs.db
