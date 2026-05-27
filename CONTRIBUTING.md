@@ -4,7 +4,7 @@ Merci de l'intérêt que vous portez à ce projet.
 
 ## Statut du projet
 
-Ce projet est principalement maintenu par [Charles Bezard](https://github.com/charlesbezard). Il évolue activement et la roadmap est dirigée par les usages internes.
+Ce projet est principalement maintenu par [Charles Bezard](https://github.com/Drazeb). Il évolue activement et la roadmap est dirigée par les usages internes.
 
 Les pull requests externes sont les bienvenues, mais merci d'ouvrir une issue de discussion **avant** d'investir du temps sur un changement non trivial — pour éviter les efforts perdus sur des directions qui ne s'aligneraient pas avec la trajectoire du projet.
 

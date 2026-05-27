@@ -10,7 +10,7 @@ BIG est un système de skills Claude Code qui guide la création complète d'une
 
 ```bash
 # 1. Clone le repo (hors Google Drive recommandé)
-git clone https://github.com/charlesbezard/BIG-portable.git ~/repos/BIG-portable
+git clone https://github.com/Drazeb/BIG-portable.git ~/repos/BIG-portable
 
 # 2. Ouvre Claude Code dans le dossier
 cd ~/repos/BIG-portable
@@ -43,7 +43,7 @@ claude
 | **Abo Recraft** | Phase 3C illustrations flat | Tu restes en registre photo only | [recraft.ai](https://www.recraft.ai) |
 | **Abo Perplexity Pro** | Phase 3B-7c (image-pivot stylistique) | Tu acceptes un pipeline sans image-pivot | [perplexity.ai/pro](https://www.perplexity.ai/pro) |
 | **Abo Nano Banana 2** | Étapes d'édition d'images (Phase 3C, brand book) | Tu n'éditer pas les visuels post-MJ | [nanobanana.ai](https://nanobanana.ai) |
-| **SPG-portable** (repo séparé) | Phase 8 — section pitch deck du brand book | Tu ne veux pas le brand book final | `git clone https://github.com/charlesbezard/SPG-portable.git ~/repos/SPG-portable` *(pas encore disponible — à venir)* |
+| **SPG-portable** (repo séparé) | Phase 8 — section pitch deck du brand book | Tu ne veux pas le brand book final | `git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable` *(pas encore disponible — à venir)* |
 
 La Phase 0 Preflight au lancement du skill détecte automatiquement ce qui est installé et te dit ce qui manque pour les phases que tu veux faire.
 
@@ -95,7 +95,7 @@ La dernière étape du pipeline produit un brand book HTML éditorial via le ski
 Si tu veux générer le brand book complet :
 
 ```bash
-git clone https://github.com/charlesbezard/SPG-portable.git ~/repos/SPG-portable
+git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable
 ```
 
 *(SPG-portable n'est pas encore publié — il sera mis à disposition prochainement. La Phase 8 fonctionne sans : la section Pitch Deck est simplement omise.)*
@@ -119,7 +119,7 @@ Tes sessions de travail (dossier `.claude/skills/brand-identity/outputs/`) reste
 
 ## Contributing
 
-Voir [`CONTRIBUTING.md`](CONTRIBUTING.md). Le projet est principalement maintenu par [Charles Bezard](https://github.com/charlesbezard). Pour signaler un bug ou proposer une amélioration, ouvre une [issue GitHub](../../issues) d'abord — on en discute avant de coder.
+Voir [`CONTRIBUTING.md`](CONTRIBUTING.md). Le projet est principalement maintenu par [Charles Bezard](https://github.com/Drazeb). Pour signaler un bug ou proposer une amélioration, ouvre une [issue GitHub](../../issues) d'abord — on en discute avant de coder.
 
 ## License
 
