@@ -16,7 +16,7 @@ Système de génération d'identités de marque de classe mondiale. Deux modes :
 ```
 Phase 1 · Analyse du brief      → Score de confiance + Ventre Mou + signaux de Tension
      ↓
-Phase 2 · Scoping                → Tension de Marque + Curseurs A×B + Concept de Réconciliation + Territoires Créatifs (mots-clés → clusters → mix pondéré)
+Phase 2 · Scoping                → Tension de Marque + Curseurs A×B + Territoires Créatifs (mots-clés → clusters → mix pondéré)
      ↓
 Phase 3A · Concepts narratifs    → 3 subagents séquentiels (chacun voit les précédents + doit diverger) → 3 récits
      ↓
@@ -102,7 +102,7 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 
 - **Ce qu'elle fait** : Synthétise la Tension de Marque, collecte les choix créatifs de l'utilisateur
 - **Input** : `{brand}-brief-analysis.md`
-- **Output** : `{brand}-scoping.md` (avec section Concept de Réconciliation) + `{brand}-territoires.md` (mots-clés + clusters + mix pondéré) + variables stockées (curseurs A×B, concept de réconciliation, mix de territoires)
+- **Output** : `{brand}-scoping.md` + `{brand}-territoires.md` (mots-clés + clusters + mix pondéré) + variables stockées (curseurs A×B, mix de territoires)
 - **Règles clés** :
   - **Curseur A** (Audace Créative) : intensité du traitement visuel (1=Prudent / 2=Décalé / 3=Rupture). Indexe la typo, les layouts, la complexité CSS
   - **Curseur B** (Différenciation) : distance par rapport aux normes du secteur (1=Mimétisme / 2=Distinction / 3=Contre-pied ZAG). Indexe la palette, le ton, le langage visuel
@@ -110,37 +110,35 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
   - L'utilisateur choisit UNE combinaison A×B qui s'applique aux 3 concepts
   - 15-20 mots-clés extraits du brief (4 axes) → clustering en 4-5 territoires créatifs → mix pondéré par l'utilisateur (Principal/Secondaire/Accent)
 
-**Sous le capot** — cette phase a 3 étapes distinctes :
+**Sous le capot** — cette phase a 4 étapes distinctes :
 
 **Étape 2A** (subagent) : Lance **1 subagent** qui lit l'analyse Phase 1 + les refs. Le subagent produit UNIQUEMENT la synthèse de la Tension et du Ventre Mou + un avis du DA. Il ne propose PAS de curseurs ni de noms de concepts — c'est explicitement interdit dans son prompt (pour ne pas biaiser le choix de l'utilisateur).
 
 **Étape 2B** (orchestrateur) : Présente la Tension à l'utilisateur, demande validation. Puis affiche le système de curseurs A×B avec la description de chaque niveau (1/2/3) et demande le choix. C'est l'utilisateur qui décide, pas le système.
 
-**Étape 2C** (orchestrateur + subagent léger) : Réconciliation de la tension. Un subagent léger reçoit les 2 pôles + le contexte du brief et propose 5 caractéristiques de réconciliation (méthode "moteur commun" — chercher le trait de caractère qui PRODUIT les deux pôles). L'orchestrateur présente les 5 en tableau, l'utilisateur choisit ou reformule. Le concept choisi est écrit dans `{brand}-scoping.md` (section "Concept de Réconciliation") et stocké dans la variable `{reconciliation_concept}`. Ce concept devient l'ancrage unique pour les concepts narratifs.
+**Étape 2C** (subagent) : Territoires Créatifs. Un subagent extrait 15-20 mots-clés du brief selon 4 axes (métier/produit, valeurs/culture, marché/audience, aspirations/vision), puis les clustérise en 4-5 territoires créatifs (chacun avec un nom évocateur, 3-5 mots-clés, et une ligne de tension). L'orchestrateur présente les territoires à l'utilisateur.
 
-**Étape 2D** (subagent) : Territoires Créatifs. Un subagent extrait 15-20 mots-clés du brief selon 4 axes (métier/produit, valeurs/culture, marché/audience, aspirations/vision), puis les clustérise en 4-5 territoires créatifs (chacun avec un nom évocateur, 3-5 mots-clés, et une ligne de tension). L'orchestrateur présente les territoires à l'utilisateur.
-
-**Étape 2E** (orchestrateur, inline) : Mix pondéré. L'utilisateur attribue un rôle à chaque territoire : Principal (le cœur du concept), Secondaire (colore et enrichit), Accent (touche distinctive). L'orchestrateur stocke le mix dans `{brand}-territoires.md`. Ce mix est la matière première pour les concepts narratifs.
+**Étape 2D** (orchestrateur, inline) : Mix pondéré. L'utilisateur attribue un rôle à chaque territoire : Principal (le cœur du concept), Secondaire (colore et enrichit), Accent (touche distinctive). L'orchestrateur stocke le mix dans `{brand}-territoires.md`. Ce mix est la matière première pour les concepts narratifs.
 
 ---
 
 ### Phase 3A · Concepts narratifs (Pass A)
 
 - **Ce qu'elle fait** : Génère des récits conceptuels distincts à partir du mix de territoires créatifs. Zéro design — que du narratif. **Depuis D57 (14 mai 2026), 2 modes au choix de l'utilisateur** : Mode Génératif (3 subagents séquentiels qui inventent les concepts) ou Mode Sélectif (les concepts sont CHOISIS dans un pool de 100 mots tirés d'un registre — produit des noms plus sobres type "Phare" / "Magnitude" au lieu de "Le Phare de Ralliement").
-- **Input** : `{brand}-brief-analysis.md` + `{brand}-scoping.md` (avec concept de réconciliation) + `{brand}-territoires.md` (mix pondéré) + curseurs
+- **Input** : `{brand}-brief-analysis.md` + `{brand}-scoping.md` + `{brand}-territoires.md` (mix pondéré) + curseurs
 - **Output** : `{brand}-concepts-narratifs-v{N}.md` (format identique entre les 2 modes → Phase 3B aval mode-agnostique)
 - **Règles clés** :
-  - **Choix du mode à l'Étape 2F** : 1 = Génératif libre, 2 = Génératif orienté registre, 3 = Sélectif par registre. Le mode peut changer entre les batches.
+  - **Choix du mode à l'Étape 2E** : 1 = Génératif libre, 2 = Génératif orienté registre, 3 = Sélectif par registre. Le mode peut changer entre les batches.
   - **Séquentiel avec divergence (Mode Génératif)** : chaque subagent voit les concepts précédents et DOIT diverger structurellement
   - **Choix dans un pool (Mode Sélectif)** : le LLM choisit dans 100 mots du registre, pas d'invention de nom → noms mono-mots ou composés courts limpides
-  - **Ancrage = concept de réconciliation** : le trait réconcilié (D30) reste le cœur de chaque concept dans les 2 modes
+  - **Ancrage = territory mix** : le mix de territoires (extrait du brief) est le cœur de chaque concept dans les 2 modes
   - **Territoires comme matière** : le mix Principal/Secondaire/Accent oriente le récit sans le contraindre
   - **Zéro spec visuelle** (pas de couleur, police, HEX) — le récit est jugé sur sa force conceptuelle uniquement
   - **Accumulation cross-batch cross-mode** : un user peut accumuler v1 Sélectif + v2 Génératif + v3 Sélectif autre registre → sélection finale libre parmi tout l'accumulé
 
 **Sous le capot Mode Génératif** (3 subagents séquentiels — inchangé depuis l'origine) :
 
-1. **Concept 1** (subagent) : reçoit le mix de territoires + concept de réconciliation + brief analysis + scoping. Génère 1 concept narratif complet. Le subagent lit `persona-and-rules.md`, `bible-design-strategie.md`, un exemple de pitch. Output écrit dans `{brand}-concepts-narratifs-v{N}.md`
+1. **Concept 1** (subagent) : reçoit le mix de territoires + brief analysis + scoping. Génère 1 concept narratif complet. Le subagent lit `persona-and-rules.md`, `bible-design-strategie.md`, un exemple de pitch. Output écrit dans `{brand}-concepts-narratifs-v{N}.md`
 2. **Concept 2** (subagent) : mêmes inputs + le concept 1 comme contexte + instruction de divergence structurelle. Ajoute au fichier.
 3. **Concept 3** (subagent) : mêmes inputs + les concepts 1 et 2 + instruction de divergence. Complète le fichier.
 4. L'orchestrateur ouvre le fichier dans MarkView, affiche un résumé court (3 lignes par concept), et demande validation.

@@ -42,7 +42,8 @@ claude
 | **Abo MidJourney** | Phase 3C visuels, Phase Logo | Tu n'utilises pas de visuels IA | [midjourney.com](https://www.midjourney.com) |
 | **Abo Recraft** | Phase 3C illustrations flat | Tu restes en registre photo only | [recraft.ai](https://www.recraft.ai) |
 | **Abo Perplexity Pro** | Phase 3B-7c (image-pivot stylistique) | Tu acceptes un pipeline sans image-pivot | [perplexity.ai/pro](https://www.perplexity.ai/pro) |
-| **Abo Nano Banana 2** | Étapes d'édition d'images (Phase 3C, brand book) | Tu n'éditer pas les visuels post-MJ | [nanobanana.ai](https://nanobanana.ai) |
+| **Clé API Gemini** | Phase 3B-7c (corrections NB2 dans /visual-prompt) et toutes les variantes d'atmosphère | Tu te passes des corrections NB2 et des variantes | Obtenir une clé gratuite sur [Google AI Studio](https://aistudio.google.com/app/apikey) |
+| **nano-banana-edit-portable** (repo séparé) | Phase 3B-7c — toutes les corrections NB2 du workflow itératif + génération des variantes d'atmosphère | Tu te passes des corrections NB2 (workflow visual-prompt dégradé) | `git clone https://github.com/Drazeb/nano-banana-edit-portable.git ~/repos/nano-banana-edit-portable && cd ~/repos/nano-banana-edit-portable && cp .env.example .env && # éditer .env avec ta clé Gemini` |
 | **SPG-portable** (repo séparé) | Phase 8 — section pitch deck du brand book | Tu ne veux pas le brand book final | `git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable` |
 
 La Phase 0 Preflight au lancement du skill détecte automatiquement ce qui est installé et te dit ce qui manque pour les phases que tu veux faire.
@@ -77,8 +78,7 @@ Pour le **pourquoi** des décisions structurantes, voir [`docs/internal/`](docs/
 | Skill | Invocation | Rôle |
 |---|---|---|
 | **brand-identity** | `/brand-identity` | Le pipeline principal de création d'identité (mode création 7 phases ou aspiration 5 phases) |
-| **visual-brief** | `/visual-brief` | Génère les prompts visuels (MidJourney / Recraft / Nano Banana 2), analyse les images, prépare leur intégration. Invoqué en Phase 3C de BIG, ou seul. |
-| **visual-prompt** | `/visual-prompt` | Workflow itératif MidJourney → Nano Banana 2 → Recraft pour produire des visuels IA de niveau Awards |
+| **visual-prompt** | `/visual-prompt` | Workflow itératif MidJourney → Nano Banana 2 → Recraft pour produire des visuels IA de niveau Awards. **2 modes** : (1) hero principal depuis un rapport Perplexity, (2) variantes (atmosphere/closeup/macro/pov) dérivées d'un hero existant, en s'appuyant sur le framework librairie atmosphère du nb-prompting-guide. Invoqué en Phase 3B-7c et 3B-7e de BIG. **Dépend de [nano-banana-edit-portable](https://github.com/Drazeb/nano-banana-edit-portable) (repo séparé, à cloner côte à côte) pour les corrections NB2.** |
 | **brand-book** | `/brand-book` | Génère un brand book HTML éditorial à partir d'un pack BIG (cover + intro Identity Card + 8 sections + closing). Invoqué automatiquement en Phase 8 de BIG, ou seul. |
 | **test-big** | `/test-big` | Test runner pour reprendre le pipeline BIG à partir d'une phase spécifique (utile en debug ou si le pipeline a planté) |
 

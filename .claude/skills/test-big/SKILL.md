@@ -30,10 +30,9 @@ Afficher exactement ce texte :
   1    — Analyse du brief (brief analysé, score de confiance)
   2A   — Scoping stratégique (tension de marque, ventre mou sectoriel, diagnostic température)
   2B   — Choix des curseurs A×B (niveau d'audace, niveau de rupture)
-  2C   — Concept de réconciliation (5 propositions → 1 trait unificateur)
-  2D   — Extraction des territoires (15-20 mots-clés → 4-5 clusters)
-  2E   — Pondération des territoires (Principal / Secondaire / Accent)
-  3A1  — Concepts narratifs (mode Génératif libre/registre OU mode Sélectif — choix du mode à l'Étape 2F)
+  2C   — Extraction des territoires (15-20 mots-clés → 4-5 clusters)
+  2D   — Pondération des territoires (Principal / Secondaire / Accent)
+  3A1  — Concepts narratifs (mode Génératif libre/registre OU mode Sélectif — choix du mode à l'Étape 2E)
   3A2  — Concepts supplémentaires (batch additionnel — mode au choix, accumulation cross-mode)
   3B-1 — Routeur chromatique (gammes couleurs autorisées + planche visuelle, anti-slop sectoriel)
   3B-2 — Palettes (3 palettes divergentes A/B/C par concept, planche comparative, choix utilisateur, mini-check aversions couleur)
@@ -117,10 +116,10 @@ Scanner `{source_dir}` et vérifier que les fichiers requis pour la phase demand
 | `2A` | `{brand}-brief-analysis.md` |
 | `2B` | + `{brand}-scoping.md` (avec section Tension) |
 | `2C` | + `{brand}-scoping.md` (avec curseurs A×B) |
-| `2D` | + `{brand}-scoping.md` (avec section Concept de Réconciliation) |
-| `2E` | + `{brand}-territoires-v*.md` |
+| `2D` | + `{brand}-territoires-v*.md` |
 | `3A1` | + `{brand}-scoping.md` (avec section Mix de Territoires) |
 | `3A2` | + `{brand}-scoping.md` (avec section Mix de Territoires) + `{brand}-concepts-narratifs*.md` (au moins 1 batch existant) |
+
 | `3B-1` | + `{brand}-concepts-narratifs.md` + `{brand}-validated-temperature.md` (optionnel — guidance température depuis Phase 2A ; si absent, le routeur tourne sans). Le routeur est isolé des autres fichiers. |
 | `3B-2` | + `{brand}-concepts-narratifs.md` + `{brand}-chromatic-gamuts.md` (le subagent palette consomme uniquement chromatic-gamuts + concept ; les fonts ne sont PAS un input ; les aversions sont confrontées a posteriori par mini-check orchestrateur lisant brief-analysis.md) |
 | `3B-3` | + `{brand}-concepts-narratifs.md` + `{brand}-chromatic-gamuts.md` + `{brand}-palette-c*.md` (canoniques) + variantes `{brand}-palette-c*-{a,b,c}.md` (penseurs typo + designer typo arrivent APRÈS la palette ; ils consomment chromatic-gamuts, pas la palette) |
@@ -233,9 +232,8 @@ echo "{brand}|{session_label}|$(date +%s)" > "{test_dir}/.session-id"
 | `1` | `{brand}-brief-analysis.md` (contient section "## Aversions client" si Point 15 non-vide, sinon "Aucune aversion déclarée") |
 | `2A` | `{brand}-scoping.md` (section Tension & Ventre Mou + Diagnostic Température), `{brand}-validated-temperature.md` (mini-fichier : verdict chaud/froid/neutre + justification — consommé par le routeur chromatique 3B-1) |
 | `2B` | `{brand}-scoping.md` (ajout curseurs A×B) |
-| `2C` | `{brand}-scoping.md` (ajout section Concept de Réconciliation), `{brand}-scoping-filtered.md` (version filtrée pour 2D) |
-| `2D` | `{brand}-territoires-v*.md`, `{brand}-qualites-v*.md` (extraction mots-clés en amont du clustering) |
-| `2E` | `{brand}-scoping.md` (ajout section Mix de Territoires) |
+| `2C` | `{brand}-scoping-filtered.md` (version filtrée pour le clustering), `{brand}-territoires-v*.md`, `{brand}-qualites-v*.md` (extraction mots-clés en amont du clustering) |
+| `2D` | `{brand}-scoping.md` (ajout section Mix de Territoires) |
 | `3A1` | **Mode Génératif** : `{brand}-concept-{1,2,3}-v*.md`, `{brand}-concepts-narratifs*.md`, `{brand}-context-clean.md`. **Mode Sélectif** : `{brand}-concepts-narratifs-v*.md` (format compatible avec Génératif), `{brand}-concepts-selectif-recap-v*.md` (récap des 10 candidats par registre), dossier intermédiaire `.tmp-selectif-v*/` (pool runs + définitions + évaluations — fichier de travail, EXCLU du packaging) |
 | `3A2` | (aucun nouveau fichier — batch supplémentaire ajoute des v2, v3… aux mêmes patterns que 3A1, indépendamment du mode choisi) |
 | `3B-1` | `{brand}-chromatic-gamuts.md`, `{brand}-gamuts-visual.html` (routeur chromatique + planche visuelle) |
@@ -274,7 +272,7 @@ echo "{brand}|{session_label}|$(date +%s)" > "{test_dir}/.session-id"
 **Algorithme :**
 
 ```
-phases_ordonnées = [1, 2A, 2B, 2C, 2D, 2E, 3A1, 3A2, 3B-1, 3B-2, 3B-3, 3B-4, 3B-7a-pre, 3B-7a, 3B-7b, 3B-7-checkpoint, 3B-7c, 3B-7d, 3B-7e, 4, 4-val, 4-art, 4B, 5, 5D, L, 6A, 6B, 7, 8, 8-1, 8-2a, 8-2b, 8-2c, 8-2d, 8-2e, 8-3, 9]
+phases_ordonnées = [1, 2A, 2B, 2C, 2D, 3A1, 3A2, 3B-1, 3B-2, 3B-3, 3B-4, 3B-7a-pre, 3B-7a, 3B-7b, 3B-7-checkpoint, 3B-7c, 3B-7d, 3B-7e, 4, 4-val, 4-art, 4B, 5, 5D, L, 6A, 6B, 7, 8, 8-1, 8-2a, 8-2b, 8-2c, 8-2d, 8-2e, 8-3, 9]
 
 fichiers_a_copier = []
 pour chaque phase P dans phases_ordonnées :
@@ -382,12 +380,11 @@ Mapping `{start_phase}` → section dans SKILL.md :
 | `{start_phase}` | Section à chercher dans SKILL.md |
 |---|---|
 | `1` | `## PHASE 1 — Brief Analysis` |
-| `2A` | `### Étape 2A (subagent) : Tension & Ventre Mou` (puis enchaîne 2B→2C→2D→2E ; produit aussi `{brand}-validated-temperature.md` via le bloc 2bis Diagnostic de température) |
-| `2B` | `### Étape 2B (orchestrateur) : Présentation & Collecte des curseurs` (puis enchaîne 2C→2D→2E) |
-| `2C` | `### Étape 2C (orchestrateur) : Concept de Réconciliation` (puis enchaîne 2D→2E) |
-| `2D` | `### Étape 2D (subagent) : Territoires Créatifs` (puis enchaîne 2E) |
-| `2E` | `### Étape 2E (orchestrateur, inline) : Mix pondéré` |
-| `3A1` | `### Étape 2F (orchestrateur, inline) : Choix du mode + orientation de registre` (3 modes : Génératif libre / Génératif orienté registre / Sélectif par registre). Puis enchaîne `### Étape 3A — Concepts Narratifs (Pass A)` (mode Génératif) OU `### Étape 3A — Mode Sélectif` (mode Sélectif, sous-étapes S1-S10) selon le choix. |
+| `2A` | `### Étape 2A (subagent) : Tension & Ventre Mou` (puis enchaîne 2B→2C→2D ; produit aussi `{brand}-validated-temperature.md` via le bloc 2bis Diagnostic de température) |
+| `2B` | `### Étape 2B (orchestrateur) : Présentation & Collecte des curseurs` (puis enchaîne 2C→2D) |
+| `2C` | `### Étape 2C (subagent) : Territoires Créatifs` (puis enchaîne 2D) |
+| `2D` | `### Étape 2D (orchestrateur, inline) : Mix pondéré` |
+| `3A1` | `### Étape 2E (orchestrateur, inline) : Choix du mode + orientation de registre` (3 modes : Génératif libre / Génératif orienté registre / Sélectif par registre). Puis enchaîne `### Étape 3A — Concepts Narratifs (Pass A)` (mode Génératif) OU `### Étape 3A — Mode Sélectif` (mode Sélectif, sous-étapes S1-S10) selon le choix. |
 | `3A2` | Batch supplémentaire : commence au Checkpoint Pass A élargi (5 options : ajustement / Génératif libre / Génératif orienté registre / Sélectif / avancer). Selon l'option choisie, enchaîne l'Étape 3A Génératif ou l'Étape 3A Mode Sélectif (version auto-incrémentée). |
 | `3B-1` | `### Étape 3B-0 — Routeur chromatique (subagent isolé, AVANT le design dérivé)` dans le SKILL.md de BIG (note : BIG nomme cette étape `3B-0`, test-big la nomme `3B-1` pour avoir une séquence continue). Subagent isolé, produit `chromatic-gamuts.md` + planche, validation user des gammes, puis enchaîne 3B-2. |
 | `3B-2` | `### Étape 3B — Design Dérivé (Pass B)` — commence à la `#### Vague 1 — Palettes par divergence séquentielle` (3 palettes A/B/C par concept, planche comparative, choix utilisateur) |

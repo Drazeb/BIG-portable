@@ -141,7 +141,28 @@ Avec :
 
 ### PHASE INIT (one-shot, 3-4 turns conversation)
 
-#### Étape 0 — Briefing
+#### Étape 0 — Choix du mode
+
+Au démarrage, demander à l'utilisateur quel mode il veut lancer :
+
+> "Tu veux faire quoi ?
+>
+> **A. Visuel principal (hero)** — Générer la première image d'un concept depuis zéro (rapport Perplexity + image-pivot + refs). On verrouille une ancre stylistique et on itère MJ → NB2 jusqu'au niveau élite.
+>
+> **B. Variante à partir d'un visuel principal existant** — Tu as déjà un hero validé (dans `visual-final/` d'une session BIG, ou dans une session `/visual-prompt` précédente) et tu veux générer une variante (atmosphere, closeup, macro, pov, schema…) qui reste cohérente avec son ancre stylistique. On lit l'ancre déjà verrouillée et on dérive vers le type voulu via le framework éprouvé `nb-prompting-guide.md §11`.
+>
+> → Réponds **A** ou **B**."
+
+Stocker le choix dans la variable `{mode}` = `"principal"` ou `"variantes"`.
+
+**Si `{mode}` = `"principal"`** → passer à l'Étape 0A (briefing visuel principal).
+**Si `{mode}` = `"variantes"`** → passer à l'Étape 0B (briefing variante).
+
+---
+
+#### Étape 0A — Briefing (mode "principal")
+
+S'applique uniquement si `{mode}` = `"principal"`. Sinon → Étape 0B.
 
 Demander à l'utilisateur :
 
@@ -176,13 +197,94 @@ Une fois reçu :
 >
 > Je passe à l'ancre stylistique."
 
+→ Passer à l'**Étape 1** (mode principal : créer l'ancre).
+
+---
+
+#### Étape 0B — Briefing (mode "variantes")
+
+S'applique uniquement si `{mode}` = `"variantes"`. Sinon → Étape 0A.
+
+**⚠ ANTI-DÉGRADATION** : relire `ref/nb-prompting-guide.md §11` (framework librairie atmosphère) AVANT de continuer. C'est la **bible technique** du mode variantes — 5 axes universels de variation (§11.2), 7 types de visuels dérivables (§11.3), 4 niveaux d'intensité (§11.4), 5 pièges connus (§11.5), format de prompt éprouvé (§11.6), naming convention (§11.7).
+
+Demander à l'utilisateur :
+
+> "Pour générer une variante cohérente avec un hero existant, j'ai besoin de 4 éléments :
+>
+> **1. Chemin du visuel principal (hero) validé**
+> Le fichier image dans `visual-final/` d'une session BIG, ou l'image finale d'une précédente session `/visual-prompt` (mode principal). Ex : `~/repos/BIG-portable/.claude/skills/brand-identity/outputs/{brand}-{session}/visual-final/{brand}-visual-final.jpg`.
+>
+> **2. Type de variante voulu** — choisis dans le catalogue éprouvé (§11.3) :
+> - `closeup` — Close-up du sujet principal (eye-level, échelle + angle)
+> - `macro` — Macro abstrait du sujet (lumière, détail flou — sans architecture identifiable)
+> - `atmosphere` — Atmosphère pure sans sujet identifiable (brume, vague, ciel)
+> - `texture` — Texture matière naturelle (eau, mousse, terre) ⚠ pas d'architecture (brick/stonework → fantasy château)
+> - `pov` — Point de vue alternatif (vue first-person depuis le sujet ; formuler explicitement "FROM, looking outward, we do NOT see [sujet]")
+> - `temporal` — Variante temporelle (aube/crépuscule/tempête — préciser ce qui change narrativement, pas juste la couleur)
+> - `schema` — Schéma vectoriel ⚠ **HORS NB** — à faire en Figma/Illustrator/GPT SVG
+>
+> **3. Niveau d'intensité** — choisis dans la hiérarchie (§11.4) :
+> - **N1 Uniforme** — quasi monochromatique, brushwork seul comme variation. Pour fond derrière texte, bandeau silencieux.
+> - **N2 Mono + accents** — mono dominant + touches éparpillées d'une 2e couleur palette (CTA / accent). Rappel chromatique discret.
+> - **N3 Variation modérée** — 2-3 tons palette, contraste modéré. Transition intermédiaire.
+> - **N4 Variation forte** — multi-tons, contraste fort, mood dramatique. Section accroche / vision / hero secondaire.
+>
+> 💡 **Workflow recommandé §11.4** : générer **N4 d'abord** (le plus expressif), puis dériver N3, N2, N1 par passes successives de mono-objectif **uniformisation** ou **réduction de contraste**. Plus rapide que générer chaque niveau de zéro.
+>
+> **4. Brief court de la variante** — 2-3 phrases sur ce que tu veux voir (sujet précis, cadrage, intention narrative). Reste dans l'univers du hero — c'est moi qui m'assure que l'ancre stylistique est respectée.
+>
+> **5. (Optionnel) Refs additionnelles** — si tu as des refs complémentaires spécifiques à cette variante (ex: une autre image de composition pour un cadrage macro), donne-les. Sinon je travaille avec l'ancre du hero + le hero lui-même comme référence."
+
+Une fois reçu :
+
+1. **Vérifier l'existence du hero source** :
+   ```bash
+   ls "{hero_path}" 2>/dev/null
+   ```
+   Si absent → demander à l'utilisateur de corriger le chemin. Ne PAS continuer.
+
+2. **Récupérer l'ancre stylistique du hero** (immuable pour cette variante) :
+   - **Si le hero vient d'une session BIG** : chercher `{session_dir}/{brand}-visual-pivot-c{N}.md` (format spec 10 sections A-J, contient registre, lumière, grain, palette — toute l'ancre est dérivable de là)
+   - **Si le hero vient d'une session `/visual-prompt`** précédente : chercher `{prev_session_dir}/01-anchor.md` (6 dimensions verrouillées, directement réutilisable)
+   - **Si aucun fichier n'existe** → demander à l'utilisateur de coller l'ancre stylistique manuellement, OU de décrire la touche/lumière/grain/registre du hero en quelques phrases.
+
+3. **Lire `guide-mj-nb2-workflow-elite.md` §0 + §1 + §6** (mêmes refs que mode principal)
+4. **Lire `visual-direction-guide.md` §1 + §2**
+5. **Lire `ref/nb-prompting-guide.md` §11 INTÉGRALEMENT** (déjà annoncé en tête, mais re-confirmer la lecture avant de continuer)
+
+6. **Créer le dossier de session** : `mkdir -p ~/Downloads/visual-prompt-{slug}-variante-{type}-N{niveau}-{timestamp}/`
+
+7. **Confirmer le briefing variante** :
+
+> "Lu. Variante à produire :
+> - **Hero source** : `{chemin}` (ouvert et analysé en multimodalité)
+> - **Ancre stylistique récupérée** (immuable, héritée du hero) :
+>   - Touche : {résumé 1 ligne}
+>   - Lumière : {résumé}
+>   - Niveau de détail : {résumé}
+>   - Bords : {résumé}
+>   - Abstraction : {résumé}
+>   - Registre de réalité : {résumé}
+> - **Type voulu** : `{type}` (variante : `{variante}` si précisée)
+> - **Niveau d'intensité** : `N{niveau}` ({nom du niveau})
+> - **Brief** : {brief court résumé}
+> - **Refs additionnelles** : {liste ou "aucune"}
+>
+> Dossier de session créé : `~/Downloads/visual-prompt-{slug}-variante-{type}-N{niveau}-{timestamp}/`
+>
+> L'ancre est VERROUILLÉE à partir du hero — je ne la recrée pas. Je passe direct à la stratégie de prompt en suivant `§11` du nb-prompting-guide."
+
+→ Passer à l'**Étape 1** (mode variantes : ancre HÉRITÉE, pas créée — voir adaptations Étape 1).
+
 ---
 
 #### Étape 1 — Ancre stylistique (verrou de session)
 
 **Pourquoi** : l'ancre stylistique sert de **garde-fou d'itération**. À chaque correction post-NB2, on vérifiera que le résultat respecte toujours l'ancre. Si dérive → rollback.
 
-**Ce n'est pas le même rôle que dans visual-brief** (où elle assure la cohérence entre 3 images simultanées). Ici elle assure la cohérence **entre les versions successives d'une même image**.
+Ici elle assure la cohérence **entre les versions successives d'une même image** (mode principal) ou **entre le hero et toutes ses variantes** (mode variantes — ancre héritée).
+
+##### Si `{mode}` = `"principal"` — création de l'ancre
 
 **Procédure** :
 
@@ -209,11 +311,36 @@ Une fois reçu :
 
 Si l'utilisateur ajuste → modifier `01-anchor.md`. **Une fois validée, l'ancre est immuable.**
 
+##### Si `{mode}` = `"variantes"` — récupération de l'ancre depuis le hero
+
+**Ne PAS recréer l'ancre.** Elle est HÉRITÉE du hero pour garantir la cohérence stylistique entre le hero et toutes ses variantes.
+
+**Procédure** :
+
+1. **Lire en multimodalité le hero source** (`{hero_path}`) — observer directement le rendu (médium, mode, mood, palette observée, texture, composition)
+2. **Lire le fichier d'ancre** identifié en Étape 0B (soit `{brand}-visual-pivot-c{N}.md` côté BIG, soit `01-anchor.md` d'une session précédente)
+3. **Reconstruire les 6 dimensions** depuis ce fichier source — synthétiser en gardant exactement la même formulation que le hero (pas de paraphrase qui pourrait dériver)
+4. **Écrire `01-anchor.md`** dans la session variante avec :
+   - Bandeau en tête : `# Ancre HÉRITÉE du hero {hero_path}` + date
+   - Les 6 dimensions copiées verbatim
+   - 1 paragraphe synthèse (le même que celui du hero — à utiliser verbatim dans les prompts)
+5. **Valider avec l'utilisateur** :
+
+> "Voici l'ancre stylistique que j'hérite du hero (immuable) :
+>
+> [contenu des 6 dimensions + synthèse]
+>
+> Cette ancre garantit que la variante prolonge le hero sans clasher. Je passe à la stratégie de prompt."
+
+**Pas d'itération possible sur l'ancre en mode variantes** — si l'utilisateur veut une ancre différente, c'est qu'il veut un autre hero (relancer mode principal).
+
 ---
 
 #### Étape 2 — Stratégie des références
 
 **Lire `guide-mj-nb2-workflow-elite.md` §1 maintenant** (Approche A / B / C).
+
+##### Si `{mode}` = `"principal"` — choix Approche A / B / C selon refs
 
 **Décider quelles options sont possibles** vu les images fournies :
 
@@ -223,10 +350,27 @@ Si l'utilisateur ajuste → modifier `01-anchor.md`. **Une fois validée, l'ancr
 | 1 image fournie | **Option A** (image en style ref + texte composition) ET **Option B** (même image en composition + même image en style) → générer les 2 si l'image peut servir aux deux rôles |
 | Aucune image | **Option C** (from scratch) — un seul prompt |
 
-**⚠ RÈGLES CRITIQUES** (relire §1 du guide) :
+##### Si `{mode}` = `"variantes"` — le hero EST la référence principale
+
+Stratégie automatique en mode variantes (pas de choix utilisateur sur les approches A/B/C) :
+
+- **Le hero source EST la référence universelle** : il transmet l'ancre stylistique (palette, grain, mood, registre)
+- Routage MJ vs NB selon le type de variante (référence §11.3 du nb-prompting-guide) :
+  - **`closeup`, `pov`, `temporal`** → MJ avec le hero en `--sref` (transmet style) + nouveau prompt texte décrivant le nouveau sujet/cadrage. Optionnel : Image Prompt slot avec le hero pour préserver la composition large → `--iw 0.8-1.2`
+  - **`macro` (abstrait), `atmosphere` pure** → MJ from scratch avec le hero en `--sref` uniquement + prompt construit selon §11.6. Pas d'Image Prompt slot (le sujet est nouveau)
+  - **`texture` (matière naturelle)** → MJ avec le hero en `--sref`, prompt explicite "macro texture of [matière naturelle uniquement, JAMAIS architecture]"
+- **Refs additionnelles** (si fournies par l'utilisateur) : utilisées en Image Prompt slot pour la composition spécifique de la variante, avec `--iw 1.0-1.5`. Le hero reste en `--sref` pour le style.
+
+**Pour les variantes de niveau d'intensité (N1→N4) à partir d'une variante existante** : utiliser le workflow recommandé §11.4 :
+1. Générer N4 (plus expressif) en premier via MJ comme décrit ci-dessus
+2. Pour N3/N2/N1 : invoquer `/nano-banana-edit` sur le résultat N4 avec un prompt mono-objectif "uniformisation" ou "réduction de contraste" (cf §11.4)
+
+##### Règles critiques transverses (relire §1 du guide)
+
 - `--iw` ne fonctionne QUE si une image est dans l'Image Prompt slot. Sinon ignoré silencieusement (REX 1)
 - `--sref` transfère palette + grain + mood, **PAS la direction lumière** (REX 6) → la lumière doit toujours être explicite dans le texte du prompt
 - `--sw 60-80` recommandé. Au-delà : palette du prompt écrasée
+- **Mode variantes — piège multi-image §11.5** : "DO NOT pull toward image 2's palette, keep image 1's exact colors" (le hero gagne toujours sur la ref additionnelle pour la palette)
 
 Annoncer la stratégie à l'utilisateur :
 
@@ -238,9 +382,65 @@ Annoncer la stratégie à l'utilisateur :
 
 ---
 
-#### Étape 3 — Génération des 2 prompts MJ (en parallèle)
+#### Étape 3 — Génération du / des prompts MJ
 
 **Lire `guide-mj-nb2-workflow-elite.md` §2 maintenant** (structure prompt + paramètres + lumière + ordre descripteurs).
+
+##### Si `{mode}` = `"variantes"` — UN seul prompt construit selon §11.6
+
+**Relire `nb-prompting-guide.md §11.6` (format de prompt atmosphère)** AVANT de rédiger. C'est le template éprouvé empiriquement sur Camille c3 (mai 2026).
+
+Structure :
+
+```
+Generate a new oil painting [ou autre médium selon ancre] in a [style verbatim depuis ancre], matching the painterly intensity of the [zone du hero] of the reference image.
+
+Subject — [type de variante depuis Étape 0B, ex: "macro abstract halo", "mist between hills", "river surface macro"]:
+- [3-5 détails du sujet précis, ancrés dans l'univers du hero]
+- [composition / point de vue]
+- [palette / mood spécifique au niveau d'intensité N1/N2/N3/N4]
+
+CRITICAL — style calibration:
+- Match the SAME LEVEL of brushwork visibility as the reference image
+- Painterly tradition: [3-4 peintres référents — depuis l'ancre du hero]
+- NOT [contre-exemples explicites pour bloquer dérives — depuis l'ancre]
+
+Same palette as reference, same [nocturne/diurne] mood, same atmospheric depth.
+
+[Aspect ratio approprié selon usage : 16:9 paysage pour bandeau, 1:1 pour card, 3:4 pour hero alternatif]
+[--sref {hero_path} --sw 60-80 --style raw --no ...]
+```
+
+**Pour chaque type de variante**, intégrer le piège §11.5 correspondant :
+- `texture` → "natural material only (water, moss, earth) — NO stonework, NO brick, NO masonry"
+- `pov` → "first-person view FROM [sujet], looking outward, we do NOT see [sujet] in the frame"
+- `temporal` → décrire ce qui CHANGE narrativement (point de vue, élément narratif), pas juste la couleur
+
+**Niveau d'intensité** (§11.4) intégré dans la palette/mood :
+- **N1 Uniforme** : "near-monochromatic, single-tone dominant, only brushwork variation"
+- **N2 Mono + accents** : "dominant [color] tone with sparse accents of [second palette color]"
+- **N3 Modérée** : "2-3 palette tones, moderate contrast"
+- **N4 Forte** : "multi-tone palette, high contrast, dramatic mood"
+
+**Écrire `02-strategy.md`** avec :
+- Section "Variante visée" : type + niveau + brief
+- Section "Prompt construit" : prompt complet
+- Section "Pièges §11.5 anticipés" : lesquels s'appliquent à cette variante + comment ils sont neutralisés dans le prompt
+- Section "Stratégie référence" : hero en `--sref` + refs additionnelles si applicable
+
+**Présenter à l'utilisateur** :
+
+> "Voici le prompt à lancer dans MJ pour ta variante `{type}` niveau N{niveau} :
+>
+> ```
+> [prompt complet]
+> ```
+>
+> Génère 4 images. Reviens avec les résultats — j'évalue contre l'ancre du hero (gate adaptée Étape 7)."
+
+→ Sauter directement à l'**Étape 4** (sélection meilleure image) avec **4 images** au lieu de 8 (une seule branche en mode variantes).
+
+##### Si `{mode}` = `"principal"` — 2 prompts MJ en parallèle (workflow d'origine)
 
 **Construire les 2 prompts** selon le format :
 
@@ -296,11 +496,13 @@ emissive light, fiber optic effect, sparks, neon, rainbow gradient, fantasy, fic
 
 ### PHASE LOOP (state machine, n turns jusqu'à élite ou cap)
 
-#### Étape 4 — Premier turn de boucle : sélection branche gagnante (8 images)
+#### Étape 4 — Premier turn de boucle : sélection meilleure image
 
-L'utilisateur revient avec 8 images.
+**Mode principal** : l'utilisateur revient avec **8 images** (4 par option A + 4 par option B). Comparaison inter-options + sélection branche gagnante.
 
-**Procédure** :
+**Mode variantes** : l'utilisateur revient avec **4 images** (une seule branche, un seul prompt construit selon §11.6). Pas de tournoi entre options — sélection de la meilleure des 4 directement.
+
+**Procédure** (mode principal) :
 
 1. **Évaluer chaque image sur la grille quantifiée** (voir Étape 7) — couverture ombre, palette fidèle, lumière nature, grain, composition, registre
 2. **Identifier la meilleure de chaque option** → 2 finalistes
@@ -308,6 +510,14 @@ L'utilisateur revient avec 8 images.
 4. **Désigner la branche gagnante** + justifier en 3-5 lignes (quelle option a mieux capté lumière / palette / concept)
 5. **Archiver la branche perdante** dans `02-strategy.md` (note "Option {X} archivée le {date} — peut être réactivée si Option {Y} bloque")
 6. **Append au `03-iteration-log.md`** une entrée selon `templates/iteration-log-entry.md`
+
+**Procédure simplifiée mode variantes** :
+
+1. **Évaluer chaque image sur la grille quantifiée** — mais **comparée au hero** (référentiel = ancre héritée), pas à une cible Awards absolue
+2. **Désigner la meilleure des 4** + justifier en 3-5 lignes (quelle image prolonge le mieux le hero stylistiquement, sans clasher)
+3. **Append au `03-iteration-log.md`** une entrée
+
+Si aucune des 4 images n'est satisfaisante → reprompt MJ (Étape 5, décision "Reprompt MJ") en ajustant le prompt selon les pièges §11.5 détectés.
 
 **Présenter à l'utilisateur** :
 
@@ -395,7 +605,7 @@ Avant de valider l'image, appliquer la gate (relire `guide-mj-nb2-workflow-elite
 
 ---
 
-#### Étape 8 — Brief de livraison (template 9 sections)
+#### Étape 8 — Brief de livraison + rangement final
 
 **Lire `templates/brief-final.md`**.
 
@@ -412,11 +622,38 @@ Avant de valider l'image, appliquer la gate (relire `guide-mj-nb2-workflow-elite
 
 **Écrire `04-final-brief.md`** dans le dossier de session.
 
+##### Rangement final selon `{mode}`
+
+Lire `nb-prompting-guide.md §11.7` pour la naming convention canonique.
+
+**Si `{mode}` = `"principal"`** (hero) :
+- Cible : `visual-final/{brand}-visual-final.{ext}` dans la session BIG d'origine (chemin déduit du briefing initial)
+- OU `~/Downloads/visual-prompt-{slug}-{timestamp}/{brand}-visual-final.{ext}` si pas de session BIG en aval
+
+**Si `{mode}` = `"variantes"`** :
+- Cible : `visual-final/{brand}-c{N}-{paletteID}-{type}[-{variante}].{ext}` dans la session BIG d'origine
+- Le `{brand}`, `{N}`, `{paletteID}` sont déduits du chemin du hero source (Étape 0B)
+- Le `{type}` est celui choisi en Étape 0B (`atmosphere`, `closeup`, `macro`, etc.)
+- Le `{variante}` optionnel reflète le niveau d'intensité ou un qualificatif (ex: `uniforme`, `dramatique`, `parchemin-bordeaux`)
+- Exemples :
+  - `camille-c3-paletteB-atmosphere-uniforme.png` (N1)
+  - `camille-c3-paletteB-atmosphere-dramatique.png` (N4)
+  - `camille-c3-paletteA-closeup.jpg`
+  - `camille-c3-paletteB-macro-abstrait.png`
+
+**Procédure de rangement** :
+1. Confirmer le chemin cible avec l'utilisateur (présenter le nom calculé + demander validation)
+2. `cp` ou `mv` l'image depuis le dossier de session vers `visual-final/` de la session BIG d'origine
+3. Vérifier que le fichier final existe : `ls "{visual-final}/{nom-calculé}"`
+4. Ajouter une ligne au `03-iteration-log.md` : "✅ Final ranged at: {chemin complet}"
+
 **Présenter à l'utilisateur** :
 
 > "Gate élite passée 6/6. Brief de livraison écrit : `04-final-brief.md` dans le dossier de session.
 >
-> Tu veux animer cette image en vidéo (Recraft) ? Si oui, on enchaîne. Sinon, session terminée."
+> **Variante rangée** : `{visual-final}/{nom-calculé}` ← cette image alimente directement Phase 4 (style-tile) et Batch 3 (chapitres 08/10) du pipeline BIG si tu repasses par là.
+>
+> Tu veux animer cette image en vidéo (Recraft) ? Si oui, on enchaîne. Sinon, session terminée — tu peux relancer `/visual-prompt` mode variantes pour une autre variante."
 
 ---
 

@@ -36,8 +36,8 @@ Le processus est guidé étape par étape — je te demanderai tes inputs et val
 - **`/test-big`** — Test runner pour reprendre le pipeline BIG à partir d'une phase spécifique sur la base d'une session existante. Utile si tu veux itérer sur la Phase 4 sans refaire le brief et le scoping, ou si le pipeline a planté en cours et que tu veux reprendre là où il s'est arrêté.
 - **`/brand-book`** — Génère un brand book HTML éditorial à partir d'un pack BIG complet : cover painterly + intro Identity Card bento + 8 sections documentaires (Big Idea, Concept, Identité, Palette, Typographie, Système, Applications, Photo & Illustration) + closing. Invoqué automatiquement en Phase 8 de BIG, mais peut aussi être lancé seul sur un pack existant.
 - **`/landing-page`** — Génère des landing pages HTML auto-portées depuis un brief, un design system, ou directement depuis un pack BIG. *(disponible dans un repo séparé, à venir)*
-- **`/visual-brief`** — Génère les prompts visuels (MidJourney / Recraft / Nano Banana 2) pour un projet BIG, analyse les images résultantes et prépare leur intégration pour la Phase 4. Utilisé en Phase 3C de BIG, invocable seul.
-- **`/visual-prompt`** — Workflow itératif MidJourney → Nano Banana 2 → animation Recraft pour produire des visuels IA niveau Awards. Tourne en session parallèle, sans dépendance aux fichiers BIG.
+- **`/visual-prompt`** — Workflow itératif MidJourney → Nano Banana 2 → animation Recraft pour produire des visuels IA niveau Awards. **2 modes** : (1) mode **principal** — génération d'un visuel hero à partir d'un rapport Perplexity ; (2) mode **variantes** — dérivation d'atmosphere/closeup/macro/pov à partir d'un hero existant, en exploitant le framework librairie atmosphère (`nb-prompting-guide.md §11` — 7 types × 4 niveaux d'intensité). Invoqué en Phase 3B-7c.7 (hero) puis Phase 3B-7c.10 + 3B-7e (variantes). Dépend de `/nano-banana-edit` pour les corrections NB2.
+- **`/nano-banana-edit`** — Primitive d'édition d'image via l'API Gemini (alias Nano Banana / NB2). Invoqué par `/visual-prompt` pour toutes les corrections atomiques (couleur de fond, grain, tons, clair-obscur, retouche ciblée). Skill **workspace partagé** — disponible dans un repo séparé `nano-banana-edit-portable`, nécessite une clé API Gemini configurée dans `.env`.
 - **`/audit-elite`** — Juge **relatif** : compare un style-tile BIG aux étalons Awards et prescrit les corrections pour atteindre le niveau élite. *(disponible dans un repo séparé, à venir)*
 - **`/audit-slop`** — Juge **absolu** : évalue un style-tile contre 4 grilles de règles universelles (Craft Moderne / Vercel / BIG Pipeline / Perplexity Temporel) et produit un verdict consolidé. Complémentaire à `/audit-elite`. *(disponible dans un repo séparé, à venir)*
 
@@ -81,12 +81,6 @@ J'analyse les 14 points du brief (+ Point 15 optionnel : Aversions client — co
 **3. Scoping — Tension & Curseurs**
 Je définis la Tension de Marque (le paradoxe créatif qui rend ton identité unique), je dérive un diagnostic de température (chaud/froid/neutre) depuis le brief et les aversions client, puis je te demande de calibrer 2 curseurs stratégiques.
 → Tes inputs : **validation de la Tension** + **validation de la température recommandée** + **choix des curseurs A et B** (1 à 3 chacun)
-
----
-
-**3bis. Réconciliation de la tension**
-Je te propose 5 façons de décrire le trait unique de ta marque — la caractéristique qui réconcilie les deux pôles de la tension en UN seul trait. Tu choisis celle qui te parle (ou tu reformules).
-→ Tes inputs : **choix du concept de réconciliation** (numéro ou reformulation libre)
 
 ---
 

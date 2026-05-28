@@ -87,7 +87,7 @@ Bienvenue ! Je suis ton Directeur de Création.
   · **C** — On construit ensemble (mode conversationnel)
   · **D** — J'ai une brand existante à aspirer (aspiration de brand)
 
-*PS — D'autres skills sont disponibles : `/test-big` (reprise mi-pipeline), `/brand-book`, `/landing-page`, `/visual-brief`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
+*PS — D'autres skills sont disponibles : `/test-big` (reprise mi-pipeline), `/brand-book`, `/landing-page`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
 
 ---
 
@@ -153,6 +153,33 @@ for candidate in "../SPG-portable" "$HOME/repos/SPG-portable"; do
   fi
 done
 
+# Check présence nano-banana-edit-portable au chemin attendu
+NB_STATUS="absent"
+NB_PATH=""
+for candidate in "../nano-banana-edit-portable" "$HOME/repos/nano-banana-edit-portable"; do
+  if [ -d "$candidate" ]; then
+    NB_STATUS="présent ($candidate)"
+    NB_PATH="$candidate"
+    break
+  fi
+done
+
+# Check présence + configuration clé API Gemini dans le .env de nano-banana-edit
+GEMINI_KEY_STATUS="non vérifiable (nano-banana-edit absent)"
+if [ -n "$NB_PATH" ]; then
+  if [ -f "$NB_PATH/.claude/skills/nano-banana-edit/.env" ]; then
+    if grep -q "^GEMINI_API_KEY=AIza" "$NB_PATH/.claude/skills/nano-banana-edit/.env" 2>/dev/null; then
+      GEMINI_KEY_STATUS="configurée"
+    elif grep -q "^GEMINI_API_KEY=your-key-here" "$NB_PATH/.claude/skills/nano-banana-edit/.env" 2>/dev/null; then
+      GEMINI_KEY_STATUS="placeholder non remplacé (.env à éditer)"
+    else
+      GEMINI_KEY_STATUS=".env présent mais clé non détectée"
+    fi
+  else
+    GEMINI_KEY_STATUS=".env absent (cp .env.example .env puis éditer)"
+  fi
+fi
+
 # Output structuré (un kvp par ligne)
 echo "PHASE_0_SKIPPED=0"
 echo "OS=$OS"
@@ -162,9 +189,11 @@ echo "VTRACER=$VTRACER_VER"
 echo "GIT=$GIT_VER"
 echo "GIT_BEHIND=$GIT_BEHIND"
 echo "SPG=$SPG_STATUS"
+echo "NB=$NB_STATUS"
+echo "GEMINI_KEY=$GEMINI_KEY_STATUS"
 ```
 
-Stocker les résultats dans les variables : `{node_ok}`, `{python_ok}`, `{vtracer_ok}`, `{git_ok}`, `{spg_available}`, `{git_behind}`.
+Stocker les résultats dans les variables : `{node_ok}`, `{python_ok}`, `{vtracer_ok}`, `{git_ok}`, `{spg_available}`, `{nb_available}`, `{gemini_key_status}`, `{git_behind}`.
 
 **Si `PHASE_0_SKIPPED=1`** → afficher juste "(Phase 0 sautée — BIG_SKIP_PREFLIGHT=1)" et passer directement à l'IDENTIFIANT DE SESSION.
 
@@ -195,7 +224,12 @@ veux pas installer les deps correspondantes.
                                 (je ne peux pas détecter — à toi de dire)
   [?]    Abo Recraft V4      — Phase 3C illustrations flat
   [?]    Abo Perplexity Pro  — Phase 3B-7c image-pivot stylistique
-  [?]    Abo Nano Banana 2   — Édition d'images (Phase 3C, brand book)
+  [<✓/✗>] nano-banana-edit-portable — Toutes les corrections NB2 dans /visual-prompt
+                                       (couleur de fond, grain, tons, retouche ciblée)
+                                       + variantes d'atmosphère via framework §11
+                                <NB_STATUS ou "git clone .../nano-banana-edit-portable.git ~/repos/nano-banana-edit-portable">
+  [<✓/✗>] Clé API Gemini    — Configurée dans .env de nano-banana-edit-portable
+                                <GEMINI_KEY_STATUS ou "cp .env.example .env + obtenir clé sur https://aistudio.google.com/app/apikey">
   [<✓/✗>] SPG-portable       — Phase 8 brand book (section pitch deck)
                                 <SPG_STATUS ou "git clone .../SPG-portable.git ~/repos/SPG-portable">
 
@@ -669,39 +703,9 @@ Stocker la température validée dans `{validated_temperature}`.
 
 4. **Stocker les valeurs A et B** pour les transmettre au subagent Phase 3A
 
-### Étape 2C (orchestrateur) : Concept de Réconciliation
+### Étape 2C (subagent) : Territoires Créatifs
 
-Après validation des curseurs, l'orchestrateur génère le concept de réconciliation de la tension de marque.
-
-**Principe** : les 2 pôles de la tension décrivent ce que l'entreprise EST (deux caractéristiques). Le concept de réconciliation est UNE SEULE caractéristique — un trait unique de l'entreprise qui englobe naturellement les deux pôles sans les juxtaposer.
-
-1. **Lancer un subagent** avec le prompt de `{skill_dir}/phases/phase-2c-reconciliation.md`.
-
-   Variables à remplacer :
-   - `{pole_a_name}` et `{pole_a_description}` → depuis `{brand}-scoping.md`
-   - `{pole_b_name}` et `{pole_b_description}` → depuis `{brand}-scoping.md`
-   - `{brand_context}` → résumé du brief (1-2 phrases : qui, quoi, chiffres clés)
-
-2. **À réception des 5 propositions**, les présenter à l'utilisateur (texte direct) :
-
-   > **Concept de réconciliation — quelle est la caractéristique unique de {brand} ?**
-   >
-   > La tension "{pole_a_name}" × "{pole_b_name}" se réconcilie en UN trait. Voici 5 propositions :
-   >
-   > | # | Caractéristique | Moteur commun | Pourquoi ça réconcilie |
-   > |---|----------------|---------------|----------------------|
-   > | 1 | {concept} | {moteur} | {explication courte} |
-   > | ... | ... | ... | ... |
-   >
-   > **Laquelle décrit le mieux {brand} ?** (numéro, ou reformulation libre)
-
-3. **Stocker le concept choisi** dans la variable `{reconciliation_concept}`.
-
-4. **Écrire le concept dans le fichier scoping** : ajouter une section `## Concept de Réconciliation` à la fin de `{brand}-scoping.md` avec le concept choisi + son explication.
-
-### Étape 2D (subagent) : Territoires Créatifs
-
-Après validation des curseurs et du concept de réconciliation, l'orchestrateur lance l'extraction de territoires créatifs.
+Après validation des curseurs, l'orchestrateur lance l'extraction de territoires créatifs.
 
 **Versionnage** :
 1. **Détecter le prochain numéro de version** : lister les fichiers `{brand}-territoires-v*.md` dans `{skill_dir}/outputs/{session_dir}/`. Si 0 fichier → `{version}` = 1. Si N fichiers → `{version}` = N + 1.
@@ -713,7 +717,6 @@ Avant de lancer l'extraction de territoires, lancer un subagent léger (Task too
 2. Écrit `{skill_dir}/outputs/{session_dir}/{brand}-scoping-filtered.md` contenant UNIQUEMENT les sections :
    - `## TENSION DE MARQUE` (les deux pôles + résolution + signaux visuels)
    - `## VENTRE MOU SECTORIEL` (codes visuels + constantes + ce qui est absent)
-   - `## CONCEPT DE RÉCONCILIATION`
 3. NE PAS inclure : Avis du DA, Diagnostic de Température, Position ZAG, Points d'attention — ce sont des recommandations design qui biaiseraient l'extraction de mots-clés.
 
 Prompt du subagent extracteur :
@@ -721,7 +724,6 @@ Prompt du subagent extracteur :
 > Extrais UNIQUEMENT les sections suivantes et écris-les dans `{skill_dir}/outputs/{session_dir}/{brand}-scoping-filtered.md` :
 > - La section "TENSION DE MARQUE" (tout ce qu'elle contient : pôles, résolution, signaux visuels)
 > - La section "VENTRE MOU SECTORIEL" (tout ce qu'elle contient)
-> - La section "CONCEPT DE RÉCONCILIATION" (tout ce qu'elle contient)
 > Copie le contenu tel quel, sans modifier, sans résumer, sans ajouter.
 > N'inclus AUCUNE autre section (pas d'Avis du DA, pas de Diagnostic de Température, pas de Position ZAG).
 
@@ -729,7 +731,7 @@ Prompt du subagent extracteur :
 
 L'extraction et le clustering sont faits par 2 subagents DISTINCTS. Le subagent de clustering ne lit PAS le brief — il ne reçoit QUE les qualités créatives extraites. Cela empêche le brief de contaminer le regroupement en territoires.
 
-**Subagent 2D-A (extraction)** : lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-2d-extraction.md`.
+**Subagent 2C-A (extraction)** : lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-2d-extraction.md`.
 
 Variables à remplacer :
 - `{skill_dir}`, `{brand}`, `{session_dir}`
@@ -738,7 +740,7 @@ Variables à remplacer :
 
 L'orchestrateur **attend le résultat** et **lit le fichier produit**.
 
-**Subagent 2D-B (clustering)** : lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-2d-clustering.md`.
+**Subagent 2C-B (clustering)** : lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-2d-clustering.md`.
 
 Variables à remplacer :
 - `{cursor_a}` et `{cursor_b}` → valeurs des curseurs
@@ -770,7 +772,7 @@ Variables à remplacer :
 
 ---
 
-### Étape 2E (orchestrateur, inline) : Mix pondéré
+### Étape 2D (orchestrateur, inline) : Mix pondéré
 
 L'utilisateur a choisi son mix (Principal, Secondaire, Tertiaire). L'orchestrateur construit le bloc `{territory_mix}` :
 
@@ -795,7 +797,7 @@ Pas de subagent nécessaire — c'est une simple construction de texte par l'orc
 
 ## PHASE 3 — Pitch Stratégique (Two-Pass : Concept → Design)
 
-### Étape 2F (orchestrateur, inline) : Choix du mode + orientation de registre
+### Étape 2E (orchestrateur, inline) : Choix du mode + orientation de registre
 
 **RÈGLE ANTI-PRIMING** : cette étape est gérée par l'orchestrateur UNIQUEMENT. Aucun subagent ne verra la liste des registres — ils recevront au maximum le nom du registre choisi en une seule ligne. L'objectif est d'éviter qu'un subagent soit "baigné" dans le vocabulaire des registres avant de commencer à travailler.
 
@@ -906,7 +908,7 @@ Variables à remplacer :
 - `{territory_mix}` → section "Mix de Territoires (décontaminé)" extraite de `{brand}-context-clean.md`
 - `{previous_concepts}` → "(Aucun — tu es le premier concept.)"
 - `{divergence_instruction}` → ""
-- `{registre_orientation_or_omit}` → si `{registre_orientation}` est renseigné (Étape 2F) : `Registre : {registre_orientation}`. Sinon : OMETTRE la section "ORIENTATION DE REGISTRE" entièrement du prompt (ne pas laisser la section avec un contenu vide)
+- `{registre_orientation_or_omit}` → si `{registre_orientation}` est renseigné (Étape 2E) : `Registre : {registre_orientation}`. Sinon : OMETTRE la section "ORIENTATION DE REGISTRE" entièrement du prompt (ne pas laisser la section avec un contenu vide)
 - `{output_path}` → `{skill_dir}/outputs/{session_dir}/concept-1-v{version}.md` (**PAS de nom de marque** dans le chemin)
 - `{skill_dir}` → chemin vers le skill brand-identity (pour que le subagent localise les fichiers de référence)
 
@@ -1053,7 +1055,7 @@ L'orchestrateur consolide les 3 fichiers en `{brand}-concepts-narratifs-v{versio
 
 ### Étape 3A — Mode Sélectif (alternative à 3A Génératif)
 
-**Déclenché si `{generation_mode}` = `"selectif"` à l'Étape 2F.** Le mode Sélectif produit un fichier `{brand}-concepts-narratifs-v{version}.md` au MÊME FORMAT que le mode Génératif → la sélection finale (étape 5 ci-dessus, l. 957-984) et la Phase 3B aval sont mode-agnostiques. Le mode peut changer entre les batches v1, v2, v3 : on peut tout à fait avoir v1 Sélectif + v2 Génératif libre + v3 Sélectif autre registre.
+**Déclenché si `{generation_mode}` = `"selectif"` à l'Étape 2E.** Le mode Sélectif produit un fichier `{brand}-concepts-narratifs-v{version}.md` au MÊME FORMAT que le mode Génératif → la sélection finale (étape 5 ci-dessus, l. 957-984) et la Phase 3B aval sont mode-agnostiques. Le mode peut changer entre les batches v1, v2, v3 : on peut tout à fait avoir v1 Sélectif + v2 Génératif libre + v3 Sélectif autre registre.
 
 **Pourquoi Sélectif** : pour produire des noms de concept SOBRES (mono-mots ou composés courts limpides : "Phare", "Magnitude", "Chenal balisé") au lieu de noms enrichis ("Le Phare de Ralliement"). Le LLM ne **génère** plus le nom — il **choisit** dans un pool de 100 mots couvrant le registre, ce qui empêche structurellement la complexification artificielle.
 
@@ -2942,7 +2944,7 @@ Présenter dans le chat :
 
 > **Génération de l'image finale** :
 >
-> Lance maintenant le skill `/visual-prompt` (ou `/visual-brief`) dans une AUTRE SESSION. Cette session prend en input :
+> Lance maintenant le skill `/visual-prompt` dans une AUTRE SESSION (réponds **A** au fork modal — mode "principal"). Cette session prend en input :
 > - L'image-pivot retenue (cf. `visual-pivot-choice.md`)
 > - Les 5-8 images de référence (cf. `visual-refs/`)
 > - Les descriptions provisoires (cf. `{brand}-visual-pivot-c{N}.md`)
@@ -2984,7 +2986,7 @@ Le subagent met à jour :
 
 **Gate de présence + STATUS** : vérifier que `STATUS: OK` est présent dans le retour du subagent + que le fichier visual-pivot ne contient plus la mention "VERSION PROVISOIRE".
 
-##### Étape 3B-7c.10 — Suite du pipeline (vers 3B-7d Pitch)
+##### Étape 3B-7c.10 — Variantes optionnelles + suite du pipeline
 
 Présenter un résumé à l'utilisateur :
 
@@ -2996,11 +2998,34 @@ Présenter un résumé à l'utilisateur :
 > - Description fine : `{brand}-visual-pivot-c{N}.md` (format spec, 10 sections)
 > - Note auto-déclarée : {note}/10
 >
-> On continue vers le pitch (Étape 3B-7d) ?
+> **Tu veux générer des VARIANTES à partir de ce hero pour peupler la librairie `visual-final/` ?**
+>
+> Les variantes (atmosphere/closeup/macro/pov/texture/temporal) alimenteront automatiquement la Phase 4 (style-tile) et le Batch 3 (chapitres 08 et 10) du pipeline BIG.
+>
+> - **A. Oui, je veux générer des variantes** — Relance `/visual-prompt` dans une AUTRE SESSION et réponds **B** au fork modal (mode "variantes"). Donne le chemin du hero : `visual-final/{brand}-visual-final.{ext}`. Tu peux générer 1 ou plusieurs variantes (1 session = 1 variante). Reviens ici quand tu as fini.
+> - **B. Non, on continue direct au pitch** — On passe à 3B-7d sans variantes. Tu pourras toujours en générer plus tard en Phase 3B-7e ou en autonomie.
 
-Si OK → passer à l'Étape 3B-7d (Pitch complet) — ne traiter QUE le concept C{N} en utilisant `{brand}-visual-pivot-c{N}.md` + l'image finale en multimodalité.
+**Si A (OUI)** :
 
-Si ajustement demandé → relancer le subagent image-final-describer avec le feedback.
+```
+PAUSE — Attendre que l'utilisateur revienne avec ses variantes prêtes.
+
+L'orchestrateur ne lance rien — c'est l'utilisateur qui ouvre une autre
+session Claude Code, lance /visual-prompt mode variantes, ramène l'image
+dans visual-final/, et peut répéter autant de fois qu'il veut.
+
+Quand il revient, l'orchestrateur vérifie le contenu de visual-final/ :
+```
+
+```bash
+ls "{skill_dir}/outputs/{session_dir}/visual-final/" 2>/dev/null
+```
+
+Présenter le récap des variantes générées + redemander si l'user veut continuer ou passer au pitch.
+
+**Si B (NON)** ou variantes terminées → passer à l'Étape 3B-7d (Pitch complet) — ne traiter QUE le concept C{N} en utilisant `{brand}-visual-pivot-c{N}.md` + l'image finale en multimodalité.
+
+Si ajustement du hero demandé → relancer le subagent image-final-describer avec le feedback.
 
 **Si rejet de l'image finale** (cas rare) : l'utilisateur retourne à l'étape 3B-7c.7 (relancer la session externe MJ/NB2 avec les mêmes refs et un feedback plus précis), puis dépose une nouvelle image. Les étapes 3B-7c.8 et 3B-7c.9 sont relancées.
 
@@ -3359,54 +3384,52 @@ node {skill_dir}/lib/font-pool-contact-sheet.mjs {skill_dir}/ref/font-pools {poo
 
 ---
 
-### Étape 3B-7e — Génération visuels MJ/Recraft (skill séparé `/visual-brief`)
+### Étape 3B-7e — Génération de variantes visuelles supplémentaires (skill séparé `/visual-prompt` mode variantes)
 
-La génération des prompts visuels et l'analyse des images sont gérées par un **skill standalone** (`/visual-brief`), exécuté dans une **session Claude Code séparée**. Ce choix est motivé par :
-- L'orchestrateur a trop de contexte accumulé à ce stade pour suivre rigoureusement les guides MJ/Recraft
-- Les allers-retours image (générer → évaluer → re-prompter) saturent le contexte
-- Le skill dédié charge les guides techniques avec un contexte frais → il les suit à la lettre
+**Note historique** : cette étape appelait auparavant `/visual-brief` pour générer des prompts triple (MJ+Recraft+NB2). Depuis le refactor de mai 2026, elle pointe vers `/visual-prompt` mode "variantes" qui produit des visuels de meilleure qualité (gate élite 6/6 critères) en s'appuyant sur le **framework librairie atmosphère** documenté dans `~/repos/nano-banana-edit-portable/.claude/skills/nano-banana-edit/ref/nb-prompting-guide.md §11`.
+
+Cette étape est désormais **largement optionnelle** : la Phase 3B-7c.10 propose déjà la génération de variantes immédiatement après validation du hero. La 3B-7e sert de **2e opportunité** d'enrichir la librairie `visual-final/` (par exemple si on veut générer plus de variantes une fois les pitches finalisés et qu'on a une meilleure vision de l'usage final).
 
 **Condition préalable** : Au moins UN des 3 fichiers `{brand}-visual-direction-c{N}.md` recommande des images (approche "Image générée" ou "Les deux"). Si les 3 prescrivent uniquement "Fond CSS/SVG" ou "Typo pure" → passer directement à la Phase 4.
 
-**⚠ RÈGLE ABSOLUE** : Si au moins UN concept prescrit des images, l'orchestrateur DOIT proposer cette étape. Ne JAMAIS sauter, ne JAMAIS interpréter un "ok" comme un refus.
+**Question à l'utilisateur** :
 
-**Question à l'utilisateur** (extraire les infos des fichiers `{brand}-visual-direction-c{N}.md`, PAS des pitches) :
-
-> "La direction visuelle prescrit des visuels pour ces concepts :
-> - **{concept_1_name}** : {type choisi + sujet hero en 1 phrase, extrait de visual-direction-c1.md}
-> - **{concept_2_name}** : {type choisi + sujet hero en 1 phrase, extrait de visual-direction-c2.md}
-> - **{concept_3_name}** : {type choisi + sujet hero en 1 phrase, extrait de visual-direction-c3.md}
+> "Tu veux générer des **variantes supplémentaires** pour enrichir la librairie `visual-final/` avant Phase 4 ?
 >
-> **A. Oui, je veux fournir des visuels** — Lancez `/visual-brief` dans une nouvelle session Claude Code. Le skill lira les directions visuelles et palettes sur disque et générera les prompts MJ/Recraft. Revenez ici une fois les visuels prêts.
-> **B. Non, on continue sans visuels** — Les Style-Tiles seront en mode typographique/graphique pur."
+> État actuel de la librairie (par concept) :
+> - **{concept_1_name}** : {N1} visuels déjà rangés ({types_présents_c1})
+> - **{concept_2_name}** : {N2} visuels déjà rangés ({types_présents_c2})
+> - **{concept_3_name}** : {N3} visuels déjà rangés ({types_présents_c3})
+>
+> Phase 4 (style-tile) consommera automatiquement le hero ; Batch 3 (chapitres 08 et 10) consommera toutes les variantes présentes. Plus la librairie est riche, plus le Batch 3 sera convaincant.
+>
+> - **A. Oui, je veux générer plus de variantes** — Relance `/visual-prompt` mode 'variantes' pour les concepts qui en bénéficieraient. 1 session = 1 variante. Reviens quand tu as fini.
+> - **B. Non, on passe à la Phase 4 avec la librairie actuelle** — Phase 4 utilisera ce qui est disponible (au minimum le hero)."
 
 **Si A (OUI)** :
 
-> "Parfait. Voici comment procéder :
+> "Parfait. Pour chaque variante :
 >
-> 1. Ouvrez une **nouvelle session Claude Code** (nouveau terminal ou nouvelle fenêtre)
-> 2. Lancez `/visual-brief`
-> 3. Indiquez la session `{session_dir}` quand le skill le demande
-> 4. Le skill génère les prompts, vous allez sur MJ/Recraft, vous revenez avec les images
-> 5. Le skill analyse les images et prépare tout pour la Phase 4
-> 6. Revenez ici et dites-moi que les visuels sont prêts
+> 1. Ouvre une nouvelle session Claude Code
+> 2. Lance `/visual-prompt`
+> 3. Réponds **B** au fork modal (mode 'variantes')
+> 4. Donne le chemin du hero du concept concerné : `{skill_dir}/outputs/{session_dir}/visual-final/{brand}-visual-final.{ext}` (ou un autre hero si tu as fait varier les concepts)
+> 5. Choisis le type + niveau d'intensité selon §11.3 / §11.4 du nb-prompting-guide
+> 6. La variante atterrit automatiquement dans `visual-final/` avec le naming standardisé
 >
-> Je vous attends."
+> Reviens ici quand tu as fini toutes tes variantes."
 
-**PAUSE** — Attendre que l'utilisateur revienne avec les visuels prêts.
+**PAUSE** — Attendre que l'utilisateur revienne.
 
 **Quand l'utilisateur revient** :
 
-Vérifier que les fichiers du skill visual-brief existent :
+Vérifier le contenu de `visual-final/` :
 
 ```bash
-ls {skill_dir}/outputs/{session_dir}/{brand}-visual-analysis.md 2>/dev/null
-ls {skill_dir}/outputs/{session_dir}/{brand}-visual-c*.* 2>/dev/null
-ls {skill_dir}/outputs/{session_dir}/.tmp-prompt-c*.jpg.b64 2>/dev/null
+ls {skill_dir}/outputs/{session_dir}/visual-final/ 2>/dev/null
 ```
 
-- **Si `{brand}-visual-analysis.md` existe** → lire le fichier pour récupérer les analyses et recommandations d'intégration. Passer à l'étape 3G puis Phase 4.
-- **Si le fichier n'existe pas** → demander à l'utilisateur s'il a bien terminé le skill visual-brief.
+Présenter le récap final de la librairie (par concept, par type) et confirmer le passage à la Phase 4.
 
 **Si B (NON)** → passer directement à la Phase 4 (pipeline inchangé).
 
@@ -3436,9 +3459,12 @@ mkdir -p "${archive_dir}"
 # Archiver style-tiles
 mv {skill_dir}/outputs/{session_dir}/{brand}-style-tile-concept-*.html "${archive_dir}/"
 
-# Archiver visual-brief (s'il existe)
+# Archiver visual-brief si présent (legacy — antérieur au refactor mai 2026 ; n'existe plus
+# dans les nouveaux pipelines depuis le passage à /visual-prompt mode variantes)
 [ -f "{skill_dir}/outputs/{session_dir}/{brand}-visual-brief.md" ] && \
   mv "{skill_dir}/outputs/{session_dir}/{brand}-visual-brief.md" "${archive_dir}/"
+[ -f "{skill_dir}/outputs/{session_dir}/{brand}-visual-analysis.md" ] && \
+  mv "{skill_dir}/outputs/{session_dir}/{brand}-visual-analysis.md" "${archive_dir}/"
 
 # Archiver screenshots style-tiles et DA check (s'ils existent)
 for f in {skill_dir}/outputs/{session_dir}/screenshot-c*.png \
@@ -6162,7 +6188,6 @@ Lire la section **"Bloc de contexte partagé"** du fichier `{skill_dir}/phases/p
 - `{pitch_extract}` → extrait du pitch pour le concept choisi
 - `{batch2_design_summary}` → résumé des choix de design du Batch 2
 - `{visual_direction_extract}` → résumé de la direction visuelle choisie, extrait de `{brand}-visual-direction-c{N}.md` (concept retenu). Contient : type de visuel (photo/illustration/vector), sujets, registre, éclairage, style. Si le fichier n'existe pas → chaîne vide.
-- `{visual_brief_prompts}` → prompts MJ/Recraft validés, extraits de `{brand}-visual-brief.md` (si `/visual-brief` a été exécuté). Sinon → chaîne vide.
 - `{ventre_mou_section}` → même bloc ventre mou que Phase 6A (pré-formaté par l'orchestrateur selon curseur B)
 - `{cursor_a}` et `{cursor_a_label}` → valeur et label du curseur A
 - `{style_tile_read_path}` → chemin du style-tile source
@@ -6188,24 +6213,19 @@ import os
 
 out = '{skill_dir}/outputs/{session_dir}'
 
-# 1. Direction visuelle (Phase 3B)
+# Direction visuelle (Phase 3B) — extraite pour informer le Batch 3 sur le
+# type / registre / style choisi
 visual_dir_path = f'{out}/{brand}-visual-direction-c{chosen_concept_number}.md'
 if os.path.exists(visual_dir_path):
     with open(visual_dir_path) as f:
         visual_direction_extract = f.read()
 else:
     visual_direction_extract = ''  # Fallback — le Batch 3 proposera sa propre direction
-
-# 2. Prompts visuels (Phase 3C / visual-brief)
-visual_brief_path = f'{out}/{brand}-visual-brief.md'
-if os.path.exists(visual_brief_path):
-    with open(visual_brief_path) as f:
-        visual_brief_prompts = f.read()
-else:
-    visual_brief_prompts = ''  # Fallback — le Batch 3 générera ses propres prompts
 ```
 
-Ces variables sont injectées dans `{batch3_shared_context}` via les placeholders `{visual_direction_extract}` et `{visual_brief_prompts}`.
+Cette variable est injectée dans `{batch3_shared_context}` via le placeholder `{visual_direction_extract}`.
+
+**Note** : la variable `{visual_brief_prompts}` (legacy `/visual-brief` antérieur au refactor mai 2026) a été retirée du contexte. Le Batch 3 lit directement la librairie `visual-final/` (peuplée par `/visual-prompt` mode variantes) via les blocs `{visual_library_ch08}` et `{visual_library_ch10}` construits plus loin.
 
 ### Architecture de génération — 3 subagents séquentiels
 
@@ -7205,9 +7225,9 @@ Lors du lancement de chaque subagent, remplacer :
 > "La Tension de Marque est validée. Avant de passer au Pitch, j'ai besoin de vos choix sur les curseurs créatifs."
 > *(puis présenter les 2 axes et collecter les réponses — voir Étape 2B)*
 
-### Après collecte curseurs → Réconciliation → Territoires → Phase 3
+### Après collecte curseurs → Territoires → Phase 3
 > "Parfait : Audace Créative = {cursor_a}, Différenciation = {cursor_b}."
-> *(puis lancer l'Étape 2C — concept de réconciliation — puis lancer l'extraction de territoires créatifs — voir Étape 2D — puis collecter le mix — voir Étape 2E)*
+> *(puis lancer l'extraction de territoires créatifs — voir Étape 2C — puis collecter le mix — voir Étape 2D)*
 > "Mix de territoires défini. Je lance la Phase 3 — 3 concepts narratifs séquentiels (Pass A), puis le design sera dérivé de chaque concept (Pass B)."
 
 ### Après Phase 3 (3 concepts validés) → Visuels ou Phase 4

@@ -111,7 +111,6 @@ Format OBLIGATOIRE :
 ## Brief de reference
 - Univers : {1 phrase}
 - Tension : {1 phrase}
-- Concept de reconciliation : {1 phrase}
 
 ## Round 1 — Generation initiale
 {copie des 10 metaphores du generateur}

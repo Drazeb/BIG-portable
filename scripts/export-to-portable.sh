@@ -28,11 +28,14 @@ PORTABLE="$HOME/repos/BIG-portable"
 # Skills à inclure (liste blanche dure)
 SKILLS_TO_PORT=(
   "brand-identity"
-  "visual-brief"
   "test-big"
   "brand-book"
   "visual-prompt"
 )
+# Note : visual-brief retiré le 2026-05-28 (déprécié au profit de /visual-prompt
+# mode "variantes" qui couvre 100% des cas avec une qualité supérieure — gate
+# élite 6/6 critères vs analyse descriptive simple). Le skill reste en sandbox
+# (musée) mais n'est plus porté.
 
 # Anonymisation des marques clientes utilisées comme cas d'étude.
 #

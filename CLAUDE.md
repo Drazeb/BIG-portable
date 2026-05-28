@@ -26,7 +26,6 @@ BIG-portable/
     │   ├── examples/         ← Exemples de qualité (standard/ + rupture/)
     │   ├── scripts/          ← Gates Python (anti-slop, blacklist, finishing)
     │   └── lib/              ← Libs Node (puppeteer, font specimens, palette)
-    ├── visual-brief/         ← Prompts visuels MJ/Recraft + analyse images
     ├── visual-prompt/        ← Workflow itératif MJ→NB2→Recraft
     ├── brand-book/           ← Phase 8 — brand book HTML éditorial
     └── test-big/             ← Reprise du pipeline à mi-parcours
