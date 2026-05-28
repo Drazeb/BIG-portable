@@ -58,6 +58,8 @@ Tu peux répondre "continue" pour démarrer (je skip automatiquement les phases 
 
 ---
 
+*Note UX : à chaque entrée d'étape importante, tu verras un encadré de cadrage (Quoi / Pourquoi / Tu vas / En sortira) — pas besoin de relire ce guide en cours de route.*
+
 ## Les 12 étapes du pipeline
 
 **1. Collecte du brief**

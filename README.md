@@ -9,44 +9,38 @@ BIG est un système de skills Claude Code qui guide la création complète d'une
 ## Quick start
 
 ```bash
-# 1. Clone le repo (hors Google Drive recommandé)
-git clone https://github.com/Drazeb/BIG-portable.git ~/repos/BIG-portable
+# 1. Clone ce repo où tu veux (n'importe quel dossier)
+git clone https://github.com/Drazeb/BIG-portable.git ~/Documents/Claude\ Code/BIG-portable
 
-# 2. Ouvre Claude Code dans le dossier
-cd ~/repos/BIG-portable
-claude
+# 2. Lance le script d'install (il clone les 2 repos compagnons côte à côte)
+cd ~/Documents/Claude\ Code/BIG-portable
+./install.sh
 
-# 3. Invoque le skill
-/brand-identity
+# 3. Ouvre Claude Code dans ce dossier et tape /brand-identity
 ```
 
-À l'invocation, une **Phase 0 Preflight Check** s'affiche : checklist cochable des dépendances installées sur ta machine + ce qui te manque (avec commande d'install pour chacune) + à quelles phases du pipeline elles servent. Tu peux choisir d'installer tout ou de skipper certaines phases.
+Le script `install.sh` clone automatiquement `SPG-portable` et `nano-banana-edit-portable` côte à côte avec BIG-portable. Tu n'as **rien d'autre à configurer pour démarrer**.
+
+À l'invocation, une **Phase 0 Preflight Check** vérifie ton environnement et démarre le pipeline. **Les dépendances optionnelles (clé Gemini, vtracer, abonnements MJ/Recraft/Perplexity) sont demandées au moment où elles sont nécessaires**, pas au démarrage. Tu peux explorer la Phase 1 à 5 (analyse brief → style-tile) **sans configurer aucune clé API**.
 
 ## Prerequisites
 
-### Indispensables (sinon le pipeline ne tourne pas du tout)
+Seules ces 5 dépendances sont nécessaires pour démarrer. Tout le reste est demandé en cours de pipeline.
 
-| Dépendance | Comment installer | Pourquoi |
-|---|---|---|
-| **macOS** | (déjà là) | Le système utilise `open`, `open -a Chrome` pour ouvrir les artefacts à valider |
-| **[Claude Code](https://claude.ai/code)** | Via l'app Claude | Le skill tourne dedans |
-| **Git** | `brew install git` | Pour cloner + recevoir les mises à jour (`git pull`) |
-| **Node.js ≥ 18** | `brew install node` | Phase 3B-bis (specimens typo) + Phase 4 (screenshots Puppeteer) |
-| **Python 3** | `brew install python` | Gates anti-slop mécaniques (Phase 4, Phase 6) |
+| Dépendance | Comment installer |
+|---|---|
+| **macOS** | (déjà là) |
+| **[Claude Code](https://claude.ai/code)** | Via l'app Claude |
+| **Git** | `brew install git` |
+| **Node.js ≥ 18** | `brew install node` |
+| **Python 3** | `brew install python` |
 
-### Optionnelles (chaque dep ne bloque qu'une partie du pipeline)
+**Dépendances optionnelles** (demandées juste-à-temps, quand tu arrives à la phase qui en a besoin) :
 
-| Dépendance | Phases concernées | Skip si | Comment installer |
-|---|---|---|---|
-| **vtracer** (pip) | Phase Logo (vectorisation PNG → SVG) | Tu ne génères pas de logo | `pip3 install vtracer` |
-| **Abo MidJourney** | Phase 3C visuels, Phase Logo | Tu n'utilises pas de visuels IA | [midjourney.com](https://www.midjourney.com) |
-| **Abo Recraft** | Phase 3C illustrations flat | Tu restes en registre photo only | [recraft.ai](https://www.recraft.ai) |
-| **Abo Perplexity Pro** | Phase 3B-7c (image-pivot stylistique) | Tu acceptes un pipeline sans image-pivot | [perplexity.ai/pro](https://www.perplexity.ai/pro) |
-| **Clé API Gemini** | Phase 3B-7c (corrections NB2 dans /visual-prompt) et toutes les variantes d'atmosphère | Tu te passes des corrections NB2 et des variantes | Obtenir une clé gratuite sur [Google AI Studio](https://aistudio.google.com/app/apikey) |
-| **nano-banana-edit-portable** (repo séparé) | Phase 3B-7c — toutes les corrections NB2 du workflow itératif + génération des variantes d'atmosphère | Tu te passes des corrections NB2 (workflow visual-prompt dégradé) | `git clone https://github.com/Drazeb/nano-banana-edit-portable.git ~/repos/nano-banana-edit-portable && cd ~/repos/nano-banana-edit-portable && cp .env.example .env && # éditer .env avec ta clé Gemini` |
-| **SPG-portable** (repo séparé) | Phase 8 — section pitch deck du brand book | Tu ne veux pas le brand book final | `git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable` |
-
-La Phase 0 Preflight au lancement du skill détecte automatiquement ce qui est installé et te dit ce qui manque pour les phases que tu veux faire.
+- **vtracer** (Phase Logo) — installation rapide via `pip3 install vtracer` au moment de la Phase Logo
+- **Clé API Gemini** (Phase 3B-7c visuel hero + variantes d'atmosphère) — obtenir une clé gratuite sur [Google AI Studio](https://aistudio.google.com/app/apikey), je te guide quand tu en as besoin
+- **Abos payants** : [MidJourney](https://www.midjourney.com) (visuels), [Recraft](https://www.recraft.ai) (illustrations flat), [Perplexity Pro](https://www.perplexity.ai/pro) (image-pivot)
+- **SPG-portable** (brand book final) — déjà cloné automatiquement par `install.sh`
 
 ## Pipeline overview
 
@@ -102,20 +96,20 @@ La Phase 8 fonctionne aussi sans SPG-portable : la section Pitch Deck du brand b
 
 ## Mises à jour
 
-Le projet évolue activement. Trois mécanismes pour rester à jour :
-
-1. **GitHub Watch** — Clique sur "Watch" en haut du repo GitHub → tu reçois un email à chaque push significatif
-2. **GitHub Releases** — Les versions majeures sont taggées comme releases avec un changelog narratif. Watcher les releases (option "Releases only") filtre les notifications
-3. **Check auto in-skill** — La Phase 0 Preflight Check vérifie si ton repo local a du retard sur `origin/main`. Si oui, elle te demande de lancer `git pull` avant de continuer
-
-Pour mettre à jour manuellement :
+Le projet évolue activement. Pour récupérer les dernières améliorations sur les 3 repos d'un coup :
 
 ```bash
-cd ~/repos/BIG-portable
-git pull
+cd ~/Documents/Claude\ Code/BIG-portable
+./update.sh
 ```
 
-Tes sessions de travail (dossier `.claude/skills/brand-identity/outputs/`) restent intactes — elles sont gitignorées et locales à ta machine.
+Le script `update.sh` lance `git pull` dans BIG-portable + SPG-portable + nano-banana-edit-portable et te donne un récap. Tes sessions de travail (`outputs/`) et ton fichier `.env` (avec ta clé Gemini) restent intacts — ils sont gitignorés et locaux à ta machine.
+
+**Mécanismes complémentaires** :
+
+1. **GitHub Watch** — Clique sur "Watch" en haut du repo GitHub → tu reçois un email à chaque push
+2. **GitHub Releases** — Les versions majeures sont taggées avec un changelog narratif
+3. **Check auto in-skill** — La Phase 0 Preflight vérifie si ton repo local a du retard sur GitHub et te prévient au démarrage de chaque session
 
 ## Contributing
 

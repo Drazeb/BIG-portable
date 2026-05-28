@@ -107,6 +107,22 @@ Bienvenue ! Je suis ton Directeur de Création.
 
 ---
 
+## RÈGLE — Annonce d'entrée d'étape (cadrage utilisateur externe)
+
+**RÈGLE ABSOLUE** : À chaque entrée d'une étape user-facing du pipeline, tu DOIS afficher en PREMIER un encadré de cadrage à l'utilisateur, AVANT toute question ou action. Cette règle s'applique à TOUS les checkpoints où l'utilisateur doit faire un choix, valider, fournir un input — quel que soit son niveau de familiarité avec l'outil.
+
+**Deux formats** :
+
+**Type A — Checkpoint actif** (choix, validation, input requis) :
+Cherche le bloc `<phase-intro>` placé en tête de la section de cette étape, et affiche le contenu ENTRE les balises `<phase-intro>` et `</phase-intro>` EXACTEMENT tel quel. Ne paraphrase pas, ne reformule pas, ne raccourcis pas. Copie-colle le bloc, puis enchaîne avec ton action normale (présentation de résultat, question, etc.).
+
+**Type B — Sous-étape automatique** (le LLM enchaîne, l'utilisateur attend juste un résultat) :
+Cherche le commentaire `<!-- mini-annonce: ... -->` placé en tête de la sous-étape et affiche son contenu EXACTEMENT tel quel sous la forme d'une ligne au format `ℹ {contenu}`.
+
+**Ne saute jamais l'encadré**, même si l'utilisateur connaît déjà le pipeline. C'est la garantie d'une expérience reproductible pour un utilisateur externe qui découvre BIG.
+
+---
+
 ## PHASE 0 — PREFLIGHT CHECK
 
 **RÈGLE** : Cette phase tourne UNE FOIS au démarrage, juste après l'onboarding et AVANT que l'utilisateur ne choisisse son option A/B/C/D. Elle vérifie les dépendances installées sur la machine, informe l'utilisateur de ce qui peut lui manquer, et lui permet de skipper certaines phases s'il ne veut pas installer les deps correspondantes.
@@ -206,78 +222,74 @@ Composer et afficher exactement ce format (en remplaçant les `<placeholders>` p
 │  PHASE 0 — PREFLIGHT CHECK                                               │
 └──────────────────────────────────────────────────────────────────────────┘
 
-Avant de démarrer, voici ce qui est installé sur ta machine et ce qui te
-manquerait pour certaines phases. Tu peux skipper des phases si tu ne
-veux pas installer les deps correspondantes.
-
 ── BLOQUANT (sans ça, pipeline impossible) ─────────────────────────────────
-  [✓] macOS                  — <Darwin détecté>
-  [✓] Claude Code            — Tu y es
-  [<✓/✗>] Git                — <version ou "absent — brew install git">
-  [<✓/✗>] Node.js            — <version ou "absent — brew install node">
-  [<✓/✗>] Python 3           — <version ou "absent — brew install python">
+  ✓ macOS · Claude Code · Git · Node.js · Python 3
+  <si l'un est ✗ : afficher la ligne complète + commande d'install + STOP>
 
-── OPTIONNEL (skip la phase associée si tu n'installes pas) ────────────────
-  [<✓/✗>] vtracer            — Phase Logo (vectorisation PNG → SVG)
-                                <version ou "pip3 install vtracer">
-  [?]    Abo MidJourney      — Phase 3C visuels + Phase Logo
-                                (je ne peux pas détecter — à toi de dire)
-  [?]    Abo Recraft V4      — Phase 3C illustrations flat
-  [?]    Abo Perplexity Pro  — Phase 3B-7c image-pivot stylistique
-  [<✓/✗>] nano-banana-edit-portable — Toutes les corrections NB2 dans /visual-prompt
-                                       (couleur de fond, grain, tons, retouche ciblée)
-                                       + variantes d'atmosphère via framework §11
-                                <NB_STATUS ou "git clone .../nano-banana-edit-portable.git ~/repos/nano-banana-edit-portable">
-  [<✓/✗>] Clé API Gemini    — Configurée dans .env de nano-banana-edit-portable
-                                <GEMINI_KEY_STATUS ou "cp .env.example .env + obtenir clé sur https://aistudio.google.com/app/apikey">
-  [<✓/✗>] SPG-portable       — Phase 8 brand book (section pitch deck)
-                                <SPG_STATUS ou "git clone .../SPG-portable.git ~/repos/SPG-portable">
+── ÉCOSYSTÈME (info — je te demanderai au moment où chaque dep sera
+              nécessaire, pas maintenant) ──────────────────────────────────
+  ✓ BIG-portable           — Tu y es
+  <✓/✗> SPG-portable        — Brand book final (Phase 8)
+  <✓/✗> nano-banana-edit    — Variantes d'atmosphère + corrections NB2 (Phase 3B-7c)
+  <✓/✗> Clé API Gemini      — (idem — configurée dans .env de nano-banana-edit)
 
-── ÉTAT DU REPO ────────────────────────────────────────────────────────────
+── REPO ────────────────────────────────────────────────────────────────────
   <Si GIT_BEHIND non vide :>
   ⚠ Mise à jour disponible : <N> commits sur GitHub.
-    Lance 'git pull' pour récupérer les dernières améliorations avant de continuer.
+    Lance ./update.sh pour récupérer les dernières améliorations.
   <Sinon :>
-  ✓ Repo à jour avec GitHub (ou pas de remote configuré).
+  ✓ Repo à jour avec GitHub.
+
+── DÉPENDANCES PAYANTES (services externes, non détectables — à activer
+                          quand tu auras besoin des phases concernées) ─────
+  Phase Logo (PNG→SVG)       → vtracer (gratuit, pip3 install vtracer)
+  Phase 3B-7c visuel hero    → MidJourney + clé Gemini (NB2) + Perplexity Pro
+  Phase 3C illustrations     → Recraft V4
+
+Tu peux explorer la Phase 1 à 5 sans configurer aucune clé API. Je te
+demanderai chaque dépendance au moment où elle sera nécessaire, avec
+les options A/B/C pour installer, dégrader ou skipper.
 ```
 
-Puis poser la question :
+Puis poser la question (SIMPLIFIÉE) :
 
 ```
-Tu veux :
-  · Continuer tel quel (je skipperai automatiquement les phases dont les deps manquent)
-  · Skipper des phases spécifiques (dis-moi lesquelles : "skip logo", "skip visuels", etc.)
-  · Mettre à jour le repo d'abord (lance 'git pull' puis relance /brand-identity)
-
-→ Ta réponse :
+→ Réponds "continue" pour démarrer (ou directement A/B/C/D pour choisir
+  ton mode de brief).
 ```
 
 ### Étape 0.3 — Collecte de la réponse + stockage
 
-1. Si réponse "continue" / "go" / "tel quel" ou équivalent → `{skipped_phases}` = liste auto-déduite des deps absentes (ex: si vtracer absent → `{skipped_phases}` = "logo")
-2. Si l'utilisateur liste explicitement des phases à skipper → parser la réponse et stocker dans `{skipped_phases}` (mots-clés acceptés : `logo`, `visuels`, `visuels-mj`, `visuels-recraft`, `image-pivot`, `brand-book`, `animation`)
-3. Si réponse "git pull" / "mettre à jour" → STOP. Afficher "OK, lance `git pull` dans le dossier du repo, puis relance `/brand-identity`." et terminer.
+L'utilisateur tape "continue", "go", ou directement une lettre A/B/C/D.
 
-### Variables stockées (utilisées plus loin dans le pipeline)
-- `{skipped_phases}` → liste des phases skippées (ex: "logo,visuels-mj,brand-book")
+**Pas de question de skip ici** — les phases optionnelles s'auto-géreront via des gates juste-à-temps en aval (cf. Étape L0 pour la Phase Logo, Étape 3B-7c.7 pour le visuel hero, Phase 8 pour le brand book). C'est la pratique moderne du "just-in-time onboarding" : on demande chaque dep au moment où elle est nécessaire, pas au démarrage.
+
+### Variables stockées (utilisées plus loin par les gates juste-à-temps)
+
 - `{node_ok}`, `{python_ok}`, `{vtracer_ok}`, `{git_ok}` → booléens (1/0)
 - `{spg_available}` → "présent" / "absent"
+- `{nb_available}` → "présent" / "absent"
+- `{gemini_key_status}` → "configurée" / "placeholder non remplacé" / "absent" / "non vérifiable (nano-banana-edit absent)"
 - `{git_behind}` → nombre de commits de retard (vide si à jour)
 
-### Règles de respect des skips dans les phases aval
+### Convention "just-in-time" pour les phases aval
 
-Les phases qui dépendent d'une dep optionnelle DOIVENT checker `{skipped_phases}` avant de tourner. Mapping de référence :
+Chaque phase qui dépend d'une dep optionnelle DOIT, en début d'étape, **re-vérifier** le statut de la dep (l'utilisateur a pu l'installer entre la Phase 0 et maintenant) et **proposer A/B/C** si la dep est absente :
 
-| Phase | Skip key | Effet du skip |
+- **A. Install rapide** : afficher la commande, attendre confirmation, re-check, continuer
+- **B. Mode dégradé** (si applicable) : continuer avec un fallback (ex: visual-prompt en mode web NB Pro manuel)
+- **C. Skip** : marquer la phase comme skippée, continuer le pipeline sans
+
+Mapping de référence (gates implémentées plus loin dans le SKILL.md) :
+
+| Phase | Dep | Gate JIT |
 |---|---|---|
-| Phase 3B-7c (image-pivot Perplexity) | `image-pivot` | Le penseur visuel saute l'étape Perplexity, dérive directement depuis la fiche styliste |
-| Phase 3C — visuels MidJourney | `visuels-mj` ou `visuels` | Style-tiles générés sans visuel base64 (texture/gradient uniquement) |
-| Phase 3C — illustrations Recraft | `visuels-recraft` ou `visuels` | Pas d'illustration flat, le pipeline continue |
-| Étape 5D (Animation) | `animation` | On saute la couche d'animation, le style-tile statique est conservé |
-| Phase Logo (L1-L5) | `logo` | Pipeline continue sans logo, `{logo_available}` = false |
-| Phase 8 (Brand Book) | `brand-book` ou `{spg_available}` = "absent" | Pas de brand book généré, packaging final allégé |
+| Phase 3B-7c.7 (visual-prompt mode principal) | nano-banana-edit-portable + clé Gemini | Avant le message "Lance /visual-prompt" |
+| Étape 5D (Animation) | (optionnelle d'office, déjà proposée) | Inchangé |
+| Phase Logo (L0) | vtracer | Avant la question "Tu veux faire un logo ?" |
+| Phase 8 (Brand Book) | SPG-portable | Avant la question "Tu veux générer le brand book ?" |
 
-**Si une phase est skippée, l'orchestrateur l'annonce explicitement à l'utilisateur** ("Phase Logo skippée comme demandé en Phase 0, on passe à Batch 2") et continue.
+**Si l'utilisateur skipe une phase, l'orchestrateur l'annonce explicitement** ("Phase Logo skippée, on passe à Batch 2") et continue.
 
 ---
 
@@ -601,6 +613,14 @@ Le style-tile validé contient un `:root` au même format que le mode créatif. 
 
 ## PHASE 1 — Brief Analysis & Q&A
 
+<phase-intro>
+▶ **Analyse du brief**
+· *Quoi* : J'analyse tes 14 points + détecte la Tension de Marque et le Ventre Mou sectoriel
+· *Pourquoi* : Tout le pipeline créatif s'appuie sur ces fondations — il faut qu'on s'aligne dessus avant d'aller plus loin
+· *Tu vas* : valider l'analyse, corriger ce qui ne te parle pas, répondre aux questions sur les points peu clairs
+· *En sortira* : un brief consolidé qui guide tout le reste du pipeline
+</phase-intro>
+
 ### Étape 1A (main session) : Collecte
 - Lire le brief fourni par l'utilisateur (fichier ou texte collé)
 - Si le brief est partiel, poser des questions sur les points manquants
@@ -644,7 +664,17 @@ Lire le fichier `{skill_dir}/phases/phase-1-brief.md` et utiliser son contenu co
 
 ## PHASE 2 — Scoping (Tension & Ventre Mou)
 
+<phase-intro>
+▶ **Scoping — Tension & Curseurs**
+· *Quoi* : Je formule la Tension de Marque (paradoxe créatif unique) et tu calibres 2 curseurs (Audace A, Différenciation B)
+· *Pourquoi* : La Tension est l'ADN stratégique qui empêche les concepts d'être génériques ; les curseurs A×B modulent le niveau de rupture visuelle (Prudent/Décalé/Rupture) pour TOUTE la suite
+· *Tu vas* : valider/reformuler la Tension + choisir un niveau (1 à 3) pour chaque curseur
+· *En sortira* : une Tension verrouillée + un calibrage A×B qui pilote la créativité de tous les sous-agents aval
+</phase-intro>
+
 ### Étape 2A (subagent) : Tension & Ventre Mou
+
+<!-- mini-annonce: ℹ Maintenant : analyse du Ventre Mou sectoriel — j'identifie les codes visuels que tout le monde utilise dans ton secteur pour pouvoir les éviter -->
 
 Lancer un subagent avec le prompt suivant :
 
@@ -704,6 +734,8 @@ Stocker la température validée dans `{validated_temperature}`.
 4. **Stocker les valeurs A et B** pour les transmettre au subagent Phase 3A
 
 ### Étape 2C (subagent) : Territoires Créatifs
+
+<!-- mini-annonce: ℹ Maintenant : extraction des mots-clés de ton brief — j'extrais 15-20 mots selon 4 axes (métier, valeurs, marché, aspirations) -->
 
 Après validation des curseurs, l'orchestrateur lance l'extraction de territoires créatifs.
 
@@ -772,6 +804,14 @@ Variables à remplacer :
 
 ---
 
+<phase-intro>
+▶ **Mix des territoires créatifs**
+· *Quoi* : J'ai extrait 15-20 mots-clés de ton brief et clusterisé en 4-5 territoires créatifs
+· *Pourquoi* : Le rôle que tu attribues à chacun (Principal / Secondaire / Tertiaire) fixe le ton dominant des 3 concepts narratifs — c'est ce qui rend l'identité tienne et pas générique
+· *Tu vas* : attribuer 1 rôle à chaque territoire (1 Principal, 1 Secondaire, 1+ Tertiaire)
+· *En sortira* : un mix pondéré qui guide la génération des concepts narratifs
+</phase-intro>
+
 ### Étape 2D (orchestrateur, inline) : Mix pondéré
 
 L'utilisateur a choisi son mix (Principal, Secondaire, Tertiaire). L'orchestrateur construit le bloc `{territory_mix}` :
@@ -796,6 +836,14 @@ Pas de subagent nécessaire — c'est une simple construction de texte par l'orc
 ---
 
 ## PHASE 3 — Pitch Stratégique (Two-Pass : Concept → Design)
+
+<phase-intro>
+▶ **Pitch stratégique — 3 concepts**
+· *Quoi* : Je génère 3 directions narratives divergentes, puis je dérive pour chacune une direction visuelle complète (palette, typo, style, image-pivot)
+· *Pourquoi* : Tu auras 3 options structurellement différentes à comparer en Phase 4 (style-tiles HTML) — c'est l'un des deux grands choix créatifs du pipeline
+· *Tu vas* : choisir le mode (Génératif/Sélectif), valider les concepts, choisir 1 palette + 1 style par concept, valider le pitch écrit
+· *En sortira* : 3 pitches complets et verrouillés, prêts pour la génération des style-tiles
+</phase-intro>
 
 ### Étape 2E (orchestrateur, inline) : Choix du mode + orientation de registre
 
@@ -1411,6 +1459,8 @@ Informer l'utilisateur :
 
 #### Vague 1 — Palettes par divergence séquentielle (3 palettes × 3 concepts)
 
+<!-- mini-annonce: ℹ Maintenant : génération des palettes A/B/C en parallèle pour chaque concept (3 subagents simultanés) -->
+
 **Pourquoi un subagent séparé** : Le designer principal reçoit les territoires créatifs (nécessaires pour surface, rythme, typo). Or les territoires contaminent le choix chromatique — le LLM ne compartimente pas. Le subagent palette reçoit UNIQUEMENT le concept narratif + les gammes autorisées, sans territoires. Isolation structurelle.
 
 **Pourquoi 3 palettes** : Même logique que la divergence des pitchs visuels. La palette A est la plus "pure" (dérivation directe). Les palettes B et C explorent des directions chromatiques structurellement différentes (gammes, harmonies, accents). L'utilisateur choisit 1 palette par concept avant les spécimens.
@@ -1707,6 +1757,8 @@ Parser le JSON de chaque subagent. Si parsing échoue → logger `⚠ Check aver
 ---
 
 #### Vague 2 — Penseurs typographiques (6 subagents : 3 display + 3 body EN PARALLÈLE)
+
+<!-- mini-annonce: ℹ Maintenant : génération des pairings typo en parallèle pour chaque concept -->
 
 **Pourquoi 2 penseurs séparés** : Le penseur display et le penseur body sont des missions DISTINCTES. Un seul penseur qui fait les deux bâcle le scan (testé : le scan devient confirmateur au lieu d'explorateur). Chaque penseur n'a qu'UNE mission → il peut y consacrer toute son attention.
 
@@ -2254,6 +2306,8 @@ Lancer 1 subagent avec le prompt de `{skill_dir}/phases/phase-3b-style-router.md
 
 #### Étape 3B-7a — Styliste (divergence séquentielle A→B→C)
 
+<!-- mini-annonce: ℹ Maintenant : sélection d'un style HTML par concept dans la bibliothèque de spécimens canoniques -->
+
 **Pourquoi cette étape existe** : Le pitch designer (Étape 3B-7d ci-dessous) dérive ses prescriptions visuelles à partir du concept narratif + territoires + curseurs + palette. Sans ancrage explicite à un style officiel reconnu, les dérivations basculent fréquemment dans le ventre mou ou dans des mixes inventés non-reconnus (ex: "Editorial Photographique Monographique"). Le styliste choisit en amont UN style officiel (ou mix dominant×modulateur max) parmi les 34 fiches du catalogue `ref/styles-bibliotheque.md`, et fait autorité pour la suite. La fiche retenue est ensuite transmise au penseur visuel (3B-7c) pour ancrer la direction visuelle au style.
 
 **Divergence** : Pour chaque concept, 3 sous-vagues séquentielles produisent 3 fiches de styles divergentes (A libre, B alternative à A, C registre alternatif vs A et B). Calque exact du pattern palettes (Vague 1) et visuels (3B-7c). L'utilisateur choisit 1 fiche par concept au checkpoint.
@@ -2477,6 +2531,8 @@ Après chaque sous-vague, vérifier les 9 fiches produites au total à l'issue d
 ---
 
 #### Étape 3B-7b — Spécimen stylisé (9 sub-agents PARALLÈLES — 3 concepts × 3 variantes)
+
+<!-- mini-annonce: ℹ Maintenant : rendu visuel de chaque combinaison style + palette + typo (4 variantes par concept) -->
 
 **Pourquoi cette étape existe** : Pour valider EMPIRIQUEMENT que chaque style choisi par le styliste fonctionne avec la palette + fonts + concept, AVANT que l'utilisateur ne choisisse au checkpoint et qu'on investisse le contexte du pitch designer. Chaque variante (A, B, C) reçoit son propre spécimen — l'utilisateur voit ainsi visuellement les 3 propositions avant de choisir.
 
@@ -2940,6 +2996,58 @@ Si un fichier ou le dossier `visual-refs/` manque, demander explicitement à l'u
 
 ##### Étape 3B-7c.7 — ⏸ PAUSE — l'utilisateur lance le skill MJ/NB2 (autre session)
 
+**Gate juste-à-temps — nano-banana-edit + clé Gemini** (re-vérification du statut depuis Phase 0) :
+
+Re-lancer le check de Phase 0 (sous-étape 0.1) pour avoir les valeurs à jour :
+
+```bash
+# Re-check présence nano-banana-edit-portable
+NB_STATUS="absent"
+NB_PATH=""
+for candidate in "../nano-banana-edit-portable" "$HOME/repos/nano-banana-edit-portable"; do
+  if [ -d "$candidate" ]; then NB_STATUS="présent ($candidate)"; NB_PATH="$candidate"; break; fi
+done
+
+# Re-check clé Gemini configurée
+GEMINI_KEY_STATUS="non vérifiable (nano-banana-edit absent)"
+if [ -n "$NB_PATH" ]; then
+  ENV_PATH="$NB_PATH/.claude/skills/nano-banana-edit/.env"
+  if [ -f "$ENV_PATH" ]; then
+    if grep -q "^GEMINI_API_KEY=AIza" "$ENV_PATH" 2>/dev/null; then
+      GEMINI_KEY_STATUS="configurée"
+    elif grep -q "^GEMINI_API_KEY=your-key-here" "$ENV_PATH" 2>/dev/null; then
+      GEMINI_KEY_STATUS="placeholder non remplacé (.env à éditer)"
+    else
+      GEMINI_KEY_STATUS=".env présent mais clé non détectée"
+    fi
+  else
+    GEMINI_KEY_STATUS=".env absent (lance ./install.sh pour le créer)"
+  fi
+fi
+```
+
+**Si `{nb_available}` = "absent" OU `{gemini_key_status}` ≠ "configurée"** → afficher d'abord :
+
+> "ℹ Note : `/visual-prompt` utilise `/nano-banana-edit` pour les corrections NB2 du workflow itératif (couleur de fond, grain, tons, clair-obscur). Pour ça il me faut :
+> - Le repo `nano-banana-edit-portable` cloné côte à côte → état : **{nb_available}**
+> - Une clé API Gemini configurée dans son `.env` → état : **{gemini_key_status}**
+>
+> Tu peux choisir :
+>
+> **A. Setup complet maintenant** — Je lance `./install.sh` pour cloner les repos manquants, puis je t'ouvre la page Google AI Studio (où obtenir ta clé gratuite) + le fichier `.env` dans TextEdit pour coller la clé. ~2 min.
+>
+> **B. Lancer `/visual-prompt` en mode dégradé** — Tu fais les corrections NB2 manuellement via l'interface web de Google AI Studio (https://aistudio.google.com), copie l'image éditée à la main dans `visual-final/`. Plus lent mais possible.
+>
+> **C. Skipper le visuel hero** — Phase 4 générera un style-tile typographique pur sans image. Tu peux toujours revenir générer un hero plus tard via `/test-big` à la phase 3B-7c.
+>
+> Tu veux quoi ?"
+
+- Si **A** : exécuter `cd {parent} && ./install.sh` (si BIG-portable a un install.sh — il est à `{cwd}/install.sh` dans le portable). Une fois fini, exécuter `open -a TextEdit "{NB_PATH}/.claude/skills/nano-banana-edit/.env"` ET `open "https://aistudio.google.com/app/apikey"`. Attendre que l'user dise "configuré" / "OK". Re-check, re-affirmer le statut.
+- Si **B** : marquer `{nb_dégradé}` = true. Continuer avec la suite normale, en informant : "OK, je continue. Quand `/visual-prompt` te demandera de lancer une correction NB2, va sur https://aistudio.google.com/edit-image, fais l'édition à la main, ramène l'image."
+- Si **C** : marquer `{skip_visuel_hero}` = true. Sauter directement à l'Étape 3B-7d (pitch) sans passer par les étapes 3B-7c.7 à 3B-7c.10. Le pitch sera ancré sur la fiche styliste sans image-pivot.
+
+**Si `{nb_available}` = "présent" ET `{gemini_key_status}` = "configurée"** → continuer directement avec le message ci-dessous.
+
 Présenter dans le chat :
 
 > **Génération de l'image finale** :
@@ -3386,6 +3494,8 @@ node {skill_dir}/lib/font-pool-contact-sheet.mjs {skill_dir}/ref/font-pools {poo
 
 ### Étape 3B-7e — Génération de variantes visuelles supplémentaires (skill séparé `/visual-prompt` mode variantes)
 
+<!-- mini-annonce: ℹ Maintenant : génération des visuels finaux via /visual-brief (prompts MidJourney/Recraft/NB2) -->
+
 **Note historique** : cette étape appelait auparavant `/visual-brief` pour générer des prompts triple (MJ+Recraft+NB2). Depuis le refactor de mai 2026, elle pointe vers `/visual-prompt` mode "variantes" qui produit des visuels de meilleure qualité (gate élite 6/6 critères) en s'appuyant sur le **framework librairie atmosphère** documenté dans `~/repos/nano-banana-edit-portable/.claude/skills/nano-banana-edit/ref/nb-prompting-guide.md §11`.
 
 Cette étape est désormais **largement optionnelle** : la Phase 3B-7c.10 propose déjà la génération de variantes immédiatement après validation du hero. La 3B-7e sert de **2e opportunité** d'enrichir la librairie `visual-final/` (par exemple si on veut générer plus de variantes une fois les pitches finalisés et qu'on a une meilleure vision de l'usage final).
@@ -3490,6 +3600,14 @@ Informer l'utilisateur :
 
 ## PHASE 4 — Style-Tile HTML (Showroom Multi-Concept)
 
+<phase-intro>
+▶ **Style-Tiles — 3 showrooms visuels**
+· *Quoi* : Je génère 3 fichiers HTML immersifs (un par concept) avec 3 polish passes successives (création v0, intégration artefact UI, polish iter0)
+· *Pourquoi* : Tu as 3 pauses-checkpoint pour arrêter tôt si la direction visuelle ne te convient pas — avant d'investir le temps complet sur les 3 versions
+· *Tu vas* : à chaque pause, choisir : (A) continuer, (B) demander une correction ciblée, (C) stopper et revenir en arrière
+· *En sortira* : 3 style-tiles HTML polis ouverts dans le navigateur pour comparaison
+</phase-intro>
+
 ## Étape 4 — Production des style-tiles HTML (state machine atomique)
 
 **Objectif** : produire les style-tiles HTML self-contained (hero + artefact + atmosphere), validés par 3 couches de gates (mécaniques Python, visuel Puppeteer, sémantique Critiques×4 + Synthétiseur), avec garde-fous anti-régression et trace d'audit consolidée.
@@ -3572,6 +3690,8 @@ Spécifiques par concept N : `{concept_number}`, `{concept_name}`, `{concept_det
 ---
 
 ### Étape 4.1 — Création HTML v0 (ex-4A : Designer mode CRÉATION × N)
+
+<!-- mini-annonce: ℹ Maintenant : génération des 3 style-tiles HTML en parallèle (3 subagents Designer simultanés) -->
 
 **Type** : TASK_TOOL_INVOCATION | **Conditionnelle** : NON | **Parallèle N concepts** : OUI | **Patches** : —
 
@@ -4552,6 +4672,8 @@ echo "✓ Corrections art appliquées sur :$concepts_to_correct — passer à 4.
 
 ### Étape 4.10 — Critique 4-parallèle iter0 (ex-4A-loop iter0 — N vagues séquentielles de 4 critiques)
 
+<!-- mini-annonce: ℹ Maintenant : 1er tour de polish — un audit interne par 4 critiques identifie les améliorations, puis correction -->
+
 **Type** : TASK_TOOL_INVOCATION (×4 par concept en parallèle) | **Conditionnelle** : NON | **Parallèle concepts** : NON (sérialisation en N vagues, où N = nombre de concepts dans `$CONCEPTS`) ; OUI pour les 4 critiques d'un même concept | **Patches** : Architecture Vague 2.
 
 ⛔ **PRÉ-CONDITION** :
@@ -5285,6 +5407,14 @@ echo "✓ Phase 4 complétée pour [$CONCEPTS] — choix utilisateur attendu"
 
 ## PHASE 4bis — DA Check (Audit Qualité Visuelle)
 
+<phase-intro>
+▶ **Audit DA (Direction Artistique)**
+· *Quoi* : Je capture des screenshots des 3 style-tiles et je les compare au pitch pour vérifier que le rendu visuel est fidèle (fonts, palette, atmosphère, artefacts)
+· *Pourquoi* : Un audit multimodal détecte les écarts subtils (ex: une font qui s'affiche mais ne donne pas le bon signal sectoriel) que tu pourrais rater à l'œil
+· *Tu vas* : choisir Oui (l'audit tourne, ~3 min) ou Non (on passe à la Phase 5 directement)
+· *En sortira* : un verdict par concept (VALIDE / CORRECTIONS MINEURES / REFAIRE) + corrections proposées si applicable
+</phase-intro>
+
 ### Objectif
 
 Audit de qualité visuelle par un subagent DA qui VOIT les rendus (screenshots Puppeteer) et les compare au pitch. Détecte les écarts invisibles en lisant le code seul :
@@ -5387,6 +5517,14 @@ Une fois tous les concepts VALIDE ou corrigés :
 
 ## PHASE 5 — Itération & Choix Final
 
+<phase-intro>
+▶ **Choix final du concept**
+· *Quoi* : Les 3 style-tiles sont ouverts dans 3 onglets de ton navigateur, polish appliqué
+· *Pourquoi* : C'est LE choix créatif majeur du pipeline. Le concept retenu pilote toute la suite — animation, logo, batches, brand book
+· *Tu vas* : prendre le temps de comparer les 3, puis choisir A, B ou C (ou demander des ajustements avant de choisir)
+· *En sortira* : 1 concept verrouillé prêt à être amplifié dans les étapes suivantes
+</phase-intro>
+
 ### Objectif
 Permettre à l'utilisateur de comparer les 3 Style-Tiles, demander des ajustements, et faire son choix final avant de passer aux Batches 2 & 3.
 
@@ -5445,6 +5583,14 @@ Quand l'utilisateur fait son choix final :
 ---
 
 ## ÉTAPE 5D — Animation du style-tile (optionnelle mais OBLIGATOIREMENT PROPOSÉE)
+
+<phase-intro>
+▶ **Animation du style-tile (optionnelle)**
+· *Quoi* : Je propose d'ajouter une couche d'animation moderne au style-tile retenu (parallaxe au scroll, apparitions, typo cinétique) — calibrée anti-slop avec librairies standard
+· *Pourquoi* : Une animation sobre fait passer le style-tile statique au niveau "production web 2026" — purement additive, le statique reste intact
+· *Tu vas* : choisir Oui/Non ; si oui, ajuster le preset puis choisir 1 variante parmi 2-3 dosages (subtil/médian/prononcé)
+· *En sortira* : un fichier `{brand}-style-tile-animated.html` qui coexiste avec le statique validé
+</phase-intro>
 
 **Position** : juste après l'Étape 5C (choix final), avant la Phase Logo (et donc avant le Batch 2). C'est la dernière étape du bloc style-tile.
 **Pattern** : identique à la Phase Logo — proposition obligatoire, choix utilisateur, sous-agent, itération, retour dans le pipeline.
@@ -5520,6 +5666,14 @@ Le subagent écrit 2-3 variantes : `{tile_basename}-animated-v1.html` / `-v2.htm
 
 ## PHASE LOGO (optionnelle mais OBLIGATOIREMENT PROPOSÉE)
 
+<phase-intro>
+▶ **Logo — Concept & Génération (optionnel)**
+· *Quoi* : Je conçois le concept créatif du logo + 3 prompts MidJourney, tu génères dans MJ, je vectorise en SVG propre et crée 6 déclinaisons
+· *Pourquoi* : Le logo est l'élément signature de l'identité — vectorisation manuelle pour des tracés impeccables (contrairement aux SVG MJ bruts)
+· *Tu vas* : valider le concept, lancer MJ, choisir le meilleur résultat, valider les 6 SVG (~30-45 min au total)
+· *En sortira* : 6 SVG (bicolore, négatif, monochromes navy/blanc, lockups primaire/secondaire) intégrés au Batch 2 et au pack final
+</phase-intro>
+
 **Position** : entre Phase 5C (slugification) et Phase 6A (Batch 2).
 **Pattern** : identique à Phase 3C (visuels de référence) — proposition obligatoire, choix utilisateur, pause externe, retour dans le pipeline.
 **Workflow** : Claude (concept + prompts MJ) → User (Midjourney) → Claude Code (vectorisation SVG + 6 déclinaisons) → Batch 2 (intègre le vrai logo).
@@ -5533,8 +5687,30 @@ Immédiatement après Phase 5C, poser la question suivante :
 > **A. Oui** — Je conçois le concept créatif et les prompts Midjourney, vous générez dans MJ, je vectorise et crée les 6 déclinaisons SVG (~30-45 min)
 > **B. Non** — Le Batch 2 générera un logo basique en SVG (qualité limitée)"
 
-- Si **B (Non)** → `{logo_available}` = false → Phase 6A inchangée (backward compatible)
-- Si **A (Oui)** → lancer les étapes L1→L5
+**Gate juste-à-temps — vtracer** (uniquement si l'utilisateur répond A) :
+
+Re-vérifier `vtracer` :
+
+```bash
+VTRACER_VER=$(pip3 show vtracer 2>/dev/null | grep "^Version:" | awk '{print $2}' || echo "absent")
+```
+
+**Si vtracer = "absent"** → afficher AVANT de lancer L1 :
+
+> "ℹ Note : la vectorisation PNG→SVG en Étape L3 utilise `vtracer` (script Python gratuit). Tu ne l'as pas installé. Tu peux :
+>
+> **A. L'installer maintenant** — `pip3 install vtracer` (5 secondes, gratuit). Tape la commande dans ton terminal puis dis-moi quand c'est fait.
+> **B. Skipper la Phase Logo** — Le Batch 2 générera un logo basique SVG (qualité limitée, équivalent du choix initial B).
+>
+> Tu veux quoi ?"
+
+- Si **A** : afficher la commande à copier, attendre que l'utilisateur dise "fait" / "OK installé". Re-vérifier vtracer présent. Continuer vers L1.
+- Si **B** : `{logo_available}` = false → équivalent au choix initial B. Phase 6A inchangée.
+
+**Si vtracer = "présent"** → continuer directement vers L1.
+
+- Si **B (Non)** (au choix initial) → `{logo_available}` = false → Phase 6A inchangée (backward compatible)
+- Si **A (Oui)** (au choix initial, et vtracer OK) → lancer les étapes L1→L5
 
 ### Étape L1 — Concept stratégique (1 subagent)
 
@@ -5718,6 +5894,14 @@ Les 5 autres SVG sont dérivés du chemin `{logo_svg}` par suffixe :
 ---
 
 ## PHASE 6A — Batch 2 (Système de Signes)
+
+<phase-intro>
+▶ **Batch 2 — Système de Signes**
+· *Quoi* : Je génère un HTML standalone qui documente Logotype + Iconographie + DataViz (+ éléments graphiques optionnels)
+· *Pourquoi* : C'est la 1re extension de ton identité au-delà du style-tile — toute reprise visuelle future (slide, dashboard, doc interne) s'appuiera dessus
+· *Tu vas* : (1) valider la famille d'icônes proposée par le routeur, (2) ouvrir le HTML final dans le navigateur, valider ou demander des ajustements ciblés
+· *En sortira* : 1 Batch 2 verrouillé qui alimente le Brand Book et le pack final
+</phase-intro>
 
 ### Objectif
 Générer un FICHIER SÉPARÉ pour le Système de Signes : Logotype (05) + Iconographie (06) + Data Viz (07).
@@ -6484,6 +6668,14 @@ Sur le fichier **assemblé** `{batch3_file}`, faire tourner le gate batch :
 
 ## PHASE 7 — Zone 2 (Documentation Finale — OPTIMISÉE)
 
+<phase-intro>
+▶ **Documentation Markdown (Design Specs)**
+· *Quoi* : Je génère un fichier Markdown de 45 sections qui documente exhaustivement l'identité — tokens, typo, palette, code civil de la marque, règles d'usage
+· *Pourquoi* : C'est LE document à transmettre à ton dev / agence / équipe créative pour qu'ils implémentent l'identité sans deviner — la version "machine-readable" du pack
+· *Tu vas* : ouvrir le .md dans MarkView, valider ou demander des ajustements ciblés
+· *En sortira* : 1 `{brand}-design-specs.md` verrouillé qui rejoint le pack final
+</phase-intro>
+
 ### Objectif
 Générer la documentation complète : Brand Manifesto + Design Specs (40 sections) en format **Markdown léger**.
 
@@ -6516,6 +6708,8 @@ L'orchestrateur lit DIRECTEMENT le fichier HTML du concept choisi et extrait les
 
 ### Étape 7B : Génération du document (1 seul subagent)
 
+<!-- mini-annonce: ℹ Maintenant : génération du fichier de specs Markdown (~15-20k tokens, ~3 min) -->
+
 Lancer UN SEUL subagent avec le prompt suivant, en lui transmettant le résumé pré-extrait :
 
 Lire le fichier `{skill_dir}/phases/phase-7-specs.md` et utiliser son contenu comme prompt pour le subagent.
@@ -6539,6 +6733,14 @@ Lire le fichier `{skill_dir}/phases/phase-7-specs.md` et utiliser son contenu co
 ---
 
 ## PHASE 8 — Brand Book éditorial (optionnelle)
+
+<phase-intro>
+▶ **Brand Book éditorial (optionnel)**
+· *Quoi* : Je génère un brand book HTML éditorial (cover painterly + intro Identity Card bento + 8 sections documentaires + closing) en invoquant le skill /brand-book
+· *Pourquoi* : C'est le livrable "showcase" — beau document à partager avec les parties prenantes, déployé sur Vercel automatiquement avec le pack final
+· *Tu vas* : choisir Oui (~10 min wall-clock, ~150K tokens) ou Non (skip et passer direct au Packaging)
+· *En sortira* : un dossier `brand-book/` complet (HTML + assets) intégré au pack et publié en ligne
+</phase-intro>
 
 ### Objectif
 Générer un **brand book HTML éditorial** de classe mondiale (cover painterly + intro Identity Card bento + 8 sections documentaires + closing) à partir du pack identité produit par les Phases 1-7. Cette phase invoque un **skill externe `brand-book`** qui lui-même invoque un **sous-skill SPG `generate-mini-deck`** pour la section pitch deck.
@@ -6568,7 +6770,32 @@ centralisé Vercel automatique.
 
 **Si (b) Non** → skip directement à l'Étape Finale Packaging (sans brand book).
 
-**Si (a) Oui** → continuer avec les sous-étapes 8-2a à 8-3 ci-dessous (toutes exécutées par un seul sub-agent Task tool qui invoque le skill brand-book).
+**Si (a) Oui** → **Gate juste-à-temps SPG-portable** avant de lancer le sub-agent.
+
+Re-vérifier `SPG-portable` :
+
+```bash
+SPG_STATUS="absent"
+for candidate in "../SPG-portable" "$HOME/repos/SPG-portable"; do
+  if [ -d "$candidate" ]; then SPG_STATUS="présent ($candidate)"; break; fi
+done
+```
+
+**Si SPG-portable = "absent"** → afficher AVANT de lancer 8-2 :
+
+> "ℹ Note : le brand book final inclut une section **Pitch Deck** générée par le skill `/generate-mini-deck` du repo `SPG-portable`. Tu n'as pas SPG-portable cloné côte à côte. Tu peux :
+>
+> **A. Le cloner maintenant** — `git clone https://github.com/Drazeb/SPG-portable.git ../SPG-portable` (5 secondes, gratuit, pas de clé API). Tape la commande dans ton terminal puis dis "fait".
+> **B. Générer le brand book sans la section Pitch Deck** — Phase 8 dégradée, le brand book sortira avec les 7 autres sections seulement.
+> **C. Skipper le brand book complet** — Packaging final sans brand book (équivalent au choix (b) initial).
+>
+> Tu veux quoi ?"
+
+- Si **A** : exécuter `cd .. && git clone https://github.com/Drazeb/SPG-portable.git`. Attendre confirmation. Re-vérifier présence. Continuer vers 8-2.
+- Si **B** : marquer `{brand_book_skip_pitchdeck}` = true. Le sub-agent brand-book saura skipper la section Pitch Deck. Continuer vers 8-2.
+- Si **C** : équivalent au choix initial (b). Skipper directement à l'Étape Finale Packaging.
+
+**Si SPG-portable = "présent"** → continuer avec les sous-étapes 8-2a à 8-3 ci-dessous (toutes exécutées par un seul sub-agent Task tool qui invoque le skill brand-book).
 
 ### Étape 8-2 — Génération brand book (sub-agent unique)
 
@@ -6656,6 +6883,14 @@ Le sub-agent assemble le `{brand}-brand-book.html` complet (Étape 4 du workflow
 ---
 
 ## ÉTAPE FINALE — Packaging des livrables
+
+<phase-intro>
+▶ **Packaging final**
+· *Quoi* : Je rassemble tous les livrables (style-tile, batches, design-specs, pitch, logo, brand book si Phase 8) dans un dossier dédié au nom du concept retenu
+· *Pourquoi* : C'est le pack que tu vas livrer à ton client / partager avec ton équipe / déployer en ligne — tout est nommé proprement et prêt à l'usage
+· *Tu vas* : juste attendre — la centralisation et le déploiement Vercel sont automatiques
+· *En sortira* : un dossier `{brand}-identity-{slug}/` ouvert dans le Finder + URL Vercel pour le brand book si applicable
+</phase-intro>
 
 ### Objectif
 Créer un dossier dédié contenant tous les livrables finaux de l'identité de marque, prêt à être partagé ou archivé.
