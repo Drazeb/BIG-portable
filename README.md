@@ -43,7 +43,7 @@ claude
 | **Abo Recraft** | Phase 3C illustrations flat | Tu restes en registre photo only | [recraft.ai](https://www.recraft.ai) |
 | **Abo Perplexity Pro** | Phase 3B-7c (image-pivot stylistique) | Tu acceptes un pipeline sans image-pivot | [perplexity.ai/pro](https://www.perplexity.ai/pro) |
 | **Abo Nano Banana 2** | Étapes d'édition d'images (Phase 3C, brand book) | Tu n'éditer pas les visuels post-MJ | [nanobanana.ai](https://nanobanana.ai) |
-| **SPG-portable** (repo séparé) | Phase 8 — section pitch deck du brand book | Tu ne veux pas le brand book final | `git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable` *(pas encore disponible — à venir)* |
+| **SPG-portable** (repo séparé) | Phase 8 — section pitch deck du brand book | Tu ne veux pas le brand book final | `git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable` |
 
 La Phase 0 Preflight au lancement du skill détecte automatiquement ce qui est installé et te dit ce qui manque pour les phases que tu veux faire.
 
@@ -98,7 +98,7 @@ Si tu veux générer le brand book complet :
 git clone https://github.com/Drazeb/SPG-portable.git ~/repos/SPG-portable
 ```
 
-*(SPG-portable n'est pas encore publié — il sera mis à disposition prochainement. La Phase 8 fonctionne sans : la section Pitch Deck est simplement omise.)*
+La Phase 8 fonctionne aussi sans SPG-portable : la section Pitch Deck du brand book est simplement omise.
 
 ## Mises à jour
 
