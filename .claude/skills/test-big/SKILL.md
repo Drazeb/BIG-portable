@@ -14,6 +14,79 @@ Tu es l'orchestrateur du test runner pour le pipeline **Brand Identity Generator
 
 ---
 
+## ONBOARDING — PREMIÈRE ACTION OBLIGATOIRE
+
+**RÈGLE ABSOLUE** : À chaque invocation de `/test-big`, tu DOIS :
+1. D'abord faire un check git update silencieux (étape 0a ci-dessous)
+2. Puis afficher le message d'onboarding (étape 0b) — avec ou sans alerte selon le résultat
+
+Ne pas résumer, ne pas reformuler. Copier tel quel.
+
+### Étape 0a — Check git update (Bash silencieux)
+
+Lancer dans Bash, capturer le résultat dans une variable `{git_behind}` :
+
+```bash
+GIT_BEHIND=""
+if [ -d ".git" ] && git remote get-url origin >/dev/null 2>&1; then
+  git fetch origin main --quiet 2>/dev/null || true
+  LOCAL=$(git rev-parse HEAD 2>/dev/null || echo "")
+  REMOTE=$(git rev-parse origin/main 2>/dev/null || echo "")
+  if [ -n "$LOCAL" ] && [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
+    GIT_BEHIND=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "?")
+  fi
+fi
+echo "GIT_BEHIND=$GIT_BEHIND"
+```
+
+Stocker la valeur dans `{git_behind}` (vide si à jour, sinon nombre de commits de retard).
+
+### Étape 0b — Affichage de l'onboarding
+
+Afficher EXACTEMENT le logo ci-dessous (copier tel quel) :
+
+---
+
+```
+                       ╔════════════════════════════════════╗
+                       ║  ██████╗ ██╗ ██████╗               ║
+   __          __      ║  ██╔══██╗██║██╔════╝  Brand        ║
+  / /____ ___ / /_     ║  ██████╔╝██║██║  ███╗ Identity     ║
+ / __/ -_|_-</ __/     ║  ██╔══██╗██║██║   ██║ Generator    ║
+ \__/\__/___/\__/      ║  ██████╔╝██║╚██████╔╝              ║
+                       ║  ╚═════╝ ╚═╝ ╚═════╝               ║
+                       ╚════════════════════════════════════╝
+```
+
+**SI `{git_behind}` n'est PAS vide (mise à jour disponible)**, afficher EN PLUS, juste après le logo et avant le message d'accueil :
+
+```
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+   [!] [!]  {git_behind} MISES À JOUR DISPO  [!] [!]
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+{git_behind} commits sur GitHub.
+Lance `./update.sh` ou dis-moi "update" et je le fais.
+```
+
+(Si `{git_behind}` est vide → ne rien afficher, passer directement au message d'accueil.)
+
+Bienvenue dans le Test Runner BIG. Je vais te demander à quelle phase tu veux reprendre, sur quel dossier de session, et préparer l'environnement pour relancer le pipeline.
+
+### Si l'utilisateur demande une mise à jour
+
+Si l'utilisateur tape **"update"**, **"mets à jour"**, **"lance update"**, **"fais l'update"**, **"git pull"**, ou tout équivalent (au lieu de choisir une phase), exécuter le script de mise à jour AVANT de continuer :
+
+```bash
+./update.sh 2>&1
+```
+
+Présenter le récap de sortie à l'utilisateur. Puis annoncer :
+
+> "Mise à jour faite. Relance `/test-big` pour repartir sur la version à jour, ou choisis ta phase de départ pour démarrer avec la version actuelle."
+
+---
+
 ## ÉTAPE 1 — Collecte des paramètres
 
 Demander à l'utilisateur les 4 paramètres suivants (un par un ou groupés si l'utilisateur les fournit d'emblée) :

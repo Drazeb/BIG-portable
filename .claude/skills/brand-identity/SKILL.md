@@ -59,7 +59,34 @@ Après CHAQUE retour de subagent :
 
 ## ONBOARDING — PREMIÈRE ACTION OBLIGATOIRE
 
-**RÈGLE ABSOLUE** : À chaque invocation de `/brand-identity`, tu DOIS afficher le message ci-dessous EN PREMIER, AVANT toute question ou action. Ne pas résumer, ne pas reformuler, copier tel quel :
+**RÈGLE ABSOLUE** : À chaque invocation de `/brand-identity`, tu DOIS :
+1. D'abord faire un check git update silencieux (étape 0a ci-dessous)
+2. Puis afficher le message d'onboarding (étape 0b) — avec ou sans alerte selon le résultat
+
+Ne pas résumer, ne pas reformuler. Copier tel quel.
+
+### Étape 0a — Check git update (Bash silencieux)
+
+Lancer dans Bash, capturer le résultat dans une variable `{git_behind}` :
+
+```bash
+GIT_BEHIND=""
+if [ -d ".git" ] && git remote get-url origin >/dev/null 2>&1; then
+  git fetch origin main --quiet 2>/dev/null || true
+  LOCAL=$(git rev-parse HEAD 2>/dev/null || echo "")
+  REMOTE=$(git rev-parse origin/main 2>/dev/null || echo "")
+  if [ -n "$LOCAL" ] && [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
+    GIT_BEHIND=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "?")
+  fi
+fi
+echo "GIT_BEHIND=$GIT_BEHIND"
+```
+
+Stocker la valeur dans `{git_behind}` (vide si à jour, sinon nombre de commits de retard).
+
+### Étape 0b — Affichage de l'onboarding
+
+Afficher EXACTEMENT le logo ci-dessous (copier tel quel) :
 
 ---
 
@@ -73,6 +100,19 @@ Après CHAQUE retour de subagent :
    ║  ╚═════╝ ╚═╝ ╚═════╝               ║
    ╚════════════════════════════════════╝
 ```
+
+**SI `{git_behind}` n'est PAS vide (mise à jour disponible)**, afficher EN PLUS, juste après le logo et avant "Bienvenue" :
+
+```
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+   [!] [!]  {git_behind} MISES À JOUR DISPO  [!] [!]
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+{git_behind} commits sur GitHub.
+Lance `./update.sh` ou dis-moi "update" et je le fais.
+```
+
+(Si `{git_behind}` est vide → ne rien afficher, passer directement au "Bienvenue".)
 
 Bienvenue ! Je suis ton Directeur de Création.
 
@@ -104,6 +144,20 @@ Bienvenue ! Je suis ton Directeur de Création.
 2. **Attendre la réponse** de l'utilisateur (A, B, C ou D) avant de continuer.
 
 **Note** : Le fichier `ref/pipeline-overview.md` contient l'explication détaillée des étapes avec les infos "sous le capot". L'utilisateur peut le consulter pendant qu'il réfléchit à son choix.
+
+### Si l'utilisateur demande une mise à jour
+
+Si l'utilisateur tape **"update"**, **"mets à jour"**, **"lance update"**, **"fais l'update"**, **"git pull"**, ou tout équivalent (au lieu de A/B/C/D), exécuter le script de mise à jour AVANT de demander à nouveau son choix :
+
+```bash
+./update.sh 2>&1
+```
+
+Présenter le récap de sortie à l'utilisateur (X commits récupérés par repo, ou "déjà à jour"). Puis annoncer :
+
+> "Mise à jour faite. Relance `/brand-identity` pour repartir sur la version à jour, ou tape A/B/C/D pour démarrer avec la version actuelle."
+
+**Note** : pour que la mise à jour soit prise en compte par Claude Code, l'utilisateur doit relancer le skill. La nouvelle version du SKILL.md ne sera chargée qu'à la prochaine invocation.
 
 ---
 
@@ -232,13 +286,6 @@ Composer et afficher exactement ce format (en remplaçant les `<placeholders>` p
   <✓/✗> SPG-portable        — Brand book final (Phase 8)
   <✓/✗> nano-banana-edit    — Variantes d'atmosphère + corrections NB2 (Phase 3B-7c)
   <✓/✗> Clé API Gemini      — (idem — configurée dans .env de nano-banana-edit)
-
-── REPO ────────────────────────────────────────────────────────────────────
-  <Si GIT_BEHIND non vide :>
-  ⚠ Mise à jour disponible : <N> commits sur GitHub.
-    Lance ./update.sh pour récupérer les dernières améliorations.
-  <Sinon :>
-  ✓ Repo à jour avec GitHub.
 
 ── DÉPENDANCES PAYANTES (services externes, non détectables — à activer
                           quand tu auras besoin des phases concernées) ─────
