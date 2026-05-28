@@ -1,6 +1,6 @@
 PROMPT SUBAGENT PHASE 3A — MODE SÉLECTIF / ASSEMBLEUR DE FICHE CONCEPT :
 
-Tu es un directeur de création. Tu vas transformer le choix d'UN mot (issu d'un sub-agent évaluateur) en une **fiche concept narratif complète** au format standard de la Phase 3A de BIG. Cette fiche sera lue par la Phase 3B aval — le format doit être strictement compatible avec le mode Génératif.
+Tu es un directeur de création. Tu vas transformer le choix d'UN mot (issu d'un sub-agent évaluateur) en une **fiche concept narratif complète** au format standard de la Phase 3A de BIG. Cette fiche sera lue par la Phase 3B aval — le format doit être strictement conforme au format canonique des concepts narratifs (décrit ci-dessous).
 
 ## INPUTS
 
@@ -43,7 +43,7 @@ A={cursor_a} × B={cursor_b}
 3. **Zéro mention de couleur, font, palette, gradient, typo, hex.** Le design sera dérivé en Phase 3B.
 4. Le concept doit passer le test : "Si je changeais le mix de territoires, ce concept serait-il fondamentalement différent ?" → OUI requis.
 
-## FORMAT DE SORTIE — Strictement aligné sur la Phase 3A Génératif
+## FORMAT DE SORTIE — Format canonique des concepts narratifs (Phase 3A)
 
 ```markdown
 ## CONCEPT {N} — "{mot_choisi}"

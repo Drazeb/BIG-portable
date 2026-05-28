@@ -18,7 +18,7 @@ Phase 1 · Analyse du brief      → Score de confiance + Ventre Mou + signaux d
      ↓
 Phase 2 · Scoping                → Tension de Marque + Curseurs A×B + Territoires Créatifs (mots-clés → clusters → mix pondéré)
      ↓
-Phase 3A · Concepts narratifs    → 3 subagents séquentiels (chacun voit les précédents + doit diverger) → 3 récits
+Phase 3A · Concepts narratifs    → Mode Sélectif : registre → pool 100 mots → 10 évaluateurs filtrent → 0-3 concepts retenus (batches accumulables)
      ↓
 Phase 3B · Design dérivé         → 3 pitchs complets (récit + direction visuelle)
      ↓
@@ -120,30 +120,24 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 
 **Étape 2D** (orchestrateur, inline) : Mix pondéré. L'utilisateur attribue un rôle à chaque territoire : Principal (le cœur du concept), Secondaire (colore et enrichit), Accent (touche distinctive). L'orchestrateur stocke le mix dans `{brand}-territoires.md`. Ce mix est la matière première pour les concepts narratifs.
 
+**Étape 2D-bis** (orchestrateur, subagent) : Décontamination du contexte. Avant la génération des concepts, un subagent (`phases/phase-3a-decontamination.md`) produit `{brand}-context-clean.md` — version anonymisée et décontaminée du mix de territoires (sans jargon sectoriel, sans noms propres, sans direction). Produit une seule fois par projet (skip si déjà présent). Ce fichier est relu par le Mode Sélectif ET par de nombreuses phases de la 3B (palette, penseurs typo, styliste, routeur chromatique).
+
 ---
 
 ### Phase 3A · Concepts narratifs (Pass A)
 
-- **Ce qu'elle fait** : Génère des récits conceptuels distincts à partir du mix de territoires créatifs. Zéro design — que du narratif. **Depuis D57 (14 mai 2026), 2 modes au choix de l'utilisateur** : Mode Génératif (3 subagents séquentiels qui inventent les concepts) ou Mode Sélectif (les concepts sont CHOISIS dans un pool de 100 mots tirés d'un registre — produit des noms plus sobres type "Phare" / "Magnitude" au lieu de "Le Phare de Ralliement").
-- **Input** : `{brand}-brief-analysis.md` + `{brand}-scoping.md` + `{brand}-territoires.md` (mix pondéré) + curseurs
-- **Output** : `{brand}-concepts-narratifs-v{N}.md` (format identique entre les 2 modes → Phase 3B aval mode-agnostique)
+- **Ce qu'elle fait** : Génère des récits conceptuels distincts à partir du mix de territoires créatifs. Zéro design — que du narratif. **Mode Sélectif unique (depuis le 28 mai 2026 — suppression des modes Génératif)** : l'utilisateur choisit un registre culturel ; les concepts sont CHOISIS dans un pool de ~100 mots tirés de ce registre puis filtrés contre le brief, ce qui produit des noms sobres ("Phare", "Magnitude") au lieu de noms enrichis artificiels ("Le Phare de Ralliement").
+- **Input** : `{brand}-context-clean.md` (mix décontaminé, produit en Étape 2D-bis) + `{brand}-scoping.md` (Ventre Mou Narratif) + un registre choisi + curseurs A×B
+- **Output** : `{brand}-concepts-narratifs-v{N}.md` (1 à 3 concepts par batch retenu) → la sélection finale assemble `{brand}-concepts-narratifs.md`, seul fichier lu par toute la Phase 3B
 - **Règles clés** :
-  - **Choix du mode à l'Étape 2E** : 1 = Génératif libre, 2 = Génératif orienté registre, 3 = Sélectif par registre. Le mode peut changer entre les batches.
-  - **Séquentiel avec divergence (Mode Génératif)** : chaque subagent voit les concepts précédents et DOIT diverger structurellement
-  - **Choix dans un pool (Mode Sélectif)** : le LLM choisit dans 100 mots du registre, pas d'invention de nom → noms mono-mots ou composés courts limpides
-  - **Ancrage = territory mix** : le mix de territoires (extrait du brief) est le cœur de chaque concept dans les 2 modes
-  - **Territoires comme matière** : le mix Principal/Secondaire/Accent oriente le récit sans le contraindre
+  - **Choix du registre à l'Étape 2E** : l'utilisateur choisit un registre dans `ref/registres-creatifs.md` (28 registres). Plus aucun choix de mode.
+  - **Choix dans un pool** : le LLM choisit dans 100 mots du registre, pas d'invention de nom → noms mono-mots ou composés courts limpides
+  - **Filtrage ancré sur le brief** : 10 évaluateurs parallèles classent les mots contre le mix de territoires + le ventre mou → seuls les mieux ancrés remontent comme candidats
+  - **Sortie flexible 0 à 3** : l'utilisateur retient 0 à 3 mots par registre ; 0 retenu = exploration jetable (aucun fichier produit, aucun numéro de version consommé)
   - **Zéro spec visuelle** (pas de couleur, police, HEX) — le récit est jugé sur sa force conceptuelle uniquement
-  - **Accumulation cross-batch cross-mode** : un user peut accumuler v1 Sélectif + v2 Génératif + v3 Sélectif autre registre → sélection finale libre parmi tout l'accumulé
+  - **Accumulation cross-batch** : un user peut accumuler v1 (registre A) + v2 (registre B) + v3 (registre A relancé) → sélection finale libre de 1 à 3 concepts parmi tout l'accumulé
 
-**Sous le capot Mode Génératif** (3 subagents séquentiels — inchangé depuis l'origine) :
-
-1. **Concept 1** (subagent) : reçoit le mix de territoires + brief analysis + scoping. Génère 1 concept narratif complet. Le subagent lit `persona-and-rules.md`, `bible-design-strategie.md`, un exemple de pitch. Output écrit dans `{brand}-concepts-narratifs-v{N}.md`
-2. **Concept 2** (subagent) : mêmes inputs + le concept 1 comme contexte + instruction de divergence structurelle. Ajoute au fichier.
-3. **Concept 3** (subagent) : mêmes inputs + les concepts 1 et 2 + instruction de divergence. Complète le fichier.
-4. L'orchestrateur ouvre le fichier dans MarkView, affiche un résumé court (3 lignes par concept), et demande validation.
-
-**Sous le capot Mode Sélectif** (depuis D57 — 10 sous-étapes orchestrées) :
+**Sous le capot** (10 sous-étapes orchestrées) :
 
 1. **S1 — Pool collectif** : 5 sub-agents Task vierges parallèles lancent `phases/phase-3a-selectif-pool.md` → 5 fichiers `pool-run{1..5}.md` dans `.tmp-selectif-v{N}/`. Aucun brief, aucun territoire transmis (anonymisation totale).
 2. **S2 — Dédup + sélection 100** : `scripts/phase3a-selectif-build-pool.py` lit les 5 runs, dédup morphologique (lowercase + NFD), sélection stratifiée (tout le 5/5 + tout le 4/5 + 48 mots samplés uniforme dans le reste, seed=42).
@@ -152,13 +146,11 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 5. **S5 — Extraction** : l'orchestrateur lit les 10 eval, extrait les 10 mots retenus.
 6. **S6 — Définitions neutres** : 1 sub-agent Task lance `phases/phase-3a-selectif-definitions.md` avec UNIQUEMENT la liste des 10 mots + le registre. Aucun brief, aucun territoire, aucune justification (anti-biais).
 7. **S7 — Récap MarkView** : assemblage de `{brand}-concepts-selectif-recap-v{N}.md` au format tableau (mot / définition neutre / dynamique / brief-first), ouvert en MarkView.
-8. **S8 — Sélection user** : max 3 mots retenus.
-9. **S9 — Assemblage** : pour chaque mot retenu, 1 sub-agent `phases/phase-3a-selectif-batch-assemble.md` produit la fiche au format Phase 3B. Output : `{brand}-concepts-narratifs-v{N}.md` (même nom que Génératif).
-10. **S10 — Retour Checkpoint** : checkpoint Pass A élargi à 5 options (ajustement / Génératif libre / Génératif registre / Sélectif / avancer).
+8. **S8 — Sélection user** : 0 à 3 mots retenus (0 = ne rien garder sur ce registre, on relance un autre/même registre au checkpoint).
+9. **S9 — Assemblage** : pour chaque mot retenu, 1 sub-agent `phases/phase-3a-selectif-batch-assemble.md` produit la fiche au format Phase 3B. Output : `{brand}-concepts-narratifs-v{N}.md`. Exécutée uniquement si ≥1 mot retenu ; sinon aucun fichier produit et le numéro de version n'est pas consommé (pas de trou v1, v2, v3…).
+10. **S10 — Retour Checkpoint** : checkpoint Pass A simplifié (3 options : nouveau batch autre registre / nouveau batch même registre / avancer au design).
 
-**Pourquoi le séquentiel (Génératif) ?** Le parallèle produit des concepts convergents. Le séquentiel force la divergence.
-
-**Pourquoi le mode Sélectif (D57) ?** Le mode Génératif produisait parfois des noms artificiellement complexifiés ("Le Phare de Ralliement" au lieu de "Phare"). Le Sélectif **rend structurellement impossible** la complexification : le LLM ne génère plus le nom, il choisit dans un pool de 100 mots tirés d'un registre. Validation empirique : sur le batch contenant "phare", le sub-agent évaluateur l'écarte EXPLICITEMENT comme cliché au profit de "sémaphore" → la mécanique anti-cliché fonctionne.
+**Pourquoi le Mode Sélectif unique (28 mai 2026) ?** Les modes Génératif (3 subagents séquentiels qui inventaient les concepts) produisaient des noms artificiellement complexifiés ("Le Phare de Ralliement" au lieu de "Phare") et des résultats nettement inférieurs au Sélectif. Le Sélectif **rend structurellement impossible** la complexification : le LLM ne génère plus le nom, il choisit dans un pool de 100 mots tirés d'un registre puis filtrés contre le brief. Validation empirique : sur le batch contenant "phare", le sub-agent évaluateur l'écarte EXPLICITEMENT comme cliché au profit de "sémaphore". Les deux modes Génératif ont donc été supprimés (le choix de mode était une complexité inutile).
 
 **Pourquoi le two-pass (A puis B) ?** Si récit et design sont générés ensemble, le subagent justifie ses choix visuels par le récit au lieu de l'inverse. La séparation force le design à dériver d'un récit validé.
 

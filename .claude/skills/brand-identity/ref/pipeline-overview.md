@@ -93,14 +93,12 @@ Je définis la Tension de Marque (le paradoxe créatif qui rend ton identité un
 
 ---
 
-**4. Pitch stratégique — 3 concepts** *(~2h45 - 4h — la phase la plus longue)*
-C'est l'étape la plus dense du pipeline : elle construit les 3 directions narratives ET leur traduction visuelle complète. Elle se déroule en 4 sous-étapes :
+**4. Pitch stratégique — concepts narratifs** *(~2h45 - 4h — la phase la plus longue)*
+C'est l'étape la plus dense du pipeline : elle construit les directions narratives ET leur traduction visuelle complète. Elle se déroule en 4 sous-étapes :
 
 **4a. Territoires créatifs.** J'extrais 15-20 mots-clés de ton brief (selon 4 axes : métier, valeurs, marché, aspirations), je les clusterise en 4-5 territoires. Tu attribues un rôle à chacun (Principal / Secondaire / Tertiaire) — ce mix donne le ton dominant des concepts à venir.
 
-**4b. 3 concepts narratifs.** Tu choisis entre 2 modes :
-  · **Génératif** (par défaut) — je génère 3 concepts séquentiellement, chacun voit les précédents et doit diverger
-  · **Sélectif par registre** — tu choisis un registre culturel dans le catalogue (28 registres : signalisation maritime, artisanat normand, magazine éditorial 70s…). Je tire un pool de ~210 mots, je dédoublonne et sélectionne 100, je les passe à 10 évaluateurs parallèles. Tu choisis jusqu'à 3 mots qui deviennent les noms-piliers des concepts.
+**4b. Concepts narratifs — Mode Sélectif par registre.** Tu choisis un registre culturel dans le catalogue (28 registres : signalisation maritime, artisanat normand, magazine éditorial 70s…). Je tire un pool de ~210 mots, je dédoublonne et sélectionne 100, je les passe à 10 évaluateurs parallèles qui les filtrent contre ton brief. Tu reçois 10 candidats limpides et tu en gardes 0 à 3 (ils deviennent les noms-piliers des concepts). Au checkpoint, tu peux relancer un autre registre — ou le même — pour accumuler des concepts ; à la fin tu sélectionnes 1 à 3 concepts parmi tout l'accumulé.
 
 **4c. Direction visuelle.** Pour chaque concept, je dérive 4 éléments — avec un checkpoint utilisateur sur les 3 principaux :
   · **Palette** — je te propose 3 palettes par concept (rendues sur un specimen visuel), tu en choisis 1
@@ -111,7 +109,7 @@ C'est l'étape la plus dense du pipeline : elle construit les 3 directions narra
 **4d. Pitch écrit.** Je te présente le pitch éditorial complet pour les 3 concepts, ancré sur tous les choix précédents (et sur la description multimodale de l'image-pivot pour le concept concerné). Tu valides ou demandes des ajustements.
 
 Avant de te présenter le pitch final, je vérifie visuellement que les fonts, palettes et styles choisis correspondent bien à l'intention — si un rendu ne colle pas, je corrige avant que tu ne voies le résultat.
-→ Tes inputs : **choix du mode (Génératif ou Sélectif)** + (si Sélectif : choix du registre + des finalistes) + **attribution des rôles aux territoires** (Principal/Secondaire/Tertiaire) + **validation des directions narratives** + **choix de palette** (avec alerte aversion si applicable) + **choix de style** (avec alerte aversion si applicable) + **validation du pitch complet**
+→ Tes inputs : **choix du registre** + **sélection des finalistes (0 à 3 par registre, batches accumulables)** + **attribution des rôles aux territoires** (Principal/Secondaire/Tertiaire) + **validation des directions narratives** + **choix de palette** (avec alerte aversion si applicable) + **choix de style** (avec alerte aversion si applicable) + **validation du pitch complet**
 
 ---
 

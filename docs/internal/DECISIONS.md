@@ -4,6 +4,24 @@ Chaque décision architecturale est documentée ici avec son contexte et sa rais
 
 ---
 
+### D61. Mode Sélectif unique en Phase 3A — suppression des modes Génératif
+**Date** : 28 mai 2026
+**Choix** : Le Mode Sélectif par registre (introduit en D57) devient le SEUL mode de génération des concepts narratifs. Suppression des deux modes Génératif (libre + orienté registre). Conséquences :
+- Étape 2E « Choix du mode + orientation de registre » → « Choix du registre » (plus de menu 1/2/3 ; ouverture directe de `ref/registres-creatifs.md`, choix d'un registre, enchaînement sur le Mode Sélectif).
+- Bloc « Étape 3A — 3 subagents séquentiels » retiré du SKILL.md ; variables `{generation_mode}` et `{registre_orientation_or_omit}` éliminées.
+- Suppression physique de `phases/phase-3a-concepts.md`, `phase-3a-evaluate.md`, `phase-3a-explore.md` (les 2 derniers déjà orphelins).
+- Décontamination promue en **Étape 2D-bis** (étape commune, produit `{brand}-context-clean.md` — section « Mix de Territoires (décontaminé) » uniquement —, exécutée une fois par projet) ; elle vivait dans le bloc Génératif supprimé et est un pré-requis du Mode Sélectif + de ~10 phases 3B.
+- **« 0 retenu » autorisé** (S8 = 0 à 3) : explorer un registre sans rien garder ne produit aucun fichier et ne consomme pas de numéro de version (pas de trou v1/v2/v3…).
+- **Checkpoint Pass A simplifié** : 3 options (nouveau batch autre registre / même registre / avancer). Sélection finale flexible 1 à 3 concepts.
+**Pourquoi** :
+1. **Qualité** : le Mode Sélectif sort des résultats nettement supérieurs (déterministes : pool → filtrage contre le brief) et des noms sobres ; les modes Génératif dérivaient vers des noms artificiellement complexifiés (« Le Phare de Ralliement »). Validé empiriquement (D57 : « phare » écarté au profit de « sémaphore »).
+2. **Simplicité** : le choix de mode était une friction inutile, surtout à l'heure de l'externalisation de BIG.
+3. **Risque aval nul** : le Mode Sélectif produisait déjà `{brand}-concepts-narratifs-v{N}.md` au format canonique ; l'aval est mode-agnostique par conception. Audit 4 agents (17 consommateurs aval + amont + dépendances) : zéro dépendance cassée. La chaîne brief → analyse → territoires → mix est conservée intégralement (elle alimente le filtrage Sélectif ET toute la 3B).
+**Note versionnage** : Option « version détectée au démarrage du batch, consommée seulement à l'écriture du fichier en S9 » retenue (plutôt qu'un index d'exploration séparé qui aurait nécessité de toucher les scripts Python). Un batch 0-retenu réutilise le même numéro au batch suivant ; les artefacts de travail `.tmp-selectif-v{N}/` et le recap `-recap-v{N}.md` sont alors réécrits (fichiers jetables, exclus du packaging).
+**Supersède** : la partie « choix entre 3 modes à l'Étape 2E » de D57 (le pipeline Sélectif S1-S10 de D57 est conservé tel quel).
+**Test E2E** : `/test-big` à `3A1` — registre A (2 retenus) → registre B (0 retenu, pas de v2) → même registre (1 retenu = v2) → sélection finale 1-3 + non-régression 3B-0.
+**Plan** : `~/.claude/plans/pour-r-pondre-tes-witty-eclipse.md`.
+
 ### D60. Suppression de la Phase 2C (Concept de Réconciliation) — pipeline 13→12 étapes
 **Date** : 28 mai 2026
 **Choix** : Suppression complète de l'étape "Concept de Réconciliation" (anciennement étape 4 du pipeline user-facing, anciennement Étape 2C de l'orchestrateur). Subagent `phases/phase-2c-reconciliation.md` supprimé. Section `## CONCEPT DE RÉCONCILIATION` retirée du filtrage qui produit `{brand}-scoping-filtered.md`. Variable `{reconciliation_concept}` éliminée. Renumérotation cascade : ancienne Étape 2D (Territoires Créatifs) → 2C, ancienne 2E (Mix pondéré) → 2D, ancienne 2F (Choix du mode) → 2E. Pipeline user-facing passe de 13 à 12 étapes (CLAUDE.md projet + pipeline-overview.md alignés). Tension de Marque + Curseurs A×B (étape 3) **conservés** — eux restent opérationnels (Curseur B module les Ventres Mous visuels en Phase 3B depuis D45 ; les 2 pôles de la Tension alimentent la section "Tension résolue" obligatoire des concepts narratifs en Phase 3A).

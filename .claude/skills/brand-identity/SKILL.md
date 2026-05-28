@@ -445,12 +445,13 @@ Quand l'utilisateur invoque `/brand-identity` :
 
 **Mécanique** :
 
-1. **Check 1 — URLs / noms précis des concurrents (Point 02 du brief)** :
+1. **Check 1 — URLs des concurrents (PAS juste les noms — Point 02 du brief)** :
    - Scanner la section Point 02 (ou équivalent "Alternatives Compétitives" / "Concurrents") du brief fourni
-   - Si elle contient au moins 1-2 URLs ou noms précis identifiables → ✓ check passé
-   - Sinon → demander à l'utilisateur :
-     > "Avant de lancer l'analyse — j'ai besoin de 1-2 URLs ou noms précis de concurrents/alternatives. Ça aide pour identifier les codes visuels saturés du secteur. Si tu n'en as pas, dis-le, ce n'est pas bloquant."
-   - Accepter la réponse même si vide ("je n'ai pas"), et **ajouter au brief** (en mémoire ou en ré-écriture du fichier) l'info reçue dans le Point 02.
+   - Si elle contient au moins 1-2 **URLs** de concurrents → ✓ check passé
+   - **Important** : avoir UNIQUEMENT les noms (ex: "Moulinot, Veolia, Suez") ne suffit PAS. Il faut les URLs. Si seulement les noms sont présents, le check N'EST PAS validé.
+   - Sinon (pas d'URLs ou que des noms sans URLs) → demander à l'utilisateur :
+     > "Avant de lancer l'analyse — j'ai besoin des URLs des concurrents/alternatives cités au Point 02. Même approximatives type 'moulinot.com' suffisent. Le système en aval analyse directement les sites pour identifier les codes visuels saturés du secteur (palettes, typos, imagerie) — sans URLs, il devine par recherche web et c'est moins fiable. Si tu n'en as vraiment aucune, dis-le, on fera sans."
+   - Accepter la réponse même si vide ("je n'ai pas"), et **ajouter au brief** (en mémoire ou en ré-écriture du fichier) l'info reçue dans le Point 02. C'est la question qui est obligatoire, pas la réponse.
 
 2. **Check 2 — Section Aversions** :
    - Scanner le brief pour une section "Aversions" / "Aversions client" / "Point 15"
@@ -917,39 +918,38 @@ Pas de subagent nécessaire — c'est une simple construction de texte par l'orc
 
 ---
 
+### Étape 2D-bis (orchestrateur) : Décontamination du contexte
+
+Avant la génération des concepts, l'orchestrateur produit une version anonymisée et décontaminée du mix de territoires. Ce fichier `{brand}-context-clean.md` est un **pré-requis du Mode Sélectif** (Étape 3A ci-dessous) ET il est relu directement par de nombreuses phases de la Phase 3B (palette, penseurs typo, styliste, routeur chromatique…). Il doit donc être produit une seule fois, tôt.
+
+**Skip si déjà produit** : si `{skill_dir}/outputs/{session_dir}/{brand}-context-clean.md` existe déjà, ne pas relancer — réutiliser le fichier existant.
+
+Sinon, lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-3a-decontamination.md`. Ce subagent reçoit le mix de territoires BRUT et produit un fichier nettoyé : anonymisé, sans jargon sectoriel, sans noms propres, sans direction. Les fichiers source sur disque ne sont PAS modifiés — l'utilisateur continue de voir les versions complètes.
+
+Variables à remplacer :
+- `{territory_mix_raw}` → section "## Mix de Territoires" lue verbatim depuis `{brand}-scoping.md`
+- `{output_path}` → `{skill_dir}/outputs/{session_dir}/{brand}-context-clean.md`
+
+L'orchestrateur **attend le résultat** et **lit le fichier produit**. Le fichier `{brand}-context-clean.md` contient la section "Mix de Territoires (décontaminé)". Le `{ventre_mou_narratif}` utilisé plus bas n'est PAS dans ce fichier — il est lu directement depuis la section "Ventre Mou Narratif" de `{brand}-scoping.md`.
+
+---
+
 ## PHASE 3 — Pitch Stratégique (Two-Pass : Concept → Design)
 
 <phase-intro>
-▶ **Pitch stratégique — 3 concepts**
-· *Quoi* : Je génère 3 directions narratives divergentes, puis je dérive pour chacune une direction visuelle complète (palette, typo, style, image-pivot)
-· *Pourquoi* : Tu auras 3 options structurellement différentes à comparer en Phase 4 (style-tiles HTML) — c'est l'un des deux grands choix créatifs du pipeline
-· *Tu vas* : choisir le mode (Génératif/Sélectif), valider les concepts, choisir 1 palette + 1 style par concept, valider le pitch écrit
-· *En sortira* : 3 pitches complets et verrouillés, prêts pour la génération des style-tiles
+▶ **Pitch stratégique — concepts narratifs**
+· *Quoi* : Je génère des directions narratives à partir d'un registre créatif que tu choisis, puis je dérive pour chacune une direction visuelle complète (palette, typo, style, image-pivot)
+· *Pourquoi* : Tu auras des options structurellement différentes à comparer en Phase 4 (style-tiles HTML) — c'est l'un des deux grands choix créatifs du pipeline
+· *Tu vas* : choisir un registre, retenir les concepts qui t'intéressent (1 à 3), choisir 1 palette + 1 style par concept, valider le pitch écrit
+· *En sortira* : 1 à 3 pitches complets et verrouillés, prêts pour la génération des style-tiles
 · *Durée estimée* : ~2h45 - 4h *(la phase la plus longue — décomposée en 4 sous-étapes : territoires, concepts narratifs, direction visuelle palette/typo/style, pitch écrit)*
 </phase-intro>
 
-### Étape 2E (orchestrateur, inline) : Choix du mode + orientation de registre
+### Étape 2E (orchestrateur, inline) : Choix du registre
 
 **RÈGLE ANTI-PRIMING** : cette étape est gérée par l'orchestrateur UNIQUEMENT. Aucun subagent ne verra la liste des registres — ils recevront au maximum le nom du registre choisi en une seule ligne. L'objectif est d'éviter qu'un subagent soit "baigné" dans le vocabulaire des registres avant de commencer à travailler.
 
-**Message à afficher (texte direct, PAS AskUserQuestion)** :
-
-> **Orientation créative pour les concepts narratifs :**
->
-> **1. Génératif libre** — Les concepts émergent des territoires, le registre métaphorique se forme naturellement. 3 concepts par batch.
-> **2. Génératif orienté registre** — Les concepts émergent des territoires, colorés par un registre créatif de ton choix (ex: photographie, forge, cartographie…). 3 concepts par batch.
-> **3. Sélectif par registre** — Je tire 100 mots d'un registre via 5 sub-agents parallèles, je découpe en 10 batchs, j'évalue chaque batch en parallèle pour choisir le mot le plus ancré dans ton brief. Tu reçois 10 candidats limpides, tu en gardes jusqu'à 3.
->
-> Le mode Sélectif est plus sobre (noms mono-mots ou composés courts limpides type "Phare", "Magnitude", "Chenal balisé"), le mode Génératif est plus libre (noms enrichis type "La Route d'Estime", "Le Phare de Ralliement"). Tu peux changer de mode entre les batches.
->
-> Tape **1**, **2** ou **3**.
-
-**Si l'utilisateur choisit 1** :
-- `{generation_mode}` = `"libre"`
-- `{registre_orientation}` = "" (vide)
-- → continue avec Étape 3A — Mode Génératif (ci-dessous)
-
-**Si l'utilisateur choisit 2 ou 3** :
+Les concepts narratifs sont générés en **Mode Sélectif** : on tire un pool de ~100 mots du registre choisi via 5 sub-agents parallèles, on découpe en 10 batchs, on évalue chaque batch en parallèle pour retenir le mot le plus ancré dans le brief. Tu reçois 10 candidats limpides et tu en gardes 0 à 3. Le mode produit des noms de concept SOBRES (mono-mots ou composés courts limpides : "Phare", "Magnitude", "Chenal balisé"), au lieu de noms enrichis arbitraires.
 
 1. Ouvrir la liste des registres dans MarkView :
    ```bash
@@ -958,242 +958,75 @@ Pas de subagent nécessaire — c'est une simple construction de texte par l'orc
 
 2. Afficher dans le chat :
    > La liste complète des 28 registres est ouverte dans MarkView, classée par famille.
-   > Choisis un registre (nom ou numéro). Tu pourras en changer entre chaque batch.
+   > Choisis un registre (nom ou numéro). Tu pourras en changer — ou relancer le même — entre chaque batch.
 
 3. **Stocker le choix** dans la variable `{registre_orientation}` : uniquement le NOM du registre (ex: "Photographie"). Pas de description, pas de verbes, pas de famille.
 
-4. Stocker le mode :
-   - Si choix 2 → `{generation_mode}` = `"generatif_registre"` → continue avec Étape 3A — Mode Génératif
-   - Si choix 3 → `{generation_mode}` = `"selectif"` → continue avec **Étape 3A — Mode Sélectif** (cf. section dédiée plus bas)
-
-**Variable pour les subagents Mode Génératif** : `{registre_orientation_or_omit}` :
-- Si `{registre_orientation}` est vide → OMETTRE entièrement la section "ORIENTATION DE REGISTRE" du prompt du subagent concept
-- Si `{registre_orientation}` est renseigné → injecter la section avec le nom du registre
+4. → continue avec **Étape 3A — Concepts Narratifs (Mode Sélectif)** (cf. section dédiée plus bas).
 
 ---
-
-### Étape 3A — Concepts Narratifs (Pass A) — 3 subagents SÉQUENTIELS
-
-**Pourquoi "léger"** : les concepts légers sont des ponts COURTS entre territoires et design (~30-40 lignes chacun au lieu de ~150). Le subagent ne reçoit QUE le mix de territoires + description minimale (1 phrase) + ventre mou sectoriel. PAS de brief complet, PAS de scoping. En revanche, le subagent LIT la persona et la bible (fichiers génériques, zéro contamination par la marque) pour calibrer les curseurs A×B et connaître les règles du jeu.
-
-**Pourquoi séquentiel** : les 3 concepts risquent de converger sans contrainte de divergence. Le séquentiel permet de montrer les concepts précédents et de demander explicitement de diverger.
-
-**Versionnage (orchestrateur, AVANT les subagents) :**
-
-1. **Détecter le prochain numéro de version** : lister les fichiers `{brand}-concepts-narratifs-v*.md` dans `{skill_dir}/outputs/{session_dir}/`. Si 0 fichier → `{version}` = 1. Si N fichiers → `{version}` = N + 1.
-2. **Utiliser `{version}`** dans les chemins d'output ci-dessous.
-
-**Subagent de décontamination (AVANT les subagents concept) :**
-
-Lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-3a-decontamination.md`.
-
-Ce subagent reçoit le mix de territoires BRUT et produit un fichier nettoyé : anonymisé, sans jargon sectoriel, sans noms propres, sans direction. Les fichiers source sur disque ne sont PAS modifiés — l'utilisateur continue de voir les versions complètes.
-
-Variables à remplacer :
-- `{territory_mix_raw}` → section "## Mix de Territoires" lue verbatim depuis `{brand}-scoping.md`
-- `{output_path}` → `{skill_dir}/outputs/{session_dir}/{brand}-context-clean.md`
-
-L'orchestrateur **attend le résultat** et **lit le fichier produit**. Le fichier `{brand}-context-clean.md` contient la section "Mix de Territoires (décontaminé)".
-
-**Construction des blocs d'ancrage pour les subagents concept :**
-
-L'orchestrateur lit `{brand}-context-clean.md` et en extrait le mix décontaminé pour l'injecter dans les prompts des subagents concept. Le subagent 3A lit les fichiers génériques (persona, bible, exemple) mais tout le reste est injecté dans le prompt. Le subagent ne reçoit PAS le nom de la marque ni de description de l'entreprise — seuls les blocs décontaminés lui sont transmis.
-
-**`{territory_mix}`** : section "## Mix de Territoires (décontaminé)" extraite de `{brand}-context-clean.md`.
-
-**⛔ RÈGLE ANTI-DÉGRADATION — PROMPTS INTÉGRAUX À CHAQUE BATCH (CRITIQUE)**
-
-L'orchestrateur NE DOIT JAMAIS raccourcir, résumer, condenser ou "optimiser" le prompt des subagents concept au fil des batches. Chaque subagent — que ce soit le 1er du batch 1 ou le 3e du batch 7 — reçoit le prompt INTÉGRAL construit depuis le fichier source `{skill_dir}/phases/phase-3a-concepts.md` avec TOUTES les variables substituées à l'identique.
-
-Concrètement, à chaque lancement de subagent :
-1. **RELIRE** le fichier `phases/phase-3a-concepts.md` depuis le disque (pas de mémoire du prompt précédent)
-2. **SUBSTITUER** toutes les variables avec les valeurs complètes (territory_mix intégral, divergence_instruction complète)
-3. **NE JAMAIS** condenser une section pour "gagner des tokens" — les territoires doivent garder exactement la même longueur et la même structure du batch 1 au batch 7
-
-**Pourquoi** : le LLM traite ce qui est structurellement proéminent dans le prompt. Quand une section perd en visibilité (moins de lignes, moins de structure), elle perd en poids dans la génération. Un prompt raccourci au batch 3 produit des concepts mécaniquement moins bons qu'au batch 1. Vérifié empiriquement : la dégradation de qualité inter-batch était causée par le raccourcissement des prompts, pas par l'épuisement créatif.
-
-La SEULE variable qui change entre les batches est `{previous_concepts}` (qui s'allonge avec les résumés cross-batch) et `{divergence_instruction}`. Tout le reste est IDENTIQUE.
-
----
-
-**Flow séquentiel — 3 subagents concept :**
-
-Pour chaque concept (1, 2, 3), lancer un subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-3a-concepts.md`.
-
-⚠ Le subagent lit 3 fichiers génériques (persona, bible, exemple — voir le prompt) mais ne lit AUCUN fichier spécifique à la marque. Le contexte marque est injecté dans le prompt via les variables ci-dessous.
-
-⚠ **ANONYMISATION TOTALE** : le subagent 3A ne doit JAMAIS voir le nom de la marque — ni dans les variables, ni dans les chemins de fichiers, ni dans les concepts précédents. Le nom de marque dans le output path suffit à activer la connaissance pré-entraînée du LLM sur l'entreprise, ce qui contamine les métaphores. L'orchestrateur utilise des chemins anonymes puis renomme après réception.
-
-**RÈGLE : DIVERGENCE ADAPTÉE au mode (libre vs registre orienté)**
-
-En mode **libre**, la divergence est forte et ouverte : métaphore, registre, résolution — tout peut changer.
-En mode **registre**, la divergence est forte mais CANALISÉE : le subagent RESTE dans le registre choisi, et diverge sur l'interprétation des territoires (autre facette du registre, autre mécanisme, autre angle). La pression de divergence ne doit JAMAIS pousser à quitter le registre.
-
-La variable `{divergence_instruction}` est donc DIFFÉRENTE selon le mode. Voir les instructions par subagent ci-dessous.
-
-**Subagent 1** (concept 1) :
-
-Variables à remplacer :
-- `{cursor_a}` et `{cursor_b}` → valeurs des curseurs
-- `{N}` → 1
-- `{territory_mix}` → section "Mix de Territoires (décontaminé)" extraite de `{brand}-context-clean.md`
-- `{previous_concepts}` → "(Aucun — tu es le premier concept.)"
-- `{divergence_instruction}` → ""
-- `{registre_orientation_or_omit}` → si `{registre_orientation}` est renseigné (Étape 2E) : `Registre : {registre_orientation}`. Sinon : OMETTRE la section "ORIENTATION DE REGISTRE" entièrement du prompt (ne pas laisser la section avec un contenu vide)
-- `{output_path}` → `{skill_dir}/outputs/{session_dir}/concept-1-v{version}.md` (**PAS de nom de marque** dans le chemin)
-- `{skill_dir}` → chemin vers le skill brand-identity (pour que le subagent localise les fichiers de référence)
-
-L'orchestrateur **attend le résultat**, **lit le fichier produit**, puis **renomme** `concept-1-v{version}.md` → `{brand}-concept-1-v{version}.md`.
-
-**Subagent 2** (concept 2) :
-
-Mêmes variables, sauf :
-- `{N}` → 2
-- `{previous_concepts}` → contenu de `{brand}-concept-1-v{version}.md` **ANONYMISÉ** : remplacer toutes les occurrences du nom de la marque (et ses variantes : "Atelier Vermeil", "atelier vermeil", "Vermeil", etc.) par "la marque". Le subagent a besoin de la STRUCTURE du concept précédent pour diverger, pas du nom de l'entreprise.
-- `{divergence_instruction}` →
-  - **Mode libre** : "Un concept a déjà été proposé (voir CONCEPTS PRÉCÉDENTS). Ton concept DOIT être STRUCTURELLEMENT DIFFÉRENT : métaphore différente, résolution de tension différente, monde visuel différent. Le mix de territoires est le même — l'interprétation doit être radicalement autre."
-  - **Mode registre** : "Un concept a déjà été proposé (voir CONCEPTS PRÉCÉDENTS). Ton concept DOIT être STRUCTURELLEMENT DIFFÉRENT : interprétation différente des territoires, résolution de tension différente, mécanisme narratif différent. Tu RESTES dans le registre indiqué — ta divergence porte sur la FACETTE du registre que tu explores et sur l'ANGLE d'interprétation des territoires, PAS sur le changement de registre. Un même registre contient des dizaines de gestes, d'outils, de processus différents — explore-les."
-- `{output_path}` → `{skill_dir}/outputs/{session_dir}/concept-2-v{version}.md` (**PAS de nom de marque**)
-
-L'orchestrateur **attend le résultat**, **lit le fichier produit**, puis **renomme** `concept-2-v{version}.md` → `{brand}-concept-2-v{version}.md`.
-
-**Subagent 3** (concept 3) :
-
-Mêmes variables, sauf :
-- `{N}` → 3
-- `{previous_concepts}` → contenu de `{brand}-concept-1-v{version}.md` + `{brand}-concept-2-v{version}.md`, **ANONYMISÉ** de la même façon (remplacer le nom de marque par "la marque")
-- `{divergence_instruction}` →
-  - **Mode libre** : "Deux concepts ont déjà été proposés (voir CONCEPTS PRÉCÉDENTS). Ton concept DOIT être STRUCTURELLEMENT DIFFÉRENT des deux : métaphore différente, résolution de tension différente, monde visuel différent. Le mix de territoires est le même — l'interprétation doit être radicalement autre."
-  - **Mode registre** : "Deux concepts ont déjà été proposés (voir CONCEPTS PRÉCÉDENTS). Ton concept DOIT être STRUCTURELLEMENT DIFFÉRENT des deux : interprétation différente des territoires, résolution de tension différente, mécanisme narratif différent. Tu RESTES dans le registre indiqué — ta divergence porte sur la FACETTE du registre que tu explores et sur l'ANGLE d'interprétation des territoires, PAS sur le changement de registre. Un même registre contient des dizaines de gestes, d'outils, de processus différents — explore-les."
-- `{output_path}` → `{skill_dir}/outputs/{session_dir}/concept-3-v{version}.md` (**PAS de nom de marque**)
-
-L'orchestrateur **attend le résultat**, **lit le fichier produit**, puis **renomme** `concept-3-v{version}.md` → `{brand}-concept-3-v{version}.md`.
-
-**Assemblage** :
-
-L'orchestrateur consolide les 3 fichiers en `{brand}-concepts-narratifs-v{version}.md` dans `{session_dir}/`. Format :
-```
-# Concepts Narratifs — {brand} (v{version})
-
-{contenu concept 1}
-
----
-
-{contenu concept 2}
-
----
-
-{contenu concept 3}
-```
 
 ### Checkpoint Pass A (orchestrateur)
 
-À réception des concepts (3 en mode Génératif, 1 à 3 en mode Sélectif selon la sélection user de la sous-étape S8) :
+À réception des concepts retenus (1 à 3 selon la sélection user de la sous-étape S8 ; **0** si l'utilisateur n'a rien retenu sur ce registre) :
 
-1. **Ouvrir le fichier** dans MarkView (via Bash) :
+1. **Ouvrir le fichier** dans MarkView (via Bash) — uniquement si au moins 1 concept a été retenu sur ce batch :
    ```bash
    open -a MarkView {skill_dir}/outputs/{session_dir}/{brand}-concepts-narratifs-v{version}.md
    ```
 
-2. **Afficher un résumé COURT dans le chat** (~300 tokens max) au format suivant :
+2. **Afficher un résumé COURT dans le chat** (~300 tokens max) au format suivant (autant de lignes que de concepts retenus — 1 à 3) :
 
-> Les directions narratives sont prêtes (v{version}, mode `{generation_mode}`). Le détail est ouvert dans MarkView.
+> Les directions narratives sont prêtes (v{version}, registre **{registre_orientation}**). Le détail est ouvert dans MarkView.
 >
 > - **{version}A — "{NOM_1}"** : {résolution tension en 1 phrase}
 > - **{version}B — "{NOM_2}"** : {résolution tension en 1 phrase}
-> - **{version}C — "{NOM_3}"** : {résolution tension en 1 phrase}
 >
 > **Options pour la suite :**
-> 1. **Ajuster** un concept (feedback ciblé, mode Génératif uniquement)
-> 2. **Nouveau batch en Génératif libre** (aucun registre, concepts émergents)
-> 3. **Nouveau batch en Génératif orienté registre** (choix d'un registre, concepts colorés)
-> 4. **Nouveau batch en Sélectif** (choix d'un registre, 10 candidats mots évalués, max 3 retenus)
-> 5. **Avancer au design** avec les concepts accumulés
+> 1. **Nouveau batch — autre registre** (choisis un registre différent)
+> 2. **Nouveau batch — même registre** (relance le pool sur {registre_orientation})
+> 3. **Avancer au design** avec les concepts accumulés
+
+**Cas 0 concept retenu sur ce batch** : afficher « Aucun concept retenu sur le registre **{registre_orientation}** — aucun batch ajouté. » puis le même menu. Masquer l'**option 3** tant qu'AUCUN concept n'a été retenu dans tout le projet (aucun fichier `{brand}-concepts-narratifs-v*.md` n'existe) — il n'y a alors rien à porter en Phase 3B.
 
 3. **Boucle d'itération** :
-   - **Option 1** (ajustement — uniquement si le batch courant est Génératif) → resume le subagent concerné (1, 2 ou 3) avec feedback ciblé (même version). En mode Sélectif, l'option 1 redirige par défaut vers les options 2-4 (les feedbacks ciblés sur un mot retenu ne sont pas implémentés en v1 — on relance un batch).
-   - **Option 2** (Génératif libre) → `{generation_mode}` = "libre", `{registre_orientation}` = "" → relancer Étape 3A Génératif (étape 4 du flow) avec batch supplémentaire.
-   - **Option 3** (Génératif orienté registre) → ouvrir `ref/registres-creatifs.md` en MarkView, l'utilisateur choisit un registre, stocker dans `{registre_orientation}`, `{generation_mode}` = "generatif_registre" → relancer Étape 3A Génératif avec batch supplémentaire.
-   - **Option 4** (Sélectif) → ouvrir `ref/registres-creatifs.md` en MarkView, l'utilisateur choisit un registre, stocker dans `{registre_orientation}`, `{generation_mode}` = "selectif" → lancer **Étape 3A — Mode Sélectif** (sous-étapes S1-S10).
-   - **Option 5** (avancer) → aller à la sélection finale (étape 5 ci-dessous).
+   - **Option 1** (autre registre) → ouvrir `ref/registres-creatifs.md` en MarkView, l'utilisateur choisit un nouveau registre, stocker dans `{registre_orientation}` → relancer **Étape 3A — Mode Sélectif** (sous-étapes S1-S10).
+   - **Option 2** (même registre) → réutiliser le `{registre_orientation}` courant → relancer **Étape 3A — Mode Sélectif** (sous-étapes S1-S10). Le pool est re-tiré (les 5 sub-agents varient à chaque run), donc les candidats diffèrent en pratique — sans garantie stricte d'unicité.
+   - **Option 3** (avancer) → aller à la sélection finale (étape 4 ci-dessous). Disponible uniquement si ≥1 concept a été retenu.
 
-4. **Batch supplémentaire** ("3 de plus") :
+   Les fichiers `{brand}-concepts-narratifs-v*.md` des batches précédents restent intacts sur le disque — l'accumulation est persistée, pas seulement en mémoire conversationnelle. La sélection finale les relit depuis le disque.
 
-   ⚠ **RAPPEL ANTI-DÉGRADATION** : relire `phases/phase-3a-concepts.md` depuis le disque et reconstruire le prompt INTÉGRAL. Ne JAMAIS raccourcir le prompt "parce que c'est le batch 4 et qu'on connaît déjà". Voir la règle complète ci-dessus.
+4. **Sélection finale et assemblage** :
 
-   L'orchestrateur relance l'Étape 3A avec le même territory_mix décontaminé. La détection de version incrémente automatiquement → produit v2, v3, etc. Les fichiers précédents restent intacts.
-
-   **Résumés cross-batch** : au lieu de passer le texte complet des concepts précédents (qui contient des termes sectoriels résiduels et pèse ~1000 tokens chacun), l'orchestrateur construit des RÉSUMÉS COURTS (~50-80 tokens par concept) pour la variable `{previous_concepts}` :
-
-   **En mode libre** (pas de registre) :
-   ```
-   CONCEPTS DÉJÀ EXPLORÉS (diverger obligatoirement) :
-   - "{Nom Concept 1}" — {métaphore en 5 mots}, {mécanisme de résolution en 5 mots}, {registre en 3 mots}
-   - "{Nom Concept 2}" — {métaphore}, {mécanisme}, {registre}
-   - "{Nom Concept 3}" — {métaphore}, {mécanisme}, {registre}
-   ```
-
-   **En mode registre orienté** :
-   ```
-   CONCEPTS DÉJÀ EXPLORÉS (pour information — ton registre fournit la divergence inter-batch, reste dans ton registre) :
-   - "{Nom Concept 1}" — {métaphore en 5 mots}, {mécanisme de résolution en 5 mots}, {registre en 3 mots}
-   - "{Nom Concept 2}" — {métaphore}, {mécanisme}, {registre}
-   - "{Nom Concept 3}" — {métaphore}, {mécanisme}, {registre}
-   ```
-
-   Exemple (mode libre) :
-   ```
-   CONCEPTS DÉJÀ EXPLORÉS (diverger obligatoirement) :
-   - "Le Scalpel Blanc" — chirurgie de la clarté, révélation par soustraction, clinique blanc net
-   - "La Chambre Noire" — photographie argentique, révélation par processus chimique, obscur graduel chimique
-   - "La Table de Montage" — montage cinéma documentaire, sens par réagencement, séquentiel brut mécanique
-   ```
-
-   **Pourquoi des résumés** : (1) évite de réinjecter des termes sectoriels résiduels que les concepts précédents ont pu générer, (2) poids token négligeable (~200 tokens pour 3 concepts, ~400 pour 6), (3) le subagent a besoin de savoir ce qui a déjà été exploré. En mode registre, le header "pour information" relâche la pression inter-batch — le changement de registre fournit la divergence. La divergence intra-batch en mode registre est canalisée : rester dans le registre, diverger sur l'interprétation (voir `{divergence_instruction}` par subagent).
-
-   Le flow des 3 subagents du batch supplémentaire est identique au premier batch :
-   - Subagent 1 du nouveau batch : `{previous_concepts}` = résumés de TOUS les concepts des batches précédents
-   - Subagent 2 : résumés des batches précédents + texte complet anonymisé du concept 1 du batch en cours
-   - Subagent 3 : résumés des batches précédents + texte complet anonymisé des concepts 1+2 du batch en cours
-   - `{divergence_instruction}` mentionne le nombre total de concepts existants
-
-   Après assemblage du nouveau batch → retour au Checkpoint (étape 2) avec la même question "design ou 3 de plus ?".
-
-5. **Sélection finale et assemblage** :
-
-   **Cas simple (v1 uniquement, l'utilisateur valide)** :
+   **Cas simple (un seul batch retenu, l'utilisateur valide)** :
    - Copier `{brand}-concepts-narratifs-v1.md` → `{brand}-concepts-narratifs.md`
-   - Aucun changement UX par rapport au flow actuel
 
    **Cas multi-versions (v2+ existe)** :
-   - Lister TOUS les concepts de toutes les versions existantes avec un résumé court :
+   - Lister TOUS les concepts de toutes les versions existantes avec un résumé court (relus depuis le disque) :
      > **Récap de tous les concepts disponibles :**
      > - **1A** — "{NOM}" : {résolution en 1 phrase}
      > - **1B** — "{NOM}" : {résolution en 1 phrase}
-     > - **1C** — "{NOM}" : {résolution en 1 phrase}
      > - **2A** — "{NOM}" : {résolution en 1 phrase}
-     > - **2B** — "{NOM}" : {résolution en 1 phrase}
-     > - **2C** — "{NOM}" : {résolution en 1 phrase}
      >
-     > **Choisissez 3 concepts pour passer au design (ex: "2A, 1B, 2C") :**
+     > **Choisis 1 à 3 concepts pour passer au design (ex: "2A, 1B" ou "1A" seul) :**
    - Si `{brand}-concepts-narratifs.md` existe déjà (re-sélection), le renommer en `{brand}-concepts-narratifs-selection-v{N}.md` avant de réécrire
-   - Assembler les 3 concepts choisis dans `{brand}-concepts-narratifs.md` (renommés Concept 1, 2, 3 dans l'ordre de sélection)
+   - Assembler les 1 à 3 concepts choisis dans `{brand}-concepts-narratifs.md` (renommés Concept 1, 2, 3 dans l'ordre de sélection)
    - Ce fichier assemblé est le seul lu par les phases suivantes
 
-6. **Une fois `{brand}-concepts-narratifs.md` assemblé et validé** → lancer Pass B
+5. **Une fois `{brand}-concepts-narratifs.md` assemblé et validé** → lancer Pass B
 
 ---
 
-### Étape 3A — Mode Sélectif (alternative à 3A Génératif)
+### Étape 3A — Concepts Narratifs (Mode Sélectif)
 
-**Déclenché si `{generation_mode}` = `"selectif"` à l'Étape 2E.** Le mode Sélectif produit un fichier `{brand}-concepts-narratifs-v{version}.md` au MÊME FORMAT que le mode Génératif → la sélection finale (étape 5 ci-dessus, l. 957-984) et la Phase 3B aval sont mode-agnostiques. Le mode peut changer entre les batches v1, v2, v3 : on peut tout à fait avoir v1 Sélectif + v2 Génératif libre + v3 Sélectif autre registre.
+Atteint depuis l'Étape 2E (premier batch) ou depuis le Checkpoint Pass A (batches suivants). Le Mode Sélectif produit un fichier `{brand}-concepts-narratifs-v{version}.md` au format attendu par la sélection finale (Checkpoint) et par toute la Phase 3B aval. Plusieurs batches s'accumulent (registres identiques ou différents) ; la sélection finale puise dans l'ensemble accumulé.
 
 **Pourquoi Sélectif** : pour produire des noms de concept SOBRES (mono-mots ou composés courts limpides : "Phare", "Magnitude", "Chenal balisé") au lieu de noms enrichis ("Le Phare de Ralliement"). Le LLM ne **génère** plus le nom — il **choisit** dans un pool de 100 mots couvrant le registre, ce qui empêche structurellement la complexification artificielle.
 
-**Pré-requis communs avec le mode Génératif** :
-- Sub-agent de décontamination déjà lancé → `{brand}-context-clean.md` disponible avec `{mix_territoires}` (décontaminé) et `{ventre_mou_narratif}` extrait du scoping.
-- `{version}` détectée : compter les fichiers `{brand}-concepts-narratifs-v*.md` existants, +1.
-- Créer le dossier intermédiaire `{session_dir}/.tmp-selectif-v{version}/` (convention BIG anti-/tmp/).
+**Pré-requis** :
+- Décontamination déjà faite en Étape 2D-bis → `{brand}-context-clean.md` disponible, contenant la section "Mix de Territoires (décontaminé)" (= `{mix_territoires}`). Le `{ventre_mou_narratif}` n'est PAS dans ce fichier : il est lu directement depuis la section "Ventre Mou Narratif" de `{brand}-scoping.md`.
+- `{version}` détectée : compter les fichiers `{brand}-concepts-narratifs-v*.md` existants, +1. ⚠ Un numéro de version n'est **consommé que lorsqu'un fichier de concepts est effectivement écrit** (S9). Un batch où l'utilisateur ne retient rien (0 concept) n'écrit aucun fichier → le numéro reste libre et sera réutilisé au batch suivant (pas de trou dans la séquence v1, v2, v3…).
+- Créer le dossier intermédiaire `{session_dir}/.tmp-selectif-v{version}/` (convention BIG anti-/tmp/). Si un batch précédent à 0 retenu a déjà créé ce dossier sous le même numéro, son contenu est simplement réécrit (fichiers de travail jetables).
 
 #### Sous-étape S1 — Pool collectif (5 sub-agents Task PARALLÈLES)
 
@@ -1286,18 +1119,22 @@ open -a MarkView {session_dir}/{brand}-concepts-selectif-recap-v{version}.md
 
 Afficher dans le chat (court) :
 > 10 mots-graines évalués sur le registre **{registre}**. Récap ouvert dans MarkView.
-> Choisis jusqu'à 3 mots (ex: `"5, 2, 9"` ou `"7"` seul). Tu pourras relancer un autre registre au checkpoint si tu veux en accumuler plus.
+> Choisis 0 à 3 mots (ex: `"5, 2, 9"`, `"7"` seul, ou `"0"` / réponse vide pour ne rien retenir et explorer un autre registre). Tu pourras relancer un autre registre — ou le même — au checkpoint pour en accumuler plus.
 
-#### Sous-étape S8 — Sélection user (max 3)
+#### Sous-étape S8 — Sélection user (0 à 3)
 
 Attendre la réponse de l'utilisateur. Valider :
-- 1 à 3 entiers
+- **0 à 3** entiers (réponse vide ou `0` = ne rien retenir sur ce registre)
 - Chaque entier ∈ [1, 10]
 - Pas de doublon
 
 Si invalide, redemander.
 
+**Si 0 retenu** : passer directement au Checkpoint Pass A (cas « 0 concept retenu sur ce batch ») — pas de S9, aucun fichier `{brand}-concepts-narratifs-v{version}.md` produit, `{version}` non consommée.
+
 #### Sous-étape S9 — Assemblage du batch v{version}
+
+(Exécutée uniquement si ≥1 mot retenu en S8. Si 0 retenu, on ne passe pas par S9 — retour direct au Checkpoint sans produire de fichier ni consommer `{version}`.)
 
 Pour chaque mot retenu (1 à 3), lancer 1 sub-agent `general-purpose` avec le prompt de `{skill_dir}/phases/phase-3a-selectif-batch-assemble.md` avec les variables :
 - `{mot_choisi}` = le mot
@@ -1312,7 +1149,7 @@ Pour chaque mot retenu (1 à 3), lancer 1 sub-agent `general-purpose` avec le pr
 
 Lancer les 1-3 sub-agents en PARALLÈLE (ils sont indépendants).
 
-Puis l'orchestrateur assemble le fichier final `{session_dir}/{brand}-concepts-narratifs-v{version}.md` au même format que le mode Génératif :
+Puis l'orchestrateur assemble le fichier final `{session_dir}/{brand}-concepts-narratifs-v{version}.md` :
 ```markdown
 # Concepts Narratifs — {brand} (v{version}, mode Sélectif, registre {registre})
 
@@ -1327,13 +1164,11 @@ Puis l'orchestrateur assemble le fichier final `{session_dir}/{brand}-concepts-n
 [contenu de concept-3-selectif.md, si applicable]
 ```
 
-Le fichier est nommé EXACTEMENT comme en mode Génératif → la sélection finale cross-mode (étape 5 ci-dessus) le trouve sans modification.
+Le fichier suit la nomenclature standard `{brand}-concepts-narratifs-v{version}.md` → la sélection finale du Checkpoint le trouve sans modification.
 
 #### Sous-étape S10 — Retour au Checkpoint Pass A
 
-Une fois `{brand}-concepts-narratifs-v{version}.md` produit, revenir au Checkpoint Pass A standard (cf. plus haut, l. ~886). Le menu du checkpoint est élargi pour proposer un autre batch dans n'importe quel mode (cf. Checkpoint élargi documenté à la fin de l'Étape 3A Génératif).
-
-**Note sur `{previous_concepts}` cross-batch cross-mode** : si un batch suivant est en mode Génératif après un batch Sélectif, le résumé `{previous_concepts}` doit être construit en lisant les concepts du fichier ASSEMBLÉ `{brand}-concepts-narratifs-v{N}.md` (pas des fichiers individuels concept-N-v{N}.md que le mode Sélectif n'écrit pas comme tels — il écrit `concept-{n}-selectif.md` dans `.tmp-selectif-v*/`). L'orchestrateur doit donc parser le fichier assemblé pour extraire les noms de concepts + 1-phrase de résolution.
+Une fois `{brand}-concepts-narratifs-v{version}.md` produit, revenir au Checkpoint Pass A (cf. plus haut). Le menu propose : nouveau batch (autre ou même registre) ou avancer au design avec les concepts accumulés.
 
 ---
 
@@ -2155,6 +1990,8 @@ Tu as choisi ton display #1. Maintenant choisis un body qui forme un SYSTÈME av
 ---
 
 #### Checkpoint — Traduction, backups, planches récap, validation utilisateur
+
+⚠ **OBLIGATOIRE — NE PAS SAUTER CETTE ÉTAPE.** La planche récap unifiée (`font-recap-all.mjs`) DOIT être générée et ouverte AVANT de demander le choix typo à l'utilisateur. Ne PAS enchaîner directement sur le spécimen (Vague 3) — le spécimen valide UN pairing déjà arrêté, il ne permet PAS de CHOISIR parmi les candidats + backups (display ★/backup1/backup2, body ★/backup1/backup2). Même si le run est en mode concept unique (1 seul pairing), cette étape reste non-négociable : l'utilisateur doit voir les backups côte à côte pour pouvoir swapper. Le choix final de la typo APPARTIENT à l'utilisateur — un raccourci d'orchestration peut réduire un coût interne, jamais retirer ce choix.
 
 **Avant de lancer les pitchs**, l'orchestrateur prépare tout et demande validation :
 

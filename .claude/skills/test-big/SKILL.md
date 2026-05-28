@@ -105,8 +105,8 @@ Afficher exactement ce texte :
   2B   — Choix des curseurs A×B (niveau d'audace, niveau de rupture)
   2C   — Extraction des territoires (15-20 mots-clés → 4-5 clusters)
   2D   — Pondération des territoires (Principal / Secondaire / Accent)
-  3A1  — Concepts narratifs (mode Génératif libre/registre OU mode Sélectif — choix du mode à l'Étape 2E)
-  3A2  — Concepts supplémentaires (batch additionnel — mode au choix, accumulation cross-mode)
+  3A1  — Concepts narratifs (Mode Sélectif : choix d'un registre à l'Étape 2E, pool → 10 candidats → 0 à 3 retenus)
+  3A2  — Concepts supplémentaires (batch additionnel — autre ou même registre, accumulation)
   3B-1 — Routeur chromatique (gammes couleurs autorisées + planche visuelle, anti-slop sectoriel)
   3B-2 — Palettes (3 palettes divergentes A/B/C par concept, planche comparative, choix utilisateur, mini-check aversions couleur)
   3B-3 — Choix des polices (penseur typo + designer typo : longlists, descriptions, top 3 display+body, planches duos, font-recap)
@@ -307,8 +307,8 @@ echo "{brand}|{session_label}|$(date +%s)" > "{test_dir}/.session-id"
 | `2B` | `{brand}-scoping.md` (ajout curseurs A×B) |
 | `2C` | `{brand}-scoping-filtered.md` (version filtrée pour le clustering), `{brand}-territoires-v*.md`, `{brand}-qualites-v*.md` (extraction mots-clés en amont du clustering) |
 | `2D` | `{brand}-scoping.md` (ajout section Mix de Territoires) |
-| `3A1` | **Mode Génératif** : `{brand}-concept-{1,2,3}-v*.md`, `{brand}-concepts-narratifs*.md`, `{brand}-context-clean.md`. **Mode Sélectif** : `{brand}-concepts-narratifs-v*.md` (format compatible avec Génératif), `{brand}-concepts-selectif-recap-v*.md` (récap des 10 candidats par registre), dossier intermédiaire `.tmp-selectif-v*/` (pool runs + définitions + évaluations — fichier de travail, EXCLU du packaging) |
-| `3A2` | (aucun nouveau fichier — batch supplémentaire ajoute des v2, v3… aux mêmes patterns que 3A1, indépendamment du mode choisi) |
+| `3A1` | `{brand}-context-clean.md` (décontamination Étape 2D-bis), `{brand}-concepts-narratifs-v*.md` (1 à 3 concepts par batch retenu), `{brand}-concepts-selectif-recap-v*.md` (récap des 10 candidats par registre), dossier intermédiaire `.tmp-selectif-v*/` (pool runs + définitions + évaluations — fichiers de travail, EXCLUS du packaging). Un batch à 0 retenu ne produit aucun fichier `concepts-narratifs-v*`. |
+| `3A2` | (aucun nouveau pattern — batch supplémentaire ajoute des v2, v3… au pattern `{brand}-concepts-narratifs-v*.md` de 3A1) |
 | `3B-1` | `{brand}-chromatic-gamuts.md`, `{brand}-gamuts-visual.html` (routeur chromatique + planche visuelle) |
 | `3B-2` | `{brand}-palette-c{1,2,3}-{a,b,c}.md` (9 variantes A/B/C — divergence séquentielle), `{brand}-palette-c{1,2,3}.md` (3 canoniques copiés après choix user), `{brand}-palette-comparison.html` (planche mockups 3×3) |
 | `3B-3` | `{brand}-penseur-c{1,2,3}.md` (longlists display 12-15 fonts), `{brand}-penseur-body-c{1,2,3}.md` (longlists body 10 fonts), `{brand}-descriptions-c{1,2,3}.md` (descriptions sans noms), `{brand}-font-backups.md` (top 3 display+body avec backups), `{brand}-font-recap-all.html` (planche unifiée 3 concepts × 6 fonts), `font-pool-duo-display-c{1,2,3}-*.png` (planches duos display), `font-pool-duo-body-c{1,2,3}-*.png` (planches duos body), `font-pool-font-selection-c{1,2,3}.png` (planche récap par concept) |
@@ -360,7 +360,7 @@ pour chaque pattern dans fichiers_a_copier :
 **Exemples :**
 - Démarrage **2A** → copier brief-analysis (contient les aversions client si Point 15 a été rempli)
 - Démarrage **3A1** → copier brief-analysis + scoping + validated-temperature + scoping-filtered + territoires + qualites-v*
-- Démarrage **3A2** → idem 3A1 + concepts-narratifs + context-clean (concepts existants pour divergence cross-batch)
+- Démarrage **3A2** → idem 3A1 + concepts-narratifs-v* + context-clean (batches déjà accumulés + contexte décontaminé)
 - Démarrage **3B-1** → idem 3A2 + validated-temperature (si présent — guidance optionnelle pour le routeur)
 - Démarrage **3B-2** (palettes) → idem 3B-1 + chromatic-gamuts + gamuts-visual (output de 3B-1)
 - Démarrage **3B-3** (typo) → idem 3B-2 + palette-c* canoniques + 9 variantes palette-c*-{a,b,c} + palette-comparison
@@ -457,8 +457,8 @@ Mapping `{start_phase}` → section dans SKILL.md :
 | `2B` | `### Étape 2B (orchestrateur) : Présentation & Collecte des curseurs` (puis enchaîne 2C→2D) |
 | `2C` | `### Étape 2C (subagent) : Territoires Créatifs` (puis enchaîne 2D) |
 | `2D` | `### Étape 2D (orchestrateur, inline) : Mix pondéré` |
-| `3A1` | `### Étape 2E (orchestrateur, inline) : Choix du mode + orientation de registre` (3 modes : Génératif libre / Génératif orienté registre / Sélectif par registre). Puis enchaîne `### Étape 3A — Concepts Narratifs (Pass A)` (mode Génératif) OU `### Étape 3A — Mode Sélectif` (mode Sélectif, sous-étapes S1-S10) selon le choix. |
-| `3A2` | Batch supplémentaire : commence au Checkpoint Pass A élargi (5 options : ajustement / Génératif libre / Génératif orienté registre / Sélectif / avancer). Selon l'option choisie, enchaîne l'Étape 3A Génératif ou l'Étape 3A Mode Sélectif (version auto-incrémentée). |
+| `3A1` | `### Étape 2D-bis (orchestrateur) : Décontamination du contexte` (produit `context-clean.md`), puis `### Étape 2E (orchestrateur, inline) : Choix du registre` (ouvre `ref/registres-creatifs.md`), puis `### Étape 3A — Concepts Narratifs (Mode Sélectif)` (sous-étapes S1-S10). |
+| `3A2` | Batch supplémentaire : commence au Checkpoint Pass A simplifié (3 options : nouveau batch autre registre / nouveau batch même registre / avancer). L'option de relance enchaîne l'Étape 3A — Mode Sélectif (version auto-incrémentée, ou réutilisée si le batch précédent était à 0 retenu). |
 | `3B-1` | `### Étape 3B-0 — Routeur chromatique (subagent isolé, AVANT le design dérivé)` dans le SKILL.md de BIG (note : BIG nomme cette étape `3B-0`, test-big la nomme `3B-1` pour avoir une séquence continue). Subagent isolé, produit `chromatic-gamuts.md` + planche, validation user des gammes, puis enchaîne 3B-2. |
 | `3B-2` | `### Étape 3B — Design Dérivé (Pass B)` — commence à la `#### Vague 1 — Palettes par divergence séquentielle` (3 palettes A/B/C par concept, planche comparative, choix utilisateur) |
 | `3B-3` | `#### Vague 2 — Penseurs typographiques` dans l'Étape 3B — sous-vagues : Vague 2 (penseurs) → Vague 2bis (gate anti-slop) → Vague 2ter (designer typo : descriptions, choix top 3, font-backups, planche font-recap) |

@@ -104,6 +104,11 @@ Relances selon profil :
 - Cause/Mission : "Et si quelqu'un ne s'engage pas via vous, c'est quoi l'alternative — il fait quoi ? Il ne fait rien ? Il passe par un autre canal ?"
 - Produit physique : "Quand quelqu'un n'achète pas le vôtre, il se tourne vers quelle marque ou quel type de produit ?"
 
+**RELANCE SYSTÉMATIQUE SUR LES URLS** (obligatoire — même si les noms sont précis et identifiables) :
+Une fois les alternatives collectées, relance INCONDITIONNELLEMENT pour obtenir les URLs des sites :
+> "Top, et tu peux me donner les URLs des sites de [Nom1, Nom2, …] ? Même les URLs approximatives type 'moulinot.com' suffisent. Le système en aval va analyser directement les sites pour identifier les codes visuels du secteur (palettes, typos, imagerie) — sans URLs, il devine par recherche web ce qui est moins fiable. Si tu n'as pas les URLs exactes, dis-le, on fera sans."
+Accepte la réponse même si l'utilisateur dit "je n'ai pas" ou "je ne me souviens pas". La question DOIT être posée mais la réponse peut être vide.
+
 POINT 03 — Killer Feature (ÉLEVÉ)
 Demande : "Qu'est-ce qui fait dire 'wow' quand tu montres ce que vous faites ? Je cherche LE truc qui déclenche l'envie d'essayer, de s'inscrire, d'acheter — le déclic."
 Donne un exemple d'un autre secteur pour calibrer le niveau de précision attendu.
@@ -274,11 +279,12 @@ Si le client dit "rien à éviter" sur les 2 sous-questions, le Point 15 est not
 
 Avant de produire le Brief Alpha, fais un scan mental de ce que tu as collecté. Pour CHAQUE check ci-dessous, si l'info n'a pas été couverte dans l'interview, **pose la question maintenant** :
 
-**Check 1 — URLs / noms précis des concurrents** :
-Le Point 02 contient-il au moins 1-2 URLs ou noms identifiables de concurrents/alternatives ?
-- Si NON : pose la question :
-  > "Avant que je finalise le brief — tu peux me donner 1-2 URLs ou noms précis de concurrents/alternatives ? Ça aide vraiment pour la suite (analyse du secteur). Si tu n'en as pas, dis-le, ce n'est pas bloquant."
-- Accepte la réponse, même "je n'ai pas".
+**Check 1 — URLs des concurrents (PAS juste les noms)** :
+Le Point 02 contient-il au moins 1-2 **URLs** de concurrents/alternatives ?
+- **Important** : avoir UNIQUEMENT les noms (ex: "Moulinot, Veolia, Suez") ne suffit PAS. Il faut les URLs. Si seulement les noms sont présents, le check N'EST PAS validé.
+- Si pas d'URLs : pose la question :
+  > "Avant que je finalise le brief — tu peux me donner les URLs des concurrents que tu as cités au Point 02 ? Même approximatives type 'moulinot.com' suffisent. Le système en aval analyse directement les sites pour identifier les codes visuels du secteur — sans URLs, il devine par recherche web et c'est moins fiable. Si tu n'en as vraiment aucune, dis-le, on fera sans."
+- Accepte la réponse, même "je n'ai pas". C'est la question qui est obligatoire, pas la réponse.
 
 **Check 2 — Aversions couleur** (Point 15 sous-question 1) :
 As-tu posé la question "couleurs à éviter" ?
