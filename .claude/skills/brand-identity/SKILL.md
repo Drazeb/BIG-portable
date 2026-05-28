@@ -412,27 +412,58 @@ Quand l'utilisateur invoque `/brand-identity` :
 
    - **Option A (brief existant)** :
      - Lire le fichier ou le texte fourni
+     - **Exécuter le GATE DE COMPLÉTUDE DU BRIEF** (sous-section ci-dessous) — vérifie URLs concurrents + section Aversions, demande au user les manquants
      - Passer à la Phase 1
 
    - **Option B (guide à emporter)** :
      - Copier le fichier `{skill_dir}/ref/brief-guide-utilisateur.md` dans le dossier de travail de l'utilisateur (ou un emplacement qu'il indique)
      - Message : "Voici votre guide de brief ! Prenez le temps de le compléter — chaque point contient des explications et des exemples pour vous aider. Une fois terminé, revenez avec le fichier complété et on lance la création."
      - **STOP** — Attendre que l'utilisateur revienne avec le brief complété
-     - Quand il revient → passer à la Phase 1
+     - Quand il revient → **Exécuter le GATE DE COMPLÉTUDE DU BRIEF** (idem Option A) → passer à la Phase 1
 
    - **Option C (mode conversationnel)** :
      - Lire `ref/brief-alpha-template.md` pour les 14 points
      - Poser les questions une par une, en reformulant de manière conversationnelle
-     - **Numéroter chaque question** : préfixer obligatoirement chaque question par `**Question N/14 — {titre du point}**` (ex: `**Question 11/14 — Ancre de Référence**`). Le numéro correspond à l'ordre des 14 points du template. Permet à l'utilisateur de savoir où il en est dans l'interview.
+     - **Numéroter chaque question** : préfixer obligatoirement chaque question par `**Question N/15 — {titre du point}**` (ex: `**Question 11/15 — Ancre de Référence**`). Le numéro correspond à l'ordre des 15 points (14 brief + 1 aversions). Permet à l'utilisateur de savoir où il en est dans l'interview.
      - Prendre des notes au fur et à mesure
-     - Une fois les 14 points couverts → passer à la Phase 1
+     - Le prompt d'interview (`big-brief-interview.md` ou `v2.md`) contient déjà une PHASE F (aversions) + PHASE G (vérification finale obligatoire) qui collecte les aversions et rattrape les URLs concurrents manquants. **PAS besoin de gate orchestrateur supplémentaire** — le gate est intégré au prompt interview.
+     - Une fois les 15 points couverts (14 + aversions) → passer à la Phase 1
 
    - **Option D (brand existante)** :
      - Passer directement à la **Phase D1 (Collecte)**
      - Le pipeline suit le flow D1 → D2 → D3 → D4 → D5 → convergence Phase 6A
+     - **PAS de gate aversions** — le pipeline mode D bypasse Phase 3B-2 et 3B-7-checkpoint (qui sont les checkpoints consommant les aversions). Demander les aversions ici serait poser une question sans usage.
 
 4. **Une fois le brief collecté** (options A/B/C) → lancer la Phase 1
 5. **Si option D** → lancer la Phase D1 (voir section "MODE BRAND EXISTANTE" ci-dessous)
+
+### GATE DE COMPLÉTUDE DU BRIEF (modes A et B uniquement)
+
+**Quand l'exécuter** : juste après la lecture du brief existant fourni par l'utilisateur (Option A) ou récupéré après remplissage (Option B), AVANT de lancer la Phase 1.
+
+**Pourquoi** : les anciens briefs (pré-D58) n'ont pas de section "## Aversions client" ni de Point 15. Les nouveaux briefs depuis l'interview v1/v2 mise à jour l'ont. Le gate rattrape les briefs qui ne l'auraient pas. Il vérifie aussi les URLs concurrents (utiles pour le scoping).
+
+**Mécanique** :
+
+1. **Check 1 — URLs / noms précis des concurrents (Point 02 du brief)** :
+   - Scanner la section Point 02 (ou équivalent "Alternatives Compétitives" / "Concurrents") du brief fourni
+   - Si elle contient au moins 1-2 URLs ou noms précis identifiables → ✓ check passé
+   - Sinon → demander à l'utilisateur :
+     > "Avant de lancer l'analyse — j'ai besoin de 1-2 URLs ou noms précis de concurrents/alternatives. Ça aide pour identifier les codes visuels saturés du secteur. Si tu n'en as pas, dis-le, ce n'est pas bloquant."
+   - Accepter la réponse même si vide ("je n'ai pas"), et **ajouter au brief** (en mémoire ou en ré-écriture du fichier) l'info reçue dans le Point 02.
+
+2. **Check 2 — Section Aversions** :
+   - Scanner le brief pour une section "Aversions" / "Aversions client" / "Point 15"
+   - Si présente AVEC du contenu (couleurs + registres) → ✓ check passé
+   - Sinon → demander à l'utilisateur les 2 sous-questions du Point 15 :
+     - **Couleurs à éviter** (libre, pas de relance) : `"Avant d'analyser ton brief — est-ce qu'il y a des couleurs que tu ne veux ABSOLUMENT PAS voir dans ta marque ? Par exemple : 'pas de rose', 'pas de jaune fluo', 'pas de bleu corporate'. Réponds 'rien à éviter' si pas d'avis."`
+     - **Registres visuels à éviter** (Q/R adaptatif, max 2 relances — même logique que le Point 15 de l'interview) : `"Et côté style visuel — il y a des univers visuels à éviter ? Par exemple : 'pas de style SaaS B2B générique', 'pas de cyberpunk', 'pas de minimalisme froid type Apple'."`
+       - Si vague après 1ère réponse → 1 relance : `"Trop large — tu peux nommer 1-2 styles précis ou une marque qui incarne ce à éviter ?"`
+       - Si encore vague → 2ème relance avec exemples : `"Exemples concrets : 'style SaaS type Linear/Stripe', 'luxe ostentatoire', 'design 90s nostalgique', 'pictos cartoon'. Tu te reconnais ?"`
+       - Si toujours vague après 2 relances → accepter et **tagger FLOU** dans le brief.
+   - Ajouter au brief une section "### 15. Aversions client" avec les réponses collectées.
+
+**Output du gate** : brief enrichi (en mémoire ou réécrit sur disque) avec URLs concurrents + section Aversions complétée. Ensuite → Phase 1 standard.
 
 ---
 

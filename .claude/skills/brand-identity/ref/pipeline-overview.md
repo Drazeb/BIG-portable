@@ -82,7 +82,7 @@ Pour démarrer de zéro, il faut un brief d'entreprise au bon format BIG. Je te 
 ---
 
 **2. Analyse du brief** *(~7-14 min)*
-J'analyse les 14 points du brief (+ Point 15 optionnel : Aversions client — couleurs à éviter en description libre + registres visuels à éviter via Q/R adaptatif), identifie les lacunes, et te pose des questions ciblées si certains points manquent de précision.
+J'analyse les 14 points du brief (+ Point 15 : Aversions client — couleurs à éviter en description libre + registres visuels à éviter via Q/R adaptatif), identifie les lacunes, et te pose des questions ciblées si certains points manquent de précision.
 → Tes inputs : **réponses aux questions** si lacunes détectées
 
 ---
