@@ -70,8 +70,8 @@ Tu peux explorer la Phase 1 à 5 (analyse brief → style-tile) **sans configure
 **1. Collecte du brief**
 Au lancement, un **label de session** est demandé pour isoler les fichiers de cette exécution. Tous les outputs sont regroupés dans `outputs/{brand}-{label}/`. Un fichier `.session-id` est créé dans ce dossier pour vérifier l'identité de la session avant chaque phase. Cela permet de lancer plusieurs sessions en parallèle sur la même marque sans collision de fichiers.
 
-Je te propose 4 options pour démarrer selon où tu en es :
-  · **A. Tu as déjà un brief** — donne-moi le fichier ou colle le contenu
+Pour démarrer de zéro, il faut un brief d'entreprise au bon format BIG. Je te propose 4 options selon où tu en es :
+  · **A. Tu as déjà un brief au bon format BIG** — donne-moi le fichier ou colle le contenu
   · **B. Tu veux un guide à emporter** — je te fournis un template complet avec explications, tu le remplis à ton rythme et tu reviens
   · **C. Tu préfères qu'on construise ensemble** — on passe les 14 points en mode conversationnel
   · **D. Tu as une brand existante à aspirer** — je capture l'identité depuis ton site web (aspiration de brand)
