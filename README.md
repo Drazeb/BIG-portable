@@ -113,8 +113,13 @@ Le script `update.sh` lance `git pull` dans BIG-portable + SPG-portable + nano-b
 
 ## Contributing
 
-Voir [`CONTRIBUTING.md`](CONTRIBUTING.md). Le projet est principalement maintenu par [Charles Bezard](https://github.com/Drazeb). Pour signaler un bug ou proposer une amélioration, ouvre une [issue GitHub](../../issues) d'abord — on en discute avant de coder.
+Voir [`CONTRIBUTING.md`](CONTRIBUTING.md). Pour signaler un bug ou proposer une amélioration, ouvre une [issue GitHub](../../issues) d'abord — on en discute avant de coder.
 
 ## License
 
 [MIT](LICENSE) — utilisez, modifiez, distribuez librement, en gardant le copyright.
+
+## Maintainer
+
+Created and maintained by [Charles Bezard](https://github.com/Drazeb).
+Built with [Claude Code](https://claude.ai/code).
