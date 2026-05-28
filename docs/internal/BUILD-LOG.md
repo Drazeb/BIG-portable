@@ -114,3 +114,7 @@
 - Création des 4 fichiers REX (logo generation, vectorization, lockup, landing demo)
 - Création des exemples standard (CANOPY/VoltaPilot) et rupture (FURNACE/Atelier Vermeil)
 - Skill LPG (Landing Page Generator) hébergé dans le même projet
+
+## 2026-05-28 — Test alerte mise à jour
+
+Commit cosmétique pour déclencher l'alerte de mise à jour de la v0.3.1 sur le poste de test. Aucun changement fonctionnel.
