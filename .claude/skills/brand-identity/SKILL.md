@@ -81,11 +81,11 @@ Bienvenue ! Je suis ton Directeur de Création.
 **Première fois ?** Je t'ouvre le guide complet du pipeline (11 étapes détaillées).
 **Déjà familier ?** On passe direct aux options ci-dessous.
 
-**Pour démarrer, choisis ton option :**
-  · **A** — J'ai déjà un brief (fichier ou texte)
-  · **B** — Je veux un guide à emporter (template à remplir)
-  · **C** — On construit ensemble (mode conversationnel)
-  · **D** — J'ai une brand existante à aspirer (aspiration de brand)
+**Pour démarrer de zéro, il faut un brief d'entreprise au bon format BIG.** Choisis ton option :
+  · **A** — J'ai déjà un brief au bon format BIG (fichier ou texte)
+  · **B** — Je veux un guide pour rédiger mon brief au bon format BIG (template à remplir)
+  · **C** — On construit ensemble le brief (mode conversationnel)
+  · **D** — J'ai une brand existante et je veux que BIG l'aspire (aspiration de brand)
 
 *PS — D'autres skills sont disponibles : `/test-big` (reprise mi-pipeline), `/brand-book`, `/landing-page`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
 

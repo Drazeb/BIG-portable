@@ -45,13 +45,18 @@ Le processus est guidé étape par étape — je te demanderai tes inputs et val
 
 ## Phase 0 — Preflight Check
 
-Avant la collecte du brief, je lance une **vérification automatique** des dépendances installées sur ta machine. Tu vois :
+Avant la collecte du brief, je lance une **vérification automatique simplifiée** :
 
 - Ce qui est **bloquant** (Node, Python, git — sans ça le pipeline ne tourne pas) et ce qui te manque éventuellement, avec la commande d'install pour chaque
-- Ce qui est **optionnel** (vtracer pour les logos, abonnements MidJourney / Recraft / Perplexity / Nano Banana 2 pour les visuels, SPG-portable pour le brand book final) — chaque dep est rattachée à la phase qui en a besoin, donc tu peux skipper la phase si tu ne veux pas installer
-- L'**état du repo** vs GitHub (combien de commits de retard si tu n'as pas pull récemment)
+- Un **statut informatif** des dépendances optionnelles (SPG-portable, nano-banana-edit, clé Gemini) — **je ne te demande PAS de les configurer maintenant**. Je te le demanderai au moment où chaque dep sera nécessaire dans le pipeline (juste-à-temps).
+- L'**état du repo** vs GitHub (combien de commits de retard si tu n'as pas pull récemment, et un rappel de lancer `./update.sh` si applicable)
 
-Tu peux répondre "continue" pour démarrer (je skip automatiquement les phases dont les deps manquent), ou lister les phases que tu veux skipper explicitement (`skip logo`, `skip visuels`, etc.).
+Tu peux explorer la Phase 1 à 5 (analyse brief → style-tile) **sans configurer aucune clé API**. Tape juste "continue" ou directement A/B/C/D pour ton mode de brief.
+
+**Gates juste-à-temps en aval** (la dep est demandée seulement quand tu en as besoin) :
+- **Phase Logo** → check vtracer (3 options : install rapide / skip)
+- **Phase 3B-7c visuel hero** → check nano-banana-edit + clé Gemini (3 options : setup complet via `install.sh` / mode dégradé web NB Pro / skip visuel)
+- **Phase 8 Brand Book** → check SPG-portable (3 options : git clone / Phase 8 dégradée sans Pitch Deck / skip)
 
 *Skip pour le mainteneur : la variable d'environnement `BIG_SKIP_PREFLIGHT=1` saute la Phase 0 — utile en dev pour itérer rapidement sans repasser par la checklist.*
 → Ton input : **"continue"** ou liste des phases à skipper
