@@ -195,38 +195,33 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 
 **Règle typographique critique** : les polices doivent venir de Google Fonts (vérifiable). Chaque curseur A a un pool de 50+ polices. L'interdiction des "fausses" polices type Fontshare (General Sans, Satoshi, etc.) est dans le prompt car le subagent a tendance à les inventer.
 
-**Sous-pipeline post-spécimens (depuis D51, 29 avril 2026)** : après les spécimens typo+palette validés (Vague 3), la séquence est `3B-7a (styliste) → 3B-7b (spécimens stylisés) → 3B-7-checkpoint (choix variante de style) → 3B-7c (penseur visuel) → 3B-7d (pitch) → 3B-7e (génération visuels MJ/Recraft)`. Le styliste choisit le style officiel reconnu (parmi 34 fiches du catalogue), valide visuellement par 9 spécimens stylisés (3 concepts × 3 variantes), l'utilisateur arbitre 1 variante par concept au checkpoint. Le penseur visuel **reçoit alors la fiche styliste retenue en input** et DÉRIVE son ancre stylistique (registre, lumière, grain, abstraction, bords) des signatures et références culturelles de la fiche — il n'invente plus librement. La direction visuelle est ensuite consommée par le pitch (qui reçoit aussi la fiche styliste) et par le skill `/visual-brief` (3B-7e) pour la génération MJ/Recraft. Cohérence garantie : un seul univers stylistique de bout en bout.
+**Sous-pipeline post-spécimens (depuis D51, 29 avril 2026)** : après les spécimens typo+palette validés (Vague 3), la séquence est `3B-7a (styliste) → 3B-7b (spécimens stylisés) → 3B-7-checkpoint (choix variante de style) → 3B-7c (penseur visuel) → 3B-7d (pitch) → 3B-7e (génération visuels MJ/Recraft)`. Le styliste choisit le style officiel reconnu (parmi 34 fiches du catalogue), valide visuellement par 9 spécimens stylisés (3 concepts × 3 variantes), l'utilisateur arbitre 1 variante par concept au checkpoint. Le penseur visuel **reçoit alors la fiche styliste retenue en input** et DÉRIVE son ancre stylistique (registre, lumière, grain, abstraction, bords) des signatures et références culturelles de la fiche — il n'invente plus librement. La direction visuelle est ensuite consommée par le pitch (qui reçoit aussi la fiche styliste) et par le skill `/visual-prompt` (3B-7e en mode variantes) pour la génération MJ/Nano Banana 2/Recraft. Cohérence garantie : un seul univers stylistique de bout en bout.
 
 **Routeur chromatique 3B-0a — mode exhaustif (depuis D53, 5 mai 2026)** : étape pré-design qui précède la divergence des concepts. Subagent isolé (custom agent `chromatic-router`, aucun accès fichier) qui scanne un catalogue canonique de ~45 sous-gammes du spectre (`ref/chromatic-spectrum-catalog.md`, 14 familles de teintes × 2-5 sous-variantes) et classe chacune dans 3 catégories : recommandées (cible 10-15, plafond 18), non recommandées (étrangères ou redondantes fonctionnellement avec une recommandée — réserve d'arbitrage utilisateur), fortement non recommandées (contradictions franches). Le catalogue donne les CATÉGORIES, le routeur produit les NOMS contextualisés au brief (ex: "Bordeaux de sceau notarial" plutôt que "Rouges profonds bordeaux"). Gate anti-slop mécanique (`scripts/phase3b-gamut-router-anti-slop.py`, 11 checks dont inflation max 18 et couverture min 30 sous-gammes catégorisées). Planche HTML générée par `lib/gamut-visual.mjs` (3 sections, swatches en pleine couleur, distinction par bordure latérale rouge pour exclues / grise pour non recommandées). Le sous-agent palette aval (Phase 3B-3) reçoit le bloc complet et scanne les recommandées pour choisir 1-2 gammes dominantes.
 
 ---
 
-### Phase 3C · Visuels de référence (SKILL SÉPARÉ : `/visual-brief`, renommé 3B-7e depuis D51)
+### Phase 3C · Visuels de référence (SKILL SÉPARÉ : `/visual-prompt`, renommé 3B-7e depuis D51)
 
-- **Ce qu'elle fait** : Génère les prompts visuels MJ/Recraft, gère les allers-retours image, analyse les visuels et prépare leur intégration
-- **Input** : Pitches sur disque (`{brand}-pitch-c*.md`) + scoping (`{brand}-scoping.md`)
-- **Output** : `{brand}-visual-brief.md` + `{brand}-visual-analysis.md` + images encodées en base64 (haute + basse résolution)
-- **Exécution** : **Skill standalone** (`/visual-brief`) dans une **session Claude Code séparée** (D43)
+- **Ce qu'elle fait** : Génère les visuels finaux (hero + atmosphere/closeup/macro/pov dérivés) via un workflow itératif MidJourney → Nano Banana 2 → Recraft, et prépare leur intégration dans les Batches 2/3
+- **Input** : Fiche styliste retenue (`{brand}-style-choice-c{N}.md`) + direction visuelle ancrée (`{brand}-visual-direction-c{N}.md` ou `{brand}-visual-pivot-c{N}.md`) + palette du concept retenu
+- **Output** : Librairie `visual-final/{brand}-c{N}-{paletteID}-{type}[-{variante}].{ext}` (jusqu'à 7 types : hero, atmosphere ×4 intensités, closeup, macro, pov, schema) consommée par Batch 3 (chapitres 08/10)
+- **Exécution** : **Skill standalone** (`/visual-prompt`) dans une **session Claude Code séparée** — 2 modes : **principal** (génération d'un visuel hero depuis une description Perplexity) et **variantes** (dérivation atmosphere/closeup/macro/pov depuis un hero existant)
+- **Note historique** : remplace l'ancien skill `/visual-brief` (déprécié depuis mai 2026) qui produisait des prompts MJ/Recraft sans la qualité élite que permet le workflow itératif avec Nano Banana 2
 
 **Sous le capot** :
-1. L'orchestrateur BIG vérifie si au moins 1 concept recommande des visuels. Si aucun → skip vers Phase 4.
-2. Si oui → propose à l'utilisateur de lancer `/visual-brief` dans une session séparée.
-3. **Dans la session `/visual-brief`** (contexte frais, guides MJ/Recraft chargés avec toute l'attention) :
-   - Lit les pitches et le scoping directement sur disque
-   - Raisonne en DA : registre émotionnel du concept → direction visuelle → usage prévu dans le style-tile
-   - Route chaque prompt vers MJ ou Recraft selon le registre (avec REX routage)
-   - Rédige l'ancre stylistique (5 dimensions, verbatim dans chaque prompt)
-   - Génère 2-3 prompts par concept, formatés pour copier-coller
-   - Gate de vérification (paramètres, ancre, registre)
-   - Écrit `{brand}-visual-brief.md`
-   - **PAUSE** — attend les images
-   - Analyse chaque image (multimodal) : palette, zones focales, zones sombres/claires, bords, composition
-   - Recommande un pattern d'intégration CSS (parmi les 6 patterns documentés)
-   - Encode en base64 (haute résolution + basse résolution 400px pour prompt Phase 4)
-   - Écrit `{brand}-visual-analysis.md`
-4. L'utilisateur revient dans la session BIG → l'orchestrateur lit `{brand}-visual-analysis.md` et continue vers Phase 4.
+1. L'orchestrateur BIG, en Phase 3B-7c.7, propose une 1re génération du **hero** via `/visual-prompt` mode principal (à partir de la description Perplexity de l'image-pivot).
+2. En Phase 3B-7c.10 (juste après validation du hero), propose la **génération immédiate de variantes** via `/visual-prompt` mode variantes.
+3. En Phase 3B-7e (largement optionnelle), propose une 2e opportunité d'enrichir la librairie si l'utilisateur veut générer plus de variantes une fois les pitches finalisés.
+4. **Dans la session `/visual-prompt`** (contexte frais, framework librairie atmosphère chargé avec toute l'attention) :
+   - Lit la fiche styliste et la direction visuelle directement sur disque
+   - Génère via MidJourney pour la photo / art conceptuel / textures, ou Recraft pour les illustrations flat / line art / infographies
+   - Utilise Nano Banana 2 (`/nano-banana-edit`) pour les corrections atomiques (couleur de fond, grain, tons, clair-obscur)
+   - Gate élite 6/6 critères en sortie
+   - Range les fichiers dans `visual-final/` avec naming standardisé (§11.7 du framework)
+5. L'utilisateur revient dans la session BIG → l'orchestrateur détecte la librairie `visual-final/` et continue.
 
-**Pourquoi un skill séparé** : L'orchestrateur, après ~8 phases, avait trop de contexte pour suivre rigoureusement les guides MJ/Recraft (routage ignoré, paramètres incorrects, ancres incomplètes). Le skill dédié charge les guides avec un contexte frais et les suit à la lettre.
+**Pourquoi un skill séparé** : L'orchestrateur, après ~8 phases, avait trop de contexte pour suivre rigoureusement les guides MJ/NB2/Recraft. Le skill dédié charge les guides avec un contexte frais et les suit à la lettre. Le mode "variantes" exploite le framework librairie atmosphère (`nb-prompting-guide.md §11` — 7 types × 4 niveaux d'intensité) pour produire une famille cohérente depuis un hero existant.
 
 **Cerveau du skill** : `ref/visual-direction-guide.md` (jugement DA) + `ref/midjourney-prompting-guide.md` + `ref/recraft-prompting-guide.md` + `ref/recraft-routing-rex.md` + `ref/image-composition-patterns.md`
 
@@ -500,11 +495,11 @@ Les lockups nécessitent un calcul de tight viewBox (les paths vtracer ont du pa
 | `ref/brief-alpha-template.md` | 14 points du brief + explications | Phase 1 |
 | `ref/output-framework-zone1.md` | Règles Zone 1 (Screenshot Test, Mason's Rule, triptyque, diegetic UI) | Phases 4, D4, 6A, 6B |
 | `ref/html-showroom-spec.md` | Spec technique HTML/CSS, :root structure, pools de fonts, catalogue CSS moderne | Phases 3B, 4, 6A, 6B |
-| `ref/visual-direction-guide.md` | Principes composition, concept→visuels, usage→prompting, anti-patterns visuels, arbre de décision intégration | Skill `/visual-brief` |
-| `ref/midjourney-prompting-guide.md` | Framework technique MJ — 26 registres, arbre de décision, paramètres par type | Skill `/visual-brief` |
-| `ref/recraft-prompting-guide.md` | Framework technique Recraft V4 — prompting par type, checklist | Skill `/visual-brief` |
-| `ref/recraft-routing-rex.md` | REX routage MJ/Recraft — pourquoi certains registres vont vers Recraft | Skill `/visual-brief` |
-| `ref/image-composition-patterns.md` | 6 patterns CSS d'intégration d'images (split, mask, clip-path, full-bleed, overflow, overlap) | Skill `/visual-brief`, Phase 4 |
+| `ref/visual-direction-guide.md` | Principes composition, concept→visuels, usage→prompting, anti-patterns visuels, arbre de décision intégration | Skill `/visual-prompt` |
+| `ref/midjourney-prompting-guide.md` | Framework technique MJ — 26 registres, arbre de décision, paramètres par type | Skill `/visual-prompt` |
+| `ref/recraft-prompting-guide.md` | Framework technique Recraft V4 — prompting par type, checklist | Skill `/visual-prompt` |
+| `ref/recraft-routing-rex.md` | REX routage MJ/Recraft — pourquoi certains registres vont vers Recraft | Skill `/visual-prompt` |
+| `ref/image-composition-patterns.md` | 6 patterns CSS d'intégration d'images (split, mask, clip-path, full-bleed, overflow, overlap) | Skill `/visual-prompt`, Phase 4 |
 | `ref/extraction-guide.md` | Structure du Brand DNA (pour mode aspiration) | Phase D2 |
 | `ref/logo-design-bible.md` | Principes logo, concept, MidJourney, scoring Paul Rand (~800 lignes) | Phase Logo L1 |
 | `ref/logo-generation-rex.md` | REX : règles prompting MJ, stratégie d'itération | Phase Logo L1 |

@@ -666,6 +666,7 @@ Le style-tile validé contient un `:root` au même format que le mode créatif. 
 · *Pourquoi* : Tout le pipeline créatif s'appuie sur ces fondations — il faut qu'on s'aligne dessus avant d'aller plus loin
 · *Tu vas* : valider l'analyse, corriger ce qui ne te parle pas, répondre aux questions sur les points peu clairs
 · *En sortira* : un brief consolidé qui guide tout le reste du pipeline
+· *Durée estimée* : ~7-14 min
 </phase-intro>
 
 ### Étape 1A (main session) : Collecte
@@ -717,6 +718,7 @@ Lire le fichier `{skill_dir}/phases/phase-1-brief.md` et utiliser son contenu co
 · *Pourquoi* : La Tension est l'ADN stratégique qui empêche les concepts d'être génériques ; les curseurs A×B modulent le niveau de rupture visuelle (Prudent/Décalé/Rupture) pour TOUTE la suite
 · *Tu vas* : valider/reformuler la Tension + choisir un niveau (1 à 3) pour chaque curseur
 · *En sortira* : une Tension verrouillée + un calibrage A×B qui pilote la créativité de tous les sous-agents aval
+· *Durée estimée* : ~10-24 min
 </phase-intro>
 
 ### Étape 2A (subagent) : Tension & Ventre Mou
@@ -857,6 +859,7 @@ Variables à remplacer :
 · *Pourquoi* : Le rôle que tu attribues à chacun (Principal / Secondaire / Tertiaire) fixe le ton dominant des 3 concepts narratifs — c'est ce qui rend l'identité tienne et pas générique
 · *Tu vas* : attribuer 1 rôle à chaque territoire (1 Principal, 1 Secondaire, 1+ Tertiaire)
 · *En sortira* : un mix pondéré qui guide la génération des concepts narratifs
+· *Durée estimée* : ~8-20 min
 </phase-intro>
 
 ### Étape 2D (orchestrateur, inline) : Mix pondéré
@@ -890,6 +893,7 @@ Pas de subagent nécessaire — c'est une simple construction de texte par l'orc
 · *Pourquoi* : Tu auras 3 options structurellement différentes à comparer en Phase 4 (style-tiles HTML) — c'est l'un des deux grands choix créatifs du pipeline
 · *Tu vas* : choisir le mode (Génératif/Sélectif), valider les concepts, choisir 1 palette + 1 style par concept, valider le pitch écrit
 · *En sortira* : 3 pitches complets et verrouillés, prêts pour la génération des style-tiles
+· *Durée estimée* : ~2h45 - 4h *(la phase la plus longue — décomposée en 4 sous-étapes : territoires, concepts narratifs, direction visuelle palette/typo/style, pitch écrit)*
 </phase-intro>
 
 ### Étape 2E (orchestrateur, inline) : Choix du mode + orientation de registre
@@ -3541,7 +3545,7 @@ node {skill_dir}/lib/font-pool-contact-sheet.mjs {skill_dir}/ref/font-pools {poo
 
 ### Étape 3B-7e — Génération de variantes visuelles supplémentaires (skill séparé `/visual-prompt` mode variantes)
 
-<!-- mini-annonce: ℹ Maintenant : génération des visuels finaux via /visual-brief (prompts MidJourney/Recraft/NB2) -->
+<!-- mini-annonce: ℹ Maintenant : génération de variantes visuelles supplémentaires via /visual-prompt mode variantes (atmosphere/closeup/macro/pov depuis le hero existant) -->
 
 **Note historique** : cette étape appelait auparavant `/visual-brief` pour générer des prompts triple (MJ+Recraft+NB2). Depuis le refactor de mai 2026, elle pointe vers `/visual-prompt` mode "variantes" qui produit des visuels de meilleure qualité (gate élite 6/6 critères) en s'appuyant sur le **framework librairie atmosphère** documenté dans `~/repos/nano-banana-edit-portable/.claude/skills/nano-banana-edit/ref/nb-prompting-guide.md §11`.
 
@@ -3653,6 +3657,7 @@ Informer l'utilisateur :
 · *Pourquoi* : Tu as 3 pauses-checkpoint pour arrêter tôt si la direction visuelle ne te convient pas — avant d'investir le temps complet sur les 3 versions
 · *Tu vas* : à chaque pause, choisir : (A) continuer, (B) demander une correction ciblée, (C) stopper et revenir en arrière
 · *En sortira* : 3 style-tiles HTML polis ouverts dans le navigateur pour comparaison
+· *Durée estimée* : ~60-120 min *(très variable selon le nombre d'itérations sur les 3 pauses checkpoint 4.1bis / 4.7bis / 4.12bis)*
 </phase-intro>
 
 ## Étape 4 — Production des style-tiles HTML (state machine atomique)
@@ -5460,6 +5465,7 @@ echo "✓ Phase 4 complétée pour [$CONCEPTS] — choix utilisateur attendu"
 · *Pourquoi* : Un audit multimodal détecte les écarts subtils (ex: une font qui s'affiche mais ne donne pas le bon signal sectoriel) que tu pourrais rater à l'œil
 · *Tu vas* : choisir Oui (l'audit tourne, ~3 min) ou Non (on passe à la Phase 5 directement)
 · *En sortira* : un verdict par concept (VALIDE / CORRECTIONS MINEURES / REFAIRE) + corrections proposées si applicable
+· *Durée estimée* : ~7-14 min
 </phase-intro>
 
 ### Objectif
@@ -5570,6 +5576,7 @@ Une fois tous les concepts VALIDE ou corrigés :
 · *Pourquoi* : C'est LE choix créatif majeur du pipeline. Le concept retenu pilote toute la suite — animation, logo, batches, brand book
 · *Tu vas* : prendre le temps de comparer les 3, puis choisir A, B ou C (ou demander des ajustements avant de choisir)
 · *En sortira* : 1 concept verrouillé prêt à être amplifié dans les étapes suivantes
+· *Durée estimée* : ~10-30 min *(dépend de ton temps de comparaison)*
 </phase-intro>
 
 ### Objectif
@@ -5637,6 +5644,7 @@ Quand l'utilisateur fait son choix final :
 · *Pourquoi* : Une animation sobre fait passer le style-tile statique au niveau "production web 2026" — purement additive, le statique reste intact
 · *Tu vas* : choisir Oui/Non ; si oui, ajuster le preset puis choisir 1 variante parmi 2-3 dosages (subtil/médian/prononcé)
 · *En sortira* : un fichier `{brand}-style-tile-animated.html` qui coexiste avec le statique validé
+· *Durée estimée* : ~15-35 min
 </phase-intro>
 
 **Position** : juste après l'Étape 5C (choix final), avant la Phase Logo (et donc avant le Batch 2). C'est la dernière étape du bloc style-tile.
@@ -5719,6 +5727,7 @@ Le subagent écrit 2-3 variantes : `{tile_basename}-animated-v1.html` / `-v2.htm
 · *Pourquoi* : Le logo est l'élément signature de l'identité — vectorisation manuelle pour des tracés impeccables (contrairement aux SVG MJ bruts)
 · *Tu vas* : valider le concept, lancer MJ, choisir le meilleur résultat, valider les 6 SVG (~30-45 min au total)
 · *En sortira* : 6 SVG (bicolore, négatif, monochromes navy/blanc, lockups primaire/secondaire) intégrés au Batch 2 et au pack final
+· *Durée estimée* : ~40-65 min *(incluant ~20 min de génération dans MidJourney côté utilisateur)*
 </phase-intro>
 
 **Position** : entre Phase 5C (slugification) et Phase 6A (Batch 2).
@@ -5948,6 +5957,7 @@ Les 5 autres SVG sont dérivés du chemin `{logo_svg}` par suffixe :
 · *Pourquoi* : C'est la 1re extension de ton identité au-delà du style-tile — toute reprise visuelle future (slide, dashboard, doc interne) s'appuiera dessus
 · *Tu vas* : (1) valider la famille d'icônes proposée par le routeur, (2) ouvrir le HTML final dans le navigateur, valider ou demander des ajustements ciblés
 · *En sortira* : 1 Batch 2 verrouillé qui alimente le Brand Book et le pack final
+· *Durée estimée* : ~15-28 min
 </phase-intro>
 
 ### Objectif
@@ -6721,6 +6731,7 @@ Sur le fichier **assemblé** `{batch3_file}`, faire tourner le gate batch :
 · *Pourquoi* : C'est LE document à transmettre à ton dev / agence / équipe créative pour qu'ils implémentent l'identité sans deviner — la version "machine-readable" du pack
 · *Tu vas* : ouvrir le .md dans MarkView, valider ou demander des ajustements ciblés
 · *En sortira* : 1 `{brand}-design-specs.md` verrouillé qui rejoint le pack final
+· *Durée estimée* : ~7-16 min
 </phase-intro>
 
 ### Objectif
@@ -6787,6 +6798,7 @@ Lire le fichier `{skill_dir}/phases/phase-7-specs.md` et utiliser son contenu co
 · *Pourquoi* : C'est le livrable "showcase" — beau document à partager avec les parties prenantes, déployé sur Vercel automatiquement avec le pack final
 · *Tu vas* : choisir Oui (~10 min wall-clock, ~150K tokens) ou Non (skip et passer direct au Packaging)
 · *En sortira* : un dossier `brand-book/` complet (HTML + assets) intégré au pack et publié en ligne
+· *Durée estimée* : ~10-15 min
 </phase-intro>
 
 ### Objectif
@@ -6937,6 +6949,7 @@ Le sub-agent assemble le `{brand}-brand-book.html` complet (Étape 4 du workflow
 · *Pourquoi* : C'est le pack que tu vas livrer à ton client / partager avec ton équipe / déployer en ligne — tout est nommé proprement et prêt à l'usage
 · *Tu vas* : juste attendre — la centralisation et le déploiement Vercel sont automatiques
 · *En sortira* : un dossier `{brand}-identity-{slug}/` ouvert dans le Finder + URL Vercel pour le brand book si applicable
+· *Durée estimée* : ~1-3 min *(automatique pur)*
 </phase-intro>
 
 ### Objectif
@@ -7635,7 +7648,7 @@ Documenté dans la mémoire projet `feedback_visual_final_convention.md`. Pour l
 
 ### Visuels de référence (optionnel — Étape 3B-7e)
 20. **TOUJOURS proposé après Phase 3** si au moins un concept recommande des visuels (photo OU illustration) — ne JAMAIS sauter cette question
-21. **Brief Visuel** écrit dans `{brand}-visual-brief.md` (pas dans le chat) — description libre + prompt IA + plateforme recommandée + palette + anti-refs. Ne PAS recopier le contenu dans le chat — donner le chemin du fichier uniquement.
+21. **Visuels finaux** rangés dans la librairie `visual-final/` (peuplée par `/visual-prompt`) avec naming standardisé `{brand}-c{N}-{paletteID}-{type}[-{variante}].{ext}` (7 types possibles : hero, atmosphere ×4 intensités, closeup, macro, pov, schema). Ne PAS recopier les contenus dans le chat — donner les chemins relatifs uniquement.
 22. **Traitement images** : read → stat → sips resize si >2MB → analyse visuelle → cohérence cursor → base64
 23. **Transmission Phase 4** : via `{visual_reference_block}` — vide si pas de visuels, bloc complet sinon
 24. **Rétro-compatible** : si l'utilisateur décline EXPLICITEMENT (choix B), le pipeline est identique à l'original

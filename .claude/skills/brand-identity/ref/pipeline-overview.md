@@ -67,7 +67,9 @@ Tu peux explorer la Phase 1 à 5 (analyse brief → style-tile) **sans configure
 
 ## Les 12 étapes du pipeline
 
-**1. Collecte du brief**
+*Les durées indiquées sont des **fourchettes empiriques** calculées sur ~50 sessions historiques. Elles incluent le temps machine ET ton temps de lecture / décision / itération. Une session complète médiane fait ~3-5h tout compris (linéaire) à ~10h (avec beaucoup d'itérations). Les étapes optionnelles peuvent être skippées.*
+
+**1. Collecte du brief** *(~2-5 min)*
 Au lancement, un **label de session** est demandé pour isoler les fichiers de cette exécution. Tous les outputs sont regroupés dans `outputs/{brand}-{label}/`. Un fichier `.session-id` est créé dans ce dossier pour vérifier l'identité de la session avant chaque phase. Cela permet de lancer plusieurs sessions en parallèle sur la même marque sans collision de fichiers.
 
 Pour démarrer de zéro, il faut un brief d'entreprise au bon format BIG. Je te propose 4 options selon où tu en es :
@@ -79,66 +81,84 @@ Pour démarrer de zéro, il faut un brief d'entreprise au bon format BIG. Je te 
 
 ---
 
-**2. Analyse du brief**
+**2. Analyse du brief** *(~7-14 min)*
 J'analyse les 14 points du brief (+ Point 15 optionnel : Aversions client — couleurs à éviter en description libre + registres visuels à éviter via Q/R adaptatif), identifie les lacunes, et te pose des questions ciblées si certains points manquent de précision.
 → Tes inputs : **réponses aux questions** si lacunes détectées
 
 ---
 
-**3. Scoping — Tension & Curseurs**
+**3. Scoping — Tension & Curseurs** *(~10-24 min)*
 Je définis la Tension de Marque (le paradoxe créatif qui rend ton identité unique), je dérive un diagnostic de température (chaud/froid/neutre) depuis le brief et les aversions client, puis je te demande de calibrer 2 curseurs stratégiques.
 → Tes inputs : **validation de la Tension** + **validation de la température recommandée** + **choix des curseurs A et B** (1 à 3 chacun)
 
 ---
 
-**4. Pitch stratégique — 3 concepts**
-J'extrais 15-20 mots-clés de ton brief (selon 4 axes : métier, valeurs, marché, aspirations), je les clustérise en 4-5 territoires créatifs — tu attribues un rôle à chacun (Principal, Secondaire, Tertiaire). Ensuite, pour les directions narratives, tu choisis entre 2 modes :
-  · **Génératif** (par défaut) — je génère 3 concepts séquentiellement, chacun voit les précédents et doit diverger
-  · **Sélectif par registre** — tu choisis un registre culturel dans le catalogue (28 registres : signalisation maritime, artisanat normand, magazine éditorial 70s…). Je tire un pool de ~210 mots de ce registre via 5 sub-agents parallèles, je dédoublonne et sélectionne 100, je les passe à 10 évaluateurs parallèles qui scannent chacun 10 mots et en retiennent un. Je te présente les ~10 finalistes avec définitions neutres, tu en choisis jusqu'à 3.
+**4. Pitch stratégique — 3 concepts** *(~2h45 - 4h — la phase la plus longue)*
+C'est l'étape la plus dense du pipeline : elle construit les 3 directions narratives ET leur traduction visuelle complète. Elle se déroule en 4 sous-étapes :
 
-Une fois les directions narratives validées, je dérive la direction visuelle (palette, typo, styles, image-pivot) de chaque concept. Avant de te présenter le pitch final, je vérifie visuellement que les fonts, palettes et styles choisis correspondent bien à l'intention — si un rendu ne colle pas, je corrige avant que tu ne voies le résultat.
+**4a. Territoires créatifs.** J'extrais 15-20 mots-clés de ton brief (selon 4 axes : métier, valeurs, marché, aspirations), je les clusterise en 4-5 territoires. Tu attribues un rôle à chacun (Principal / Secondaire / Tertiaire) — ce mix donne le ton dominant des concepts à venir.
+
+**4b. 3 concepts narratifs.** Tu choisis entre 2 modes :
+  · **Génératif** (par défaut) — je génère 3 concepts séquentiellement, chacun voit les précédents et doit diverger
+  · **Sélectif par registre** — tu choisis un registre culturel dans le catalogue (28 registres : signalisation maritime, artisanat normand, magazine éditorial 70s…). Je tire un pool de ~210 mots, je dédoublonne et sélectionne 100, je les passe à 10 évaluateurs parallèles. Tu choisis jusqu'à 3 mots qui deviennent les noms-piliers des concepts.
+
+**4c. Direction visuelle.** Pour chaque concept, je dérive 4 éléments — avec un checkpoint utilisateur sur les 3 principaux :
+  · **Palette** — je te propose 3 palettes par concept (rendues sur un specimen visuel), tu en choisis 1
+  · **Typographies** — je te propose 1 pairing (titre + texte) chargé via Google Fonts et capturé en screenshot pour validation visuelle, tu valides ou demandes un remplacement
+  · **Style HTML** — je te présente 4 spécimens stylisés par concept (combinant palette + typo + style), tu en choisis 1
+  · **Image-pivot** (pour 1 seul concept) — tu choisis quel concept va recevoir une image de référence générée via Perplexity ; les 2 autres concepts restent en HTML classique
+
+**4d. Pitch écrit.** Je te présente le pitch éditorial complet pour les 3 concepts, ancré sur tous les choix précédents (et sur la description multimodale de l'image-pivot pour le concept concerné). Tu valides ou demandes des ajustements.
+
+Avant de te présenter le pitch final, je vérifie visuellement que les fonts, palettes et styles choisis correspondent bien à l'intention — si un rendu ne colle pas, je corrige avant que tu ne voies le résultat.
 → Tes inputs : **choix du mode (Génératif ou Sélectif)** + (si Sélectif : choix du registre + des finalistes) + **attribution des rôles aux territoires** (Principal/Secondaire/Tertiaire) + **validation des directions narratives** + **choix de palette** (avec alerte aversion si applicable) + **choix de style** (avec alerte aversion si applicable) + **validation du pitch complet**
 
 ---
 
-**5. Visuels de référence** *(optionnel)*
-Si certains concepts recommandent de la photo ou de l'illustration, je te propose de fournir des visuels de référence pour enrichir les Style-Tiles.
+**5. Visuels de référence** *(optionnel — ~30-60 min si activé, dont du temps de génération côté outils externes)*
+Si certains concepts recommandent de la photo ou de l'illustration, je te propose de générer des visuels de référence pour enrichir les Style-Tiles. Cette étape s'exécute dans le skill séparé `/visual-prompt` (workflow itératif MidJourney → Nano Banana 2 → Recraft) : je génère les prompts adaptés au registre de chaque concept, tu lances les générations dans ces outils externes et tu rapportes les images, je les analyse pour préparer leur intégration en Phase 6 (Style-Tiles). Deux modes disponibles : **principal** (génération d'un visuel hero) et **variantes** (dérivation atmosphere / closeup / macro / pov depuis un hero existant).
 → Tes inputs : **Oui/Non** + **images** si tu choisis d'en fournir (chemins de fichiers)
 
 ---
 
-**6. Style-Tiles — 3 showrooms visuels**
+**6. Style-Tiles — 3 showrooms visuels** *(~60-120 min — variable selon le nombre d'itérations)*
 Je génère 3 fichiers HTML immersifs (un par concept) : Voice Block, Artefact Témoin, Atmosphere Block. Chaque fichier s'ouvre dans une fenêtre de navigateur distincte pour comparaison côte à côte.
+
+Chaque style-tile passe par 3 niveaux de contrôle qualité avant de t'être présenté :
+  · **Gates structurels** — vérifient automatiquement que palette, typo et layout choisis sont appliqués sans déviation
+  · **Gates anti-slop** — détectent et bloquent les clichés AI visuels datés (accent-bars systématiques, hover-translateY générique, glow-shadow gratuit, animations infinies décoratives, emojis dans l'UI, polices "AI-slop" comme Inter par défaut…). Le système re-itère jusqu'à 2 tours de polish pour corriger
+  · **Audit "4 critiques"** — 4 sub-agents évaluent chacun le style-tile sous un angle différent (signal sectoriel, fidélité au pitch, modernité, originalité) et proposent des corrections ciblées avant de te livrer
+
 *Note : si des style-tiles existent déjà (itération de concepts), ils sont archivés dans `_archive-st-{N}/` avant régénération. De même, les fichiers de design (pitches, penseurs, specimens, font backups) sont archivés dans `_archive-pass-{N}/` avant chaque relance de Phase 3B.*
 → Automatique (génération) puis **comparaison visuelle**
 
 ---
 
-**6bis. Audit DA** *(optionnel)*
+**6bis. Audit DA** *(optionnel — ~7-14 min)*
 Avant de te présenter les résultats, je te propose un audit qualité : je capture des screenshots des 3 Style-Tiles et je les compare au pitch pour vérifier que le rendu est fidèle (fonts, palette, atmosphère, artefacts). Si des écarts sont détectés, je te présente les corrections à valider.
 → Tes inputs : **Oui/Non** pour lancer l'audit + **validation des corrections** si écarts détectés
 
 ---
 
-**7. Itération & Choix final**
+**7. Itération & Choix final** *(~10-30 min)*
 Tu compares les 3 Style-Tiles, tu demandes des ajustements si besoin, et tu choisis ton concept final.
 → Tes inputs : **ajustements** (optionnel) + **choix du concept** (A, B ou C)
 
 ---
 
-**7bis. Animation du style-tile** *(optionnel)*
+**7bis. Animation du style-tile** *(optionnel — ~15-35 min)*
 Je te propose d'ajouter une couche d'animation moderne au style-tile retenu (parallaxe au scroll, apparitions des sections quand tu les atteins, typo cinétique à l'arrivée…). C'est calibré pour rester sobre et anti-slop : scroll natif (pas de smooth-scroll « pâteux »), librairies standard. J'analyse ton style-tile, je te propose un **preset adapté** dans un fichier que tu peux ajuster, puis je produis **2-3 variantes de dosage** (subtil / médian / prononcé) que tu compares dans le navigateur. Tu en choisis une et on itère si besoin.
 → Tes inputs : **Oui/Non** + si oui : **ajustement du preset** + **choix de la variante** (+ itérations éventuelles)
 
 ---
 
-**8. Logo — Concept & Génération** *(optionnel)*
+**8. Logo — Concept & Génération** *(optionnel — ~40-65 min, incluant ~20 min côté MidJourney)*
 Je te propose de créer un logo professionnel avec Midjourney. Si tu acceptes : je conçois le concept créatif + 3 prompts MJ, tu génères dans Midjourney, je vectorise en SVG propre et crée 6 déclinaisons (bicolore, négatif, monochromes, lockups).
 → Tes inputs : **Oui/Non** + si oui : **choix du résultat MJ** + **validation des 6 déclinaisons SVG**
 
 ---
 
-**9. Enrichissement — Batches 2 & 3**
+**9. Enrichissement — Batches 2 & 3** *(~25-50 min — Batch 2 et Batch 3 cumulés)*
 Je génère 2 fichiers HTML supplémentaires, visuellement cohérents avec ton choix :
   · **Batch 2 — Signes** : Logotype, Iconographie (refondue D59), UI Components, Data Visualization
   · **Batch 3 — Narration** : Direction Photo, Composition, Illustration
@@ -146,19 +166,19 @@ Je génère 2 fichiers HTML supplémentaires, visuellement cohérents avec ton c
 
 ---
 
-**10. Documentation Markdown (Phase 7 — Zone 2)**
+**10. Documentation Markdown (Phase 7 — Zone 2)** *(~7-16 min)*
 Je génère les Design Specs (45 sections en Markdown).
 → Validation user, puis Phase 8 ou directement Packaging selon ta réponse
 
 ---
 
-**11. Brand Book éditorial (Phase 8 — optionnel)**
+**11. Brand Book éditorial (Phase 8 — optionnel — ~10-15 min)**
 Je te demande si tu veux que je génère un brand book HTML éditorial : cover painterly + intro Identity Card bento + 8 sections documentaires (Big Idea, Concept, Identité, Palette, Typographie, Système, Applications avec Web/Pitch Deck/Réseaux Sociaux, Photo & Illustration) + closing.
 → Ta réponse : **(a) Oui — générer** OU **(b) Non — passer direct au Packaging**
 
 ---
 
-**12. Packaging final**
+**12. Packaging final** *(~1-3 min — automatique)*
 Je package tous les livrables dans un dossier dédié prêt à être partagé.
 → Automatique — le dossier s'ouvre dans le Finder + déploiement Vercel
 
