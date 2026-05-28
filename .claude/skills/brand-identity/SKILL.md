@@ -423,6 +423,7 @@ Quand l'utilisateur invoque `/brand-identity` :
    - **Option C (mode conversationnel)** :
      - Lire `ref/brief-alpha-template.md` pour les 14 points
      - Poser les questions une par une, en reformulant de manière conversationnelle
+     - **Numéroter chaque question** : préfixer obligatoirement chaque question par `**Question N/14 — {titre du point}**` (ex: `**Question 11/14 — Ancre de Référence**`). Le numéro correspond à l'ordre des 14 points du template. Permet à l'utilisateur de savoir où il en est dans l'interview.
      - Prendre des notes au fur et à mesure
      - Une fois les 14 points couverts → passer à la Phase 1
 
