@@ -347,13 +347,13 @@ QUALITÉ DE RÉDACTION — RÈGLES NON NÉGOCIABLES :
 
 Voici un extrait d'un brief de qualité maximale. C'est le niveau de rédaction que tu dois viser pour chaque section :
 
-Point 01 — "ChargePilot est un système de gestion d'énergie symbiotique (EMS). Il orchestre la recharge des flottes électriques en harmonie avec les cycles de production des énergies renouvelables et les limites de l'écosystème local. Plus qu'un logiciel de gestion de bornes, c'est un médiateur entre le bâtiment et la planète."
+Point 01 — "VoltaPilot est un système de gestion d'énergie symbiotique (EMS). Il orchestre la recharge des flottes électriques en harmonie avec les cycles de production des énergies renouvelables et les limites de l'écosystème local. Plus qu'un logiciel de gestion de bornes, c'est un médiateur entre le bâtiment et la planète."
 
 Point 08 — "À l'opposé du marché qui traite l'énergie comme une ressource infinie à dompter, nous pensons que l'énergie est un bien précieux et limité dont la gestion doit être un acte de respect envers l'équilibre de notre environnement. Nous ne vendons pas du contrôle, nous vendons de la symbiose. Passer de 'combien j'économise' à 'comment je contribue'."
 
-Point 09 — "'L'Intelligence Artificielle' + 'L'Innocence Organique' — ChargePilot incarne une technologie de pointe (calculs massifs, algorithmes prédictifs) mise au service d'une intention pure et naturelle. C'est la rencontre entre le code informatique et le vivant."
+Point 09 — "'L'Intelligence Artificielle' + 'L'Innocence Organique' — VoltaPilot incarne une technologie de pointe (calculs massifs, algorithmes prédictifs) mise au service d'une intention pure et naturelle. C'est la rencontre entre le code informatique et le vivant."
 
-Point 14 — "HARMONIE — En un regard, le prospect comprend que ChargePilot est la pièce manquante qui réconcilie son activité industrielle avec ses valeurs humaines."
+Point 14 — "HARMONIE — En un regard, le prospect comprend que VoltaPilot est la pièce manquante qui réconcilie son activité industrielle avec ses valeurs humaines."
 
 Observe : chaque section est un paragraphe rédigé avec du relief, des métaphores et de la précision. C'est ce que tu vises — pas des listes à puces ni des réponses télégraphiques.
 

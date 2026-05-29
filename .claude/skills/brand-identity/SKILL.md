@@ -2508,6 +2508,8 @@ Si un check échoue sur un fichier → **resume du sub-agent correspondant** (pa
 
 ##### Étape 1 — Injection du bandeau informatif dans chaque spécimen
 
+📌 **MICRO-ÉTAPE CONTRACTUELLE — NON-SKIPPABLE.** Sans ce bandeau injecté en sticky en haut de chaque spécimen, l'utilisateur ne sait pas quel onglet = quel concept/variante/style et ne peut pas choisir en connaissance de cause. Skip silencieux observé le 29/05. **Ne PAS la percevoir comme "marginale en mode mono-concept"** — elle est aussi nécessaire pour 1 concept que pour 3.
+
 Pour chacune des 9 combinaisons (concept N ∈ {1,2,3} × variante V ∈ {a,b,c}), l'orchestrateur :
 
 1. **Lit** le fichier `{skill_dir}/outputs/{session_dir}/{brand}-style-specimen-c{N}-{V}.html`
@@ -2558,6 +2560,8 @@ Pour chacune des 9 combinaisons (concept N ∈ {1,2,3} × variante V ∈ {a,b,c}
 **Note** : le bandeau est `position:fixed` — le contenu du spécimen reste intact en dessous. Le `padding-block-start: 76px` sur `body` empêche que le bandeau masque le hero du spécimen. Style inline pour rester immune aux styles du spécimen.
 
 ##### Étape 2 — Composition des 3 pages de synthèse (1 par concept)
+
+📌 **MICRO-ÉTAPE CONTRACTUELLE — NON-SKIPPABLE.** Les 3 pages matrice (1 par concept) présentent le scan exhaustif des 34 styles × 3 variantes A/B/C avec COMPATIBLE/INCOMPATIBLE + raison — sans elles, l'utilisateur n'a aucun moyen de challenger ce qui n'a PAS été retenu et choisit "au feeling". Ne pas alléger même si le contexte est chargé.
 
 **Pourquoi** : pour chaque concept, l'utilisateur doit voir en 5 secondes (a) les 3 styles retenus + leur justification stratégique, et pouvoir explorer ensuite (b) le détail du scan exhaustif de chaque styliste si besoin. Le format est en 2 sections empilées avec des onglets pour le scan détaillé — pas une matrice 34×3 brute (illisible empiriquement, voir validation 2026-05-01).
 
@@ -2631,6 +2635,8 @@ Pour CHAQUE concept N (1, 2, 3), l'orchestrateur compose **1 fichier HTML** dans
 - Si `{brand}-style-sectoriel-tags.md` est absent (cas reprise mid-pipeline qui aurait sauté 3B-7a-pre), afficher `?` dans la colonne Tag routeur et signaler en haut de page : *"⚠ Tag routeur absent — relancer 3B-7a-pre pour activer cette colonne"*
 
 ##### Étape 3 — Ouverture dans 12 onglets séparés du navigateur
+
+📌 **MICRO-ÉTAPE CONTRACTUELLE — NON-SKIPPABLE.** L'ouverture des 12 onglets par l'orchestrateur (9 spécimens + 3 matrices) garantit que l'utilisateur compare visuellement avant de choisir. Demander à l'utilisateur d'ouvrir lui-même = friction → choix bâclé. Ne pas écourter "il ouvrira lui-même les fichiers s'il veut".
 
 ```bash
 # 3 variantes spécimens du Concept 1
@@ -2708,6 +2714,8 @@ Parser le JSON. Si parsing échoue → logger `⚠ Check aversion registre indis
 > **Choisissez 1 variante par concept** (ex: "C1→A, C2→C, C3→B") ou "OK" pour garder les variantes A par défaut.
 
 ##### Étape 4 — PAUSE, attendre choix utilisateur
+
+🚦 **GATE UTILISATEUR — NON-SKIPPABLE.** Le choix de la variante de style (A/B/C par concept) APPARTIENT à l'utilisateur. **Interdit** : présenter un menu type "Complet / Accéléré / Pause" qui pré-décide le choix de l'orchestrateur (anti-pattern observé le 29/05, REX styliste). **Interdit** : enchaîner sur Étape 5 sans avoir reçu une réponse explicite. Si une réponse est ambiguë (ex: "A" alors que les options ne sont pas A/B/C de menu mais variantes de style), lever l'ambiguïté en redemandant. Pas de raccourci, même en mode mono-concept — les 3 variantes A/B/C par concept sont précisément l'espace de divergence créative que l'utilisateur doit trancher.
 
 ##### Étape 5 — Traitement du choix
 
@@ -5466,6 +5474,8 @@ Une fois tous les concepts VALIDE ou corrigés :
 Permettre à l'utilisateur de comparer les 3 Style-Tiles, demander des ajustements, et faire son choix final avant de passer aux Batches 2 & 3.
 
 ### Étape 5A : Présentation comparative
+
+🚦 **GATE UTILISATEUR — NON-SKIPPABLE.** Les étapes 5A → 5B → 5C forment **LA décision créative majeure du pipeline** : le choix du Style-Tile final parmi les 3 variantes. Rouler 5A (présentation comparative), boucler sur 5B si ajustements, et N'ENREGISTRER le choix final qu'en 5C avec confirmation explicite ("Je choisis A/B/C" verbatim). **Interdit** : décider à la place de l'utilisateur ("ton préféré semble être A, je file en 6A"). **Interdit** : sauter la question d'ajustements (5A.2). Si l'utilisateur ne répond pas A/B/C clairement, redemander.
 
 Après ouverture des 3 Style-Tiles (Phase 4) :
 

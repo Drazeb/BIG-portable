@@ -59,7 +59,7 @@ Pour **toute correction NB2** prescrite par ce workflow (couleur de fond, grain,
 
 | Composant | Valeurs |
 |---|---|
-| `brand` | nom court du projet (camille, chargepilot, vermeil…) |
+| `brand` | nom court du projet (camille, voltapilot, vermeil…) |
 | `N` | numéro du concept (1, 2, 3) |
 | `paletteID` | A · B · C, ou nom explicite (forest, creme, bleu-marine) |
 | `type` | `hero` · `animation` · `atmosphere` · `closeup` · `macro` · `schema` · `pov` |
@@ -120,7 +120,7 @@ L'état persistant **vit sur disque**, pas dans la conversation. Si la session s
 ```
 
 Avec :
-- `{slug}` : nom court dérivé du concept (ex: `chargepilot-pouls-profond`)
+- `{slug}` : nom court dérivé du concept (ex: `voltapilot-pouls-profond`)
 - `{timestamp}` : `AAAA-MM-JJ-HHMM`
 
 À créer **immédiatement après l'Étape 0** via `mkdir -p`.
@@ -663,7 +663,7 @@ Si l'utilisateur veut animer.
 
 **Lire `guide-mj-nb2-workflow-elite.md` §4 sous-section animation + `recraft-prompting-guide.md`**.
 
-**Règles d'animation Recraft** (issues de REX session ChargePilot) :
+**Règles d'animation Recraft** (issues de REX session VoltaPilot) :
 
 **Mouvement caméra** :
 - **Zoom uniforme centré** : "very slow zoom in toward the subject, the entire frame scales uniformly from center"
