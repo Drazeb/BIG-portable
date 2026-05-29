@@ -2183,6 +2183,12 @@ Tu as choisi ton display #1. Maintenant choisis un body qui forme un SYSTÈME av
 
 ---
 
+### 🟡 BREAK POINT BP1 — Anti-dilution (après 3B-3 + Vague 3, avant 3B-7a)
+
+Avant de procéder à 3B-7a-pre, exécuter la procédure HANDOFF (voir section `## HANDOFF AUX BREAK POINTS NATURELS` en référence) : écrire `{session_dir}/handoff-bp1-after-3b3.md` selon la matrice BP1, afficher l'alerte boxed, attendre "continue" ou "stop+restart" explicite. **Pas d'auto-poursuite** sans réponse user. C'est le point exact où la dilution s'est manifestée le 29/05.
+
+---
+
 #### Étape 3B-7a-pre — Routeur de styles (subagent isolé, TOUJOURS exécuté avant 3B-7a)
 
 **Pourquoi un subagent séparé** : le styliste ne doit JAMAIS auto-évaluer si son choix est sectoriel. Si on lui demande de tagger après avoir choisi, il triche pour faire rentrer son choix dans la contrainte du curseur B (testé empiriquement sur VoltaPilot B=1 forcé : "Dark Mode Cinema = Sectoriel : OUI" — faux pour neutraliser la contrainte). Le routeur fait ce tagging dans un contexte ISOLÉ avant tout choix, et le styliste consomme la liste pré-établie. Calque exact du pattern `phase-3b-gamut-router.md` pour les couleurs (étape 3B-0a).
@@ -3537,6 +3543,12 @@ Informer l'utilisateur :
 **Si 0 fichiers trouvés** : continuer directement (première génération).
 
 **Retrouver des style-tiles antérieurs** : Les style-tiles d'une génération N sont dans `_archive-st-{N}/`. Pour revenir à un style-tile précédent, copier le fichier depuis l'archive vers le session_dir.
+
+---
+
+### 🟡 BREAK POINT BP2 — Anti-dilution (après 3B-7e, avant Phase 4)
+
+Avant de procéder à Phase 4 (3 style-tiles HTML en parallèle = pic de contexte), exécuter la procédure HANDOFF (voir section `## HANDOFF AUX BREAK POINTS NATURELS` en référence) : écrire `{session_dir}/handoff-bp2-after-3b7e.md` selon la matrice BP2, afficher l'alerte boxed, attendre "continue" ou "stop+restart" explicite. **Pas d'auto-poursuite** sans réponse user.
 
 ---
 
@@ -5459,6 +5471,12 @@ Une fois tous les concepts VALIDE ou corrigés :
 
 ---
 
+### 🟡 BREAK POINT BP3 — Anti-dilution (après Phase 4bis, avant Phase 5)
+
+Avant de procéder à Phase 5 (LA décision créative majeure), exécuter la procédure HANDOFF (voir section `## HANDOFF AUX BREAK POINTS NATURELS` en référence) : écrire `{session_dir}/handoff-bp3-after-4bis.md` selon la matrice BP3, afficher l'alerte boxed, attendre "continue" ou "stop+restart" explicite. **Pas d'auto-poursuite** sans réponse user. Un choix final pris dans un contexte saturé = livrable mal-formé en aval.
+
+---
+
 ## PHASE 5 — Itération & Choix Final
 
 <phase-intro>
@@ -5609,6 +5627,12 @@ Le subagent écrit 2-3 variantes : `{tile_basename}-animated-v1.html` / `-v2.htm
 2. **Archiver** les autres variantes : `mkdir -p {skill_dir}/outputs/{session_dir}/_archive-anim-{round}` puis `mv` les `-animated-v{1,2,3}.html` dedans (garder `{tile_basename}-animated.html` à la racine).
 3. **Écrire** `{skill_dir}/outputs/{session_dir}/{brand}-animation-spec.md` : le preset retenu (options par axe + paramètres de dosage de la variante choisie), les dépendances CDN utilisées (GSAP version, plugins), et une note « version statique : `{tile_basename}.html` (self-contained) — version animée : `{tile_basename}-animated.html` (dépend du CDN GSAP, garde-fou statique si KO ou prefers-reduced-motion) ».
 4. `{animation_done}` = true. Annoncer : « La version animée du style-tile est prête : `{tile_basename}-animated.html`. La version statique est conservée intacte. » Puis enchaîner sur la Phase Logo / 6A.
+
+---
+
+### 🟡 BREAK POINT BP4 — Anti-dilution (après Phase 5D Animation si activée, avant Phase Logo)
+
+Si Phase 5D Animation a été activée, exécuter la procédure HANDOFF (voir section `## HANDOFF AUX BREAK POINTS NATURELS` en référence) AVANT de procéder à Phase Logo : écrire `{session_dir}/handoff-bp4-after-5d.md` selon la matrice BP4, afficher l'alerte boxed, attendre "continue" ou "stop+restart" explicite. Si Phase 5D a été skippée, BP4 reste applicable (sortie de Phase 5C, avant Phase Logo) — adapter le nom du handoff en `handoff-bp4-after-5c.md`. **Pas d'auto-poursuite** sans réponse user.
 
 ---
 
@@ -6616,6 +6640,12 @@ Sur le fichier **assemblé** `{batch3_file}`, faire tourner le gate batch :
 
 ---
 
+### 🟡 BREAK POINT BP5 — Anti-dilution (après Phase 6B Batch 3, avant Phase 7)
+
+Avant de procéder à Phase 7 (Zone 2 doc finale), exécuter la procédure HANDOFF (voir section `## HANDOFF AUX BREAK POINTS NATURELS` en référence) : écrire `{session_dir}/handoff-bp5-after-6b.md` selon la matrice BP5, afficher l'alerte boxed, attendre "continue" ou "stop+restart" explicite. Les Batches 2+3 chargent beaucoup d'icônes SVG + screenshots — le contexte est saturé à ce stade. **Pas d'auto-poursuite** sans réponse user.
+
+---
+
 ## PHASE 7 — Zone 2 (Documentation Finale — OPTIMISÉE)
 
 <phase-intro>
@@ -7480,6 +7510,111 @@ Créer un dossier dédié contenant tous les livrables finaux de l'identité de 
 > *(déployé automatiquement sur Vercel — le lien est actif dans ~30 secondes)*
 >
 > Le dossier est ouvert dans le Finder. Votre dossier d'identité est prêt à servir de source de vérité."
+
+---
+
+## HANDOFF AUX BREAK POINTS NATURELS — ANTI-DILUTION CONTEXTUELLE
+
+Le pipeline BIG contient **5 break points naturels** où la fatigue contextuelle pré-empte les décisions critiques. À chaque break point, l'orchestrateur (1) écrit un fichier `handoff-{bp_id}.md` dans `{session_dir}/`, (2) affiche une alerte boxed pour proposer à l'utilisateur de redémarrer en session fraîche via `/test-big` (lean restart), (3) ne procède à la phase suivante qu'après réponse explicite ("continue" ou "stop+restart").
+
+**Pourquoi déterministe et pas "auto-compact"** : Claude Code auto-compacte vers 90% mais le modèle ne lit pas le %. Les break points sont positions empiriques observées (pics de fatigue documentés le 29/05) — pas dépendants d'un seuil flou.
+
+### Les 5 break points
+
+| # | Position | Justification |
+|---|---|---|
+| BP1 | Après 3B-3 (typo) + Vague 3 (spécimens), AVANT 3B-7a (routeur styles) | Point exact où la dilution s'est manifestée (4 incidents 29/05). Vagues 1+2+3 en contexte. |
+| BP2 | Après 3B-7e (visuels finaux), AVANT Phase 4 (style-tiles HTML) | Avant le pic Phase 4. Sortie 3B. |
+| BP3 | Après Phase 4bis (audit DA), AVANT Phase 5 (choix final) | Avant la décision créative majeure. |
+| BP4 | Après Phase 5D Animation (si activée), AVANT Phase Logo | Sortie phase optionnelle. |
+| BP5 | Après Phase 6B Batch 3, AVANT Phase 7 (doc Zone 2) | Sortie des Batches lourds (SVG + screenshots). |
+
+### Structure du fichier handoff
+
+Écrire `{session_dir}/handoff-{bp_id}.md` (ex: `handoff-bp1-after-3b3.md`) avec EXACTEMENT ces 5 sections :
+
+```markdown
+# Handoff — {BP name} → Reprise à {next_step}
+
+## Identité de session
+- session_dir : outputs/{brand}-{label}/
+- Break point : {BP id et name}
+- Phase complétée : {phase}
+- Prochaine étape : {next_step}
+- Date : {YYYY-MM-DD HH:MM}
+
+## Décisions user prises (verbatim — anti-perte)
+[Liste littérale des choix utilisateur depuis Phase 1 : tension, curseurs A×B, mix territoires, mode (Standard/Sélectif), registres retenus, palettes choisies par concept, typo (display+body+swaps), styles retenus, concept retenu pour 3B-7c, etc. Verbatim, pas reformulation.]
+
+## Read-list au démarrage de {next_step}
+[Fichiers indispensables, justifiés en 1 mot. Voir matrice ci-dessous.]
+
+## Skip-list (intentionnellement délestés)
+[Fichiers présents sur disque mais à NE PAS relire — leur info utile est consolidée dans la read-list ou les décisions user. Voir matrice ci-dessous.]
+
+## Inputs attendus à {next_step}
+[Questions explicites que l'orchestrateur va poser à la nouvelle session.]
+```
+
+### Matrice par break point
+
+L'orchestrateur croise l'état réel de `{session_dir}` avec cette matrice. Les entrées CONDITIONNELLES sont incluses seulement si la phase optionnelle correspondante a été activée.
+
+**BP1 — après 3B-3 + Vague 3, avant 3B-7a**
+- Read-list TOUJOURS : `{brand}-concepts-narratifs.md`, `{brand}-palette-c{N}.md` (canoniques ×3), `{brand}-typo-final-c{N}.md` (×3), `{brand}-style-specimen-c{N}.html` (×3), `{brand}-style-sectoriel-tags.md`
+- Skip-list TOUJOURS : variantes palette/typo non retenues (`*-a.md`/`-b.md`/`-c.md` non canoniques), planches récap (`font-recap-all.html`, `palette-comparison.html`, `font-pool-*.png`), `{brand}-chromatic-gamuts.md`, fiches penseur typo intermédiaires
+- Inputs attendus 3B-7a : aucun (séquentiel automatique A→B→C)
+
+**BP2 — après 3B-7e visuels, avant Phase 4**
+- Read-list TOUJOURS : `{brand}-pitch-c{N}-final.md` (×3), `{brand}-style-choice-c{N}.md` (canoniques ×3), `visual-final/` (dossier), `{brand}-design-specs-c{N}.md` (×3)
+- Skip-list TOUJOURS : variantes style non retenues, matrices scan 34 styles, spécimens stylisés (info absorbée dans les fiches canoniques), `.tmp-*`, fichiers intermédiaires 3B-7c
+- Inputs attendus Phase 4 : aucun (génération parallèle 3 style-tiles)
+
+**BP3 — après Phase 4bis, avant Phase 5**
+- Read-list TOUJOURS : `{brand}-style-tile-concept-{N}.html` (×3), `{brand}-pitch-c{N}-final.md` (×3), rapport 4bis si présent
+- Skip-list TOUJOURS : itérations 4.1bis/4.7bis/4.12bis intermédiaires (iter0/iter1), `.tmp-*`, screenshots de gates anti-slop Phase 4
+- Inputs attendus Phase 5 : ajustements éventuels (5B) puis choix final A/B/C (5C)
+
+**BP4 — après 5D Animation (si activée), avant Phase Logo**
+- Read-list TOUJOURS : `{brand}-style-tile-concept-{retenu}.html` (statique de référence), `{brand}-design-specs.md`
+- Read-list CONDITIONNEL : `{brand}-style-tile-concept-{retenu}-animated.html` + `{brand}-animation-spec.md` si 5D activée
+- Skip-list TOUJOURS : style-tiles non retenus, variantes animées non retenues, presets explorés
+- Inputs attendus Phase Logo : "OK pour Logo, ou skip ?"
+
+**BP5 — après Phase 6B, avant Phase 7**
+- Read-list TOUJOURS : `{brand}-style-tile-concept-{retenu}.html` (ou animée si 5D), `{brand}-batch2.html`, `{brand}-batch3.html`, `{brand}-design-specs.md`
+- Read-list CONDITIONNEL : `{brand}-logo.svg` + `-logo.png` si Phase Logo activée
+- Skip-list TOUJOURS : screenshots intermédiaires Batch 2/3, `.tmp-*`, logs de génération, fichiers de gates anti-slop
+- Inputs attendus Phase 7 : aucun (génération doc + validation finale)
+
+### Format de l'alerte (box rounded Unicode)
+
+À chaque break point, après écriture du handoff sur disque, afficher EXACTEMENT (substituer `{...}`) :
+
+```
+╭──────────────────────────────────────────────────────────────╮
+│  🟡 BREAK POINT — {phase_terminee}                            │
+├──────────────────────────────────────────────────────────────┤
+│  Handoff écrit : outputs/.../handoff-{bp_id}.md               │
+│                                                                │
+│  Si stress contextuel (>70%, Claude propose de compacter,    │
+│  réponses qui louvoient, étapes ratées) :                    │
+│   → recommandé : stop + nouvelle session +                    │
+│     `/test-big` reprise à {next_step} sur ce handoff.         │
+│                                                                │
+│  → sinon : "continue" et je file en {next_step}.              │
+╰──────────────────────────────────────────────────────────────╯
+```
+
+### Règle de génération dynamique
+
+L'orchestrateur **ne hard-code PAS** les fichiers du handoff. Il :
+1. Liste les fichiers réellement présents dans `{session_dir}/`
+2. Croise avec la matrice ci-dessus pour décider read/skip pour chaque
+3. Inclut les entrées CONDITIONNELLES seulement si les phases correspondantes ont été activées
+4. Reproduit verbatim les décisions user telles qu'elles ont été collectées (pas de paraphrase)
+
+**Lean restart** : la nouvelle session démarrée via `/test-big` lit le handoff + UNIQUEMENT les fichiers de la read-list. Pas de remontée massive de l'historique. C'est le contrat.
 
 ---
 
