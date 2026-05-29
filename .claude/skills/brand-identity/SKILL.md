@@ -57,6 +57,20 @@ Après CHAQUE retour de subagent :
 
 ---
 
+## RÈGLE ABSOLUE : STREAMLINE INTERDIT SUR LES GATES
+
+L'orchestrateur peut alléger un **dispositif interne** (parallélisme inter-concepts, blind-planches anti-biais, scans en double, opt-in d'un dispositif d'évaluation) — **JAMAIS** une **gate utilisateur** (CHOIX entre alternatives, VALIDATION go/no-go) ni une **micro-étape contractuelle** marquée 📌 (injection de bandeau, écriture canonique, génération de planche, ouverture navigateur).
+
+**Anti-pattern interdit** : présenter un menu à choix multiples du type *"1. Complet / 2. Accéléré / 3. Pause"* qui oriente l'utilisateur vers un raccourci. Si un allègement semble pertinent, l'orchestrateur l'EXPOSE en question explicite **sans l'avoir déjà à moitié décidée**. Par défaut, déroulé complet du process.
+
+**Cas non-standard** (mode Aspiration D, `/test-big` resume mi-pipeline, run partiel, phase optionnelle skippée) : les gates user et micro-étapes contractuelles restent toutes exécutées telles quelles. Seuls les dispositifs internes anti-biais peuvent s'alléger.
+
+**Anti-dilution contextuelle** : à partir de Phase 3B et dans Phase 4, avant chaque sous-étape lourde, l'orchestrateur **RELIT la sous-section concernée du SKILL** plutôt que de reconstituer de mémoire. Reconstituer de mémoire = première cause documentée de skip silencieux (REX 29/05).
+
+**JAMAIS** un raccourci d'orchestration ne retire un choix qui appartient à l'utilisateur. Le coût d'une étape redondante est inférieur au coût d'un livrable mal formé.
+
+---
+
 ## ONBOARDING — PREMIÈRE ACTION OBLIGATOIRE
 
 **RÈGLE ABSOLUE** : À chaque invocation de `/brand-identity`, tu DOIS :
