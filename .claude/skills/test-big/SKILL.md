@@ -128,16 +128,9 @@ Afficher exactement ce texte :
   6A   — Système de signes (icônes, patterns, éléments graphiques ; + bande de couverture si une librairie visual-final/ existe)
   6B   — Narration étendue (pages complémentaires ; chapitre 08 affiche les visuels finaux réels si visual-final/ existe)
   7    — Documentation finale (design specs)
-  8    — Brand Book éditorial (intro Identity Card + 8 sections + closing, optionnel — invoque skill /brand-book + sous-skill SPG /generate-mini-deck)
-  8-1  — Préparation brand book (validation pack + lecture inputs)
-  8-2a — Capture style-tile PNG (section 07a Web du brand book)
-  8-2b — Mockup LinkedIn (section 07c — Mustache + capture Playwright)
-  8-2c — Mockup X (section 07c — Mustache + capture Playwright)
-  8-2d — Mini-deck SPG (section 07b Pitch Deck — sub-agent SPG /generate-mini-deck, 6 PNG retina — le plus lourd ~150K tokens)
-  8-2e — Composition Identity Card bento v4 (intro 00 — 4 icônes + 1 dataviz signature extraits de batch2)
-  8-3  — Génération HTML brand book final + vérification
-  8b   — Design System HTML technique (sobre type Carbon/Atlassian — sidebar nav, foundations exhaustives, tokens prêts à copier — invoque skill /design-system autonome, ~80K tokens)
-  9    — Packaging final (dossier {brand}-identity-{slug}/ avec fichiers renommés, prêt à livrer — inclut le sous-dossier brand-book/ si Phase 8 exécutée)
+  8A   — Brand Book éditorial (intro Identity Card + 8 sections + closing, optionnel — invoque skill /brand-book + sous-skill SPG /generate-mini-deck) — exécuté d'un bloc, non-reprenable au milieu
+  8B   — Design System HTML technique (sobre type Carbon/Atlassian — sidebar nav, foundations exhaustives, tokens prêts à copier — invoque skill /design-system autonome, ~80K tokens) — exécuté d'un bloc, non-reprenable au milieu
+  9    — Packaging final (dossier {brand}-identity-{slug}/ avec fichiers renommés, prêt à livrer — inclut le sous-dossier brand-book/ si Phase 8A exécutée)
 ```
 
 Attendre la réponse de l'utilisateur, puis stocker dans `{start_phase}`.
@@ -216,16 +209,9 @@ Scanner `{source_dir}` et vérifier que les fichiers requis pour la phase demand
 | `6A` | + `{brand}-style-tile-concept-*.html` (le choisi) + `{brand}-style-choice-c*.md` (fiche styliste 3B-7a) + `{brand}-concepts-narratifs.md` (concept décontaminé) + `{brand}-territoires-v*.md` + `{brand}-style-sectoriel-tags.md` (ventre mou) + `{brand}-pitch-c*.md` (pour Étape 6A-0 router icônes, depuis D59) + **(optionnel)** le dossier `visual-final/` (alimente Batch 3 ch.08/10) |
 | `6B` | + au moins 1 fichier `{brand}-batch2-*.html` (+ `visual-final/` optionnel, idem 6A) |
 | `7` | + au moins 1 fichier `{brand}-batch3-*.html` |
-| `8` | + `{brand}-design-specs*.md` (de la Phase 7) — pack BIG complet en place dans `{session_dir}/` (les 5 fichiers + `visual-final/`) ; Phase 8 invoque le skill /brand-book qui lit ces fichiers et écrit dans `{session_dir}/brand-book/` |
-| `8-1` | idem `8` |
-| `8-2a` | `8-1` done + `{brand}-style-tile-concept-{chosen}.html` ou `{brand}-style-tile.html` présent |
-| `8-2b` | `8-1` done + style-tile (pour extraction tokens `:root`) + `visual-final/{brand}-c{N}-{paletteID}-hero.*` (image cover du LinkedIn mockup) |
-| `8-2c` | idem `8-2b` (cover image partagée LinkedIn + X) |
-| `8-2d` | `8-1` done (le sous-skill SPG /generate-mini-deck fait ses propres prereq internes : lit pack BIG complet pour Sub0-A + Sub0-B mode mini) |
-| `8-2e` | `8-1` done + `{brand}-batch2-*.html` (pour extraction 4 icônes signature + 1 dataviz signature) |
-| `8-3` | `8-2a..e` tous OK (PNG produites présentes dans `{session_dir}/brand-book/`) |
-| `8b` | + `{brand}-design-specs*.md` (de la Phase 7) — pack BIG complet en place dans `{session_dir}/` (les 5 fichiers + `visual-final/`) ; `{session_dir}/brand-book/` optionnel (Phase 8 recommandée mais pas obligatoire) ; Phase 8b invoque le skill /design-system qui lit ces fichiers et écrit dans `{session_dir}/design-system/` |
-| `9` | `8` done OU phase 8 skipée + `{brand}-design-specs*.md` (de la Phase 7) — toutes les briques pré-existantes (style-tile-concept-*, batch2-*, batch3-*, design-specs-*, logo-*) sont copiées et renommées dans `{brand}-identity-{slug}/`. Si Phase 8 exécutée, le sous-dossier `brand-book/` est aussi copié. |
+| `8A` | + `{brand}-design-specs*.md` (de la Phase 7) — pack BIG complet en place dans `{session_dir}/` (les 5 fichiers + `visual-final/`) ; Phase 8A invoque le skill /brand-book qui lit ces fichiers et écrit dans `{session_dir}/brand-book/` |
+| `8B` | + `{brand}-design-specs*.md` (de la Phase 7) — pack BIG complet en place dans `{session_dir}/` (les 5 fichiers + `visual-final/`) ; `{session_dir}/brand-book/` optionnel (Phase 8A recommandée mais pas obligatoire) ; Phase 8B invoque le skill /design-system qui lit ces fichiers et écrit dans `{session_dir}/design-system/` |
+| `9` | `8A` done OU Phase 8A skippée + `{brand}-design-specs*.md` (de la Phase 7) — toutes les briques pré-existantes (style-tile-concept-*, batch2-*, batch3-*, design-specs-*, logo-*) sont copiées et renommées dans `{brand}-identity-{slug}/`. Si Phase 8A exécutée, le sous-dossier `brand-book/` est aussi copié. |
 
 **Chaque phase inclut les prérequis de toutes les phases précédentes** (cumulatif).
 
@@ -332,23 +318,16 @@ echo "{brand}|{session_label}|$(date +%s)" > "{test_dir}/.session-id"
 | `6A` | `{brand}-icon-family-choice.md` (output Étape 6A-0 router famille d'icônes, D59) + `{brand}-batch2-{slug}.html` (Étape 6A-1) |
 | `6B` | `{brand}-batch3-{slug}.html` |
 | `7` | `{brand}-design-specs-{slug}.md` |
-| `8` | Sous-dossier `{session_dir}/brand-book/` contenant : `{brand}-brand-book.html` (livrable principal) + `visual-final/` (copié) + `pitch-deck-mini/slide-{01..06}-*.png` (6 PNG retina 2560×1440) + `{brand}-linkedin-mockup.{html,png}` (paysage 1000×563 retina) + `{brand}-x-mockup.{html,png}` (carré 1000×1000 retina) + `{brand}-landing-fullpage.png` (capture style-tile) |
-| `8-1` | (rien sur disque — lecture seule du pack BIG par le sub-agent brand-book) |
-| `8-2a` | `{session_dir}/brand-book/{brand}-landing-fullpage.png` |
-| `8-2b` | `{session_dir}/brand-book/{brand}-linkedin-mockup.html` + `.png` (paysage transparent ~1000×563 retina ×2) |
-| `8-2c` | `{session_dir}/brand-book/{brand}-x-mockup.html` + `.png` (carré 1000×1000 retina ×2) |
-| `8-2d` | `{session_dir}/brand-book/pitch-deck-mini/slide-{01..06}-{cover,case-study,data-viz,dashboard-kpi,process-timeline,icon-grid}.png` (6 PNG retina) + `design-language.md` + `slide-examples-mini.html` mis à jour dans `/SPG/brands/{brand_slug}/` |
-| `8-2e` | (rien sur disque — variables Mustache prêtes pour l'orchestrateur du sub-agent brand-book) |
-| `8-3` | `{session_dir}/brand-book/{brand}-brand-book.html` (livrable principal assemblé) |
-| `8b` | Sous-dossier `{session_dir}/design-system/` contenant : `{brand}-design-system.html` (livrable principal, 11 sections : Color, Typography, Spacing, Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, Tokens) + `{brand}-design-system-inventory.json` (~200 items attendus vs présents) + `{brand}-design-system-audit-sources.json` (mapping items source) + `{brand}-design-system-audit-report.json` (rapport script Python) + sous-dossier `visual-final/` (copié) |
-| `9` | Dossier `{brand}-identity-{slug}/` contenant les fichiers renommés : `{brand}-style-tile.html`, `{brand}-batch2.html`, `{brand}-batch3.html`, `{brand}-design-specs.md`, assets logo (SVG + PNG), `{brand}-pitch.md` ou `{brand}-extracted-dna.md` selon mode, **+ sous-dossier `brand-book/`** copié depuis `{session_dir}/brand-book/` si Phase 8 a été exécutée |
+| `8A` | Sous-dossier `{session_dir}/brand-book/` contenant : `{brand}-brand-book.html` (livrable principal) + `visual-final/` (copié) + `pitch-deck-mini/slide-{01..06}-*.png` (6 PNG retina 2560×1440) + `{brand}-linkedin-mockup.{html,png}` (paysage 1000×563 retina) + `{brand}-x-mockup.{html,png}` (carré 1000×1000 retina) + `{brand}-landing-fullpage.png` (capture style-tile) |
+| `8B` | Sous-dossier `{session_dir}/design-system/` contenant : `{brand}-design-system.html` (livrable principal, 11 sections : Color, Typography, Spacing, Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, Tokens) + `{brand}-design-system-inventory.json` (~200 items attendus vs présents) + `{brand}-design-system-audit-sources.json` (mapping items source) + `{brand}-design-system-audit-report.json` (rapport script Python) + sous-dossier `visual-final/` (copié) |
+| `9` | Dossier `{brand}-identity-{slug}/` contenant les fichiers renommés : `{brand}-style-tile.html`, `{brand}-batch2.html`, `{brand}-batch3.html`, `{brand}-design-specs.md`, assets logo (SVG + PNG), `{brand}-pitch.md` ou `{brand}-extracted-dna.md` selon mode, **+ sous-dossier `brand-book/`** copié depuis `{session_dir}/brand-book/` si Phase 8A a été exécutée |
 
 **Note `visual-final/`** : ce dossier est créé en 3B-7c (image-pivot du style-tile) mais peut aussi recevoir, plus tard et hors pipeline (skill `/visual-prompt`), une **librairie de visuels finaux dérivés** (`{brand}-c{N}-{paletteID}-{type}[-{variante}].{ext}`). Quand `{start_phase}` ≥ `3B-7d`, la copie filtrée doit reprendre **le dossier `visual-final/` complet** depuis le source (pas seulement `{brand}-visual-final.{ext}`) — il est consommé par Phase 4 (ancrage visuel), Batch 2 (cover band) et Batch 3 (ch08/ch10).
 
 **Algorithme :**
 
 ```
-phases_ordonnées = [1, 2A, 2B, 2C, 2D, 3A1, 3A2, 3B-1, 3B-2, 3B-3, 3B-4, 3B-7a-pre, 3B-7a, 3B-7b, 3B-7-checkpoint, 3B-7c, 3B-7d, 3B-7e, 4, 4-val, 4-art, 4B, 5, 5D, L, 6A, 6B, 7, 8, 8-1, 8-2a, 8-2b, 8-2c, 8-2d, 8-2e, 8-3, 8b, 9]
+phases_ordonnées = [1, 2A, 2B, 2C, 2D, 3A1, 3A2, 3B-1, 3B-2, 3B-3, 3B-4, 3B-7a-pre, 3B-7a, 3B-7b, 3B-7-checkpoint, 3B-7c, 3B-7d, 3B-7e, 4, 4-val, 4-art, 4B, 5, 5D, L, 6A, 6B, 7, 8A, 8B, 9]
 
 fichiers_a_copier = []
 pour chaque phase P dans phases_ordonnées :
@@ -484,16 +463,9 @@ Mapping `{start_phase}` → section dans SKILL.md :
 | `6A` | `## PHASE 6A — Batch 2 (Système de Signes)` (depuis D59 du 2026-05-27 : **2 étapes filles** — `### Étape 6A-0 — Router Famille d'Icônes` (subagent isolé qui choisit 1 famille parmi 8 et écrit `{brand}-icon-family-choice.md` + validation user obligatoire) puis `### Étape 6A-1 — Batch 2 HTML` (subagent designer Batch 2 actuel avec chapitre 06 refondu en 3 sections). Inclut, après l'injection SVG, l'étape « Gate anti-slop Batch 2 » — `scripts/phase6-batch-gate.py`, D56 ; auto-correction chirurgicale 1 tour sur `deterministic_fails`. Le gate a besoin du `:root` du style-tile retenu, déjà parmi les fichiers copiés au démarrage 6A) |
 | `6B` | `## PHASE 6B — Batch 3` (inclut « Étape 6B-6 — Gate anti-slop Batch 3 », D56, après l'assemblage) |
 | `7` | `## PHASE 7 — Zone 2` |
-| `8` | `## PHASE 8 — Brand Book éditorial (optionnelle)` (invoque skill /brand-book qui invoque sous-skill SPG /generate-mini-deck) |
-| `8-1` | `### Étape 8-1 — Question utilisateur` puis enchaîne sur le sub-agent brand-book qui exécute les sous-phases 8-2a/b/c/d/e/3 dans l'ordre selon son propre workflow |
-| `8-2a` | (sous-phase interne du sub-agent brand-book) — `### Étape 2a — Capture PNG du style-tile (section 07a Web)` dans `/Brand Identity Generator/.claude/skills/brand-book/SKILL.md` |
-| `8-2b` | (sous-phase interne du sub-agent brand-book) — `#### Étape 2b — Mockup LinkedIn (section 07c)` dans le SKILL.md brand-book |
-| `8-2c` | (sous-phase interne du sub-agent brand-book) — `#### Étape 2c — Mockup X (section 07c)` dans le SKILL.md brand-book |
-| `8-2d` | (sous-phase interne du sub-agent brand-book) — `#### Étape 2d — Mini-deck pitch (section 07b) via sous-skill SPG generate-mini-deck` dans le SKILL.md brand-book. Le sous-skill SPG est lui-même un Task tool séparé (sub-sub-agent). |
-| `8-2e` | (sous-phase interne du sub-agent brand-book) — `#### Étape 2e — Composition Identity Card bento v4` dans le SKILL.md brand-book |
-| `8-3` | (sous-phase interne du sub-agent brand-book) — `### Étape 4 — Génération HTML brand book` + `### Étape 5 — Vérification` dans le SKILL.md brand-book |
-| `8b` | `## PHASE 8b — Design System technique (optionnelle)` (invoque skill /design-system autonome — pas de sub-skill) |
-| `9` | `## ÉTAPE FINALE — Packaging des livrables` (création du dossier `{brand}-identity-{slug}/` avec fichiers renommés ; inclut le sous-dossier `brand-book/` si Phase 8 exécutée, et le sous-dossier `design-system/` si Phase 8b exécutée) |
+| `8A` | `## PHASE 8 — Brand Book éditorial (optionnelle)` dans le SKILL.md de BIG (le titre reste "PHASE 8" côté BIG pour stabilité interne) — invoque skill /brand-book qui invoque sous-skill SPG /generate-mini-deck. Exécuté d'un bloc, non-reprenable au milieu. |
+| `8B` | `## PHASE 8b — Design System technique (optionnelle)` dans le SKILL.md de BIG (le titre reste "PHASE 8b" côté BIG pour stabilité interne) — invoque skill /design-system autonome, pas de sub-skill. Exécuté d'un bloc, non-reprenable au milieu. |
+| `9` | `## ÉTAPE FINALE — Packaging des livrables` (création du dossier `{brand}-identity-{slug}/` avec fichiers renommés ; inclut le sous-dossier `brand-book/` si Phase 8A exécutée, et le sous-dossier `design-system/` si Phase 8B exécutée) |
 
 ### 5.3 Exécuter
 

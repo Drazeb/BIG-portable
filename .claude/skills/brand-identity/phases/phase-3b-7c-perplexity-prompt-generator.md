@@ -120,7 +120,7 @@ Substitue **TOUTES** les variables du template avec les valeurs extraites aux é
 
 | Variable du template | Valeur à injecter |
 |---------------------|-------------------|
-| `{NOM_MARQUE}` | nom de la marque (ex: VoltaPilot, Liminal) |
+| `{NOM_MARQUE}` | nom de la marque (ex: ChargePilot, Liminal) |
 | `{DESCRIPTION_MARQUE}` | description factuelle 2-3 phrases |
 | `{TAGLINE}` | tagline officielle si elle existe, sinon laisser vide ou retirer la phrase |
 | `{TYPE_VISUEL}` | valeur transmise par l'orchestrateur |
