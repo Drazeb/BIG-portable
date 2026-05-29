@@ -30,12 +30,18 @@ SKILLS_TO_PORT=(
   "brand-identity"
   "test-big"
   "brand-book"
+  "design-system"
   "visual-prompt"
 )
 # Note : visual-brief retiré le 2026-05-28 (déprécié au profit de /visual-prompt
 # mode "variantes" qui couvre 100% des cas avec une qualité supérieure — gate
 # élite 6/6 critères vs analyse descriptive simple). Le skill reste en sandbox
 # (musée) mais n'est plus porté.
+#
+# design-system ajouté le 2026-05-29 (D62) — branché dans le pipeline BIG en
+# Phase 8b. Skill autonome, dossier outputs/ exclu par défaut, blindé par
+# 14 règles sanctuarisées + checklist obligatoire d'~120 items + script Python
+# d'audit anti-régression (design-system-audit.py).
 
 # Anonymisation des marques clientes utilisées comme cas d'étude.
 #

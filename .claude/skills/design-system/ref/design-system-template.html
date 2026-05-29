@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Camille — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* === PALETTE CAMILLE (Nuit d'Indigo) === */
+    --color-abyss:           oklch(0.13 0.025 250);  /* #0D1623 */
+    --color-night:           oklch(0.18 0.032 248);  /* #142133 */
+    --color-marine-cliff:    oklch(0.27 0.045 248);  /* #2A4D5E */
+    --color-beacon:          oklch(0.72 0.16 60);    /* #E89248 */
+    --color-beacon-warm:     oklch(0.78 0.14 65);    /* #F2A663 */
+    --color-chart-mist:      oklch(0.93 0.012 240);  /* #E6ECF1 */
+    --color-text-primary:    oklch(0.91 0.014 245);  /* #DDE5EE */
+    --color-text-secondary:  oklch(0.62 0.025 235);  /* #7A8B99 */
+    --color-text-dim:        oklch(0.45 0.022 238);  /* #5C6873 */
+
+    /* === DOC SYSTEM (mode jour, sobre) === */
+    --doc-bg:        var(--color-chart-mist);          /* fond clair palette */
+    --doc-surface:   oklch(0.985 0.004 240);            /* cards blanches teintées froid */
+    --doc-border:    oklch(0.27 0.045 248 / 0.14);      /* hairlines Marine-Cliff atténué */
+    --doc-border-strong: oklch(0.27 0.045 248 / 0.32);
+    --doc-text:      var(--color-abyss);
+    --doc-text-2:    oklch(0.27 0.045 248);             /* Marine-Cliff sur clair */
+    --doc-text-dim:  oklch(0.45 0.022 238);             /* Sextant Atténué */
+    --doc-accent:    var(--color-beacon);
+
+    --font-display:  'Gloock', 'Times New Roman', serif;
+    --font-body:     'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+
+    --radius-xs:     2px;
+    --space-2xs:     4px;
+    --space-xs:      8px;
+    --space-sm:     16px;
+    --space-md:     24px;
+    --space-lg:     40px;
+    --space-xl:     64px;
+    --space-2xl:   104px;
+    --space-3xl:   168px;
+
+    --hairline:      1px solid var(--doc-border);
+    --shadow-card:   0 1px 0 oklch(0.27 0.045 248 / 0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--doc-bg);
+    color: var(--doc-text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "ss02";
+  }
+
+  /* ============ LAYOUT ============ */
+  .doc {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .doc__sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: var(--space-xl) var(--space-lg);
+    border-right: var(--hairline);
+    background: var(--doc-bg);
+  }
+  .sidebar__brand {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--doc-text);
+    margin: 0 0 var(--space-2xs) 0;
+  }
+  .sidebar__brand .dot { color: var(--doc-accent); }
+  .sidebar__sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--doc-text-dim);
+    margin-bottom: var(--space-xl);
+  }
+  .sidebar__nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--space-xl); }
+  .sidebar__nav-section {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--doc-text-dim);
+    margin: var(--space-md) 0 var(--space-xs) 0;
+  }
+  .sidebar__nav-link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    padding: 6px 0;
+    color: var(--doc-text-2);
+    text-decoration: none;
+    font-size: 0.84rem;
+    border-left: 2px solid transparent;
+    padding-left: var(--space-sm);
+    margin-left: calc(var(--space-sm) * -1);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .sidebar__nav-link:hover { color: var(--doc-text); border-left-color: var(--doc-border-strong); }
+  .sidebar__nav-link.is-active { color: var(--doc-text); border-left-color: var(--doc-accent); }
+  .sidebar__nav-num {
+    color: var(--doc-text-dim);
+    font-size: 0.72rem;
+    min-width: 22px;
+  }
+  .sidebar__meta {
+    margin-top: auto;
+    padding-top: var(--space-xl);
+    font-size: 0.72rem;
+    color: var(--doc-text-dim);
+    line-height: 1.7;
+  }
+  .sidebar__meta strong { color: var(--doc-text-2); font-weight: 500; }
+
+  /* ---------- MAIN ---------- */
+  .doc__main {
+    position: relative;
+    padding: var(--space-2xl) var(--space-2xl);
+    max-width: 1080px;
+    isolation: isolate;
+  }
+
+  /* Hairline diagonale signature (hérité Batch 2/3) — sur fond clair, gradient
+     Foyer atténué qui traverse la hauteur de la page. */
+  .doc__main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: clamp(2rem, 4vw, var(--space-xl));
+    width: 1px;
+    height: 100%;
+    z-index: 1;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      oklch(0.72 0.16 60 / 0.55) 12%,
+      oklch(0.72 0.16 60 / 0.35) 50%,
+      oklch(0.72 0.16 60 / 0.10) 100%);
+    pointer-events: none;
+  }
+
+  /* Beacon mark — point Foyer du Phare en tête de hairline */
+  .doc__main::after {
+    content: '';
+    position: absolute;
+    top: clamp(1.6rem, 6vh, 3.2rem);
+    left: clamp(2rem, 4vw, var(--space-xl));
+    z-index: 2;
+    width: 12px;
+    height: 12px;
+    margin-inline-start: -5.5px;
+    background: radial-gradient(circle, var(--color-beacon) 0%, transparent 70%);
+    box-shadow:
+      0 0 14px oklch(0.72 0.16 60 / 0.45),
+      0 2px 6px oklch(0.45 0.022 238 / 0.30);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .doc__main > * { position: relative; z-index: 3; }
+
+  /* En-tête de page */
+  .page__header { margin-bottom: var(--space-2xl); }
+  .page__breadcrumb {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--doc-text-dim);
+    margin-bottom: var(--space-md);
+  }
+  /* H2 — chapitre (token : --fs-h2) */
+  .page__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    margin: 0 0 var(--space-md) 0;
+    color: var(--doc-text);
+  }
+  .page__title em { font-style: italic; color: var(--doc-text-2); }
+  .page__lede {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--doc-text-2);
+    max-width: 64ch;
+    margin: 0;
+  }
+
+  /* Sections */
+  .section { margin-bottom: var(--space-3xl); }
+  .section__head {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--space-md);
+    align-items: baseline;
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-xl);
+    border-bottom: var(--hairline);
+  }
+  .section__num {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--doc-text-dim);
+  }
+  /* H2 chapitre — même token que page__title */
+  .section__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    margin: 0;
+    color: var(--doc-text);
+  }
+  .section__intro {
+    grid-column: 2;
+    max-width: 64ch;
+    color: var(--doc-text-2);
+    line-height: 1.7;
+  }
+
+  .subsection { margin-bottom: var(--space-2xl); }
+  .subsection__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+  .subsection__num {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--doc-text-dim);
+  }
+  /* H3 sub-section — Gloock, taille héritée de Batch 2/3 (.subsection__name) */
+  .subsection__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+    line-height: 1.1;
+    letter-spacing: -0.012em;
+    margin: 0;
+    color: var(--doc-text);
+  }
+  .subsection__desc {
+    font-size: 0.88rem;
+    color: var(--doc-text-2);
+    line-height: 1.65;
+    max-width: 64ch;
+    margin: 0 0 var(--space-lg) 0;
+  }
+
+  /* ============ ATOMES ============ */
+
+  /* Pill / token chip */
+  .token-chip {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border: 1px solid var(--doc-border);
+    border-radius: var(--radius-xs);
+    background: var(--doc-surface);
+    color: var(--doc-text-2);
+    letter-spacing: 0;
+  }
+
+  /* Table doc générique */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    background: var(--doc-surface);
+    border: var(--hairline);
+    border-radius: var(--radius-xs);
+    overflow: hidden;
+  }
+  .doc-table th, .doc-table td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: var(--hairline);
+    vertical-align: top;
+  }
+  .doc-table th {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--doc-text-dim);
+    background: oklch(0.27 0.045 248 / 0.03);
+  }
+  .doc-table tr:last-child td { border-bottom: 0; }
+  .doc-table td code { color: var(--doc-text); }
+
+  code, .mono {
+    font-family: var(--font-body);
+    font-size: 0.84rem;
+    color: var(--doc-text);
+  }
+
+  /* ============ SECTION COLOR ============ */
+  .color-swatches {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+  .swatch {
+    background: var(--doc-surface);
+    border: var(--hairline);
+    border-radius: var(--radius-xs);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+  .swatch__chip {
+    aspect-ratio: 16 / 9;
+    border-bottom: var(--hairline);
+  }
+  .swatch__body { padding: var(--space-sm); }
+  .swatch__role {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--doc-text-dim);
+    margin-bottom: 2px;
+  }
+  /* Nom du token : --text-base, Gloock */
+  .swatch__name {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    line-height: 1.15;
+    margin: 0 0 var(--space-xs) 0;
+    color: var(--doc-text);
+  }
+  .swatch__values {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.76rem;
+    color: var(--doc-text-2);
+    margin-bottom: var(--space-xs);
+  }
+  .swatch__values code { font-size: 0.76rem; }
+  .swatch__usage {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--doc-text-dim);
+  }
+
+  /* ---------- LOI — bloc règle (signature Camille : overline + barre Foyer) ---------- */
+  .law {
+    padding: var(--space-xl) 0 var(--space-lg) 0;
+    margin: 0 0 var(--space-2xl) 0;
+    border-block-start: 1px dotted oklch(0.27 0.045 248 / 0.20);
+    border-block-end:   1px dotted oklch(0.27 0.045 248 / 0.20);
+  }
+  .law__overline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: var(--fs-overline);
+    font-weight: 500;
+    letter-spacing: 0.30em;
+    text-transform: uppercase;
+    color: var(--doc-accent);
+    margin-bottom: var(--space-md);
+  }
+  .law__overline::before {
+    content: '';
+    display: inline-block;
+    inline-size: clamp(28px, 4vw, 56px);
+    block-size: 1px;
+    background: var(--doc-accent);
+  }
+  .law__statement {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    color: var(--doc-text);
+    max-inline-size: 32ch;
+    margin: 0 0 var(--space-md) 0;
+  }
+  .law__statement em { font-style: normal; color: var(--doc-accent); }
+  .law__rules {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--doc-text-2);
+    line-height: 1.75;
+    max-inline-size: 72ch;
+  }
+  .law__rules li {
+    padding-block: 6px;
+    border-block-end: 1px dotted oklch(0.27 0.045 248 / 0.14);
+  }
+  .law__rules li:last-child { border-block-end: 0; }
+  .law__rules li::before {
+    content: '— ';
+    color: var(--doc-text-dim);
+  }
+
+  /* ---------- DON'T — liste plate avec marqueur "×" Mono Foyer ---------- */
+  .dont-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-block-start: 1px dotted oklch(0.27 0.045 248 / 0.20);
+  }
+  .dont-item {
+    display: grid;
+    grid-template-columns: clamp(48px, 6vw, 80px) 1fr;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+    border-block-end: 1px dotted oklch(0.27 0.045 248 / 0.14);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--doc-text-2);
+  }
+  .dont-item__marker {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    color: var(--doc-accent);
+    font-feature-settings: 'tnum' 1;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .dont-item__marker::before {
+    content: '× ';
+    color: var(--doc-accent);
+  }
+  .dont-item code { color: var(--doc-text); }
+
+  /* ============ SECTION TYPO ============ */
+  .pairing {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+  .pairing__card {
+    background: var(--doc-surface);
+    border: var(--hairline);
+    border-radius: var(--radius-xs);
+    padding: var(--space-xl);
+  }
+  .pairing__role {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--doc-text-dim);
+    margin-bottom: var(--space-sm);
+  }
+  .pairing__name {
+    font-size: 0.84rem;
+    color: var(--doc-text-2);
+    margin-bottom: var(--space-md);
+  }
+  .pairing__specimen-display {
+    font-family: var(--font-display);
+    font-size: 3.8rem;
+    line-height: 1.05;
+    color: var(--doc-text);
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.02em;
+  }
+  .pairing__specimen-display em { font-style: italic; }
+  .pairing__specimen-mono {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--doc-text);
+    margin-bottom: var(--space-md);
+  }
+  .pairing__weights {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--doc-text-dim);
+    line-height: 1.6;
+  }
+  .pairing__weights .w300 { font-weight: 300; }
+  .pairing__weights .w400 { font-weight: 400; }
+  .pairing__weights .w500 { font-weight: 500; }
+  .pairing__weights .w600 { font-weight: 600; }
+  .pairing__weights .w700 { font-weight: 700; }
+  .pairing__justif {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: var(--hairline);
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: var(--doc-text-2);
+  }
+
+  /* Type scale */
+  .type-scale { display: flex; flex-direction: column; }
+  .type-scale__row {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: var(--space-lg);
+    align-items: baseline;
+    padding: var(--space-md) 0;
+    border-bottom: var(--hairline);
+  }
+  .type-scale__row:last-child { border-bottom: 0; }
+  .type-scale__specimen {
+    color: var(--doc-text);
+    font-family: var(--font-display);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+  }
+  .type-scale__specimen--mono { font-family: var(--font-body); letter-spacing: 0; }
+  .type-scale__meta {
+    font-size: 0.78rem;
+    color: var(--doc-text-dim);
+    line-height: 1.6;
+  }
+  .type-scale__token {
+    color: var(--doc-text);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+  }
+  .type-scale__value {
+    color: var(--doc-text-2);
+    font-size: 0.74rem;
+    margin-top: 2px;
+  }
+  .type-scale__usage {
+    margin-top: var(--space-xs);
+    font-size: 0.76rem;
+    color: var(--doc-text-dim);
+    line-height: 1.5;
+  }
+
+  /* ============ SECTION SPACING ============ */
+  .spacing-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 280px;
+    gap: var(--space-md);
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: var(--hairline);
+  }
+  .spacing-row:last-child { border-bottom: 0; }
+  .spacing-row__token {
+    font-family: var(--font-body);
+    font-size: 0.84rem;
+    color: var(--doc-text);
+  }
+  .spacing-row__token small {
+    display: block;
+    font-size: 0.74rem;
+    color: var(--doc-text-dim);
+    margin-top: 2px;
+  }
+  .spacing-row__bar {
+    height: 12px;
+    background: var(--doc-text-2);
+    border-radius: 1px;
+  }
+  .spacing-row__bar-wrap {
+    height: 12px;
+    background: oklch(0.27 0.045 248 / 0.05);
+    border-radius: 1px;
+    position: relative;
+  }
+  .spacing-row__usage {
+    font-size: 0.8rem;
+    color: var(--doc-text-dim);
+    line-height: 1.5;
+  }
+
+  /* ============ FOOTER ============ */
+  .doc__footer {
+    grid-column: 2;
+    padding: var(--space-lg) var(--space-2xl);
+    border-top: var(--hairline);
+    font-size: 0.72rem;
+    color: var(--doc-text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .doc__footer .mono { color: var(--doc-text-2); }
+
+  /* Annotation test (kicker overline en haut, pas d'encadré) */
+  .test-kicker {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    padding-block-end: var(--space-sm);
+    border-block-end: 1px dotted oklch(0.27 0.045 248 / 0.20);
+    font-family: var(--font-body);
+    font-size: var(--fs-overline);
+    font-weight: 500;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--doc-text-dim);
+  }
+  .test-kicker__tag {
+    color: var(--doc-accent);
+    letter-spacing: 0.30em;
+  }
+  .test-kicker__body {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.78rem;
+    color: var(--doc-text-2);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="doc__sidebar">
+    <h1 class="sidebar__brand">camille<span class="dot">.</span></h1>
+    <p class="sidebar__sub">Design System · v0.1</p>
+
+    <nav class="sidebar__nav">
+      <div class="sidebar__nav-section">Foundations</div>
+      <a class="sidebar__nav-link is-active" href="#color">
+        <span class="sidebar__nav-num">01</span><span>Color</span>
+      </a>
+      <a class="sidebar__nav-link" href="#typography">
+        <span class="sidebar__nav-num">02</span><span>Typography</span>
+      </a>
+      <a class="sidebar__nav-link" href="#spacing">
+        <span class="sidebar__nav-num">03</span><span>Spacing</span>
+      </a>
+
+      <div class="sidebar__nav-section">À venir</div>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">04</span><span>Iconography</span>
+      </a>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">05</span><span>Logo</span>
+      </a>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">06</span><span>Data viz</span>
+      </a>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">07</span><span>Photography</span>
+      </a>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">08</span><span>Composition</span>
+      </a>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">09</span><span>Illustration</span>
+      </a>
+      <a class="sidebar__nav-link" style="opacity:.4; pointer-events:none;">
+        <span class="sidebar__nav-num">10</span><span>Motion</span>
+      </a>
+    </nav>
+
+    <div class="sidebar__meta">
+      <strong>Concept</strong><br/>
+      Le Phare de Ralliement<br/><br/>
+      <strong>Calibrage</strong><br/>
+      A=3 Rupture · B=2 Renversement<br/><br/>
+      <strong>Style officiel</strong><br/>
+      Dark Mode Cinema × Exaggerated Minimalism
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="doc__main">
+
+    <!-- Header -->
+    <header class="page__header">
+      <p class="page__breadcrumb">Foundations</p>
+      <h1 class="page__title">Design System</h1>
+      <p class="page__lede">
+        Spécifications visuelles pour les équipes design et engineering : tokens,
+        composants atomiques, règles d'usage. Complète le brand book par tout ce
+        qui est nécessaire à reproduire l'identité de manière conforme.
+      </p>
+    </header>
+
+    <div class="test-kicker">
+      <span class="test-kicker__tag">Test de format</span>
+      <span class="test-kicker__body">3 sections sur 10 — Color · Typography · Spacing. Les 7 autres (Logo, Iconographie, Dataviz, Photo, Composition, Illustration, Motion) suivront le même gabarit une fois le format approuvé.</span>
+    </div>
+
+    <!-- ============ 01 — COLOR ============ -->
+    <section class="section" id="color">
+      <div class="section__head">
+        <span class="section__num">01</span>
+        <div>
+          <h2 class="section__title">Color</h2>
+        </div>
+        <p class="section__intro">
+          Palette de 9 couleurs réparties en 4 rôles : base, accent, surface claire,
+          échelle de texte. Système binaire 99/1 — chaque couleur a un usage défini,
+          aucune n'est décorative.
+        </p>
+      </div>
+
+      <!-- 01.1 Loi chromatique -->
+      <div class="law">
+        <div class="law__overline">Règle 99 / 1</div>
+        <p class="law__statement">
+          <em>99 %</em> bleu-marine-nuit, <em>&lt; 1 %</em> Foyer du Phare. Jamais deux accents par vue.
+        </p>
+        <ul class="law__rules">
+          <li>99 % de la surface en Abyss / Night / Marine-Cliff selon densité.</li>
+          <li>&lt; 1 % en Foyer du Phare. Un seul accent chaud par vue, sur intersection de tiers, jamais centré.</li>
+          <li>Pas de pur noir <code>#000000</code> ni de pur blanc <code>#FFFFFF</code>.</li>
+        </ul>
+      </div>
+
+      <!-- 01.2 Palette primaire — swatches -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">01.1</span>
+          <h3 class="subsection__title">Palette primaire — 9 rôles</h3>
+        </div>
+
+        <div class="color-swatches">
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#0D1623"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Base nuit dominante</div>
+              <h4 class="swatch__name">Nuit d'Indigo</h4>
+              <div class="swatch__values">
+                <code>--color-abyss</code>
+                <code>oklch(.13 .025 250)</code>
+                <code>#0D1623</code>
+              </div>
+              <p class="swatch__usage">Fond global, atmosphère hero.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#142133"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Conteneur nuit</div>
+              <h4 class="swatch__name">Nuit teintée</h4>
+              <div class="swatch__values">
+                <code>--color-night</code>
+                <code>oklch(.18 .032 248)</code>
+                <code>#142133</code>
+              </div>
+              <p class="swatch__usage">Conteneurs primaires, surfaces de chapitre.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#2A4D5E"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Modulation marine</div>
+              <h4 class="swatch__name">Bleu Quart de Nuit</h4>
+              <div class="swatch__values">
+                <code>--color-marine-cliff</code>
+                <code>oklch(.27 .045 248)</code>
+                <code>#2A4D5E</code>
+              </div>
+              <p class="swatch__usage">Modulation de teinte, bordures documentaires.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#E89248"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Accent unique</div>
+              <h4 class="swatch__name">Foyer du Phare</h4>
+              <div class="swatch__values">
+                <code>--color-beacon</code>
+                <code>oklch(.72 .16 60)</code>
+                <code>#E89248</code>
+              </div>
+              <p class="swatch__usage">Accent unique. Jamais en aplat large, jamais multiplié, toujours ponctuel.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#F2A663"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Variante hover</div>
+              <h4 class="swatch__name">Foyer Clair</h4>
+              <div class="swatch__values">
+                <code>--color-beacon-warm</code>
+                <code>oklch(.78 .14 65)</code>
+                <code>#F2A663</code>
+              </div>
+              <p class="swatch__usage">Hover, état actif du CTA primaire, état actif du wordmark.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#E6ECF1"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Respiration claire</div>
+              <h4 class="swatch__name">Brume de Plan</h4>
+              <div class="swatch__values">
+                <code>--color-chart-mist</code>
+                <code>oklch(.93 .012 240)</code>
+                <code>#E6ECF1</code>
+              </div>
+              <p class="swatch__usage">Pages annexes documentaires, fond clair de la dataviz.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#DDE5EE"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Texte primary</div>
+              <h4 class="swatch__name">Encre de Veille</h4>
+              <div class="swatch__values">
+                <code>--color-text-primary</code>
+                <code>oklch(.91 .014 245)</code>
+                <code>#DDE5EE</code>
+              </div>
+              <p class="swatch__usage">Texte principal sur fond nuit — jamais blanc pur.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#7A8B99"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Texte secondary</div>
+              <h4 class="swatch__name">Lueur de Compas</h4>
+              <div class="swatch__values">
+                <code>--color-text-secondary</code>
+                <code>oklch(.62 .025 235)</code>
+                <code>#7A8B99</code>
+              </div>
+              <p class="swatch__usage">Métadonnées, labels documentaires, captions.</p>
+            </div>
+          </article>
+
+          <article class="swatch">
+            <div class="swatch__chip" style="background:#5C6873"></div>
+            <div class="swatch__body">
+              <div class="swatch__role">Texte tertiary</div>
+              <h4 class="swatch__name">Sextant Atténué</h4>
+              <div class="swatch__values">
+                <code>--color-text-dim</code>
+                <code>oklch(.45 .022 238)</code>
+                <code>#5C6873</code>
+              </div>
+              <p class="swatch__usage">Numérotations discrètes, sous-labels, séparateurs textuels.</p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- 01.3 Sémantique & Status -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">01.2</span>
+          <h3 class="subsection__title">Sémantique & status</h3>
+        </div>
+        <p class="subsection__desc">
+          Quatre rôles fonctionnels pour les états système. Le warning recycle
+          l'accent chaud — par construction, un seul signal à la fois sur une
+          vue, qu'il soit branding ou état.
+        </p>
+        <table class="doc-table">
+          <thead>
+            <tr><th style="width:18%">Rôle</th><th style="width:18%">Hex</th><th style="width:24%">Couleur</th><th>Usage</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Success</td>
+              <td><code>#A8C4A0</code></td>
+              <td><span class="token-chip" style="background:#A8C4A0; color:#0D1623; border-color:#A8C4A0">vert sextant désaturé</span></td>
+              <td>Confirmation, complétion, signal positif.</td>
+            </tr>
+            <tr>
+              <td>Warning</td>
+              <td><code>#E89248</code></td>
+              <td><span class="token-chip" style="background:#E89248; color:#0D1623; border-color:#E89248">Foyer du Phare</span></td>
+              <td>L'accent chaud sert aussi de warning — un seul signal à la fois.</td>
+            </tr>
+            <tr>
+              <td>Error</td>
+              <td><code>#D85C5C</code></td>
+              <td><span class="token-chip" style="background:#D85C5C; color:#fff; border-color:#D85C5C">rouge brique muet</span></td>
+              <td>Erreur, lien rompu, calibrage hors plage.</td>
+            </tr>
+            <tr>
+              <td>Info</td>
+              <td><code>#7A8B99</code></td>
+              <td><span class="token-chip" style="background:#7A8B99; color:#fff; border-color:#7A8B99">Lueur de Compas</span></td>
+              <td>Information neutre, métadonnée.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 01.4 WCAG -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">01.3</span>
+          <h3 class="subsection__title">WCAG — contrastes vérifiés</h3>
+        </div>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Combinaison</th><th>Ratio</th><th>Conformité</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Encre de Veille <code>#DDE5EE</code> / Nuit d'Indigo <code>#0D1623</code></td><td>13.8 : 1</td><td>AAA Large + Body</td></tr>
+            <tr><td>Lueur de Compas <code>#7A8B99</code> / Nuit d'Indigo</td><td>5.4 : 1</td><td>AA Body</td></tr>
+            <tr><td>Foyer du Phare <code>#E89248</code> / Nuit d'Indigo</td><td>8.2 : 1</td><td>AAA Large</td></tr>
+            <tr><td>Sextant Atténué <code>#5C6873</code> / Nuit d'Indigo</td><td>3.1 : 1</td><td>Décoratif uniquement (sous AA body)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 01.5 Anti-direction -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">01.4</span>
+          <h3 class="subsection__title">Don't — anti-direction chromatique</h3>
+        </div>
+        <p class="subsection__desc">
+          Cinq registres formellement interdits, sourcés §12 du design specs.
+        </p>
+        <ul class="dont-list">
+          <li class="dont-item">
+            <div class="dont-item__marker">01</div>
+            <div>Pur noir <code>#000000</code> comme fond — = dark mode SaaS générique sans personnalité. Toujours teinté Nuit d'Indigo.</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">02</div>
+            <div>Pur blanc <code>#FFFFFF</code> comme texte — contraste violent amateur. Toujours Encre de Veille Bleutée.</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">03</div>
+            <div>Indigo / violet / purple gradient nulle part — l'accent unique est Foyer du Phare orange. Vérifier qu'aucun hover/focus ne dérive vers un indigo Tailwind par réflexe.</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">04</div>
+            <div>Bleu cyan / électrique — = ventre mou conseil stratégique digital (BCG, Bain digital).</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">05</div>
+            <div>Gradient mesh sur le fond global — = papier peint SaaS cyclique. Le fond global est un aplat teinté Nuit d'Indigo ; les halos sont des incrustations radiales locales.</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 02 — TYPOGRAPHY ============ -->
+    <section class="section" id="typography">
+      <div class="section__head">
+        <span class="section__num">02</span>
+        <div>
+          <h2 class="section__title">Typography</h2>
+        </div>
+        <p class="section__intro">
+          Pairing à 2 familles : Gloock pour le display, JetBrains Mono pour
+          tout le reste (body, captions, eyebrows, données, navigation). 7 tailles
+          dans le type scale, dont une échelle hero hypertrophiée pour les
+          ouvertures (clamp jusqu'à 22vw).
+        </p>
+      </div>
+
+      <!-- 02.1 Pairing -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">02.1</span>
+          <h3 class="subsection__title">Pairing stratégique</h3>
+        </div>
+        <p class="subsection__desc">
+          Deux familles strictement, aucune troisième fonte. Pas de fallback
+          sans-serif générique sur les titres (Times New Roman en stack
+          uniquement).
+        </p>
+
+        <div class="pairing">
+
+          <div class="pairing__card">
+            <div class="pairing__role">Display</div>
+            <div class="pairing__name">Gloock · Regular · mono-weight</div>
+            <div class="pairing__specimen-display">Aa <em>Aa</em></div>
+            <div class="pairing__weights">
+              <span class="w400">Gloock Regular — empattements affirmés, pleins/déliés contrastés</span>
+            </div>
+            <p class="pairing__justif">
+              Sérif display, empattements affirmés, mono-weight (Regular uniquement
+              côté natif). <strong>Usage</strong> : titres hero, manifesto, ouvertures
+              de chapitre, wordmark, pull-quotes, KPI dominants.
+            </p>
+          </div>
+
+          <div class="pairing__card">
+            <div class="pairing__role">Body / Mono</div>
+            <div class="pairing__name">JetBrains Mono · 300 → 700 · italic</div>
+            <div class="pairing__specimen-mono" style="font-size:3.4rem; font-weight:400; line-height:1.05;">Aa <em>Aa</em></div>
+            <div class="pairing__weights">
+              <span class="w300">300 Light</span> ·
+              <span class="w400">400 Regular</span> ·
+              <span class="w500">500 Medium</span> ·
+              <span class="w600">600 Semibold</span> ·
+              <span class="w700">700 Bold</span>
+            </div>
+            <p class="pairing__justif">
+              Monospace, 5 graisses + italic. <strong>Usage</strong> : body, captions,
+              eyebrows, numérotations (<code>05.1</code>, <code>Chapitre · V</code>),
+              labels documentaires, coordonnées, data, navigation, CTA.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 02.2 Type Scale -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">02.2</span>
+          <h3 class="subsection__title">Type scale</h3>
+        </div>
+        <p class="subsection__desc">
+          8 tailles canoniques. L'échelle Hero / Manifesto monte jusqu'à 22vw
+          — disproportion assumée, signature du calibrage A=3 Rupture × style
+          Exaggerated Minimalism.
+        </p>
+
+        <div class="type-scale">
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen" style="font-size: 4.5rem; font-style: italic;">Le repère</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">Hero · Manifesto</div>
+              <div class="type-scale__value">clamp(12vw, 18vw, 22vw)</div>
+              <p class="type-scale__usage">Titres Gloock dominants sur le voice block hero.</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen" style="font-size: 3.2rem; font-style: italic;">Chapitre · V</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">H2 chapitre</div>
+              <div class="type-scale__value">clamp(2.5rem, 5vw, 4.5rem)</div>
+              <p class="type-scale__usage">Titres de chapitre Gloock italic. Utilisé aussi pour les page titles.</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen" style="font-size: 1.9rem;">Palette primaire</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">H3 sub-section</div>
+              <div class="type-scale__value">clamp(1.3rem, 2.2vw, 1.9rem)</div>
+              <p class="type-scale__usage">Titres de sous-section Gloock 400 (sourcé Batch 2/3 — <code>.subsection__name</code>).</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen type-scale__specimen--mono" style="font-size: 1rem;">Le phare ne demande pas. Il signale.</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">--text-base</div>
+              <div class="type-scale__value">1rem · 16px</div>
+              <p class="type-scale__usage">Corps de texte.</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen type-scale__specimen--mono" style="font-size: 1.05rem;">RALLIEMENT →</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">--fs-cta</div>
+              <div class="type-scale__value">clamp(.86rem, 1vw, 1.05rem)</div>
+              <p class="type-scale__usage">Texte des boutons, links Mono.</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen type-scale__specimen--mono" style="font-size: 0.92rem; letter-spacing: 0.06em; text-transform: uppercase;">Coordonnées · 47°57′N · 5°06′W</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">--fs-overline</div>
+              <div class="type-scale__value">clamp(.7rem, .85vw, .92rem)</div>
+              <p class="type-scale__usage">Overlines des sections charnières.</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen type-scale__specimen--mono" style="font-size: 0.84rem;">Caption — bordée documentaire, label secondaire</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">--text-sm</div>
+              <div class="type-scale__value">.84rem · ≈ 13.5px</div>
+              <p class="type-scale__usage">Captions, labels secondaires, ligne documentaire.</p>
+            </div>
+          </div>
+
+          <div class="type-scale__row">
+            <div class="type-scale__specimen type-scale__specimen--mono" style="font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;">05.1 · Numérotation chapitre · éphéméride</div>
+            <div class="type-scale__meta">
+              <div class="type-scale__token">--text-xs</div>
+              <div class="type-scale__value">.72rem · ≈ 11.5px</div>
+              <p class="type-scale__usage">Numérotation de chapitre, eyebrow Mono, métadonnées.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 02.3 Lisibilité -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">02.3</span>
+          <h3 class="subsection__title">Lisibilité — directives</h3>
+        </div>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Paramètre</th><th>Display (Gloock)</th><th>Body (JetBrains Mono)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Letter-spacing</td>
+              <td><code>-0.02em</code> à <code>-0.04em</code> sur titres hero (resserré)</td>
+              <td><code>0</code> à <code>0.02em</code> sur eyebrows</td>
+            </tr>
+            <tr>
+              <td>Line-height</td>
+              <td><code>1.3</code> sur titres</td>
+              <td><code>1.55-1.75</code> sur body · <code>1.85</code> sur manifesto aérés</td>
+            </tr>
+            <tr>
+              <td>Max-inline-size</td>
+              <td><code>32ch</code> manifesto · <code>100%</code> hero</td>
+              <td><code>64ch</code> body documentaire dense · <code>100%</code> tabulaire</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 02.4 Anti-direction typo -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">02.4</span>
+          <h3 class="subsection__title">Don't — anti-direction typographique</h3>
+        </div>
+        <p class="subsection__desc">
+          Quatre registres formellement interdits, sourcés §03.1 et §12.4 du design specs.
+        </p>
+        <ul class="dont-list">
+          <li class="dont-item">
+            <div class="dont-item__marker">01</div>
+            <div>Inter / Helvetica par défaut — Gloock + JetBrains Mono déjà figés, jamais de fallback corporate.</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">02</div>
+            <div>Variable fonts animées kinétiques — Gloock et JetBrains Mono ne sont pas des typographies en mouvement.</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">03</div>
+            <div>Troisième fonte — le pairing est fermé. Pas de fallback sans-serif générique sur les titres (Times New Roman en stack uniquement).</div>
+          </li>
+          <li class="dont-item">
+            <div class="dont-item__marker">04</div>
+            <div>Manifesto poétique pollution narrative — texte exigeant, lucide, jamais ronflant ni inspirationnel.</div>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- ============ 03 — SPACING ============ -->
+    <section class="section" id="spacing">
+      <div class="section__head">
+        <span class="section__num">03</span>
+        <div>
+          <h2 class="section__title">Spacing</h2>
+        </div>
+        <p class="section__intro">
+          Échelle 8px à progression Fibonacci, 8 tokens de 4px à 168px.
+          Densité binaire — un mode aéré pour les sections charnières (hero,
+          manifesto), un mode compact pour les zones documentaires (tables,
+          listings). Pas de valeur intermédiaire.
+        </p>
+      </div>
+
+      <!-- 03.1 Échelle -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">03.1</span>
+          <h3 class="subsection__title">Échelle — 8 tokens</h3>
+        </div>
+        <p class="subsection__desc">
+          Toute valeur d'espacement utilise un de ces 8 tokens. Pas d'interpolation,
+          pas de valeur libre en pixels — choisir le token le plus proche du besoin.
+        </p>
+
+        <div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-2xs<small>4px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 4px"></div></div>
+            <div class="spacing-row__usage">Hairlines verticales, gap inter-icônes.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-xs<small>8px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 8px"></div></div>
+            <div class="spacing-row__usage">Gap éléments denses, séparation tabulaire.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-sm<small>16px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 16px"></div></div>
+            <div class="spacing-row__usage">Padding interne compact.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-md<small>24px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 24px"></div></div>
+            <div class="spacing-row__usage">Padding standard documentaire.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-lg<small>40px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 40px"></div></div>
+            <div class="spacing-row__usage">Inter-blocs documentaires.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-xl<small>64px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 64px"></div></div>
+            <div class="spacing-row__usage">Padding section dense.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-2xl<small>104px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 104px"></div></div>
+            <div class="spacing-row__usage">Padding section aérée.</div>
+          </div>
+          <div class="spacing-row">
+            <div class="spacing-row__token">--space-3xl<small>168px</small></div>
+            <div class="spacing-row__bar-wrap"><div class="spacing-row__bar" style="width: 168px"></div></div>
+            <div class="spacing-row__usage">Padding section charnière hero / manifesto.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03.2 Densité binaire -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">03.2</span>
+          <h3 class="subsection__title">Stratégie de densité — binaire</h3>
+        </div>
+        <p class="subsection__desc">
+          Deux modes seulement. Toute zone se classe en aéré-charnière OU
+          en compact-documentaire. Ratio entre les deux : ~3.5×.
+        </p>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Mode</th><th>Padding bloc</th><th>Line-height</th><th>Max-inline-size</th><th>Usage</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Aéré · charnière</strong></td>
+              <td><code>7vw / 112px</code> max</td>
+              <td><code>1.85</code></td>
+              <td><code>32ch</code></td>
+              <td>Manifestes, ouvertures de chapitre, hero. Un seul propos par bloc.</td>
+            </tr>
+            <tr>
+              <td><strong>Compact · documentaire</strong></td>
+              <td><code>24px</code> fixe</td>
+              <td><code>1.3</code></td>
+              <td><code>100%</code></td>
+              <td>Tableaux, coordonnées, listings, data dense.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 03.3 Règle binaire (la seule règle anti-direction sourcée pour le spacing) -->
+      <div class="subsection">
+        <div class="subsection__head">
+          <span class="subsection__num">03.3</span>
+          <h3 class="subsection__title">Don't — anti-direction spatiale</h3>
+        </div>
+        <p class="subsection__desc">
+          Le design specs §08.2 ne pose qu'une seule interdiction explicite sur l'espacement.
+        </p>
+        <ul class="dont-list">
+          <li class="dont-item">
+            <div class="dont-item__marker">01</div>
+            <div>Padding intermédiaire entre aéré-charnière et compact-documentaire — la modération molle est l'erreur. Deux densités, jamais entre les deux.</div>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="doc__footer">
+      <span>Camille — Design System — Test format 28.05.2026</span>
+      <span class="mono">v0.1 · 3 sections sur 10</span>
+    </footer>
+
+  </main>
+
+</div>
+
+</body>
+</html>

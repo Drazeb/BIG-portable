@@ -36,7 +36,13 @@ Phase 6A · Batch 2               → Logotype + Iconographie + Data Viz (HTML)
      ↓
 Phase 6B · Batch 3               → Direction Photo + Composition + Illustration (HTML)
      ↓
-Phase 7 · Packaging              → Design specs markdown + dossier livrable complet
+Phase 7 · Documentation Markdown → Design specs validés (~45 sections couvrant tout le pack)
+     ↓
+[Phase 8 · Brand Book]  · Optionnel  → Sub-agent invoque /brand-book (cover painterly + Identity Card bento + 8 sections documentaires + closing) — sortie dans `{session_dir}/brand-book/`
+     ↓
+[Phase 8b · Design System] · Optionnel → Sub-agent invoque /design-system (HTML technique sobre type Carbon/Atlassian, 11 sections, sidebar nav, tokens prêts à copier) + audit Python automatique — sortie dans `{session_dir}/design-system/`
+     ↓
+Étape Finale · Packaging         → Pack final centralisé + déploiement Vercel (inclut brand-book/ si Phase 8 et design-system/ si Phase 8b exécutés)
 ```
 
 ## Pipeline — Mode Aspiration (Option D)
@@ -392,23 +398,81 @@ Les lockups nécessitent un calcul de tight viewBox (les paths vtracer ont du pa
 
 ---
 
-### Phase 7 · Documentation & Packaging
+### Phase 7 · Documentation Markdown
 
-- **Ce qu'elle fait** : Génère les design specs et empaquète tout
-- **Input** : Tous les outputs précédents
-- **Output** : Dossier `{brand}-identity-{slug}/` avec tous les livrables
+- **Ce qu'elle fait** : Génère les design specs Markdown
+- **Input** : Tous les outputs précédents (style-tile retenu, pitch, batches, brief analysis)
+- **Output** : `{brand}-design-specs-{slug}.md` (~45 sections, 15-20K tokens) — source de vérité textuelle utilisée par les phases 8 et 8b
+- **Enchaînement** : déclenche soit Phase 8 (Brand Book), soit Phase 8b (Design System), soit directement l'Étape Finale Packaging selon les choix utilisateur
+
+---
+
+### Phase 8 · Brand Book éditorial (optionnel)
+
+- **Ce qu'elle fait** : Génère un brand book HTML éditorial pour les parties prenantes
+- **Input** : Pack BIG complet (design-specs.md + style-tile + batch2 + batch3 + visual-final/) + dépendance SPG-portable côte à côte
+- **Output** : Sous-dossier `{session_dir}/brand-book/` contenant `{brand}-brand-book.html` + visuels finaux + 6 PNG retina mini-deck + 2 mockups social
+- **Règles clés** :
+  - Question utilisateur skippable : `(a) Oui — générer` / `(b) Non — passer au Packaging`
+  - Gate juste-à-temps SPG-portable (3 options : clone / dégradé sans Pitch Deck / skip complet)
+  - **Règle §8quater "Fidélité au pack source"** (sanctuarisée 27 mai 2026) : inventaire 1:1 obligatoire pour les sections documentaires (06a Iconographie, 06b Composants UI, 06c Dataviz, 06d Composition)
+- **Enchaînement** : si done → Phase 8b (Design System) ; si skip → directement Étape Finale Packaging
 
 **Sous le capot** :
-1. L'orchestrateur (ou un subagent) génère `{brand}-design-specs-{slug}.md` (~45 sections, 15-20K tokens) en lisant le :root, le brief analysis, le pitch, et les batches
-2. Crée le dossier de packaging dans `outputs/{session_dir}/`
-3. Copie et renomme les fichiers :
+1. Orchestrateur lance 1 sub-agent Task tool qui invoque le skill `/brand-book`
+2. Le skill brand-book lit le SKILL.md du brand-book (~600 lignes) et orchestre 7 sous-étapes (8-2a..e + 8-3)
+3. La sous-étape 8-2d invoque elle-même un sous-sub-agent pour `/SPG/generate-mini-deck` (~150K tokens, le plus lourd)
+4. Sortie centralisée dans `{session_dir}/brand-book/`, copiée en tête de l'index.html du pack final
+
+---
+
+### Phase 8b · Design System technique (optionnel)
+
+- **Ce qu'elle fait** : Génère un design system HTML technique sobre type Carbon / Atlassian pour les équipes design et engineering. Complète le brand book par les spécifications opposables.
+- **Input** : Pack BIG complet (design-specs.md + style-tile + batch2 + batch3 + visual-final/) — pas de dépendance externe
+- **Output** : Sous-dossier `{session_dir}/design-system/` contenant :
+  - `{brand}-design-system.html` (livrable principal, 11 sections : Color, Typography, Spacing, Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, Tokens)
+  - `{brand}-design-system-inventory.json` (~200 items attendus vs présents)
+  - `{brand}-design-system-audit-sources.json` (mapping items source)
+  - `{brand}-design-system-audit-report.json` (rapport script Python)
+- **Règles clés** :
+  - Question utilisateur skippable : `(a) Oui — générer` / `(b) Non — passer au Packaging`
+  - **14 règles sanctuarisées** dans `.claude/skills/design-system/ref/design-system-generation-rules.md` (notamment R12 inventaire 1:1, R13 catalogage strict — interdit business-speak sur captions —, R14 checklist par section)
+  - **Tableau inventaire-type** dans SKILL.md (~120 items canoniques à compter dans la source)
+  - **PAS de section Voice** (décision tranchée mai 2026 — appartient au brand book)
+  - Audit Python automatique en fin de génération (`design-system-audit.py`) qui vérifie inventaire, sourcing, tailles font-size, patterns AI-slop
+- **Enchaînement** : si done → Étape Finale Packaging (qui copie `design-system/` dans le pack final) ; si skip → directement Étape Finale Packaging
+
+**Sous le capot** :
+1. Orchestrateur lance 1 sub-agent Task tool qui invoque le skill `/design-system`
+2. Le sub-agent lit OBLIGATOIREMENT (a) `SKILL.md` design-system, (b) `design-system-generation-rules.md`, (c) tableau inventaire-type, (d) template HTML de référence
+3. Génère le HTML en 11 sections + 2 fichiers JSON d'audit en parallèle
+4. Orchestrateur lance `python3 scripts/design-system-audit.py {session_dir} --json-output` pour validation anti-régression
+5. Si audit fail (critical > 0) → question utilisateur (continuer / relancer / skip)
+6. Sortie centralisée dans `{session_dir}/design-system/`, copiée dans l'index.html du pack final juste après le brand book
+
+---
+
+### Étape Finale · Packaging
+
+- **Ce qu'elle fait** : Empaquète tout dans un dossier dédié et déploie sur Vercel
+- **Input** : Tous les outputs précédents + brand-book/ si Phase 8 + design-system/ si Phase 8b
+- **Output** : Dossier `{brand}-identity-{slug}/` avec tous les livrables + déploiement Vercel automatique
+
+**Sous le capot** :
+1. Crée le dossier de packaging dans `outputs/{session_dir}/`
+2. Copie et renomme les fichiers :
    - Style-tile HTML (renommé pour enlever le "concept-{n}")
    - Batch 2 et 3 HTML
    - Design specs markdown
    - Pitch du concept choisi (extrait du pitch complet)
    - SVGs logo (6 variantes, si disponibles)
    - Images hero et atmosphere (extraites du HTML en base64 → reconverties en fichiers séparés)
-4. Ouvre le dossier dans Finder
+   - Si `{brand_book_done}` : copie récursive de `brand-book/`
+   - Si `{design_system_done}` : copie récursive de `design-system/`
+3. Génère un `index.html` avec navigation : brand book en tête (si présent), puis design system, puis bento (legacy), puis style-tile, batch 2, batch 3
+4. Déploiement Vercel automatique
+5. Ouvre le dossier dans Finder
 
 ---
 
@@ -562,4 +626,4 @@ En dehors du pipeline principal, deux skills d'audit invocables à la demande pe
 
 ---
 
-Dernière mise à jour : 2026-05-12
+Dernière mise à jour : 2026-05-29 — Ajout Phase 8 Brand Book + Phase 8b Design System dans le pipeline et le schéma. Renommage Phase 7 (était "Documentation & Packaging") en "Documentation Markdown" + Étape Finale Packaging séparée.

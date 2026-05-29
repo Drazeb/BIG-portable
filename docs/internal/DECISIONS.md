@@ -4,6 +4,46 @@ Chaque décision architecturale est documentée ici avec son contexte et sa rais
 
 ---
 
+### D62. Branchement du skill `/design-system` en Phase 8b du pipeline BIG (post Brand Book, pré Packaging)
+**Date** : 29 mai 2026
+**Choix** : Le skill `/design-system` (industrialisé, blindé par 14 règles sanctuarisées + tableau inventaire-type d'~120 items + script Python d'audit anti-régression) est intégré au pipeline BIG en tant que **Phase 8b**, optionnelle, insérée entre la Phase 8 Brand Book et l'Étape Finale Packaging. Pattern de branchement cloné du commit `fb18acf` (Phase 8 Brand Book, 27 mai 2026).
+
+**Convention de numérotation** : **`8b`** plutôt que `9`. Cohérent avec les sous-phases existantes du pipeline (`8-1`, `8-2a/b/c/d/e`, `8-3` sont les sous-étapes internes du Brand Book), évite la cascade de renumérotation de Packaging dans toute la doc (sinon Packaging passe à 9, 10, 11, 12 selon le fichier). Phase 9 reste Packaging. Reflète la nature « optionnelle, post-Phase 8 » du Design System.
+
+**Pourquoi** : Le pack BIG actuel produit un brand book éditorial (livrable showcase pour les parties prenantes — cover painterly + Identity Card bento + sections narratives) mais aucun **manuel technique** pour les équipes design et engineering. Charles a constaté qu'un designer ou un head of brand voyant le pack actuel se dirait « qu'est-ce que c'est que ça, notre output final aujourd'hui ? » — le brand book est de l'ordre du « rendu de conviction », pas de la spécification opposable. La Phase 8b comble ce manque en produisant un design system HTML sobre type Carbon / Atlassian (sidebar nav + 11 sections + tokens `:root` prêts à copier) qui devient le livrable « dev-grade » du pack.
+
+**Différence brand book vs design system** : le brand book joue le rôle de **séduction** (à partager avec les parties prenantes), le design system joue le rôle de **manuel opérationnel** (à transmettre aux équipes). Les deux sont complémentaires — le design system n'a pas vocation à remplacer le brand book.
+
+**Architecture** :
+- **Question utilisateur skippable** après la Phase 8 Brand Book : `(a) Oui — générer` / `(b) Non — passer directement au Packaging`
+- **Inputs** : pack BIG complet (design-specs.md + style-tile + batch2 + batch3 + visual-final/) — pas de dépendance externe (contrairement à Brand Book qui dépend de SPG-portable)
+- **Sub-agent unique** lancé par Task tool qui invoque le skill `/design-system`
+- **Audit Python automatique** en fin (`design-system-audit.py`) qui vérifie 4 axes : inventaire 1:1, sourcing complet, tailles font-size dans le scale, absence de patterns AI-slop (`border-left: Xpx solid var(--accent)` sur blocs d'emphase)
+- **Output** : sous-dossier `{session_dir}/design-system/` (HTML + inventory.json + audit-sources.json + audit-report.json + visual-final/ copié)
+- **Packaging** : copie récursive du sous-dossier dans le pack final + référencement dans l'index.html juste après le brand book (ou en tête si brand book absent)
+
+**Pas de section Voice** dans le DS — décision tranchée mai 2026 (le tone of voice §01.4 du design specs appartient au brand book, pas au manuel technique).
+
+**Risque aval** : nul — pattern de branchement éprouvé sur Brand Book. La Phase 8b est optionnelle et skippable, n'impacte pas le pipeline existant si non utilisée. Sessions historiques (avant 2026-05-29) continuent de marcher : `phases_ordonnées` de test-big inclut `8b` entre `8-3` et `9`, mais l'absence de `{design_system_done}` dans le contexte fait skipper la copie en Packaging.
+
+**Portage public** : `design-system` ajouté à `SKILLS_TO_PORT` du script `~/repos/BIG-portable/scripts/export-to-portable.sh` pour publication dans le repo public BIG-portable (Drazeb). Critères validés : skill autonome, dossier `outputs/` exclu par défaut, pas de référence personnelle.
+
+**Fichiers** :
+- `.claude/skills/brand-identity/SKILL.md` (bloc PHASE 8b inséré après L6810 — clone structure Phase 8 ; condition copie dans Étape Finale Packaging ; détection design-system dans le script Python qui génère index.html)
+- `.claude/skills/brand-identity/ref/pipeline-overview.md` (section « 11b. Design System technique » + écosystème de skills + titre « 12 étapes + 1 sous-phase optionnelle 8b »)
+- `.claude/skills/test-big/SKILL.md` (5 zones : liste utilisateur L138 + table prérequis L226 + table outputs L341 + algo `phases_ordonnées` L348 + mapping phase→SKILL.md BIG L491)
+- `CLAUDE.md` projet (entrée 11b dans pipeline + structure `.claude/skills/` avec brand-book et design-system ajoutés)
+- `ARCHITECTURE.md` (schéma pipeline Mode Création réécrit + brique détaillée Phase 8b + Étape Finale Packaging réécrite + date mise à jour)
+- `CHANGELOG.md` (entrée datée 2026-05-29 D62)
+- `~/repos/BIG-portable/scripts/export-to-portable.sh` (`"design-system"` ajouté à `SKILLS_TO_PORT`)
+- `.claude/skills/design-system/SKILL.md` (statut DRAFT → ACTIF, branché en Phase 8b depuis 2026-05-29)
+
+**À tester E2E** : `/test-big 8b test-camille-phase8-20260527` doit régénérer le design system Camille dans le dossier session, lancer le script Python d'audit, et passer avec 0 critical.
+
+**Plan canonique** : `~/.claude/plans/floofy-growing-tide.md`
+
+---
+
 ### D61. Mode Sélectif unique en Phase 3A — suppression des modes Génératif
 **Date** : 28 mai 2026
 **Choix** : Le Mode Sélectif par registre (introduit en D57) devient le SEUL mode de génération des concepts narratifs. Suppression des deux modes Génératif (libre + orienté registre). Conséquences :

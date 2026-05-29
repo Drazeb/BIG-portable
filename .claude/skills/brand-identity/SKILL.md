@@ -127,7 +127,7 @@ Bienvenue ! Je suis ton Directeur de Création.
   · **C** — On construit ensemble le brief (mode conversationnel)
   · **D** — J'ai une brand existante et je veux que BIG l'aspire (aspiration de brand)
 
-*PS — D'autres skills sont disponibles : `/test-big` (reprise mi-pipeline), `/brand-book`, `/landing-page`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
+*PS — D'autres skills sont disponibles : `/test-big` (reprise mi-pipeline), `/brand-book`, `/design-system`, `/landing-page`, `/visual-prompt`, `/audit-elite`, `/audit-slop`. Détails dans le fichier ouvert.*
 
 ---
 
@@ -6806,7 +6806,156 @@ Le sub-agent assemble le `{brand}-brand-book.html` complet (Étape 4 du workflow
 ### Gestion du retour Phase 8
 - Le sub-agent rapporte STATUS: OK + path du brand book HTML.
 - L'orchestrateur **n'ouvre PAS** le brand book dans le navigateur à cette étape (il sera ouvert via l'index.html du pack après Packaging).
-- **Une fois Phase 8 done → passer à l'Étape Finale (Packaging)** qui copiera le sous-dossier `brand-book/` dans `{package_dir}/`.
+- **Une fois Phase 8 done → passer à la Phase 8b (Design System)** qui complétera le brand book par les spécifications techniques. Si Phase 8b skipped → directement à l'Étape Finale (Packaging).
+
+---
+
+## PHASE 8b — Design System technique (optionnelle)
+
+<phase-intro>
+▶ **Design System technique (optionnel)**
+· *Quoi* : Je génère un design system HTML technique sobre type Carbon/Atlassian (sidebar nav, foundations exhaustives, tokens prêts à copier) en invoquant le skill /design-system
+· *Pourquoi* : C'est le livrable "manuel technique" pour les équipes design et engineering — complète le brand book par les spécifications opposables, prêtes à coder
+· *Tu vas* : choisir Oui (~5-10 min wall-clock, ~80K tokens) ou Non (skip et passer à l'Étape Finale Packaging)
+· *En sortira* : un dossier `design-system/` complet (HTML 11 sections + inventory.json + audit-sources.json) intégré au pack et publié en ligne
+· *Durée estimée* : ~5-10 min
+</phase-intro>
+
+### Objectif
+Générer un **design system HTML technique** sobre type Carbon / Atlassian (sidebar navigation, foundations exhaustives, tokens `:root` prêts à copier, 11 sections : Color, Typography, Spacing, Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, Tokens) à partir du pack identité produit par les Phases 1-7. Cette phase invoque le **skill externe `design-system`** qui orchestre la génération + un audit automatique anti-régression.
+
+**Coût** : ~5-10 minutes wall-clock + ~80K tokens (sub-agent générateur + sous-sub-agent générateur d'inventory/sources JSON). Skippable si l'utilisateur ne veut pas du design system pour cette marque.
+
+**Position** : entre Phase 8 (Brand Book) et l'Étape Finale Packaging. Si exécutée, le design system sera **inclus dans le pack centralisé** par le Packaging et **déployé automatiquement sur Vercel** avec le reste.
+
+**Différence avec le brand book** : le brand book est le livrable "showcase" éditorial pour les parties prenantes (cover painterly + Identity Card bento + sections narratives). Le design system est le livrable "manuel technique" pour les équipes design et engineering (sidebar nav, foundations, tokens prêts à copier). Les deux sont complémentaires.
+
+### Étape 8b-1 — Question utilisateur (orchestrateur)
+
+Présenter cette question à l'utilisateur :
+
+```
+Le brand book est généré. Avant de finaliser le pack via le Packaging,
+souhaitez-vous générer le **design system technique** (manuel sobre
+type Carbon/Atlassian pour les équipes design et engineering — sidebar
+nav, foundations, tokens prêts à copier, ~5-10 min) ?
+
+  (a) Oui — générer maintenant, sera inclus dans le pack final
+      + déploiement Vercel automatique
+  (b) Non — passer directement au Packaging (sans design system)
+
+Note : tu peux toujours générer le design system plus tard manuellement
+via `/design-system {pack_path}` — mais il ne sera pas inclus dans le pack
+centralisé Vercel automatique.
+```
+
+**Si (b) Non** → skip directement à l'Étape Finale Packaging (sans design system).
+
+**Si (a) Oui** → continuer avec l'Étape 8b-2.
+
+### Étape 8b-2 — Génération design system (sub-agent unique)
+
+**Vérification préalable des fichiers du pack** (orchestrateur, avant de lancer le sub-agent) :
+Vérifier que les fichiers suivants existent dans `{skill_dir}/outputs/{session_dir}/` :
+- `{brand}-design-specs.md` (la source de vérité absolue — OBLIGATOIRE)
+- `{brand}-style-tile.html` (ou le style-tile concept retenu — OBLIGATOIRE, fournit le bloc `:root` de référence)
+- `{batch2_file}` (Batch 2 — OBLIGATOIRE, patterns CSS atomiques wordmark / iconographie / composants / data viz)
+- `{batch3_file}` (Batch 3 — OBLIGATOIRE, patterns CSS atomiques photo / composition / illustration)
+- Dossier `visual-final/` (RECOMMANDÉ — visuels finaux utilisés en §07 Photography et §09 Illustration, cf règle R10bis du skill design-system)
+- `{brand}-pitch-c{N}.md` (optionnel — ton de voix, lu pour comprendre l'esprit)
+
+**Si un fichier obligatoire est manquant** :
+```
+⚠ Warning : fichier `{brand}-{file}` manquant dans `{session_dir}/`.
+Le design system aurait besoin de ce fichier comme source.
+
+  (a) Continuer quand même (audit Python signalera les sections incomplètes)
+  (b) Régénérer le fichier manquant avant de continuer (boucle Phase
+      responsable du fichier)
+  (c) Skip Phase 8b entièrement, passer au Packaging sans design system
+```
+
+**Si tous les fichiers présents (ou utilisateur a choisi "continuer quand même")** → lancer le sub-agent Task tool :
+
+```
+Task tool (general-purpose) :
+- description : "Génération design system Phase 8b"
+- prompt :
+    Tu es un sub-agent qui exécute le skill `design-system` pour la
+    marque {brand} de la session {session_dir}.
+
+    1. Lis intégralement le SKILL.md du skill design-system :
+       /Users/charlesbezard/Library/CloudStorage/GoogleDrive-charles.bezard@gmail.com/Mon Drive/Claude Code/Brand Identity Generator/.claude/skills/design-system/SKILL.md
+
+    2. Lis OBLIGATOIREMENT les règles sanctuarisées :
+       /Users/charlesbezard/Library/CloudStorage/GoogleDrive-charles.bezard@gmail.com/Mon Drive/Claude Code/Brand Identity Generator/.claude/skills/design-system/ref/design-system-generation-rules.md
+       → 14 règles à respecter strictement. R12 inventaire 1:1, R13 catalogage
+         strict (PAS de business-speak), R14 checklist par section.
+
+    3. Lis le tableau inventaire-type (CHECKLIST OBLIGATOIRE par section)
+       dans le SKILL.md (~120 items à compter dans la source).
+
+    4. Lis le template structurel de référence :
+       /Users/charlesbezard/Library/CloudStorage/GoogleDrive-charles.bezard@gmail.com/Mon Drive/Claude Code/Brand Identity Generator/.claude/skills/design-system/ref/design-system-template.html
+
+    5. Exécute le pipeline en 5 étapes du SKILL.md design-system avec ces
+       paramètres :
+       - session_dir = "{skill_dir}/outputs/{session_dir}/"
+         (les 5 fichiers du pack BIG + visual-final/ sont dans ce dossier
+          — le skill design-system sait les lire selon la table d'inputs)
+       - output_dir = "{skill_dir}/outputs/{session_dir}/design-system/"
+         (sous-dossier dédié qui sera copié dans le pack centralisé par
+          le Packaging)
+
+    6. Génère 3 fichiers :
+       - {brand}-design-system.html (livrable principal, 11 sections, type
+         Carbon/Atlassian, fond clair palette)
+       - {brand}-design-system-inventory.json (items attendus vs présents
+         par sous-section, ~200 items)
+       - {brand}-design-system-audit-sources.json (mapping de chaque item
+         du DS à sa ligne source dans design-specs.md, ~200 items)
+
+    7. NE PAS générer de section Voice (décision tranchée mai 2026).
+
+    8. Reporte STATUS: OK + path du design system HTML produit
+       ({session_dir}/design-system/{brand}-design-system.html),
+       OU STATUS: BLOCKED + raison.
+
+- run_in_background : false (on attend le résultat pour le Packaging)
+```
+
+**Découpage sous-phases internes** (pour test-big — le sub-agent les exécute dans l'ordre selon le SKILL.md design-system) :
+- `8b-1` : Génération HTML + inventory.json + audit-sources.json (sub-agent générateur)
+- `8b-2` : Audit Python automatique (`design-system-audit.py`)
+- `8b-3` : Vérification + ouverture navigateur
+
+### Étape 8b-3 — Vérification HTML + audit Python automatique
+
+Le sub-agent termine. L'orchestrateur lance le script d'audit Python pour validation anti-régression :
+
+```bash
+python3 .claude/skills/design-system/scripts/design-system-audit.py \
+  "{skill_dir}/outputs/{session_dir}" \
+  --json-output
+```
+
+**Sortie attendue** : `✅ PASS — Critical: 0`. Si critical > 0, signaler à l'utilisateur :
+
+```
+⚠ L'audit Python a détecté {N} violations critiques dans le design system :
+{liste des violations}
+
+  (a) Continuer quand même (les violations seront documentées)
+  (b) Relancer la génération (sub-agent corrige)
+  (c) Skip Phase 8b, passer au Packaging sans design system
+```
+
+Le rapport JSON `{brand}-design-system-audit-report.json` est conservé dans le dossier session pour traçabilité.
+
+### Gestion du retour Phase 8b
+- Le sub-agent rapporte STATUS: OK + path du design system HTML.
+- L'orchestrateur **n'ouvre PAS** le design system dans le navigateur à cette étape (il sera ouvert via l'index.html du pack après Packaging).
+- **Une fois Phase 8b done → passer à l'Étape Finale (Packaging)** qui copiera le sous-dossier `design-system/` dans `{package_dir}/`.
 
 ---
 
@@ -6871,6 +7020,12 @@ Créer un dossier dédié contenant tous les livrables finaux de l'identité de 
    ```bash
    # Copier tout le sous-dossier brand-book/ (contient brand-book.html + visual-final/ + pitch-deck-mini/ + mockups + landing-fullpage.png)
    cp -R {skill_dir}/outputs/{session_dir}/brand-book {skill_dir}/outputs/{session_dir}/{package_dir}/
+   ```
+
+   **Si `{design_system_done}` = true** (Phase 8b exécutée — ajouter après les copies ci-dessus) :
+   ```bash
+   # Copier tout le sous-dossier design-system/ (contient design-system.html + inventory.json + audit-sources.json + audit-report.json + visual-final/)
+   cp -R {skill_dir}/outputs/{session_dir}/design-system {skill_dir}/outputs/{session_dir}/{package_dir}/
    ```
 
    **Extraction des images base64 (commun aux deux modes)** — exécuter après les copies :
@@ -6967,6 +7122,12 @@ Créer un dossier dédié contenant tous les livrables finaux de l'identité de 
    brand_book_path = pack_dir + "/brand-book/" + f"{brand}-brand-book.html"
    if os.path.exists(brand_book_path):
        cards.append(("01", f"brand-book/{brand}-brand-book.html", "Brand Book éditorial", "Identité condensée — intro Identity Card + 8 sections (Big Idea, Concept, Identité, Palette, Typo, Système, Applications, Photo) + closing", True))
+
+   # Design System technique (Phase 8b — optionnel, après le brand book si présent)
+   design_system_path = pack_dir + "/design-system/" + f"{brand}-design-system.html"
+   if os.path.exists(design_system_path):
+       n = len(cards) + 1
+       cards.append((f"{n:02d}", f"design-system/{brand}-design-system.html", "Design System technique", "Manuel sobre type Carbon/Atlassian — sidebar navigation, foundations (Color, Typography, Spacing), Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, Tokens prêts à copier", True))
 
    # Bento (optionnel — ancien artefact)
    bento_candidates = glob.glob(pack_dir + f"/{brand}-bento*.html")
