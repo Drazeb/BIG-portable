@@ -6725,7 +6725,7 @@ Lire le fichier `{skill_dir}/phases/phase-7-specs.md` et utiliser son contenu co
 </phase-intro>
 
 ### Objectif
-Générer un **brand book HTML éditorial** de classe mondiale (cover painterly + intro Identity Card bento + 8 sections documentaires + closing) à partir du pack identité produit par les Phases 1-7. Cette phase invoque un **skill externe `brand-book`** qui lui-même invoque un **sous-skill SPG `generate-mini-deck`** pour la section pitch deck.
+Générer un **brand book HTML éditorial** de classe mondiale (cover painterly + intro Identity Card bento + 8 sections documentaires + closing) à partir du pack identité produit par les Phases 1-7. Cette phase invoque **2 sub-agents Task séquentiels en niveau 1** (depuis le 30 mai 2026 — fix bug anti-récursion harnais Claude Code, voir détails Étape 8-2) : (1) le sous-skill SPG `generate-mini-deck` qui produit 6 PNG pour la section Pitch Deck, puis (2) le skill externe `brand-book` qui assemble le brand book HTML en consommant ces PNG via le paramètre `pitch_deck_mini_path`.
 
 **Coût** : ~10 minutes wall-clock + ~150K tokens (principalement le sub-agent SPG mini-deck). Skippable si l'utilisateur ne veut pas du brand book pour cette marque.
 
@@ -6777,11 +6777,22 @@ done
 - Si **B** : marquer `{brand_book_skip_pitchdeck}` = true. Le sub-agent brand-book saura skipper la section Pitch Deck. Continuer vers 8-2.
 - Si **C** : équivalent au choix initial (b). Skipper directement à l'Étape Finale Packaging.
 
-**Si SPG-portable = "présent"** → continuer avec les sous-étapes 8-2a à 8-3 ci-dessous (toutes exécutées par un seul sub-agent Task tool qui invoque le skill brand-book).
+**Si SPG-portable = "présent"** → continuer avec les sous-étapes 8-2 (SPG mini-deck) et 8-3 (brand book) ci-dessous. **Architecture en 2 sub-agents séquentiels** depuis le 30 mai 2026 (fix bug niveau 2 Claude Code — détails plus bas).
 
-### Étape 8-2 — Génération brand book (sub-agent unique)
+### Pourquoi 2 sub-agents séquentiels et non un seul (sanctuarisé 30 mai 2026)
 
-**Vérification préalable des fichiers du pack** (orchestrateur, avant de lancer le sub-agent) :
+**Limite dure de Claude Code** : un sub-agent Task ne peut pas lui-même lancer un autre sub-agent Task (anti-récursion harnais — garde-fou contre fork-bomb). Hiérarchie autorisée : **niveau 0 (orchestrateur principal)** → **niveau 1 (sub-agent Task)**. Pas de niveau 2.
+
+**Conséquence pour la Phase 8** : avant cette correction, l'orchestrateur BIG (niveau 0) lançait UN seul sub-agent brand-book (niveau 1) qui tentait de lancer SPG `generate-mini-deck` en sous-Task (niveau 2) → **REFUSÉ** → la section Pitch Deck du brand book restait avec ses 6 placeholders PNG manquants.
+
+**Fix architectural** : l'orchestrateur BIG (niveau 0) lance lui-même **2 sub-agents séquentiels** au niveau 1 :
+- **8-2 (NEW)** : sub-agent SPG `generate-mini-deck` → produit 6 PNG dans `{session_dir}/brand-book/pitch-deck-mini/`
+- **8-3** : sub-agent brand-book avec `pitch_deck_mini_path = "{session_dir}/brand-book/pitch-deck-mini/"` en paramètre → le brand-book skippe Task SPG (Mode A pipeline de son Étape 2d) et utilise les PNG déjà produites
+
+Le mode standalone du brand-book (`/brand-book {pack_path}` lancé directement par l'utilisateur) est préservé — il est niveau 0 et peut toujours invoquer SPG en niveau 1.
+
+### Vérification préalable des fichiers du pack (orchestrateur, avant 8-2)
+
 Vérifier que les fichiers suivants existent dans `{skill_dir}/outputs/{session_dir}/` :
 - `{brand}-design-specs.md` (ou `{specs_file}`)
 - `{brand}-pitch.md`
@@ -6801,7 +6812,52 @@ Le brand book aurait besoin de ce fichier pour la section X.
   (c) Skip Phase 8 entièrement, passer au Packaging sans brand book
 ```
 
-**Si tous les fichiers présents (ou utilisateur a choisi "continuer quand même")** → lancer le sub-agent Task tool :
+### Étape 8-2 — Génération SPG mini-deck (sub-agent dédié, niveau 1)
+
+Cette étape DOIT s'exécuter AVANT 8-3 brand-book (qui attend les 6 PNG en input).
+
+```
+Task tool (general-purpose) :
+- description : "Génération SPG mini-deck Phase 8 (sub-skill brand book pitch deck)"
+- prompt :
+    Tu es un sub-agent qui exécute le skill `generate-mini-deck` (SPG) pour
+    la marque {brand} de la session {session_dir}. Tes 6 PNG seront
+    consommées par le sub-agent brand-book lancé juste après toi.
+
+    1. Lis intégralement le SKILL.md du sous-skill generate-mini-deck :
+       /Users/charlesbezard/Library/CloudStorage/GoogleDrive-{...}/Slide Presentation Generator/.claude/skills/generate-mini-deck/SKILL.md
+
+    2. Exécute ses 5 étapes (Étape 1 prep dossier identity SPG, Étape 2
+       Sub0-A analyse visuelle, Étape 3 Sub0-B mode mini 6 archétypes,
+       Étape 4 content-mapper voice brand, Étape 5 capture 6 PNG retina)
+       avec ces paramètres :
+       - pack_path = "{skill_dir}/outputs/{session_dir}/"
+       - brand_slug = "{brand}" (slug court snake-case)
+       - output_dir = "{skill_dir}/outputs/{session_dir}/brand-book/pitch-deck-mini/"
+         (DOSSIER FINAL — le brand book lancé en 8-3 lira directement
+          depuis ce path, pas de copie intermédiaire nécessaire)
+
+    3. Skip intelligent : si VISUAL-ANALYSIS.md ou design-language.md
+       existent déjà dans /SPG/brands/{brand_slug}/, skip les étapes
+       correspondantes.
+
+    4. Reporte STATUS: OK + path du dossier pitch-deck-mini contenant
+       les 6 PNG ({session_dir}/brand-book/pitch-deck-mini/),
+       OU STATUS: BLOCKED + raison (puis le brand-book sera lancé en
+       mode dégradé, section Pitch Deck minimisée).
+
+- run_in_background : false (on attend les PNG pour 8-3)
+```
+
+**Output attendu** : 6 PNG retina dans `{session_dir}/brand-book/pitch-deck-mini/` :
+- `slide-01-cover.png`, `slide-02-case-study.png`, `slide-03-data-viz.png`,
+  `slide-04-dashboard-kpi.png`, `slide-05-process-timeline.png`, `slide-06-icon-grid.png`
+
+**Gestion BLOCKED** : si SPG échoue, marquer `{spg_failed} = true` et continuer vers 8-3 SANS passer `pitch_deck_mini_path` au brand-book. Le brand-book tentera Mode B (sub-Task SPG) — qui échouera aussi car on est en niveau 2 — et finira par marquer la section 07b "À générer manuellement". User aura un brand book avec 7 sections sur 8.
+
+### Étape 8-3 — Génération brand book (sub-agent dédié, niveau 1)
+
+Lancer ce sub-agent SEULEMENT après le retour de 8-2.
 
 ```
 Task tool (general-purpose) :
@@ -6811,30 +6867,30 @@ Task tool (general-purpose) :
     {brand} de la session {session_dir}.
 
     1. Lis intégralement le SKILL.md du skill brand-book :
-       /Users/charlesbezard/Library/CloudStorage/GoogleDrive-charles.bezard@gmail.com/Mon Drive/Claude Code/Brand Identity Generator/.claude/skills/brand-book/SKILL.md
+       /Users/charlesbezard/Library/CloudStorage/GoogleDrive-{...}/Brand Identity Generator/.claude/skills/brand-book/SKILL.md
 
     2. Exécute les Étapes 0-5 du workflow brand-book avec ces paramètres :
        - pack_path = "{skill_dir}/outputs/{session_dir}/"
          (les 5 fichiers du pack BIG + visual-final/ sont éparpillés dans
           ce dossier — le skill brand-book sait les lire)
+       - pitch_deck_mini_path = "{skill_dir}/outputs/{session_dir}/brand-book/pitch-deck-mini/"
+         (PNG déjà produites par le sub-agent SPG 8-2 lancé avant toi —
+          brand-book Mode A pipeline activé, Étape 2d skip Task SPG)
        - output_dir = "{skill_dir}/outputs/{session_dir}/brand-book/"
          (sous-dossier dédié qui sera copié dans le pack centralisé par
           le Packaging)
-       - version = "v1" (pas d'incrément ici puisqu'on est dans le
-         dossier session unique de BIG, pas dans un dossier de test
-         brand-book autonome)
+       - version = "v1"
 
-    3. Note importante : ne PAS écrire dans
+    3. Note architecture : tu ES en niveau 1 (lancé par BIG niveau 0).
+       Tu NE PEUX PAS invoquer SPG en sous-Task (niveau 2 refusé par
+       l'harnais). C'est pour ça que tu reçois pitch_deck_mini_path —
+       suis le Mode A de ton Étape 2d.
+
+    4. Note importante : ne PAS écrire dans
        .claude/skills/brand-book/outputs/{brand}-test-v{N}/ (c'est le
        dossier de test autonome du skill). Écris DIRECTEMENT dans
        {skill_dir}/outputs/{session_dir}/brand-book/ pour que le
        Packaging puisse copier le sous-dossier.
-
-    4. Le brand-book invoquera lui-même un sous-sub-agent pour
-       generate-mini-deck SPG (Étape 2d de son workflow). Skip
-       intelligent activé : si VISUAL-ANALYSIS.md et design-language.md
-       existent déjà dans /SPG/brands/{brand_slug}/, les phases lourdes
-       Sub0-A et Sub0-B seront skippées.
 
     5. Reporte STATUS: OK + path du brand book HTML produit
        ({session_dir}/brand-book/{brand}-brand-book.html),
@@ -6843,12 +6899,15 @@ Task tool (general-purpose) :
 - run_in_background : false (on attend le résultat pour le Packaging)
 ```
 
-**Découpage sous-phases internes** (pour test-big — le sub-agent les exécute dans l'ordre selon le workflow du skill brand-book) :
-- `8-2a` : Capture PNG style-tile (07a Web du brand book)
-- `8-2b` : Mockup LinkedIn (07c — Mustache + capture Playwright transparent paysage)
-- `8-2c` : Mockup X (07c — Mustache + capture Playwright carré)
-- `8-2d` : Sous-sub-agent SPG mini-deck (07b Pitch Deck — 6 PNG retina ; le plus lourd ~150K tokens)
-- `8-2e` : Composition variables Identity Card bento v4 (intro 00 — 4 icônes + 1 dataviz signature extraits de batch2)
+**Si `{spg_failed} = true`** : ne PAS passer `pitch_deck_mini_path` dans le prompt (omettre la ligne). Le brand-book tentera Mode B (échouera car niveau 2) puis marquera la section comme à générer manuellement.
+
+**Découpage sous-phases internes** (pour test-big — le sub-agent brand-book les exécute dans l'ordre selon son workflow) :
+- `8-3a` : Capture PNG style-tile (07a Web du brand book)
+- `8-3b` : Mockup LinkedIn (07c — Mustache + capture Playwright transparent paysage)
+- `8-3c` : Mockup X (07c — Mustache + capture Playwright carré)
+- `8-3d` : Mini-deck (Mode A — skip Task SPG, vérifier/utiliser les 6 PNG déjà produites en 8-2)
+- `8-3e` : Composition variables Identity Card bento v4 (intro 00)
+- `8-3f` : Extract batch2 inventory (Étape 2.5 du brand-book SKILL.md — script Python `extract-batch2-inventory.py`)
 
 ### Étape 8-3 — Génération HTML brand book final + vérification
 

@@ -31,9 +31,13 @@ Tu n'es PAS un stratège de marque (les concepts sont déjà figés dans le pack
 
 ## INPUTS — Pack BIG attendu
 
-Le skill est appelé avec un seul argument : le **path absolu du pack d'identité BIG**.
+Le skill est appelé avec **1 argument obligatoire** et **1 argument optionnel** :
 
-Format attendu : `outputs/{brand}-{session}/{brand}-identity-{concept}/` (mais le skill accepte aussi un dossier flat ne contenant que le pack, comme `outputs/voltapilot-identity/`).
+**Argument 1 (obligatoire) — `pack_path`** : path absolu du pack d'identité BIG.
+
+**Argument 2 (optionnel) — `pitch_deck_mini_path`** (sanctuarisé 30 mai 2026) : path absolu vers un dossier contenant déjà les 6 PNG du mini-deck pitch produites en amont (cas du mode pipeline BIG, voir Étape 2d Mode A). Si fourni, le skill SKIP l'invocation Task SPG (qui échouerait en niveau 2) et copie/utilise directement les PNG existants. Si absent, le skill invoque SPG via sub-agent Task (Mode B standalone — niveau 0 → 1 OK).
+
+Format attendu pour `pack_path` : `outputs/{brand}-{session}/{brand}-identity-{concept}/` (mais le skill accepte aussi un dossier flat ne contenant que le pack, comme `outputs/voltapilot-identity/`).
 
 Ce dossier DOIT contenir au minimum :
 
@@ -56,9 +60,21 @@ Dans `.claude/skills/brand-book/outputs/{brand}-test-v{N}/` :
 
 ```
 {brand}-test-v{N}/
-├── {brand}-brand-book.html              ← LIVRABLE PRINCIPAL
+├── {brand}-brand-book.html              ← LIVRABLE PRINCIPAL (produit par render-brand-book.py)
+├── template-vars.json                   ← Intermédiaire — valeurs des ~100 slots Mustache (Étape 4)
+├── {brand}-batch2-inventory.html        ← Intermédiaire — extract-then-inject (Étape 2.5)
+├── {brand}-batch2-inventory.json        ← Intermédiaire — manifest MD5 des composants (Étape 2.5)
 ├── {brand}-landing-fullpage.png         ← Capture full-page du style-tile
 ├── {brand}-style-tile.html              ← Copie du style-tile (utile pour re-capture)
+├── {brand}-linkedin-mockup.png          ← Capture mockup LinkedIn (07c)
+├── {brand}-x-mockup.png                 ← Capture mockup X (07c)
+├── pitch-deck-mini/                     ← 6 PNG mini-deck SPG (07b)
+│   ├── slide-01-cover.png
+│   ├── slide-02-case-study.png
+│   ├── slide-03-data-viz.png
+│   ├── slide-04-dashboard-kpi.png
+│   ├── slide-05-process-timeline.png
+│   └── slide-06-icon-grid.png
 └── visual-final/                        ← Copie des visuels finaux
     ├── {brand}-c{N}-{paletteID}-hero.png
     ├── {brand}-c{N}-{paletteID}-halo.png
@@ -150,7 +166,39 @@ Dépendances : `pip install playwright && playwright install chromium` (à faire
    ```
 4. **Résultat** : PNG carré **1000×1000 retina ×2** (= 2000×2000 pixels physiques), fond blanc mode light X intrinsèque. Le script capture le viewport entier (PAS de `omit_background` ici — l'UI X officielle a un fond blanc qu'on conserve).
 
-#### Étape 2d — Mini-deck pitch (section 07b) via sous-skill SPG `generate-mini-deck`
+#### Étape 2d — Mini-deck pitch (section 07b) — MODE DUAL (sanctuarisé 30 mai 2026)
+
+Cette étape produit les 6 PNG du mini-deck pitch consommées par la section 07b du brand book. **Le mécanisme dépend du contexte d'invocation** — c'est le fix du bug architectural Claude Code : un seul niveau de délégation Task autorisé (anti-récursion harness).
+
+**Détection du mode** : si l'orchestrateur fournit en paramètre une variable `pitch_deck_mini_path` (chemin absolu vers un dossier contenant déjà les 6 PNG produites en amont par SPG), tu es en **mode pipeline (BIG)**. Sinon tu es en **mode standalone**.
+
+##### Mode A — Pipeline (variable `pitch_deck_mini_path` fournie)
+
+Le sub-agent brand-book est lui-même un niveau 1 (lancé par l'orchestrateur BIG niveau 0). Lancer un sous-Task SPG ici = niveau 2 = **REFUSÉ par l'harnais Claude Code**. Donc le pipeline BIG a déjà fait tourner SPG en parallèle (Étape 8-1 du BIG SKILL.md) et te passe le path PNG en argument.
+
+Vérifier que les 6 PNG existent :
+```bash
+ls "{pitch_deck_mini_path}"/slide-01-cover.png \
+   "{pitch_deck_mini_path}"/slide-02-case-study.png \
+   "{pitch_deck_mini_path}"/slide-03-data-viz.png \
+   "{pitch_deck_mini_path}"/slide-04-dashboard-kpi.png \
+   "{pitch_deck_mini_path}"/slide-05-process-timeline.png \
+   "{pitch_deck_mini_path}"/slide-06-icon-grid.png
+```
+
+Si le dossier `{pitch_deck_mini_path}` est DIFFÉRENT du dossier où le brand book attend les PNG (`{output_dir}/pitch-deck-mini/`), copier les 6 PNG dedans :
+```bash
+mkdir -p "{output_dir}/pitch-deck-mini/"
+cp "{pitch_deck_mini_path}"/slide-*.png "{output_dir}/pitch-deck-mini/"
+```
+
+Si le dossier est DÉJÀ celui attendu (cas BIG qui produit direct dans `{session_dir}/brand-book/pitch-deck-mini/`), aucune copie nécessaire.
+
+**Quality gate Mode A** : si une PNG manque, log un warning et continue (section 07b sera marquée "À générer manuellement"). Ne PAS tenter d'invoquer SPG en sous-Task (échouera).
+
+##### Mode B — Standalone (pas de `pitch_deck_mini_path`)
+
+Tu es lancé directement par l'utilisateur via `/brand-book {pack_path}` → niveau 0. Tu peux invoquer SPG via un sub-agent Task tool (niveau 1 = autorisé).
 
 Lancer un **sub-agent Task tool (`general-purpose`)** qui invoque le sous-skill `generate-mini-deck` (dossier `/Slide Presentation Generator/.claude/skills/generate-mini-deck/`).
 
@@ -174,7 +222,11 @@ Reporte STATUS: OK quand les 6 PNG sont produites dans output_dir, OU
 STATUS: BLOCKED avec la raison.
 ```
 
-**Output attendu** : 6 PNG retina dans `outputs/{brand}-test-v{N}/pitch-deck-mini/` :
+**Quality gate Mode B** : `STATUS: OK` si les 6 PNG existent ET sont > 200 KB chacune. Sinon, log un warning et continue.
+
+##### Output attendu (identique aux 2 modes)
+
+6 PNG retina dans `{output_dir}/pitch-deck-mini/` :
 - `slide-01-cover.png` (Cover, archétype SPG #1)
 - `slide-02-case-study.png` (Case Study, #12)
 - `slide-03-data-viz.png` (Data Viz, #9)
@@ -182,9 +234,7 @@ STATUS: BLOCKED avec la raison.
 - `slide-05-process-timeline.png` (Process/Timeline, #7)
 - `slide-06-icon-grid.png` (Icon Grid, #19)
 
-**Pourquoi un sub-agent dédié ?** Isolation de contexte. Le SPG charge ses propres prompts canoniques Sub0-A/B (~200K tokens) qui ne doivent pas polluer le contexte du brand-book.
-
-**Quality gate** : `STATUS: OK` si les 6 PNG existent ET sont > 200 KB chacune. Sinon, log un warning et continue (section 07b sera marquée "À générer manuellement" dans le HTML final).
+**Pourquoi cette architecture duale ?** Limite dure de Claude Code : un seul niveau Task autorisé. Quand le BIG (niveau 0) lance brand-book (niveau 1), brand-book NE PEUT PAS lancer SPG en sous-Task (niveau 2 refusé). Le BIG fait donc tourner SPG en parallèle (lui aussi en niveau 1) et passe les PNG à brand-book. Le mode standalone reste préservé pour quand Charles lance `/brand-book` directement.
 
 #### Étape 2e — Composition Identity Card (intro bento "Le pack en une vue") — **SANCTUARISÉ 27 mai 2026 (v4)**
 
@@ -246,6 +296,36 @@ Les 6 noms (col "Nom") sont **propres à chaque marque** — le skill reprend le
 
 ---
 
+### Étape 2.5 — Extraction inventory batch2 (extract-then-inject v5, SANCTUARISÉE 30 mai 2026)
+
+Avant la génération HTML (Étape 4), **extraire mécaniquement** tous les composants UI / icônes / charts copiables-verbatim depuis `{brand}-batch2.html` vers un fichier inventory autonome. Ce mécanisme remplace l'ancienne approche "comptage + inventaire manuel par le sub-agent" qui s'est révélée insuffisante (cf. bug Atelier Vermeil 30/05/2026 : 28 SVG hachurés redessinés en versions plates, 4 badges + 4 toggles oubliés).
+
+```bash
+python3 .claude/skills/brand-book/scripts/extract-batch2-inventory.py \
+  "{pack_path}/{brand}-batch2.html" \
+  ".claude/skills/brand-book/outputs/{brand}-test-v{N}/{brand}-batch2-inventory.html" \
+  --json-output ".claude/skills/brand-book/outputs/{brand}-test-v{N}/{brand}-batch2-inventory.json"
+```
+
+**Sortie attendue** :
+- `{brand}-batch2-inventory.html` — document HTML autonome structuré par `<section data-inv="…">` × 10 catégories. Chaque bloc verbatim est borné par `<!-- BEGIN_BLOCK md5=<hash> -->` / `<!-- END_BLOCK -->`. Les `<defs>` SVG référencés via `url(#…)` sont **injectées inline** dans chaque SVG → chaque bloc est autonome.
+- `{brand}-batch2-inventory.json` — manifest des hashes MD5 par catégorie, structure `{categories: {icons: {count, items: [{md5, label, source_line, ...}]}, buttons: {…}, …}}`. Consommé par le quality gate Étape 5.
+
+**10 catégories extraites** :
+- `icons` — wrappers `.glyph`, `.icon-card`, `.icon-cell`, `.icon-tile`, `.icon-spec`, `.stroke-step`, `.abstraction-step`, `.business-icon`
+- `buttons` — `<button class="btn[ --variant]">` (hors `.tab`)
+- `inputs` — wrappers `.field`, `.form-field`, `.input`, `.select`, `.input-wrap` contenant un `<input>` / `<select>` / `<textarea>`
+- `badges`, `toggles`, `checkboxes` — wrappers à classe exacte ou BEM
+- `cards` — `<article class="card[ --variant]">` + whitelist (`kpi-card`, `stat-card`, `metric-card`, `ui-card`, `data-card`, `tile`, `card--depth`, `card--kpi`)
+- `tabs`, `alerts`, `progress` — wrappers conteneurs
+- `charts` — SVG avec viewBox ≥ 150 dans au moins une dimension
+
+**Quality gate Étape 2.5** : lire `totals.all` du JSON. Si < 20, log `[WARN] Inventory minimaliste (totals.all=…)` et continuer (une marque peut avoir un batch2 légitime peu dense). Si = 0, **fail** (le script aurait dû lever une erreur, vérifier le format batch2).
+
+**Précédence** : cette étape rend la règle 12 (Fidélité au pack source / §8quater) **automatiquement appliquée** au lieu de reposer sur la rigueur déclarative du sub-agent. La règle textuelle reste comme garde-fou conceptuel mais devient **subordonnée** à cette mécanique.
+
+---
+
 ### Étape 3 — Copie des assets
 
 ```bash
@@ -253,29 +333,129 @@ cp -R "{pack_path}/visual-final" ".claude/skills/brand-book/outputs/{brand}-test
 cp "{pack_path}/{brand}-style-tile.html" ".claude/skills/brand-book/outputs/{brand}-test-v{N}/"
 ```
 
-### Étape 4 — Génération du brand book HTML
+### Étape 4 — Production du `template-vars.json` (sanctuarisée v6 — 30 mai 2026)
 
-1. **Charger** `ref/template-base.html` comme point de départ
-2. **Remplacer les tokens génériques** par les tokens réels extraits du style-tile :
-   - `--brand-display`, `--brand-body` (fonts)
-   - `--brand-color-*` (palette oklch complète, 9 couleurs minimum)
-   - `--brand-radius-xs` (et autres radius)
-   - `--brand-wordmark-accent` (couleur du point final du wordmark)
-   - **Alias bento Identity Card v4** : `--color-foyer`, `--color-foyer-warm`, `--color-mist`, `--color-mist-cool`, `--color-marine-cliff`, `--color-night-clear` (optionnel — le CSS a un fallback `#142133`), `--font-display`, `--font-mono`, `--radius` — ces variables peuvent pointer vers les couleurs natives ou être des oklch dérivées (cf. Étape 2e pour la composition exacte). **Obligatoire** pour que les cards `.bv4-*` du bento s'affichent correctement.
-3. **Mettre à jour `<head>`** : titre `{Brand} — Brand Book v{N}`, Google Fonts importés depuis le style-tile, meta description
-4. **Construire chaque section** selon `ref/structure.md`, en consultant `ref/editorial-patterns.md` pour les sections textuelles (01, 02) et `ref/style-guide.md` pour les règles formelles
-5. **Respecter le mode mixte chromatique** :
-   - COVER + CLOSING + section 08 PHOTO = Dark Cinema natif (fond Nuit d'Indigo)
-   - Section 06 SYSTÈME = positif wrapper + îlots dark canoniques pour chaque composant
-   - Section 07a WEB = positif wrapper + PNG sur fond gradient palette
-   - Sommaire + 00 IDENTITY CARD + 01-05 = positif (fond Brume de Plan ou équivalent clair)
-6. **Respecter le slide rythm** : chaque section a une hauteur prédictible (~720-900px), max-width 1280-1400px, padding 80-120px
-7. **Substituer les Mustache de l'intro Identity Card v4 (00)** : `{{COVER_VISUAL}}` (réutilisé du bv4-cover bento), `{{IDENTITY_CARD_TITLE}}` (toujours "Le pack en une vue."), `{{BRAND}}` (wordmark), `{{WORDMARK_OVERLINE}}` (ex: "Brand ID · LL-2026"), `{{BRAND_SIGNATURE_COORDS}}` + `{{BRAND_SIGNATURE_CADENCE}}` (2 lignes mono signature), `{{MANIFESTO_LINE1}}` + `{{MANIFESTO_LINE2}}` + `{{MANIFESTO_SUB}}`, `{{ICONGRID_LABEL}}` + `{{IDENTITY_CARD_ICONS_4}}` (4 cells SVG 32px composés), `{{FONT_DISPLAY_NAME}}` + `{{FONT_MONO_NAME}}`, `{{DATAVIZ_LABEL}}` + `{{DATAVIZ_SIGNATURE_SVG}}` (svg bar chart composé), et **6 jeux** `{{COLOR_N_ROLE/NAME/HEX}}` pour N de 1 à 6 (rôles canoniques : Fond profond / Fond surface / Détail froid / Surface claire / Accent signal / Accent chaud). Composition détaillée : Étape 2e.
-8. **Substituer les Mustache du sommaire** : `{{TOC_TITLE}}` (titre court H2 type "Le pack, chapitre par chapitre."). Le sommaire est en 2 colonnes CSS multicol.
-9. **Substituer les Mustache de la section 06 Système** : `{{ICONOGRAPHY_SUBTITLE}}` — toujours "Outline canonique · Solid pour le CTA · Duotone pour l'état actif." (sanctuarisé). Titre H2 toujours "Une grammaire iconique tenue." — **PAS de nombre d'icônes** (sanctuarisé, écarté par Charles 27 mai 2026).
-10. **Substituer les Mustache spécifiques aux sous-sections 07** :
-    - **07b Pitch Deck** : `{{PITCH_DECK_TITLE}}`, `{{PITCH_DECK_SUBTITLE}}` (titre + sous-titre éditoriaux de la section, rédigés depuis le pitch.md). Les 6 PNG sont déjà référencés en chemins relatifs `pitch-deck-mini/slide-01-cover.png` … `slide-06-icon-grid.png`.
-    - **07c Réseaux sociaux** : `{{SOCIAL_TITLE}}` (titre éditorial type "Profil sur les réseaux sociaux."), `{{SOCIAL_SUBTITLE}}` (sous-titre type "La marque se présente sur LinkedIn et X — deux écosystèmes différents, même signature visuelle. Cover atmosphérique · avatar wordmark · le reste respecte le UI natif de chaque plateforme."), `{{COLOR_CELL_LINKEDIN}}` (couleur beige claire chaude **DISTINCTE** du fond Brume du body — règle de dérivation plus bas), `{{BRAND}}` (slug pour les noms de fichier PNG `{brand}-linkedin-mockup.png` et `{brand}-x-mockup.png`).
+> **RÈGLE STRUCTURELLE v6 (sanctuarisée 30 mai 2026 — remplace l'ancienne Étape 4 "génération HTML directe")**
+>
+> Tu **NE TOUCHES PLUS au HTML du brand book**. Tu produis UNIQUEMENT un fichier `template-vars.json` contenant les **valeurs** des slots Mustache du template. L'Étape 4bis lance un script Python qui fait la substitution mécanique — le markup HTML figé du template est **verrouillé par construction**.
+>
+> Bug que cette mécanique empêche (récurrent jusqu'au 30 mai 2026) : sub-agent qui réécrit / simplifie / invente le markup HTML d'une section pourtant figée par le template. Exemples observés :
+> - 07b Pitch Deck (Vermeil) : spread asymétrique 2×3 (`s08b-spread > s08b-row--top + s08b-row--bottom`) remplacé par une grille à plat `.deck > .deck__slide × 6` → débordement viewport perdu.
+> - Intro Identity Card v4 bento : "pétouille" sur l'arrangement des cellules.
+>
+> Avec cette mécanique : le sub-agent n'a même plus accès au markup. Impossible de le casser.
+>
+> Pour les **slots `{{BATCH2_INVENTORY_*}}` (8 slots)** : tu ne les fournis PAS dans `template-vars.json`. Le script `render-brand-book.py` les remplit automatiquement en lisant `{brand}-batch2-inventory.html` (produit Étape 2.5) et en injectant verbatim les `<article data-component="…">…</article>` correspondants. Les commentaires `BEGIN_BLOCK md5=… / END_BLOCK` sont préservés → le quality gate MD5 (Étape 5) passe par construction.
+
+#### 4.1 — Lister les slots attendus
+
+Lire la liste complète des slots Mustache du template via :
+
+```bash
+grep -oE '\{\{[A-Z0-9_]+\}\}' .claude/skills/brand-book/ref/template-base.html | sort -u
+```
+
+Il y a ~100 slots uniques classés par section. Les 8 `BATCH2_INVENTORY_*` sont remplis par le script automatiquement — tu n'as PAS à les fournir.
+
+#### 4.2 — Composer les valeurs des slots
+
+Pour CHAQUE slot non-BATCH2, produis une valeur en suivant les sources ci-dessous. Si tu ne sais pas pour un slot, mets une valeur placeholder visible (ex: `"À DÉFINIR"`) plutôt que de laisser manquer — l'Étape 5 surfacera la liste des `[MISSING:…]`.
+
+**Méta (5 slots)** :
+- `BRAND` : slug snake-case (ex: `les-vermeil`)
+- `VERSION` : `"v1"`
+- `YEAR` : année courante (ex: `"2026"`)
+- `BRAND_THEME_COLOR` : hex `#RRGGBB` (couleur dominante palette, pour theme-color meta)
+- `GOOGLE_FONTS_LINK` : balise `<link>` complète copiée depuis le style-tile
+
+**Tokens design (~20 slots)** : extraits du `:root` du style-tile (`FONT_DISPLAY`, `FONT_BODY`, `FONT_MONO`, `FONT_DISPLAY_NAME`, `FONT_MONO_NAME`, `COLOR_PRIMARY`, `COLOR_ACCENT`, `COLOR_ACCENT_2`, `COLOR_SECONDARY`, `COLOR_DANGER`, `COLOR_DARK_BG`, `COLOR_DARK_TEXT`, `COLOR_POSITIVE_BG`, `COLOR_POSITIVE_TEXT`, `COLOR_SUCCESS`, `COLOR_WARNING`, `COLOR_FOYER`, `COLOR_FOYER_WARM`, `COLOR_MIST`, `COLOR_MIST_COOL`, `COLOR_MARINE_CLIFF`, `COLOR_NIGHT_CLEAR`, `RADIUS_XS/SM/MD/LG`). **Obligatoire** pour que le rendu visuel soit cohérent.
+
+**Sommaire (1 slot)** : `TOC_TITLE` (titre court H2 type "Le pack, chapitre par chapitre.")
+
+**Intro Identity Card v4 bento (~22 slots)** : composés en Étape 2e — `IDENTITY_CARD_TITLE` (toujours "Le pack en une vue."), `COVER_VISUAL` (path relatif vers le hero), `WORDMARK_OVERLINE`, `BRAND_SIGNATURE_COORDS`, `BRAND_SIGNATURE_CADENCE`, `MANIFESTO_LINE1` / `MANIFESTO_LINE2` / `MANIFESTO_SUB`, `ICONGRID_LABEL`, `IDENTITY_CARD_ICONS_4` (string HTML contenant 4 SVG 32px concaténés), `DATAVIZ_LABEL`, `DATAVIZ_SIGNATURE_SVG` (string HTML contenant 1 SVG bar chart composé), et **6 jeux** `COLOR_N_ROLE` / `COLOR_N_NAME` / `COLOR_N_HEX` pour N de 1 à 6 (rôles canoniques : Fond profond / Surface claire / Détail froid / Surface beige / Accent signal / Accent chaud).
+
+**Sections éditoriales (~10 slots)** :
+- `BIG_IDEA_H1`, `BIG_IDEA_SUBTITLE`, `BIG_IDEA_P1/2/3` (depuis pitch.md, suivre `editorial-patterns.md`)
+- `CONCEPT_H2`, `CONCEPT_P1/2/3` (idem)
+- Titres simples : `IDENTITY_TITLE`, `PALETTE_TITLE`, `TYPO_TITLE`, `PHOTO_TITLE`
+
+**Section Système — sous-titres / captions (~10 slots)** :
+- `ICONOGRAPHY_SUBTITLE` : toujours `"Outline canonique · Solid pour le CTA · Duotone pour l'état actif."` (sanctuarisé)
+- `ICONOGRAPHY_SUB_TITLE` / `UI_SUB_TITLE` / `DATAVIZ_SUB_TITLE` / `COMPOSITION_SUB_TITLE` + leurs captions (rédigés depuis design-specs §06 / §07)
+- `COMPOSITION_GRID_DEMO` : HTML libre composé par toi pour la sous-section 06d Composition (pas d'extract automatique — la grille canonique est déduite de design-specs.md). Tu peux y mettre une grille SVG simple ou des blocs `<div>` avec annotations breakpoints.
+
+**Section 07a Web (2 slots)** : `WEB_TITLE`, `WEB_CAPTION`
+
+**Section 07b Pitch Deck (2 slots)** : `PITCH_DECK_TITLE`, `PITCH_DECK_SUBTITLE` (rédigés depuis pitch.md). Les 6 PNG sont déjà référencés en chemins relatifs `pitch-deck-mini/slide-01-cover.png` … `slide-06-icon-grid.png` dans le template — tu n'as PAS à les fournir, ils sont en dur.
+
+**Section 07c Réseaux sociaux (3 slots)** : `SOCIAL_TITLE`, `SOCIAL_SUBTITLE`, `COLOR_CELL_LINKEDIN` (couleur beige claire chaude DISTINCTE du fond Brume du body — règle de dérivation détaillée plus bas dans le SKILL.md §MAPPING MUSTACHE 07c).
+
+**Closing (2 slots)** : `CLOSING_STATEMENT`, `CLOSING_VISUAL`
+
+#### 4.3 — Écrire le fichier `template-vars.json`
+
+Écrire dans `{output_dir}/template-vars.json` un objet JSON `{clé → valeur}` où chaque clé est le nom du slot SANS les `{{}}`. Exemple :
+
+```json
+{
+  "BRAND": "les-vermeil",
+  "VERSION": "v1",
+  "PITCH_DECK_TITLE": "Le relevé, en six planches.",
+  "PITCH_DECK_SUBTITLE": "Deck commercial · 6 slides · ratio 16:9",
+  "COLOR_1_ROLE": "Fond profond", "COLOR_1_NAME": "Bocage", "COLOR_1_HEX": "#1a2a18",
+  "IDENTITY_CARD_ICONS_4": "<svg ...>...</svg> <svg ...>...</svg> <svg ...>...</svg> <svg ...>...</svg>",
+  "...": "..."
+}
+```
+
+**Cas particuliers pour les valeurs HTML** (slots qui prennent du markup, pas du texte) :
+- `IDENTITY_CARD_ICONS_4` : string contenant 4 SVG 32px concaténés (les 4 icônes signature de la marque, extraites de batch2)
+- `DATAVIZ_SIGNATURE_SVG` : string contenant 1 SVG bar chart composé
+- `COMPOSITION_GRID_DEMO` : HTML libre pour la sous-section composition
+- `GOOGLE_FONTS_LINK` : balise `<link>` complète
+
+Échapper les guillemets internes (`"` → `\"`) selon le standard JSON. Le script `render-brand-book.py` valide le JSON avant substitution — si malformé, erreur claire avec la ligne en faute.
+
+**Quality gate Étape 4** : `template-vars.json` doit contenir au minimum `BRAND`, `VERSION`, les 22 tokens design, et tous les slots de l'Identity Card v4 (sinon le bento s'affichera dégradé). Si un slot manque, le script le surfacera en Étape 4bis.
+
+### Étape 4bis — Substitution mécanique via `render-brand-book.py` (sanctuarisée v6 — 30 mai 2026)
+
+Une fois `template-vars.json` écrit en Étape 4, lancer le script :
+
+```bash
+python3 .claude/skills/brand-book/scripts/render-brand-book.py \
+  .claude/skills/brand-book/ref/template-base.html \
+  "{output_dir}/template-vars.json" \
+  "{output_dir}/{brand}-brand-book.html" \
+  --batch2-inventory "{output_dir}/{brand}-batch2-inventory.html"
+```
+
+Le script fait :
+1. Lit le template + le JSON + l'inventory.
+2. Pour chaque slot `{{VAR}}` du template : remplace par la valeur correspondante du JSON.
+3. Pour les 8 slots `{{BATCH2_INVENTORY_*}}` : injection automatique des `<article>` depuis l'inventory (catégorie correspondante), commentaires `BEGIN_BLOCK md5=… / END_BLOCK` préservés.
+4. Vérifie qu'aucun slot ne reste non substitué (sinon `[FAIL]`).
+5. Écrit le brand book final.
+
+**Sortie attendue OK** :
+```
+[INFO] Slots dans template : 102 uniques
+[INFO] Variables fournies  : 94
+[INFO] Injection auto batch2-inventory : 8 slots remplis
+[OK]   Substitutions   : 115
+[OK]   Brand book écrit : {output_dir}/{brand}-brand-book.html (~110 Ko, ~2200 lignes)
+```
+
+**Sortie possible avec slots manquants** (mode non-strict par défaut — les slots manquants deviennent `[MISSING:VAR_NAME]` visibles dans le brand book) :
+```
+[WARN] N slot(s) du template sans valeur dans vars.json :
+         · {{COMPOSITION_GRID_DEMO}}
+         · {{BIG_IDEA_P3}}
+```
+
+Si des slots sont marqués `[MISSING:…]` dans le brand book final → retourner sur l'Étape 4, enrichir `template-vars.json` avec les valeurs manquantes, relancer 4bis.
+
+**Mode strict** : `--strict` ajouté → un slot manquant = exit 1. Utile pour valider que toutes les valeurs sont produites avant rendu. **Recommandé** une fois que tu es sûr d'avoir fourni tous les slots requis.
 
 ### Étape 5 — Vérification et ouverture
 
@@ -290,49 +470,43 @@ cp "{pack_path}/{brand}-style-tile.html" ".claude/skills/brand-book/outputs/{bra
 5. Vérifier que la palette du bento (`.bv4-palette`) contient bien **6 blocs** `<div class="bv4-palette__bloc ...">` non vides (rôle + nom + hex)
 6. Vérifier que le wordmark enrichi (`.bv4-wordmark`) contient les 3 zones : overline, wordmark center, signature (2 lignes mono)
 
-7. **QUALITY GATE FIDÉLITÉ BATCH2** (sanctuarisé 27 mai 2026 — règle 12 / §8quater) :
+7. **QUALITY GATE FIDÉLITÉ BATCH2 — MÉCANIQUE HASH MD5 (sanctuarisée v5 / 30 mai 2026 — remplace l'ancien comptage Bash)** :
 
-   Pour chaque sous-section 07 (Iconographie / Composants UI / Dataviz / Composition), **compter les éléments dans batch2 ET dans le brand book généré, puis comparer**. Si écart → REGÉNÉRER la sous-section concernée.
+   La fidélité 1:1 est garantie par hash MD5 strict. Le script `verify-md5-fidelity.py` lit le manifest JSON produit Étape 2.5 et vérifie que CHAQUE hash attendu est présent dans le brand book final + que le contenu re-hashé match.
 
    ```bash
-   # Bash quick-check pour les composants UI (à adapter par classe)
-   BATCH2="{pack_path}/{brand}-batch2.html"
-   BRANDBOOK="{output_dir}/{brand}-brand-book.html"
+   INVENTORY_JSON=".claude/skills/brand-book/outputs/{brand}-test-v{N}/{brand}-batch2-inventory.json"
+   BRANDBOOK=".claude/skills/brand-book/outputs/{brand}-test-v{N}/{brand}-brand-book.html"
 
-   echo "=== ICÔNES (batch2 section Iconographie) ==="
-   grep -c '<svg' "$BATCH2"   # total svg dans batch2 (large)
-   echo "vs brand book section 07a Iconographie :"
-   awk '/id="system".*Iconographie/,/<\/section>/' "$BRANDBOOK" | grep -c '<svg'
-
-   echo "=== BOUTONS (Primary + Secondary × états) ==="
-   grep -c '<button' "$BATCH2"
-   echo "vs brand book :"
-   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c '<button'
-
-   echo "=== INPUTS (Empty/Focus/Error/...) ==="
-   grep -c '<input\b' "$BATCH2"
-   echo "vs brand book :"
-   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c '<input\b'
-
-   echo "=== BADGES ==="
-   grep -c 'class="badge' "$BATCH2"
-   echo "vs brand book :"
-   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c 'class="badge'
-
-   echo "=== TOGGLE (si présent batch2) ==="
-   grep -c 'class="toggle' "$BATCH2"
-   echo "vs brand book :"
-   awk '/07.*Composants UI/,/<\/section>/' "$BRANDBOOK" | grep -c 'class="toggle'
-
-   echo "=== CHARTS (line / bar / donut / etc.) ==="
-   grep -c 'class="chart' "$BATCH2"
-   echo "vs brand book section 07c Data viz :"
-   awk '/07.*Data viz/,/<\/section>/' "$BRANDBOOK" | grep -c '<svg.*viz\|chart-box'
+   python3 .claude/skills/brand-book/scripts/verify-md5-fidelity.py "$INVENTORY_JSON" "$BRANDBOOK"
    ```
 
-   **Règle de réussite** : pour chaque catégorie, `compte_brandbook >= compte_batch2` (le brand book peut en avoir plus mais JAMAIS moins). Si `compte_brandbook < compte_batch2` → la sous-section est sous-représentée → **REGÉNÉRER** en demandant explicitement au sub-agent de reproduire l'inventaire exact.
+   **Sortie attendue OK** :
+   ```
+   [INFO] Attendus    : N blocs sur 11 catégories
+   [INFO] Trouvés     : N blocs dans le brand book
+   [OK]   Fidélité 1:1 verbatim vérifiée — N blocs présents et intacts.
+   ```
 
-   **Cas signalé par Charles plusieurs fois** : "il y a toujours un nombre [réduit] de UI components mis. Il n'y a pas tous les UI components qui sont dans le batch 2." → ce quality gate vise précisément à empêcher cette régression.
+   **Sortie possible FAIL** (exemples) :
+   ```
+   [FAIL] M bloc(s) ATTENDU(S) absent(s) du brand book :
+            · abc123…  (icons)
+            · def456…  (buttons)
+   ```
+   ou
+   ```
+   [FAIL] X bloc(s) ALTÉRÉ(S) (hash annoncé ≠ hash recalculé) :
+            · annoncé=abc123  recalculé=ff9988
+   ```
+
+   **Action en cas de FAIL** :
+   1. Relire la liste des MD5 manquants / altérés (regroupés par catégorie).
+   2. Relancer **UNIQUEMENT le sub-agent de génération HTML (Étape 4)** avec un prompt enrichi :
+      « Le quality gate Étape 5 a détecté que les blocs MD5 suivants ne sont pas présents (ou ont été altérés) dans le brand book : `<liste>`. Ces blocs viennent de `{brand}-batch2-inventory.html` (catégories `<X>`). Cherche-les via `<!-- BEGIN_BLOCK md5=<hash> -->`, copie-les VERBATIM dans la sous-section appropriée du brand book, et régénère le HTML. Ne modifie AUCUN caractère à l'intérieur des blocs. »
+   3. Re-run quality gate. Si toujours FAIL après 2 itérations : escalade humaine (patch direct du HTML par l'utilisateur).
+
+   **Cette mécanique remplace définitivement** l'ancien comptage Bash (`grep -c '<button'` etc.) qui était insuffisant : il pouvait passer alors que le sub-agent avait redessiné les composants en plus simple (le compte était bon mais la fidélité absente). Le hash MD5 verrouille la fidélité au caractère près.
 
 8. Ouvrir le résultat dans le navigateur :
    ```bash
@@ -433,7 +607,7 @@ Voir aussi : feedback Charles `feedback_visual_final_convention.md` (mémoire de
 9. **Hiérarchie typographique FIGÉE** (voir `style-guide.md` §4bis) : utiliser EXCLUSIVEMENT les variables `--type-*` et les classes utilitaires `.section__eyebrow`, `.section__title`, `.section__subtitle`, `.section__body`, `.caption`, `.pull-quote`, `.big-number`, `.mono`. **Pas de tailles inline** (`style="font-size: ..."`). Les tailles des titres NE varient PAS d'une section à l'autre.
 10. **Slide rythm 720-900px** par section. Exceptions assumées : Cover/Closing (100vh), 07a Web (PNG long ~1200-1600px), 07b Pitch Deck (spread ~1300px), 07c Réseaux sociaux (diptyque ~1100px). 06 Système est éclaté en 4 slides successives 06a/b/c/d, chacune ~720-900px.
 11. **Contraste minimum de séparation — palette only stricte** (sanctuarisée 27 mai 2026) : tout bloc visible (card, tuile, panneau) doit être chromatiquement distinct de son conteneur parent (≥ 8-10 points lightness en oklch, OU hue différent, OU chroma ≥ 0.02 d'écart). **La couleur de contraste DOIT obligatoirement être une couleur de la palette canonique de la marque** (accessible via `var(--color-*)` ou `var(--brand-color-*)`). **AUCUNE COULEUR INVENTÉE n'est tolérée** — même si elle "matche le ton". Anti-pattern interdit : un bloc avec `background: var(--brand-color-positive-bg)` enfant d'une section qui a déjà ce fond → bloc invisible. Anti-pattern PIRE : `background: oklch(0.92 0.025 78)` (couleur ad-hoc inventée) → pollue l'identité chromatique du brand book. Si aucune couleur palette ne crée un contraste suffisant, basculer sur une teinte sombre de la palette (Marine Cliff, Nuit Claire, Abyss) avec texte clair. **Exception "spécimen sur fond natif"** : autorisée uniquement quand on documente l'élément sur sa couleur d'usage réelle (lockup sur fond Brume dans 04 Identité). Dans ce cas, bordure 1px subtile + commentaire HTML `<!-- mode spécimen : fond natif d'usage -->` obligatoire. Détails complets : `style-guide.md` §8bis.
-12. **Fidélité au pack source pour sections documentaires** (sanctuarisée 27 mai 2026) : pour les sous-sections 06a Iconographie / 06b Composants UI / 06c Dataviz / 06d Composition, le brand book doit présenter **TOUS les éléments documentés dans `batch2.html` / `batch3.html`**, sans simplification ni réduction quantitative. **Action obligatoire** : avant de finaliser chaque sous-section 06, faire un inventaire de batch2 (compter `<svg>`, `<button>`, `.component`, `.chart-card`, `.toggle` avec leurs états) et vérifier présence 1:1 dans le brand book. **Anti-pattern interdit** : "j'ai mis quelques exemples représentatifs" → NON, montre tout. Exemple : si batch2 documente 8 boutons (2 styles × 4 états), brand book DOIT avoir 8 boutons. Détails complets : `style-guide.md` §8quater.
+12. **Fidélité au pack source — mécanique EXTRACT-THEN-INJECT v5** (sanctuarisée 30 mai 2026 — remplace l'ancien comptage déclaratif du 27 mai) : pour les sous-sections **Iconographie / Composants UI / Data viz** de la section Système, le brand book DOIT injecter VERBATIM les blocs HTML extraits par `scripts/extract-batch2-inventory.py` (Étape 2.5) dans les slots `{{BATCH2_INVENTORY_*}}` du template. **Aucune redessination de composant UI / icône / chart autorisée.** Le quality gate Étape 5 (`verify-md5-fidelity.py`) bloque la livraison si un bloc attendu manque ou a été altéré (hash MD5 strict, au caractère près). La règle textuelle de comptage manuel reste comme garde-fou conceptuel mais est **subordonnée** à cette mécanique. Bug que cette règle empêche : Atelier Vermeil 30/05/2026 — 28 SVG `viewBox 64×64` avec hachures `url(#hatch-cross)` redessinés en 20 SVG `32×32` plats `currentColor`, 4 badges + 4 toggles oubliés (déclaratif insuffisant). Détails complets : `style-guide.md` §8quater + Étape 2.5 + Étape 4 (bloc « RÈGLE EXTRACT-THEN-INJECT » en tête).
 
 ---
 

@@ -35,6 +35,7 @@ Le processus est guidé étape par étape — je te demanderai tes inputs et val
 
 - **`/test-big`** — Test runner pour reprendre le pipeline BIG à partir d'une phase spécifique sur la base d'une session existante. Utile si tu veux itérer sur la Phase 4 sans refaire le brief et le scoping, ou si le pipeline a planté en cours et que tu veux reprendre là où il s'est arrêté.
 - **`/brand-book`** — Génère un brand book HTML éditorial à partir d'un pack BIG complet : cover painterly + intro Identity Card bento + 8 sections documentaires (Big Idea, Concept, Identité, Palette, Typographie, Système, Applications, Photo & Illustration) + closing. Invoqué automatiquement en Phase 8 de BIG, mais peut aussi être lancé seul sur un pack existant.
+- **`/design-system`** — Génère un design system HTML technique sobre type Carbon/Atlassian à partir d'un pack BIG complet : sidebar navigation, foundations exhaustives (Color, Typography, Spacing), Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, et bloc Tokens `:root` prêt à copier (11 sections). Blindé par 14 règles sanctuarisées + checklist obligatoire d'~120 items + script Python d'audit anti-régression. Complète le brand book par les spécifications techniques opposables. Invoqué automatiquement en Phase 8b de BIG (après Brand Book), mais peut aussi être lancé seul sur un pack existant.
 - **`/landing-page`** — Génère des landing pages HTML auto-portées depuis un brief, un design system, ou directement depuis un pack BIG. *(disponible dans un repo séparé, à venir)*
 - **`/visual-prompt`** — Workflow itératif MidJourney → Nano Banana 2 → animation Recraft pour produire des visuels IA niveau Awards. **2 modes** : (1) mode **principal** — génération d'un visuel hero à partir d'un rapport Perplexity ; (2) mode **variantes** — dérivation d'atmosphere/closeup/macro/pov à partir d'un hero existant, en exploitant le framework librairie atmosphère (`nb-prompting-guide.md §11` — 7 types × 4 niveaux d'intensité). Invoqué en Phase 3B-7c.7 (hero) puis Phase 3B-7c.10 + 3B-7e (variantes). Dépend de `/nano-banana-edit` pour les corrections NB2.
 - **`/nano-banana-edit`** — Primitive d'édition d'image via l'API Gemini (alias Nano Banana / NB2). Invoqué par `/visual-prompt` pour toutes les corrections atomiques (couleur de fond, grain, tons, clair-obscur, retouche ciblée). Skill **workspace partagé** — disponible dans un repo séparé `nano-banana-edit-portable`, nécessite une clé API Gemini configurée dans `.env`.
@@ -65,7 +66,7 @@ Tu peux explorer la Phase 1 à 5 (analyse brief → style-tile) **sans configure
 
 *Note UX : à chaque entrée d'étape importante, tu verras un encadré de cadrage (Quoi / Pourquoi / Tu vas / En sortira) — pas besoin de relire ce guide en cours de route.*
 
-## Les 12 étapes du pipeline
+## Les 12 étapes du pipeline (+ 1 sous-phase optionnelle 8b)
 
 *Les durées indiquées sont des **fourchettes empiriques** calculées sur ~50 sessions historiques. Elles incluent le temps machine ET ton temps de lecture / décision / itération. Une session complète médiane fait ~3-5h tout compris (linéaire) à ~10h (avec beaucoup d'itérations). Les étapes optionnelles peuvent être skippées.*
 
@@ -172,6 +173,12 @@ Je génère les Design Specs (45 sections en Markdown).
 
 **11. Brand Book éditorial (Phase 8 — optionnel — ~10-15 min)**
 Je te demande si tu veux que je génère un brand book HTML éditorial : cover painterly + intro Identity Card bento + 8 sections documentaires (Big Idea, Concept, Identité, Palette, Typographie, Système, Applications avec Web/Pitch Deck/Réseaux Sociaux, Photo & Illustration) + closing.
+→ Ta réponse : **(a) Oui — générer** OU **(b) Non — passer direct à la Phase 8b ou au Packaging**
+
+---
+
+**11b. Design System technique (Phase 8b — optionnel — ~5-10 min)**
+Je te demande si tu veux que je génère un design system HTML technique sobre type Carbon / Atlassian : sidebar navigation, foundations exhaustives (Color, Typography, Spacing), Iconography, Logo, Data viz, Photography, Composition, Illustration, Motion, et bloc Tokens `:root` prêt à copier. Complète le brand book par les spécifications techniques opposables, prêtes à coder.
 → Ta réponse : **(a) Oui — générer** OU **(b) Non — passer direct au Packaging**
 
 ---

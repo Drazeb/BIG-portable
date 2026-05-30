@@ -193,29 +193,41 @@ Bento d'ouverture inséré entre le sommaire et la section 01 BIG IDEA. Donne en
 - **Mode chromatique global** : **positif** pour le wrapper (titres, intros), **îlots dark canoniques** pour les composants production (les composants sont rendus dans leur état réel, qui est généralement Dark Cinema).
 - **Mode de présentation** : **GRILLE DOCUMENTAIRE** dans chaque slide.
 
-### 06a Iconographie — **SANCTUARISÉ 27 mai 2026**
+### 06a Iconographie — **SANCTUARISÉ 27 mai 2026 + MÉCANIQUE EXTRACT-THEN-INJECT v5 (30 mai 2026)**
+
+> **Convention extract-then-inject (v5 sanctuarisée)** : cette sous-section est composée par **injection verbatim** des blocs extraits par `scripts/extract-batch2-inventory.py` (catégorie `data-inv="icons"`). Le sub-agent compose UNIQUEMENT les wrappers, headers et captions AUTOUR — il ne touche jamais au contenu d'un bloc `BEGIN_BLOCK / END_BLOCK`. Détails : SKILL.md Étape 2.5 + Étape 4 prompt sub-agent + `style-guide.md` §8quater.
 
 - **Titre canonique** : **"Une grammaire iconique tenue."**
 - **Subtitle canonique** : **"Outline canonique · Solid pour le CTA · Duotone pour l'état actif."**
 - **Règle stricte** : **NE PAS mentionner un nombre d'icônes** (écarté explicitement par Charles le 27 mai 2026 — le nombre de grammaires peut varier par marque, on parle de la grammaire, pas du compte).
-- **Contenu** :
-  - Icônes canoniques de la marque (les "must-haves" identifiés en batch 2 — laisser le nombre s'adapter par marque)
-  - Grammaires affichées (généralement 3 : outline / filled / duotone — ou les grammaires définies par la marque)
-  - Échelle (du plus petit usage 16px au plus large 64px)
-- **Source** : `{brand}-batch2.html` (section iconographie) + `{brand}-design-specs.md` §06 ICONOGRAPHIE.
-- **Hauteur** : ~620-720px.
+- **Slot template** : `{{BATCH2_INVENTORY_ICONS}}` (template-base.html section 07 Système, sous-section `.bk-subsection--icons`).
+- **Contenu effectivement injecté** : TOUTES les icônes wrapper-reconnues de batch2 (.glyph / .icon-card / .icon-cell / .icon-tile / .stroke-step / .abstraction-step / .business-icon), avec leurs `<defs>` SVG injectées inline (hachures, gradients).
+- **Source** : `{brand}-batch2-inventory.html` (produit Étape 2.5) → injection. La source originale est `{brand}-batch2.html`.
+- **Hauteur** : ~620-720px (peut s'étendre selon le nombre d'icônes — laisser la grille respirer).
 
-### 06b Composants UI
+### 06b Composants UI — **MÉCANIQUE EXTRACT-THEN-INJECT v5 (30 mai 2026)**
 
-- **Contenu** : boutons (primary/secondary/ghost), inputs (default/focus/error), badges, cards, nav, tabs, etc.
-- **Source** : `{brand}-batch2.html` (section UI components).
-- **Mode** : chaque composant dans un îlot dark (fond Nuit d'Indigo) car c'est leur état production.
+> **Convention extract-then-inject (v5 sanctuarisée)** : cette sous-section est composée par **injection verbatim** des blocs extraits par `scripts/extract-batch2-inventory.py` (catégories `data-inv="buttons" | "inputs" | "badges" | "toggles" | "checkboxes" | "cards" | "tabs" | "alerts" | "progress"`). Le sub-agent compose UNIQUEMENT les wrappers HTML AUTOUR — il ne touche jamais au contenu d'un bloc.
+
+- **Contenu effectivement injecté** : TOUS les composants UI documentés dans batch2 (buttons primary/secondary × états documentés, inputs avec leur wrapper field/form-field, badges success/warning/error/info, toggles, checkboxes, cards UI whitelistées, tabs wrappers, alerts, progress bars).
+- **Slots template** :
+  - `{{BATCH2_INVENTORY_BUTTONS}}` → boutons
+  - `{{BATCH2_INVENTORY_INPUTS}}` → form inputs
+  - `{{BATCH2_INVENTORY_BADGES}}` → badges
+  - `{{BATCH2_INVENTORY_TOGGLES_CHECKBOXES}}` → toggles + checkboxes
+  - `{{BATCH2_INVENTORY_CARDS}}` → cards UI
+  - `{{BATCH2_INVENTORY_MISC_UI}}` → tabs + alerts + progress
+- **Source** : `{brand}-batch2-inventory.html` → injection. La source originale est `{brand}-batch2.html`.
+- **Mode** : composition libre (fond clair ou îlots dark selon la signature marque — déduit du design-specs).
 - **Hauteur** : ~720-920px.
 
-### 06c Data viz
+### 06c Data viz — **MÉCANIQUE EXTRACT-THEN-INJECT v5 (30 mai 2026)**
 
-- **Contenu** : 3 charts SVG canoniques (line, bar, donut) — exemples avec données fictives sobres.
-- **Source** : `{brand}-batch2.html` (section data viz) + `{brand}-design-specs.md` §07 DATA VIZ.
+> **Convention extract-then-inject (v5 sanctuarisée)** : cette sous-section est composée par **injection verbatim** des blocs extraits par `scripts/extract-batch2-inventory.py` (catégorie `data-inv="charts"`). Le sub-agent compose UNIQUEMENT les wrappers AUTOUR — il ne touche jamais au contenu d'un bloc SVG (gradients, axes, courbes restent verbatim).
+
+- **Contenu effectivement injecté** : TOUS les charts SVG de batch2 avec viewBox dimensionnée pour la dataviz (≥ 150 dans au moins une dimension), avec leurs `<defs>` gradients injectées inline.
+- **Slot template** : `{{BATCH2_INVENTORY_CHARTS}}`.
+- **Source** : `{brand}-batch2-inventory.html` → injection. La source originale est `{brand}-batch2.html`.
 - **Hauteur** : ~520-620px.
 
 ### 06d Composition

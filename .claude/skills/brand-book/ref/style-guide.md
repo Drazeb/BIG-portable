@@ -408,25 +408,54 @@ Le bento de la section 00 Identity Card doit respecter une **alternance chromati
 - Palette (6 couleurs mixtes) = 1 mixte
 - Total : alternance équilibrée, atmosphère "phare dans la nuit" qui respire
 
-### 8quater. Règle "Fidélité au pack source" pour sections documentaires — SANCTUARISÉE 27 mai 2026
+### 8quater. Règle "Fidélité au pack source" — MÉCANIQUE EXTRACT-THEN-INJECT v5 (SANCTUARISÉE 30 mai 2026)
 
-Pour les sous-sections **06a Iconographie**, **06b Composants UI**, **06c Dataviz**, **06d Composition**, le brand book doit présenter **TOUS les éléments documentés dans le pack source** (`batch2.html`, `batch3.html`), sans simplification ni réduction quantitative.
+**Mécanique automatisée prévalente** : pour les sous-sections **07a Iconographie**, **07b Composants UI**, **07c Data viz** du Système (id="system" dans `template-base.html`), la fidélité au pack source est désormais **MÉCANIQUE** :
 
-**Action concrète orchestrateur** : avant de finaliser chaque sous-section 06, faire un **inventaire batch2** → liste exhaustive (compter les `<svg>` icônes, `<button>`, `.component`, `.chart-card`, `.toggle`, `.input` avec leurs états...) → vérifier présence 1:1 dans le brand book. Si écart → ajouter les éléments manquants.
+1. **Étape 2.5 du workflow** (SKILL.md) exécute le script `scripts/extract-batch2-inventory.py` qui extrait **verbatim** depuis `{brand}-batch2.html` les 10 catégories de composants suivantes vers `{brand}-batch2-inventory.html` :
+   - `icons` (wrappers `.glyph`, `.icon-card`, `.icon-cell`, `.icon-tile`, `.stroke-step`, `.abstraction-step`, `.business-icon`, …)
+   - `buttons` (`<button class="btn[ --variant]">`, hors `.tab`)
+   - `inputs` (wrappers `.field`, `.form-field`, `.input`, `.select`, `.input-wrap`)
+   - `badges`, `toggles`, `checkboxes`, `cards` (whitelist), `tabs`, `alerts`, `progress`, `charts`
+
+2. Chaque bloc HTML extrait est borné par `<!-- BEGIN_BLOCK md5=<hash> -->` / `<!-- END_BLOCK -->`. Les `<defs>` SVG référencés via `url(#…)` sont **injectées inline** dans chaque SVG → chaque bloc est autonome.
+
+3. **Étape 4** (génération HTML brand book) : le sub-agent copie VERBATIM ces blocs dans les slots `{{BATCH2_INVENTORY_*}}` du template. **Aucune redessination autorisée.** Le sub-agent compose UNIQUEMENT les wrappers HTML (grilles, headers, captions, eyebrows) AUTOUR des blocs. Il peut ajouter des `<span class="bk-mono">{label}</span>` à partir de `data-label` sur l'`<article>`.
+
+4. **Étape 5** (quality gate) : `scripts/verify-md5-fidelity.py` lit le manifest JSON + le brand book final, vérifie que CHAQUE hash MD5 attendu est présent ET que le contenu re-hashé match. Un seul caractère altéré → `[FAIL]` → la sous-section concernée est régénérée.
+
+**Ce que cette mécanique garantit** :
+- 0 redessination de composant (anti-pattern Atelier Vermeil 30/05/2026 : 28 SVG `viewBox 64×64` avec hachures `url(#hatch-cross)` redessinés en 20 SVG `32×32` plats `currentColor` → **impossible** avec extract-then-inject).
+- 0 simplification quantitative (si batch2 a 24 icônes, brand book a 24 icônes).
+- 0 invention de variantes ou états (le sub-agent n'a accès qu'aux blocs verbatim).
+
+**Liberté préservée du sub-agent** : composition des wrappers (grilles, colonnes, fonds, padding), rédaction des eyebrows / titres / captions, ordre d'affichage des blocs dans la grille.
+
+**Périmètre hors mécanique** :
+- **07d Composition** : pas d'extract automatique. La grille canonique est déduite de `design-specs.md` et générée librement par le sub-agent.
+- **Bento Identity Card (intro 00)** : reste à la charge du sub-agent (n'est pas dans batch2).
+
+**Garde-fou conceptuel résiduel** : la formulation textuelle ci-dessous reste comme rappel philosophique mais devient **subordonnée** à la mécanique. En cas de désaccord (nouveau type de composant non couvert), priorité à la mécanique : ajouter une nouvelle catégorie dans `extract-batch2-inventory.py` avant tout.
+
+---
+
+#### Formulation textuelle historique (garde-fou conceptuel — subordonnée à la mécanique ci-dessus)
+
+Pour les sous-sections **07a Iconographie**, **07b Composants UI**, **07c Data viz**, **07d Composition**, le brand book doit présenter **TOUS les éléments documentés dans le pack source** (`batch2.html`, `batch3.html`), sans simplification ni réduction quantitative.
 
 **Anti-pattern interdit** : "j'ai mis quelques exemples représentatifs" → NON. Le brand book doit refléter la **vraie densité** du système conçu par BIG. Sous-représenter dilue la valeur perçue du pack identité. Charles 27/05/26 : "tu n'en mets pas beaucoup dans le brand book… pareil pour la dataviz."
 
-**Exception** : si batch2 contient deux versions contradictoires d'un même élément (ex: 2 versions différentes d'un même bouton non documentées comme variantes A/B), prendre la dernière version chronologique ou la plus complète.
+**Exception** : si batch2 contient deux versions contradictoires d'un même élément, prendre la dernière version chronologique ou la plus complète.
 
-**Inventaire-type à effectuer pour chaque section 06** :
+**Inventaire-type pour chaque section 07** :
 | Section | Inventaire batch2 attendu |
 |---------|--------------------------|
-| 06a Iconographie | Toutes les icônes métier de la `Grammaire Iconique` + `DA illustrative · icônes métier` + les 3 grammaires (Outline / Solid / Duotone) |
-| 06b Composants UI | TOUS les états de chaque composant (Buttons : Default/Hover/Active/Disabled × Primary/Secondary ; Form Elements : input + focus + error + toggle + checkbox/radio si présents ; Badges : toutes les variantes ; Cards : tous les containments ; Feedback/Navigation : tous les patterns) |
-| 06c Dataviz | TOUS les charts canoniques (Line + Bar + Donut + Échantillon grille si présent + tout autre type) |
-| 06d Composition | TOUTES les grilles canoniques documentées (12-col / 8-col / hero asymétrique / etc.) |
+| 07a Iconographie | Toutes les icônes métier de la `Grammaire Iconique` + `DA illustrative · icônes métier` + les 3 grammaires (Outline / Solid / Duotone) |
+| 07b Composants UI | TOUS les états de chaque composant (Buttons : Default/Hover/Active/Disabled × Primary/Secondary ; Form Elements : input + focus + error + toggle + checkbox/radio si présents ; Badges : toutes les variantes ; Cards : tous les containments ; Feedback/Navigation : tous les patterns) |
+| 07c Data viz | TOUS les charts canoniques (Line + Bar + Donut + Échantillon grille si présent + tout autre type) |
+| 07d Composition | TOUTES les grilles canoniques documentées (12-col / 8-col / hero asymétrique / etc.) |
 
-**Note Camille v3 (legacy accepté)** : le brand book Camille v3 actuel ne respecte pas pleinement cette règle (composants UI sous-représentés : 3 boutons au lieu de 8, pas de toggle). C'est un legacy. Pour les futures marques, la règle s'applique strictement.
+**Note Camille v3 (legacy accepté)** : le brand book Camille v3 actuel ne respecte pas pleinement cette règle (composants UI sous-représentés : 3 boutons au lieu de 8, pas de toggle). C'est un legacy d'avant la mécanique v5. Pour les futures marques (Atelier Vermeil et au-delà), la mécanique extract-then-inject s'applique strictement.
 
 ---
 
