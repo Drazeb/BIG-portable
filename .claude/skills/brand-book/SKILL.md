@@ -311,7 +311,7 @@ python3 .claude/skills/brand-book/scripts/extract-batch2-inventory.py \
 - `{brand}-batch2-inventory.html` — document HTML autonome structuré par `<section data-inv="…">` × 10 catégories. Chaque bloc verbatim est borné par `<!-- BEGIN_BLOCK md5=<hash> -->` / `<!-- END_BLOCK -->`. Les `<defs>` SVG référencés via `url(#…)` sont **injectées inline** dans chaque SVG → chaque bloc est autonome.
 - `{brand}-batch2-inventory.json` — manifest des hashes MD5 par catégorie, structure `{categories: {icons: {count, items: [{md5, label, source_line, ...}]}, buttons: {…}, …}}`. Consommé par le quality gate Étape 5.
 
-**10 catégories extraites** :
+**11 catégories extraites** :
 - `icons` — wrappers `.glyph`, `.icon-card`, `.icon-cell`, `.icon-tile`, `.icon-spec`, `.stroke-step`, `.abstraction-step`, `.business-icon`
 - `buttons` — `<button class="btn[ --variant]">` (hors `.tab`)
 - `inputs` — wrappers `.field`, `.form-field`, `.input`, `.select`, `.input-wrap` contenant un `<input>` / `<select>` / `<textarea>`
@@ -319,6 +319,7 @@ python3 .claude/skills/brand-book/scripts/extract-batch2-inventory.py \
 - `cards` — `<article class="card[ --variant]">` + whitelist (`kpi-card`, `stat-card`, `metric-card`, `ui-card`, `data-card`, `tile`, `card--depth`, `card--kpi`)
 - `tabs`, `alerts`, `progress` — wrappers conteneurs
 - `charts` — SVG avec viewBox ≥ 150 dans au moins une dimension
+- `lockups` — chapter de batch2 qui documente le logotype (contient .wordmark / .wordmark-plate / .lockup__mark / .exclusion__inner). Une seule entrée = la chapter entière, header retiré. Pour la section Identité (04) du brand book.
 
 **Quality gate Étape 2.5** : lire `totals.all` du JSON. Si < 20, log `[WARN] Inventory minimaliste (totals.all=…)` et continuer (une marque peut avoir un batch2 légitime peu dense). Si = 0, **fail** (le script aurait dû lever une erreur, vérifier le format batch2).
 
@@ -345,7 +346,17 @@ cp "{pack_path}/{brand}-style-tile.html" ".claude/skills/brand-book/outputs/{bra
 >
 > Avec cette mécanique : le sub-agent n'a même plus accès au markup. Impossible de le casser.
 >
-> Pour les **slots `{{BATCH2_INVENTORY_*}}` (8 slots)** : tu ne les fournis PAS dans `template-vars.json`. Le script `render-brand-book.py` les remplit automatiquement en lisant `{brand}-batch2-inventory.html` (produit Étape 2.5) et en injectant verbatim les `<article data-component="…">…</article>` correspondants. Les commentaires `BEGIN_BLOCK md5=… / END_BLOCK` sont préservés → le quality gate MD5 (Étape 5) passe par construction.
+> **Slots AUTO-REMPLIS par le script (sanctuarisée v7 — 1er juin 2026 — option B)** : tu ne fournis PAS les slots ci-dessous dans `template-vars.json`. Le script `render-brand-book.py` les remplit automatiquement.
+>
+> | Slot template | Source automatique | Mécanique |
+> |---------------|---------------------|-----------|
+> | `{{BATCH2_INVENTORY_ICONS}}` à `{{BATCH2_INVENTORY_CHARTS}}` (8 slots) | `batch2-inventory.html` | Injection verbatim des `<article>` par catégorie. MD5 préservés → quality gate Étape 5 passe par construction. |
+> | `{{BATCH2_INVENTORY_LOCKUPS}}` | `batch2-inventory.html` (catégorie lockups) | Injection verbatim de la chapter Logotype de batch2 (`.wordmark` / `.lockup` / `.exclusion__inner`) |
+> | `{{PALETTE_PAGES_HTML}}` | Slots `COLOR_N_*` du JSON | Auto-composition de 6 pages couleur (rôle + nom + hex + swatch) |
+> | `{{TYPO_SPECIMEN_HTML}}` | Slots `FONT_*` du JSON | Auto-composition de 3 specimens (Display / Body / Mono) avec Aa grand format |
+> | `{{PHOTO_GALLERY_HTML}}` | Dossier `{output_dir}/visual-final/` | Listing des PNG existantes → grille auto |
+>
+> Cette mécanique évite la classe entière de bugs "le sub-agent réinvente le markup pour les sections listing". Bug observé Vermeil test E2E 31/05/2026 (23:36) : sections Identité / Palette / Typo / Photo restaient vides parce que le template avait des TODO HTML pas des slots. Maintenant ces 4 sections sont auto-composées depuis les données structurées.
 
 #### 4.1 — Lister les slots attendus
 
@@ -355,7 +366,11 @@ Lire la liste complète des slots Mustache du template via :
 grep -oE '\{\{[A-Z0-9_]+\}\}' .claude/skills/brand-book/ref/template-base.html | sort -u
 ```
 
-Il y a ~100 slots uniques classés par section. Les 8 `BATCH2_INVENTORY_*` sont remplis par le script automatiquement — tu n'as PAS à les fournir.
+Il y a ~106 slots uniques classés par section. **12 sont auto-remplis par le script** et ne doivent PAS être dans `template-vars.json` :
+- 9 slots `BATCH2_INVENTORY_*` (ICONS / BUTTONS / INPUTS / BADGES / TOGGLES_CHECKBOXES / CARDS / MISC_UI / CHARTS / LOCKUPS)
+- 3 slots auto-composés : `PALETTE_PAGES_HTML` / `TYPO_SPECIMEN_HTML` / `PHOTO_GALLERY_HTML`
+
+Tu fournis donc ~94 slots dans le JSON (méta + tokens design + Identity Card v4 + éditoriaux + titres + sous-titres).
 
 #### 4.2 — Composer les valeurs des slots
 

@@ -1154,6 +1154,121 @@
       background: color-mix(in srgb, currentColor 2%, transparent);
     }
     .bk-charts-grid svg { width: 100%; height: auto; }
+
+    /* =========================================================
+       Sections AUTO-COMPOSÉES par render-brand-book.py (option B v6)
+       Identité (lockups) / Palette (6 pages) / Typo (3 specimens) /
+       Photo (galerie). Le sub-agent ne touche pas au markup —
+       composition mécanique depuis les valeurs du JSON ou des fichiers
+       sources (batch2, visual-final/).
+       ========================================================= */
+    .bk-identity-lockups {
+      margin-block-start: var(--space-xl, 48px);
+    }
+    .bk-identity-lockups > * { max-width: 100%; }
+    /* Le CSS batch2 (injecté par render-brand-book.py) style les .wordmark /
+       .wordmark-plate / .lockup__mark / .clearspace / .exclusion__inner
+       contenus dans .bk-identity-lockups. */
+
+    .bk-palette-pages {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 1px;
+      margin-block-start: var(--space-xl, 48px);
+      background: color-mix(in srgb, currentColor 12%, transparent);
+    }
+    .bk-palette-page {
+      min-height: 360px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .bk-palette-page__meta { display: flex; flex-direction: column; gap: 4px; }
+    .bk-palette-page__index {
+      font: 500 11px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+      margin: 0;
+    }
+    .bk-palette-page__role {
+      font: 500 12px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0;
+      opacity: 0.85;
+    }
+    .bk-palette-page__name {
+      font: 600 28px/1.15 var(--brand-display, var(--font-display, serif));
+      margin: 0;
+    }
+    .bk-palette-page__hex {
+      font: 500 13px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      margin: 0;
+      opacity: 0.85;
+    }
+
+    .bk-typo-specimens {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      margin-block-start: var(--space-xl, 48px);
+    }
+    .bk-typo-specimen {
+      padding: 32px;
+      border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: color-mix(in srgb, currentColor 2%, transparent);
+    }
+    .bk-typo-specimen__aa {
+      font-size: clamp(80px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+    }
+    .bk-typo-specimen__meta { display: flex; flex-direction: column; gap: 8px; }
+    .bk-typo-specimen__role {
+      font: 500 11px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 0;
+      opacity: 0.6;
+    }
+    .bk-typo-specimen__name {
+      font: 600 20px/1.2 var(--brand-display, var(--font-display, serif));
+      margin: 0;
+    }
+    .bk-typo-specimen__sample { margin: 0; opacity: 0.9; }
+
+    .bk-photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-block-start: var(--space-xl, 48px);
+    }
+    .bk-photo-gallery__item {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bk-photo-gallery__item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+    .bk-photo-gallery__caption {
+      font: 500 11px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .bk-mono { font-family: ui-monospace, monospace; }
   </style>
 </head>
 <body>
@@ -1376,7 +1491,13 @@
     <div class="section__inner">
       <p class="section__eyebrow">04 — Identité</p>
       <h2 class="section__title">{{IDENTITY_TITLE}}</h2>
-      <!-- TODO: grille 2x2 lockups + clear space + 4 variantes contexte -->
+      <!-- Lockups extraits verbatim de la chapter Logotype de batch2.html
+           (extract-batch2-inventory.py → catégorie "lockups"). Le sub-agent
+           ne touche pas au markup — substitution automatique par
+           render-brand-book.py. Garantit fidélité au pack source. -->
+      <div class="bk-identity-lockups">
+        {{BATCH2_INVENTORY_LOCKUPS}}
+      </div>
     </div>
   </section>
 
@@ -1390,8 +1511,10 @@
     <div class="section__inner">
       <p class="section__eyebrow">05 — Palette</p>
       <h2 class="section__title">{{PALETTE_TITLE}}</h2>
-      <!-- TODO: générer une "page couleur" par item de palette -->
-      <!-- Chaque page : bloc couleur grand format à gauche (60%) + métadonnées droite (40%) -->
+      <!-- 6 pages couleur auto-composées par render-brand-book.py à partir
+           des slots COLOR_N_ROLE / COLOR_N_NAME / COLOR_N_HEX déjà fournis
+           par le sub-agent. Aucun nouveau slot pour le sub-agent. -->
+      {{PALETTE_PAGES_HTML}}
     </div>
   </section>
 
@@ -1405,7 +1528,11 @@
     <div class="section__inner">
       <p class="section__eyebrow">06 — Typographie</p>
       <h2 class="section__title">{{TYPO_TITLE}}</h2>
-      <!-- TODO: spécimen "Aa" grand format display + body + pairing + type scale -->
+      <!-- 3 spécimens (Display / Body / Mono) auto-composés par
+           render-brand-book.py à partir des slots FONT_DISPLAY_NAME /
+           FONT_DISPLAY / FONT_BODY / FONT_MONO_NAME / FONT_MONO déjà
+           fournis par le sub-agent. Aucun nouveau slot pour le sub-agent. -->
+      {{TYPO_SPECIMEN_HTML}}
     </div>
   </section>
 
@@ -1630,9 +1757,11 @@
     <div class="section__inner">
       <p class="section__eyebrow">09 — Photo &amp; Illustration</p>
       <h2 class="section__title">{{PHOTO_TITLE}}</h2>
-      <!-- TODO: 4 cadrages canoniques en grille 2x2 -->
-      <!-- TODO: bloc signature prompting MJ (format code, fond légèrement plus clair) -->
-      <!-- TODO: galerie 2-col ou 3-col des visuels finaux -->
+      <!-- Galerie auto-composée par render-brand-book.py à partir des PNG
+           présents dans {output_dir}/visual-final/. Si dossier vide → slot
+           vide (la section affichera juste son titre). Le sub-agent ne
+           touche pas au markup. -->
+      {{PHOTO_GALLERY_HTML}}
     </div>
   </section>
 

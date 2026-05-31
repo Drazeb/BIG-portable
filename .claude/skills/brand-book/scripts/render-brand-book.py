@@ -96,6 +96,7 @@ BATCH2_SLOT_MAPPING = {
     "BATCH2_INVENTORY_CARDS": ["cards"],
     "BATCH2_INVENTORY_MISC_UI": ["tabs", "alerts", "progress"],
     "BATCH2_INVENTORY_CHARTS": ["charts"],
+    "BATCH2_INVENTORY_LOCKUPS": ["lockups"],
 }
 
 
@@ -200,6 +201,135 @@ def build_batch2_substitutions(inventory_html: str) -> dict:
             articles.extend(by_cat.get(cat, []))
         substitutions[slot_name] = "\n".join(articles)
     return substitutions
+
+
+def compose_palette_pages(vars_dict: dict) -> str:
+    """
+    Auto-compose la section Palette (6 pages couleur) à partir des slots
+    COLOR_N_ROLE / COLOR_N_NAME / COLOR_N_HEX (N de 1 à 6) déjà fournis par
+    le sub-agent dans template-vars.json.
+
+    Une page par couleur : grand bloc swatch + meta (rôle / nom / hex / texte
+    contrasté).
+    """
+    pages = []
+    for n in range(1, 7):
+        role = vars_dict.get(f"COLOR_{n}_ROLE", "").strip()
+        name = vars_dict.get(f"COLOR_{n}_NAME", "").strip()
+        hex_value = vars_dict.get(f"COLOR_{n}_HEX", "").strip()
+        if not hex_value:
+            continue
+        # Texte sur le swatch : noir/blanc selon luminosité (heuristique simple via hex).
+        text_color = "#fff"
+        if hex_value.startswith("#") and len(hex_value) == 7:
+            try:
+                r, g, b = int(hex_value[1:3], 16), int(hex_value[3:5], 16), int(hex_value[5:7], 16)
+                luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+                text_color = "#0a0a0a" if luminance > 0.6 else "#fafafa"
+            except ValueError:
+                pass
+        pages.append(
+            f'  <article class="bk-palette-page" style="background:{hex_value};color:{text_color}">\n'
+            f'    <div class="bk-palette-page__meta">\n'
+            f'      <p class="bk-palette-page__index">{n:02d} / 06</p>\n'
+            f'      <p class="bk-palette-page__role">{role}</p>\n'
+            f'      <h3 class="bk-palette-page__name">{name}</h3>\n'
+            f'    </div>\n'
+            f'    <p class="bk-palette-page__hex"><span class="bk-mono">{hex_value.upper()}</span></p>\n'
+            f'  </article>'
+        )
+    if not pages:
+        return ""
+    return '<div class="bk-palette-pages">\n' + "\n".join(pages) + '\n</div>'
+
+
+def compose_typo_specimens(vars_dict: dict) -> str:
+    """
+    Auto-compose la section Typographie à partir des slots FONT_DISPLAY_NAME /
+    FONT_DISPLAY / FONT_BODY / FONT_MONO_NAME / FONT_MONO déjà dans le JSON.
+
+    3 specimens : Display (grand Aa + tagline) + Body (paragraphe sample) +
+    Mono (specimen technique).
+    """
+    display_name = vars_dict.get("FONT_DISPLAY_NAME", "").strip()
+    display_stack = vars_dict.get("FONT_DISPLAY", "").strip()
+    body_stack = vars_dict.get("FONT_BODY", "").strip() or display_stack
+    mono_name = vars_dict.get("FONT_MONO_NAME", "").strip()
+    mono_stack = vars_dict.get("FONT_MONO", "").strip()
+
+    if not display_name and not mono_name:
+        return ""
+
+    specimens = []
+    if display_stack and display_name:
+        specimens.append(
+            f'  <article class="bk-typo-specimen bk-typo-specimen--display">\n'
+            f'    <div class="bk-typo-specimen__aa" style="font-family:{display_stack}">Aa</div>\n'
+            f'    <div class="bk-typo-specimen__meta">\n'
+            f'      <p class="bk-typo-specimen__role">Display</p>\n'
+            f'      <h3 class="bk-typo-specimen__name">{display_name}</h3>\n'
+            f'      <p class="bk-typo-specimen__sample" style="font-family:{display_stack};font-size:32px;line-height:1.1;margin-top:16px">'
+            f'Le repère du métier, posé large.</p>\n'
+            f'    </div>\n'
+            f'  </article>'
+        )
+    if body_stack:
+        specimens.append(
+            f'  <article class="bk-typo-specimen bk-typo-specimen--body">\n'
+            f'    <div class="bk-typo-specimen__aa" style="font-family:{body_stack}">Aa</div>\n'
+            f'    <div class="bk-typo-specimen__meta">\n'
+            f'      <p class="bk-typo-specimen__role">Body</p>\n'
+            f'      <h3 class="bk-typo-specimen__name">{body_stack.split(",")[0].strip().strip(chr(39)).strip(chr(34))}</h3>\n'
+            f'      <p class="bk-typo-specimen__sample" style="font-family:{body_stack};font-size:16px;line-height:1.6;margin-top:16px">'
+            f'Lorem ipsum dolor sit amet — la marque parle clair, '
+            f'pose les mots à hauteur d\'usage, sans détours. Le texte courant porte la voix éditoriale.</p>\n'
+            f'    </div>\n'
+            f'  </article>'
+        )
+    if mono_stack and mono_name:
+        specimens.append(
+            f'  <article class="bk-typo-specimen bk-typo-specimen--mono">\n'
+            f'    <div class="bk-typo-specimen__aa" style="font-family:{mono_stack}">Aa</div>\n'
+            f'    <div class="bk-typo-specimen__meta">\n'
+            f'      <p class="bk-typo-specimen__role">Mono</p>\n'
+            f'      <h3 class="bk-typo-specimen__name">{mono_name}</h3>\n'
+            f'      <p class="bk-typo-specimen__sample" style="font-family:{mono_stack};font-size:14px;line-height:1.5;margin-top:16px">'
+            f'46.84°N · 1.43°W<br>Cadence — 5 000 t/an<br>build · v1.0 · 2026</p>\n'
+            f'    </div>\n'
+            f'  </article>'
+        )
+    if not specimens:
+        return ""
+    return '<div class="bk-typo-specimens">\n' + "\n".join(specimens) + '\n</div>'
+
+
+def compose_photo_gallery(visual_final_dir: Path, brand: str = "") -> str:
+    """
+    Auto-compose la section Photo gallery en listant les PNG du dossier
+    visual-final/. Filtre : seuls les fichiers .png pertinents (hero,
+    atmosphere, halo, macro, pov, closeup).
+    """
+    if not visual_final_dir.exists() or not visual_final_dir.is_dir():
+        return ""
+    pngs = sorted(visual_final_dir.glob("*.png"))
+    if not pngs:
+        return ""
+    items = []
+    for p in pngs:
+        rel = f"visual-final/{p.name}"
+        # Inférer un label depuis le filename (suffixe après le slug brand).
+        stem = p.stem
+        label_parts = stem.split("-")
+        label = label_parts[-1] if len(label_parts) > 1 else stem
+        label_human = label.replace("_", " ").capitalize()
+        items.append(
+            f'  <figure class="bk-photo-gallery__item">\n'
+            f'    <img src="{rel}" alt="{label_human} — {brand}" loading="lazy" />\n'
+            f'    <figcaption class="bk-photo-gallery__caption">'
+            f'<span class="bk-mono">{label_human}</span></figcaption>\n'
+            f'  </figure>'
+        )
+    return '<div class="bk-photo-gallery">\n' + "\n".join(items) + '\n</div>'
 
 
 def extract_batch2_css(inventory_html: str) -> str:
@@ -317,7 +447,24 @@ def main():
         sys.exit(1)
     print(f"[INFO] Variables fournies  : {len(vars_dict)}")
 
-    # Injection automatique des 8 slots BATCH2_INVENTORY_* + récupération CSS batch2.
+    # Auto-composition des sections SOURCE-DRIVEN (Palette / Typo / Photo) à
+    # partir des valeurs déjà fournies par le sub-agent + des fichiers visuels
+    # disponibles. Permet au sub-agent de ne PAS fournir ces slots HTML — il les
+    # composerait souvent mal (option B vs A : on évite les bugs récurrents de
+    # "sub-agent réinvente le markup").
+    if "PALETTE_PAGES_HTML" not in vars_dict:
+        vars_dict["PALETTE_PAGES_HTML"] = compose_palette_pages(vars_dict)
+        print(f"[INFO] Auto-composition Palette : {len(vars_dict['PALETTE_PAGES_HTML']):,} chars")
+    if "TYPO_SPECIMEN_HTML" not in vars_dict:
+        vars_dict["TYPO_SPECIMEN_HTML"] = compose_typo_specimens(vars_dict)
+        print(f"[INFO] Auto-composition Typographie : {len(vars_dict['TYPO_SPECIMEN_HTML']):,} chars")
+    if "PHOTO_GALLERY_HTML" not in vars_dict:
+        visual_final_dir = output_path.parent / "visual-final"
+        brand = vars_dict.get("BRAND", "")
+        vars_dict["PHOTO_GALLERY_HTML"] = compose_photo_gallery(visual_final_dir, brand=brand)
+        print(f"[INFO] Auto-composition Photo gallery : {len(vars_dict['PHOTO_GALLERY_HTML']):,} chars")
+
+    # Injection automatique des 9 slots BATCH2_INVENTORY_* + récupération CSS batch2.
     batch2_css = ""
     if inventory_path:
         inventory_html = inventory_path.read_text(encoding="utf-8")

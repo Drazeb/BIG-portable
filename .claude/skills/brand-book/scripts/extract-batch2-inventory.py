@@ -117,7 +117,16 @@ CHART_MIN_VIEWBOX_DIM = 150
 # éléments atomiques → déduplication par positions consommées).
 CATEGORIES = [
     "icons", "buttons", "inputs", "badges", "toggles", "checkboxes",
-    "cards", "tabs", "alerts", "progress", "charts",
+    "cards", "tabs", "alerts", "progress", "charts", "lockups",
+]
+
+# Classes BEM qui indiquent qu'une chapter de batch2 documente le logotype /
+# identité visuelle (wordmark, lockups, exclusion zones, contexts d'usage).
+# Pour la section Identité (04) du brand book.
+LOCKUP_INDICATOR_CLASSES = [
+    "wordmark", "wordmark-plate", "wordmark-stack", "wordmark-legend",
+    "lockup", "lockup-grid", "lockup-row", "lockup__mark",
+    "exclusion__inner", "clearspace",
 ]
 
 
@@ -616,6 +625,68 @@ def extract_progress(html: str, consumed: set) -> list:
     return _extract_simple_wrappers(html, consumed, "progress", ["div", "progress"], PROGRESS_CLASSES)
 
 
+def extract_lockups(html: str, consumed: set) -> list:
+    """
+    Extraction lockups : trouve la chapter de batch2 qui documente le logotype
+    (chapter contenant des éléments .wordmark / .lockup / .wordmark-plate /
+    .exclusion__inner / .clearspace). Extrait son contenu (sans le header
+    chapter pour éviter de doubler le titre éditorial du brand book).
+
+    Heuristique : la chapter avec le PLUS d'indicateurs lockup gagne. Permet
+    de marcher sur des conventions batch2 différentes (chapter--03 pour une
+    marque, chapter--05 pour une autre).
+    """
+    components = []
+    chapter_pattern = re.compile(
+        r'<section\s+class="[^"]*\bchapter\b[^"]*"[^>]*>',
+        re.IGNORECASE,
+    )
+    best = None  # (count, start, end_inclusive)
+    for m in chapter_pattern.finditer(html):
+        balanced = find_balanced_block(html, m.start(), "section")
+        if balanced is None:
+            continue
+        block = html[balanced[0]:balanced[1]]
+        count = sum(1 for c in LOCKUP_INDICATOR_CLASSES if f'class="{c}"' in block or f'"{c} ' in block or f' {c}"' in block)
+        if count < 2:
+            continue
+        if best is None or count > best[0]:
+            best = (count, balanced[0], balanced[1])
+
+    if best is None:
+        return components
+
+    _, start, end = best
+    chapter_block = html[start:end]
+    # Retirer le <header class="chapter__head">…</header> (titre + lead chapter
+    # batch2) — le brand book a son propre titre éditorial.
+    cleaned = re.sub(
+        r'<header\s+class="chapter__head"[^>]*>.*?</header>',
+        '',
+        chapter_block,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Retirer aussi les balises <section …> et </section> wrapper.
+    cleaned = re.sub(r'^<section\b[^>]*>', '', cleaned, count=1, flags=re.IGNORECASE).strip()
+    cleaned = re.sub(r'</section>\s*$', '', cleaned, count=1, flags=re.IGNORECASE).strip()
+
+    components.append(Component(
+        category="lockups",
+        source_line=line_at_pos(html, start),
+        source_wrapper_class="chapter",
+        source_viewbox="",
+        block_html=cleaned,
+        md5=compute_md5(cleaned),
+        label="lockup-chapter",
+        source_pos_start=start,
+        source_pos_end=end,
+    ))
+    for p in range(start, end):
+        consumed.add(p)
+    return components
+
+
 def extract_cards(html: str, consumed: set) -> list:
     """
     Cards UI : on accepte
@@ -867,6 +938,9 @@ def main():
     consumed = set()
 
     components_by_category = {}
+    # Lockups EN PREMIER (consume la chapter Logotype entière, pour ne pas que
+    # ses SVG soient re-extraits comme icons).
+    components_by_category["lockups"] = extract_lockups(html, consumed)
     components_by_category["icons"] = extract_icons(html, defs_index, consumed, warnings)
     components_by_category["charts"] = extract_charts(html, defs_index, consumed, warnings)
     components_by_category["tabs"] = extract_tabs(html, consumed)
