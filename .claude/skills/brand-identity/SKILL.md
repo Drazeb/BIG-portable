@@ -1350,177 +1350,116 @@ Informer l'utilisateur :
 
 ---
 
-#### Vague 1 — Palettes par divergence séquentielle (3 palettes × 3 concepts)
+#### Vague 1 — Palettes par divergence séquentielle dégressive (3 palettes × 3 concepts)
 
 <!-- mini-annonce: ℹ Maintenant : génération des palettes A/B/C en parallèle pour chaque concept (3 subagents simultanés) -->
 
-**Pourquoi un subagent séparé** : Le designer principal reçoit les territoires créatifs (nécessaires pour surface, rythme, typo). Or les territoires contaminent le choix chromatique — le LLM ne compartimente pas. Le subagent palette reçoit UNIQUEMENT le concept narratif + les gammes autorisées, sans territoires. Isolation structurelle.
+**Pourquoi un subagent séparé** : Le designer principal reçoit les territoires créatifs (nécessaires pour surface, rythme, typo). Or les territoires contaminent le choix chromatique — le LLM ne compartimente pas. Le subagent palette reçoit UNIQUEMENT le concept narratif + les **buckets chromatiques** (projetés depuis la grille du routeur, axe territoire retiré), sans territoires. Isolation structurelle.
 
-**Pourquoi 3 palettes** : Même logique que la divergence des pitchs visuels. La palette A est la plus "pure" (dérivation directe). Les palettes B et C explorent des directions chromatiques structurellement différentes (gammes, harmonies, accents). L'utilisateur choisit 1 palette par concept avant les spécimens.
+**Pourquoi 3 palettes (divergence dégressive)** : La palette A est libre (dérivation directe du concept). B et C divergent **mécaniquement** — la directive de divergence est GÉNÉRÉE par script (familles inexploitées + cap d'usage 2× + accents déjà pris + étalement clair/sombre), JAMAIS rédigée à la main (un texte libre de l'orchestrateur souffle des réponses au subagent et contamine le choix, notamment le mode). Seuil dégressif : V2 diffère sur ≥4 leviers, V3 sur ≥3 (sur 5 : famille / mode / saturation / harmonie / accent). L'utilisateur choisit 1 palette par concept avant les spécimens.
+
+##### Pré-calcul (orchestrateur, UNE fois avant les 3 vagues)
+
+1. **Projeter les buckets** depuis la grille du routeur (territoire × aptitude → 3 buckets d'aptitude, axe territoire retiré pour anti-contamination) :
+```bash
+python3 "{skill_dir}/scripts/project_buckets.py" \
+  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --catalogue "{skill_dir}/ref/chromatic-spectrum-catalog.md" \
+  [--ventre-mou "{skill_dir}/outputs/{session_dir}/{brand}-ventre-mou-chromatique.md"] \
+  --output "{skill_dir}/outputs/{session_dir}/{brand}-buckets.md"
+```
+Le bucket DOMINANTE alimente Primary/Secondary, ACCENT l'accent, BASE l'orientation des neutres. ⚠ Si un `[WARN]` bucket pauvre (dominante<2, accent<3, base<3) → signaler : terrain étroit (re-router en 3B-0 ou accepter avec ⚠). Le contenu de `{brand}-buckets.md` devient `{buckets_section}`.
+
+2. **Générer la directive Ventre Mou palette** (selon `{cursor_b}`, clone de la logique BIG) :
+```bash
+python3 "{skill_dir}/scripts/palette-render-directive.py" --cursor-b {cursor_b} \
+  --out "{skill_dir}/outputs/{session_dir}/{brand}-vm-palette-directive.md"
+```
+Le contenu devient `{vm_palette_directive}` (B=1 sectoriel libre · B=2 cap 1 dominante sectorielle max — vérifié par bucket_gate · B=3 contre-pied actif).
 
 **Variables communes** pour chaque concept N (identiques pour les 3 vagues A/B/C) :
-- `{skill_dir}` → chemin absolu vers `.claude/skills/brand-identity`
-- `{brand}` → nom de la marque
-- `{session_dir}` → nom du dossier de session
-- `{cursor_a}` et `{cursor_b}` → valeurs des curseurs
+- `{skill_dir}`, `{brand}`, `{session_dir}`, `{cursor_a}`, `{cursor_b}`
 - `{concept_narrative}` → contenu du concept narratif N (extrait de `{brand}-concepts-narratifs.md`)
-- `{chromatic_gamuts}` → sortie du routeur chromatique (bloc "## Gammes chromatiques (routeur)"). Si la variable n'est plus en mémoire (reprise de session), relire `{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md`.
-- `{vm_palette_directive}` → directive Ventre Mou chromatique pré-formatée selon `{cursor_b}`, identique pour les 3 concepts. Composée par l'orchestrateur :
+- `{buckets_section}` → contenu de `{brand}-buckets.md` (pré-calcul 1)
+- `{vm_palette_directive}` → contenu de `{brand}-vm-palette-directive.md` (pré-calcul 2)
+- `{divergence_directive}` → vide en vague A ; GÉNÉRÉ par script en B et C (voir ci-dessous)
 
-  **Si B=1** :
-  ```
-  ## GAMMES SECTORIELLES (information)
-  Certaines gammes autorisées sont taguées [SECTORIEL] — ce sont les conventions chromatiques du secteur. Tu peux librement les utiliser pour n'importe quel rôle. Aucune contrainte d'évitement.
-  ```
-
-  **Si B=2** :
-  ```
-  ## CONTRAINTE SECTORIELLE — 1 DOMINANTE MAX
-  Certaines gammes autorisées sont taguées [SECTORIEL] dans la liste du routeur chromatique. Règle : tu peux placer AU MAXIMUM 1 dominante (Primary OU Secondary) dans une gamme [SECTORIEL]. L'autre dominante DOIT être dans une gamme non-sectorielle. L'accent est libre.
-  ```
-
-  **Si B=3** :
-  ```
-  ## CONTRE-PIED CHROMATIQUE — ÉLOIGNEMENT ACTIF
-  Les gammes sectorielles ont été exclues par le routeur chromatique. En complément, oriente ACTIVEMENT tes choix vers des familles chromatiquement opposées aux conventions du secteur. Si le secteur est bleu-gris-froid → va vers des gammes chaudes, terreuses, organiques. Si le secteur est vert-nature → va vers des gammes minérales, métalliques, urbaines. L'objectif n'est pas juste d'éviter — c'est de démontrer le contre-pied.
-  ```
-
-**⚠ Le subagent palette ne reçoit PAS** : le mix de territoires, le context-clean.md, le scoping (`{brand}-scoping.md`). Ces fichiers ne sont PAS dans son prompt et ne doivent PAS être mentionnés. Le Ventre Mou arrive via les gammes taguées `[SECTORIEL]` du routeur + la directive `{vm_palette_directive}`.
+**⚠ Le subagent palette ne reçoit PAS** : le mix de territoires, le context-clean.md, le scoping. Le Ventre Mou arrive via les tags `[SECTORIEL]` des buckets + `{vm_palette_directive}`. ⚠ **Dispatch PUR** : l'orchestrateur n'ajoute AUCUNE note ni piste libre (« l'accent peut claquer », « ce terrain est chaud »…) — tout ce qui guide est DÉJÀ dans le prompt rendu (concept, buckets, anti-slop, accessibilité, divergence). Ajouter du texte = contaminer.
 
 ##### Vague 1-A : Palette primaire (3 subagents EN PARALLÈLE)
 
-Lancer 3 subagents (Task tool, general-purpose) simultanément. Chaque subagent lit `{skill_dir}/phases/phase-3b-palette.md` depuis le disque.
+Lancer 3 subagents (Task tool, general-purpose) simultanément. Chaque subagent lit `{skill_dir}/phases/phase-3b-palette.md` depuis le disque ; l'orchestrateur substitue les variables (dont `{divergence_directive}` = chaîne vide).
 
-- `{divergence_directive}` → chaîne vide (pas de divergence pour la palette A)
-
-Attendre que les 3 subagents terminent. Écrire chaque sortie dans `{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md`.
-
-**GATE CHROMATIQUE** (voir ci-dessous) sur chaque palette A.
+Attendre les 3. Écrire chaque sortie dans `{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md`. Puis **GATES** (voir ci-dessous) sur chaque palette A.
 
 ##### Vague 1-B : Palette divergente B (3 subagents EN PARALLÈLE)
 
 **⚠ ANTI-DÉGRADATION** : Relire `{skill_dir}/phases/phase-3b-palette.md` depuis le disque. Ne PAS réutiliser le prompt de la vague A en mémoire.
 
-Lancer 3 subagents simultanément. Mêmes variables que la vague A, SAUF :
+Pour CHAQUE concept N, générer la directive de divergence MÉCANIQUEMENT (ne JAMAIS la rédiger à la main) :
+```bash
+python3 "{skill_dir}/scripts/render_divergence.py" \
+  --prev "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md" \
+  --buckets "{skill_dir}/outputs/{session_dir}/{brand}-buckets.md" \
+  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --total 3 \
+  --output "{skill_dir}/outputs/{session_dir}/.tmp-divergence-c{N}-b.md"
+```
+Le contenu de ce fichier devient `{divergence_directive}` pour le concept N. (`--grid` interdit à l'accent les gammes exclues pour raison DURE ; `--total 3` active l'étalement clair/sombre ; le seuil dégressif découle du nombre de précédentes.)
 
-- `{divergence_directive}` → remplacer par :
-  ```
-  ⚠ MODE DIVERGENCE — Tu produis une PALETTE ALTERNATIVE pour un concept qui a déjà une palette.
-
-  Une palette a déjà été produite pour ce concept (voir PALETTE PRÉCÉDENTE ci-dessous).
-  Ta palette DOIT DIVERGER STRUCTURELLEMENT sur au moins 2 de ces 3 axes :
-  - **Gamme(s) choisie(s)** : gamme(s) DIFFÉRENTE(S) parmi les autorisées (si plusieurs gammes à affinité FORTE/MODÉRÉE existent)
-  - **Type d'harmonie** : harmonie DIFFÉRENTE (monochrome↔complémentaire↔triadique↔analogue↔split-complémentaire↔achromatique+accent)
-  - **Accent** : accent dans une gamme et/ou intensité DIFFÉRENTE
-
-  Ce qui NE CHANGE PAS : le concept narratif, les gammes autorisées/exclues, les curseurs, les règles de dominantes.
-
-  ⚠ ANTI-POLLUTION : Ne reproduis PAS les palettes précédentes dans ton output. Les palettes ci-dessous sont ton INPUT (pour diverger), pas ton output. Ton fichier ne contient QUE ta palette à toi — pas de tableau comparatif, pas de récapitulatif des palettes A/B.
-
-  --- PALETTE PRÉCÉDENTE ---
-  {contenu_complet_palette_a_concept_N}
-  --- FIN PALETTE PRÉCÉDENTE ---
-  ```
-
-Où `{contenu_complet_palette_a_concept_N}` = contenu intégral de `{brand}-palette-c{N}-a.md`.
-
-Écrire chaque sortie dans `{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-b.md`.
-
-**GATE CHROMATIQUE** sur chaque palette B.
+Lancer 3 subagents. Écrire chaque sortie dans `{brand}-palette-c{N}-b.md`. Puis **GATES** sur chaque palette B (gate d'unicité inclus).
 
 ##### Vague 1-C : Palette divergente C (3 subagents EN PARALLÈLE)
 
 **⚠ ANTI-DÉGRADATION** : Relire `{skill_dir}/phases/phase-3b-palette.md` depuis le disque.
 
-Lancer 3 subagents simultanément. Mêmes variables, SAUF :
+Idem vague B, mais passer les DEUX précédentes (dans l'ordre A puis B) à `render_divergence.py` :
+```bash
+python3 "{skill_dir}/scripts/render_divergence.py" \
+  --prev "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md" \
+          "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-b.md" \
+  --buckets "{skill_dir}/outputs/{session_dir}/{brand}-buckets.md" \
+  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --total 3 \
+  --output "{skill_dir}/outputs/{session_dir}/.tmp-divergence-c{N}-c.md"
+```
+Écrire chaque sortie dans `{brand}-palette-c{N}-c.md`. Puis **GATES** sur chaque palette C.
 
-- `{divergence_directive}` → remplacer par :
-  ```
-  ⚠ MODE DIVERGENCE — Tu produis une 3e PALETTE ALTERNATIVE pour un concept qui a déjà 2 palettes.
+##### GATES (orchestrateur, OBLIGATOIRE — appliqués à CHAQUE palette A/B/C)
 
-  Deux palettes ont déjà été produites pour ce concept (voir ci-dessous).
-  Ta palette DOIT DIVERGER STRUCTURELLEMENT des DEUX sur au moins 2 de ces 3 axes :
-  - **Gamme(s) choisie(s)** : gamme(s) DIFFÉRENTE(S) des 2 précédentes parmi les autorisées
-  - **Type d'harmonie** : harmonie DIFFÉRENTE des 2 précédentes
-  - **Accent** : accent dans une gamme et/ou intensité DIFFÉRENTE des 2 précédentes
+Pour chaque fichier palette produit, enchaîner les gates déterministes (sauver les JSON dans `{brand}-palette-c{N}-{V}-gate.json`) :
 
-  Ce qui NE CHANGE PAS : le concept narratif, les gammes autorisées/exclues, les curseurs, les règles de dominantes.
+1. **Bucket gate** (remplace l'ancien gate chromatique manuel) — Primary ET Secondary doivent appartenir au bucket DOMINANTE ; cap sectoriel B=2 (max 1 dominante [SECTORIEL]) ; l'accent ne réintroduit pas une gamme exclue pour raison DURE :
+```bash
+python3 "{skill_dir}/scripts/bucket_gate.py" "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-{V}.md" \
+  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --catalogue "{skill_dir}/ref/chromatic-spectrum-catalog.md" \
+  [--ventre-mou "{skill_dir}/outputs/{session_dir}/{brand}-ventre-mou-chromatique.md"] \
+  --cursor-b {cursor_b} --json-output
+```
 
-  ⚠ ANTI-POLLUTION : Ne reproduis PAS les palettes précédentes dans ton output. Les palettes ci-dessous sont ton INPUT (pour diverger), pas ton output. Ton fichier ne contient QUE ta palette à toi — pas de tableau comparatif, pas de récapitulatif des palettes A/B/C.
-
-  --- PALETTE PRÉCÉDENTE 1 ---
-  {contenu_complet_palette_a_concept_N}
-  --- FIN PALETTE PRÉCÉDENTE 1 ---
-
-  --- PALETTE PRÉCÉDENTE 2 ---
-  {contenu_complet_palette_b_concept_N}
-  --- FIN PALETTE PRÉCÉDENTE 2 ---
-  ```
-
-Écrire chaque sortie dans `{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-c.md`.
-
-**GATE CHROMATIQUE** sur chaque palette C.
-
-##### GATE CHROMATIQUE (orchestrateur, OBLIGATOIRE — appliquée à CHAQUE palette A/B/C)
-
-Après avoir écrit chaque fichier palette, l'orchestrateur VÉRIFIE mécaniquement que les couleurs dominantes (Primary et Secondary) sont bien dans les gammes autorisées.
-
-Pour chaque palette :
-1. Lire les hex Primary et Secondary dans le tableau "Palette complète"
-2. Classifier chaque hex : à quelle famille de couleur appartient-il ? (rouge, orange, jaune, ocre, brun, olive, vert chaud, rose terreux, bleu, cyan, violet, gris bleuté, lavande, etc.)
-3. Vérifier que cette famille est dans les gammes AUTORISÉES du routeur chromatique
-4. Si une dominante est dans une gamme EXCLUE → **resume le subagent palette** avec :
-   ```
-   Ta couleur {Primary/Secondary} `{hex}` est un {famille identifiée} — cette gamme est EXCLUE pour les dominantes.
-
-   Gammes autorisées (rappel) : {liste des gammes autorisées}
-   Gammes exclues (rappel) : {liste des gammes exclues}
-
-   Choisis une dominante dans les gammes autorisées qui sert toujours le concept narratif.
-   Réécris ta palette complète avec la correction.
-   ```
-5. Réécrire le fichier palette (`-a`, `-b` ou `-c`) avec la version corrigée
-6. **Maximum 2 itérations** — si après 2 corrections le subagent ne respecte toujours pas les gammes, présenter le problème à l'utilisateur : "Le concept {nom} tire naturellement vers {gamme exclue}. Voulez-vous autoriser cette gamme pour ce concept, ou forcer une alternative ?"
-
-**Note** : L'accent est LIBRE — ne pas vérifier les accents. Seuls Primary et Secondary sont soumis à la gate.
-
-##### GATE ANTI-SLOP (orchestrateur, OBLIGATOIRE — appliquée à CHAQUE palette A/B/C, APRÈS le gate chromatique)
-
-Après que le gate chromatique a validé la cohérence avec les gammes du routeur, lancer le gate anti-slop déterministe sur chaque fichier palette :
-
+2. **Gate anti-slop** (10 checks déterministes, inchangé) :
 ```bash
 python3 "{skill_dir}/scripts/phase3b-palette-anti-slop.py" "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-{V}.md" --json-output
 ```
+(7 rôles exacts dans l'ordre ; pas de `#000000`/`#ffffff` purs ; pas d'AI indigo/violet/purple Tailwind ; neutres tintés chroma OKLCH > 0.005 ; WCAG AA Text/Bg ; accent saturé distinct ; justifications non génériques.)
 
-(N ∈ {1,2,3}, V ∈ {a,b,c} — 9 invocations au total à l'issue des 3 sous-vagues)
+3. **Gate d'unicité ΔE** (variantes B et C UNIQUEMENT — le « finisseur ») — garantit qu'aucun rôle porteur (Primary / Secondary / Accent) n'est un jumeau perceptuel (ΔE Lab < 10) du même rôle d'une variante antérieure, ce que la consigne ne peut PAS garantir (un LLM recopie parfois un hex à l'identique) :
+```bash
+python3 "{skill_dir}/scripts/divergence_gate.py" "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-{V}.md" \
+  --prev {les -a (variante B) ou -a et -b (variante C) du concept N} --json-output
+```
 
-Le script applique 10 checks complémentaires au gate chromatique :
-- Format strict (7 rôles exacts dans l'ordre Primary/Secondary/Accent/Bg dark/Bg light/Text primary/Text secondary)
-- Hex valides + pas de rôles inventés (Primary Light, Surface, Neutral mid, etc.)
-- Pas de pur `#000000` / `#ffffff` sur Bg dark, Bg light, Text primary
-- Pas de hex AI Tailwind défaut (indigo/violet/purple/blue 500-700) — regex stricte + zone LCH
-- Neutres tintés (chroma OKLCH > 0.005)
-- Saturation réduite aux extrêmes (L>0.95 ou L<0.10 → C<0.04)
-- WCAG AA contraste : Text primary vs Bg light ≥ 4.5:1, Text primary vs Bg dark ≥ 4.5:1, Text secondary ≥ 3:1
-- Accent saturé distinct (chroma_accent > chroma_primary + 0.05)
-- Justifications non vides + non génériques
+**Traitement des FAIL** (n'importe lequel des gates) → **resume du sub-agent palette correspondant** (Task fresh, anti-dégradation : `phase-3b-palette.md` relu depuis le disque, mêmes variables que l'invocation initiale + la directive de divergence du concept) avec une section feedback :
+```
+## FEEDBACK GATES (OBLIGATOIRE — corrige ces violations dans ta nouvelle palette)
+{liste textuelle des `violations[]` extraites des JSON, une par ligne}
 
-Lire le JSON de sortie et traiter selon le verdict :
-
-1. **`PASS`** → continuer vers la palette suivante (ou la planche comparative si dernière).
-
-2. **`FAIL`** (≥ 1 violation) → **resume du sub-agent palette correspondant** (Task fresh, anti-dégradation : `phase-3b-palette.md` relu depuis le disque, mêmes variables que l'invocation initiale) avec :
-   ```
-   ## FEEDBACK GATE ANTI-SLOP (OBLIGATOIRE — corrige ces violations dans ta nouvelle palette)
-   {liste textuelle des `violations[]` extraite du JSON, une par ligne avec le détail}
-
-   Réécris la palette complète avec les corrections — respecte EXACTEMENT le format 7 rôles
-   (Primary, Secondary, Accent, Bg dark, Bg light, Text primary, Text secondary), aucun rôle
-   inventé, aucun hex banni, neutres tintés, accent distinctement saturé, contrastes WCAG OK.
-   ```
-   Réécrire le fichier palette correspondant. Re-exécuter le gate.
-
-3. **Max 2 itérations** par palette. Si toujours FAIL après 2 reruns, accepter avec `⚠ Gate anti-slop encore en FAIL après 2 itérations` dans le chat et continuer.
+Réécris la palette complète avec les corrections — respecte EXACTEMENT le format 7 rôles
+(Primary, Secondary, Accent, Bg dark, Bg light, Text primary, Text secondary), aucun rôle
+inventé, dominantes ∈ bucket DOMINANTE, neutres tintés, accent distinct, contrastes WCAG OK.
+```
+Réécrire le fichier palette, ré-exécuter les gates. **Max 2 itérations** par palette ; puis accepter avec `⚠ Gate {nom} encore en FAIL après 2 itérations` et continuer. Aides à la correction : `role_duplicate` → demander un hex nettement distinct (ΔE ≥ 10) pour le rôle visé ; `dominantes_in_bucket` → choisir une dominante du bucket DOMINANTE ; `sectoral_cap_b2` → ramener à 1 seule dominante sectorielle.
 
 ##### Vague 1-choix : Planche comparative + choix utilisateur
 
@@ -2079,7 +2018,7 @@ Tu as choisi ton display #1. Maintenant choisis un body qui forme un SYSTÈME av
    - **Colors** : extraites de `{brand}-palette-c{N}.md` (colonnes Rôle + Nom évocateur + Hex du tableau "Palette complète") — exactement les 7 rôles : Primary, Secondary, Accent, Bg dark, Bg light, Text primary, Text secondary
    - **Mode** : extrait de `{brand}-palette-c{N}.md` (ligne "Mode fond dominant" : SOMBRE ou CLAIR)
    - **Registre atmosphérique** : extrait de `{brand}-palette-c{N}.md` (ligne "Registre atmosphérique")
-   - **Scan des gammes** : extrait de `{brand}-palette-c{N}.md` (section "Scan des gammes autorisées") — chaque ligne contient le nom de la gamme, l'affinité (FORTE/MODÉRÉE/FAIBLE) et la justification
+   - **Scan des gammes** : extrait de `{brand}-palette-c{N}.md` (section "Scan du bucket dominante") — chaque ligne contient le nom de la gamme, l'affinité (FORTE/MODÉRÉE/FAIBLE) et la justification
    - **Gammes choisies** : extrait de `{brand}-palette-c{N}.md` (ligne "Gammes choisies")
    - **Harmonie** : extrait de `{brand}-palette-c{N}.md` (ligne "Harmonie")
 
