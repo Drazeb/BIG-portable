@@ -1186,127 +1186,88 @@ Une fois `{brand}-concepts-narratifs-v{version}.md` produit, revenir au Checkpoi
 
 ---
 
-### Étape 3B-0 — Routeur chromatique (subagent isolé, AVANT le design dérivé)
+### Étape 3B-0 — Routeur chromatique v2 (subagent isolé, AVANT le design dérivé)
 
 **Pourquoi un subagent séparé** : Le designer ne doit JAMAIS raisonner "est-ce que c'est chaud ou froid ?". Si le designer fait ce raisonnement, il s'ancre sur le label "chaud" et toutes les palettes convergent vers ambre/ocre (testé 17 fois — voir REX). Le routeur fait ce raisonnement dans un contexte ISOLÉ et ne transmet au designer que les gammes autorisées — jamais les mots "chaud", "froid", "neutre", "température".
 
-**Isolation technique** : Le routeur ne doit lire AUCUN fichier de la session (scoping, brief-analysis). Le prompt contient une instruction d'isolation stricte. Si un custom agent `@agent-chromatic-router` est disponible (`.claude/agents/chromatic-router.md`), l'utiliser en priorité — il a `disallowedTools: Read, Glob, Grep, Bash, Edit, Write`. Sinon, lancer via Task tool (general-purpose) — l'instruction d'isolation dans le prompt suffit dans la majorité des cas.
+**Ce que produit le routeur v2** : une grille **territoire × aptitude** — chaque gamme validée est classée sous le(s) territoire(s) qu'elle exprime, avec une **aptitude** (base / dominante / accent dérivée de son intensité), plus une table de gammes **exclues**. Modèle binaire (validé OU exclu — pas de catégorie "non applicable" refuge). L'aptitude n'est pas cosmétique : elle alimente l'étage palette (3B-2), où Primary/Secondary sont tirés du **bucket DOMINANTE**. Le routeur ne pose AUCUN tag ni hex — il classe.
 
 Lancer 1 subagent avec le prompt de `{skill_dir}/phases/phase-3b-gamut-router.md`.
 
-Variables :
-- `{territory_mix}` → section "## Mix de Territoires (décontaminé)" extraite de `{brand}-context-clean.md`
-- `{validated_temperature_or_omit}` → si le mini-fichier `{brand}-validated-temperature.md` existe dans `{session_dir}/`, lire la section "**Verdict**" et composer : `Température validée par l'utilisateur : {chaud/froid/neutre}. En cas de conflit avec ton analyse des territoires, la température validée PRIME.`. Sinon : OMETTRE cette section.
-- `{spectrum_catalog}` → contenu intégral de `{skill_dir}/ref/chromatic-spectrum-catalog.md` lu depuis le disque par l'orchestrateur et inliné dans le prompt. Ce catalogue est la grille de scan exhaustif que le routeur DOIT parcourir (mode exhaustif depuis 2026-05-05 — voir `experiment/router-exhaustif`).
-- `{ventre_mou_chromatique_section}` → gammes chromatiques sectorielles extraites du Ventre Mou, pré-formatées selon `{cursor_b}`. L'orchestrateur extrait les éléments CHROMATIQUES de la section "Les constantes transverses (le vrai Ventre Mou)" du scoping (ne garder QUE les items qui parlent de couleur, palette, gamme ou gradient — pas les items sur la typo, le layout ou l'imagerie). Puis compose selon `{cursor_b}` :
-
-  **Si B=1** :
-  ```
-  ## GAMMES CHROMATIQUES SECTORIELLES — INCLUSION OBLIGATOIRE
-  Ces gammes chromatiques sont les conventions du secteur. Tu DOIS les inclure dans les gammes autorisées, même si ton analyse des territoires ne les aurait pas retenues. Tagge-les [SECTORIEL] dans la colonne Source :
-  {liste à puces des gammes chromatiques VM}
-  ```
-
-  **Si B=2** :
-  ```
-  ## GAMMES CHROMATIQUES SECTORIELLES — INCLUSION PAR DÉFAUT
-  Ces gammes chromatiques sont les conventions du secteur. Tu DOIS les inclure dans les gammes autorisées SAUF si ton analyse des territoires les trouve ACTIVEMENT CONTRADICTOIRES avec l'univers évoqué (pas juste "pas idéal" ou "pas le premier choix" — il faut une contradiction franche et explicite). En cas de doute, INCLURE. C'est le subagent palette en aval qui décidera combien les utiliser (1 dominante max en gamme sectorielle). Tagge-les [SECTORIEL] dans la colonne Source :
-  {liste à puces des gammes chromatiques VM}
-  ```
-
-  **Si B=3** :
-  ```
-  ## GAMMES CHROMATIQUES SECTORIELLES — EXCLUSION OBLIGATOIRE
-  Ces gammes chromatiques sont le Ventre Mou du secteur. Tu DOIS les exclure des gammes autorisées, même si ton analyse des territoires les aurait retenues :
-  {liste à puces des gammes chromatiques VM}
-  ```
-
-L'orchestrateur attend le résultat et stocke la sortie dans `{chromatic_gamuts}` (le bloc "## Gammes chromatiques (routeur)" produit par le subagent).
-
-**Trace sur le disque (OBLIGATOIRE)** : Écrire la sortie du routeur dans `{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md`. Ce fichier est la source de vérité pour les gammes chromatiques — il est relu par les étapes suivantes si la variable `{chromatic_gamuts}` n'est plus en mémoire (ex: reprise de session via test-big), et il est l'input du gate anti-slop ci-dessous.
-
-**Gate anti-slop (OBLIGATOIRE)** : Lancer le script déterministe sur le fichier produit :
+**1. Directive sectorielle (Ventre Mou chromatique) — générée, pas rédigée.** L'orchestrateur lit la section "Les constantes transverses (le vrai Ventre Mou)" du scoping + le diagnostic de température, extrait les éléments CHROMATIQUES (ne garder QUE les items couleur / palette / gamme / gradient — pas typo / layout / imagerie), et les mappe aux **noms de familles du catalogue** (`{skill_dir}/ref/chromatic-spectrum-catalog.md` — ex: "Bleus", "Cyans / turquoises", "Verts olives"). Puis génère la directive selon `{cursor_b}` (les 3 templates B=1/B=2/B=3 sont clonés dans le script — plus de rédaction à la main = plus de règle oubliée) :
 
 ```bash
-python3 "{skill_dir}/scripts/phase3b-gamut-router-anti-slop.py" "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" --json-output
+python3 "{skill_dir}/scripts/gamut-render-directive.py" --cursor-b {cursor_b} \
+  --familles "Famille A ; Famille B ; ..." \
+  --out "{skill_dir}/outputs/{session_dir}/{brand}-ventre-mou-chromatique.md"
 ```
 
-Le script applique 9 checks (7 FAIL stricts + 2 TAG-or-FAIL pour la zone violet/indigo et les neutres non orientés). Lire le JSON de sortie et traiter selon le verdict :
+Le contenu de ce fichier devient `{ventre_mou_chromatique_section}` (il inclut la ligne `Familles catalogue concernées : ...` que enforce/gate/tags reparseront). **Si aucune gamme chromatique sectorielle** → ne pas générer le fichier, `{ventre_mou_chromatique_section}` = vide, et OMETTRE `--ventre-mou` dans les étapes enforce/gate/planche.
 
-1. **`PASS`** (aucune violation, aucun patch) → continuer directement vers la planche visuelle.
+**2. Variables du prompt :**
+- `{territory_mix}` → section "## Mix de Territoires (décontaminé)" extraite de `{brand}-context-clean.md`
+- `{validated_temperature_or_omit}` → si le mini-fichier `{brand}-validated-temperature.md` existe dans `{session_dir}/`, lire la section "**Verdict**" et composer : `Température validée par l'utilisateur : {chaud/froid/neutre}. En cas de conflit avec ton analyse des territoires, la température validée PRIME.`. Sinon : OMETTRE cette section.
+- `{ventre_mou_chromatique_section}` → contenu du fichier directive (étape 1), ou vide.
+- `{spectrum_catalog}` → contenu intégral de `{skill_dir}/ref/chromatic-spectrum-catalog.md` lu depuis le disque par l'orchestrateur et inliné dans le prompt. C'est la grille de scan exhaustif (~45 sous-gammes) que le routeur DOIT parcourir.
 
-2. **`PASS_WITH_PATCH`** (patches uniquement, pas de violation FAIL) — la sortie est correctement qualifiée mais le tag `[SLOP_RISQUE]` est manquant sur certaines lignes (oubli trivial). L'orchestrateur patche silencieusement le fichier markdown :
-   - Pour chaque entrée `patches[]` du JSON, remplacer dans le fichier `{brand}-chromatic-gamuts.md` la cellule Source `current_source` par `patched_source` (ex: `[SECTORIEL]` → `[SECTORIEL] [SLOP_RISQUE]`) sur la ligne du tableau correspondant à la gamme `gamut`.
-   - Re-lire le fichier patché et mettre à jour la variable mémoire `{chromatic_gamuts}`.
-   - Pas de resume du routeur — l'omission est triviale et fixée mécaniquement.
+**Isolation** : Si le custom agent `@agent-chromatic-router` est disponible (`.claude/agents/chromatic-router.md`, `disallowedTools: Read, Glob, Grep, Bash, Edit, Write`), l'utiliser en priorité. Sinon, lancer via Task tool (general-purpose) — l'instruction d'isolation dans le prompt suffit.
 
-3. **`FAIL`** (≥ 1 violation FAIL) — relancer un routeur **Task fresh** (PAS SendMessage qui n'est pas accessible aux subagents Claude Code) avec :
-   - Le prompt original `phase-3b-gamut-router.md` relu depuis le disque (anti-dégradation)
-   - Mêmes variables `{territory_mix}`, `{validated_temperature_or_omit}`, `{ventre_mou_chromatique_section}`
-   - **+ une section feedback** ajoutée au prompt :
-     ```
-     ## FEEDBACK GATE ANTI-SLOP (OBLIGATOIRE — corrige ces violations dans ta nouvelle sortie)
-     {liste textuelle des `violations[]` extraite du JSON, une par ligne avec le détail}
-     ```
-   - **Max 2 itérations** sur le gate. Si toujours FAIL après 2 reruns, l'orchestrateur accepte la sortie en signalant `⚠ Gate anti-slop encore en FAIL après 2 itérations` dans le chat et continue (ne pas bloquer le pipeline indéfiniment).
-   - Après chaque rerun : ré-écrire le fichier `{brand}-chromatic-gamuts.md`, ré-exécuter le gate.
+**Trace sur le disque (OBLIGATOIRE)** : Écrire la sortie du routeur (le bloc commençant par "## Grille chromatique (routeur v2)") dans `{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md`. Ce fichier est la source de vérité — relu par les étapes suivantes et en reprise de session (test-big), et input des étapes enforce + gate ci-dessous.
 
-**Planche visuelle des gammes (OBLIGATOIRE)** : Après la trace sur disque, générer la planche HTML de visualisation des gammes :
+**3. Enforcement déterministe (AVANT le gate — OBLIGATOIRE).** Le routeur LLM rationalise parfois une gamme sectorielle (B=3) ou à contre-température en validé (ex: bleu sectoriel rebaptisé "encre de plan"). On ne lui fait pas confiance : ce script DÉPLACE mécaniquement vers les exclues toute gamme validée sectorielle (B=3) ou à contre-température en dominante/accent. Il réécrit la grille EN PLACE.
 
-1. **Écrire le fichier de config** `{session_dir}/.tmp-gamut-visual-config.json` :
-   ```json
-   {
-     "brandName": "{brand display name}",
-     "cursorB": {cursor_b},
-     "cursorBLabel": "{Mimétisme|Distinction|ZAG}",
-     "territories": {
-       "principal": { "name": "{label}", "keywords": ["{mot1}", "{mot2}", ...] },
-       "secondaire": { "name": "{label}", "keywords": [...] },
-       "tertiaire": { "name": "{label}", "keywords": [...] }
-     },
-     "ventreMouChromatique": [
-       { "element": "{élément chromatique VM}", "frequency": "{N/4}" }
-     ],
-     "analyzedKeywords": ["{kw1}", "{kw2}", ...],
-     "authorized": [
-       { "gamut": "{nom gamme}", "reason": "{raison}", "source": "TERRITOIRE", "swatches": ["#hex1", "#hex2"] }
-     ],
-     "excluded": [
-       { "gamut": "{nom gamme}", "reason": "{raison}", "swatches": ["#hex1"] }
-     ],
-     "nonApplicable": [
-       { "gamut": "{nom court catalogue}", "reason": "{raison courte}", "swatches": ["#hex1"] }
-     ]
-   }
-   ```
+```bash
+python3 "{skill_dir}/scripts/enforce_filters.py" \
+  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --catalogue "{skill_dir}/ref/chromatic-spectrum-catalog.md" \
+  --cursor-b {cursor_b} \
+  [--ventre-mou "{skill_dir}/outputs/{session_dir}/{brand}-ventre-mou-chromatique.md"] \
+  [--temperature chaud|froid]
+```
 
-   **Extraction des données :**
-   - `territories` → extraire du `{brand}-context-clean.md` (label + mots-clés de chaque territoire)
-   - `ventreMouChromatique` → extraire des éléments chromatiques du Ventre Mou (ceux utilisés pour `{ventre_mou_chromatique_section}`)
-   - `analyzedKeywords` → extraire de la sortie du routeur (ligne "Mots-clés dominants analysés")
-   - `authorized` / `excluded` / `nonApplicable` → extraire des 3 tableaux de la sortie du routeur. Pour les swatches : choisir 2-3 hex représentatifs de chaque sous-famille (peuvent être recopiés depuis les exemples du catalogue pour les non-applicables — ce sont des échantillons illustratifs, pas des couleurs de la palette finale)
-   - `source` → colonne Source du tableau autorisé. Cumulable : `TERRITOIRE`, `[SECTORIEL]`, `TERRITOIRE [SLOP_RISQUE]`, `[SECTORIEL] [SLOP_RISQUE]`. Le tag `[SLOP_RISQUE]` (zone training-defaults LLM qualifiée) est rendu en badge rouge distinct dans la planche visuelle.
+- `--temperature` : passer `chaud` ou `froid` UNIQUEMENT si le verdict de `{brand}-validated-temperature.md` est l'un des deux ; si `neutre` ou fichier absent → OMETTRE.
+- `--temp-filter` non précisé = défaut **`minimal`** (sanctuarisé 2026-05-29) : ne retire un contre-température que s'il est en dominante/accent ET franchement vif (intensité ≥ 0,55) — préserve les territoires calmes-bleus et les désaturés (encre, ardoise, pétrole). Ne pas passer `--temp-filter`.
+- Le script signale les déplacements + alerte si un territoire tombe <3 gammes ou <2 accents. Dans ce cas → re-dispatch conseillé (retour étape 2).
 
-2. **Lancer le script** :
-   ```bash
-   node "{skill_dir}/lib/gamut-visual.mjs" "{skill_dir}/outputs/{session_dir}" "{brand}"
-   ```
+**4. Gate v2 (OBLIGATOIRE).**
 
-3. **Ouvrir dans le navigateur** :
-   ```bash
-   open "{skill_dir}/outputs/{session_dir}/{brand}-gamuts-visual.html"
-   ```
+```bash
+python3 "{skill_dir}/scripts/gate_v2.py" \
+  "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --catalogue "{skill_dir}/ref/chromatic-spectrum-catalog.md" \
+  --cursor-b {cursor_b} \
+  [--ventre-mou "{skill_dir}/outputs/{session_dir}/{brand}-ventre-mou-chromatique.md"] \
+  [--temperature chaud|froid] --json-output
+```
 
-**Validation utilisateur des gammes** (après écriture du fichier `{brand}-chromatic-gamuts.md` et ouverture de la planche visuelle) :
+Checks durs : exhaustivité (les ~45 familles TOUTES classées validé ∪ exclu), anti-amputation (≥3 gammes/territoire), complétude aptitude (base + dominante + accent) + **≥2 accents**, **sectoral_conflict** (B=3 : validé ∩ sectoriel → FAIL) ou **sectoral_inclusion** (B=1 : famille secteur absente → FAIL), **temperature_coherence**, aptitude_validity (l'aptitude déclarée ne contredit pas l'intensité — ≥30% de contradictions = FAIL), no_temperature_words, min_specificity, justification_present, no_duplicate_gamuts. Advisory (WARN) : energy_survival. Après l'enforce (étape 3), `sectoral_conflict` et `temperature_coherence` doivent être à zéro.
 
-> Les gammes chromatiques sont affichées dans la planche visuelle (navigateur).
+Traiter selon le verdict (sauver le JSON dans `{brand}-chromatic-gamuts-gate.json`) :
+1. **`PASS`** → planche visuelle (étape 5).
+2. **`FAIL`** → relancer un routeur **Task fresh** (PAS SendMessage, inaccessible aux subagents Claude Code) avec : le prompt `phase-3b-gamut-router.md` relu depuis le disque (anti-dégradation), les mêmes variables, **+ une section feedback** listant les `violations[]` du JSON (une par ligne avec le détail). Puis ré-écrire `{brand}-chromatic-gamuts.md`, **ré-exécuter enforce (étape 3) PUIS gate**. **Max 2 itérations** ; si toujours FAIL après 2 reruns → accepter en signalant `⚠ Gate v2 encore en FAIL après 2 itérations` et continuer.
+
+**5. Planche visuelle (OBLIGATOIRE).** `build_config.py` assemble seul le JSON de config (swatches via `match_hexes`, tags `[SLOP_RISQUE]` / `[SECTORIEL]` posés mécaniquement par `tags.py` — le routeur ne les écrit pas) :
+
+```bash
+python3 "{skill_dir}/scripts/build_config.py" \
+  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
+  --output "{skill_dir}/outputs/{session_dir}/.tmp-grid-visual-config.json" \
+  --brand "{brand display name}" --cursor-b {cursor_b} \
+  [--ventre-mou "{skill_dir}/outputs/{session_dir}/{brand}-ventre-mou-chromatique.md"]
+node "{skill_dir}/lib/grid-visual.mjs" "{skill_dir}/outputs/{session_dir}" "{brand}"
+open "{skill_dir}/outputs/{session_dir}/{brand}-grid-visual.html"
+```
+
+**6. Validation utilisateur des gammes** (après écriture de `{brand}-chromatic-gamuts.md` et ouverture de la planche) :
+
+> La grille chromatique est affichée dans la planche visuelle (navigateur) : gammes **validées** classées par territoire (Principal / Secondaire / Tertiaire) et par **aptitude** (base / dominante / accent), plus les gammes **exclues**.
 >
-> **Ces gammes vous conviennent ?** Si vous voulez ajuster (ex: autoriser aussi une famille exclue, ou exclure une famille autorisée), dites-le maintenant.
+> **Cette grille vous convient ?** Si vous voulez ajuster (valider une gamme exclue, exclure une validée, déplacer une aptitude), dites-le maintenant.
 
-**Si au moins une gamme porte le tag `[SLOP_RISQUE]`** (rendu en badge rouge dans la planche), ajouter au message :
-> ⚠ Certaines gammes portent le tag **Slop risque** — elles vivent dans une zone training-defaults LLM (violet/indigo AI, neutres pas orientés). Le routeur les a qualifiées pour s'en éloigner ; le sub-agent palette en aval sera vigilant sur les hex choisis. Si vous préférez les exclure complètement, dites-le.
+**Si au moins une gamme porte le tag `[SLOP_RISQUE]`** (badge rouge dans la planche), ajouter :
+> ⚠ Certaines gammes portent le tag **Slop risque** — zone training-defaults LLM (violet/indigo AI, neutres pas orientés). Le routeur les a qualifiées pour s'en éloigner ; le sub-agent palette en aval sera vigilant sur les hex. Si vous préférez les exclure, dites-le.
 
-Attendre la réponse. Si l'utilisateur demande un ajustement → modifier `{chromatic_gamuts}` en conséquence, ré-écrire le fichier `{brand}-chromatic-gamuts.md`, **ré-exécuter le gate anti-slop** (les ajustements utilisateur peuvent introduire de nouvelles violations) ET régénérer la planche visuelle avec les gammes mises à jour. Si OK → continuer vers Étape 3B-1 (palettes).
+Attendre la réponse. Si ajustement → modifier `{brand}-chromatic-gamuts.md`, **ré-exécuter enforce (étape 3) PUIS gate (étape 4)** (les ajustements user peuvent réintroduire des violations) ET régénérer la planche. Si OK → continuer vers Étape 3B-1 (palettes).
 
 **Note** : Phase 3A (concepts narratifs) et Phase 3B (génération palette/typo/styles/visuels) tournent 100% aveugles aux aversions client. Les aversions sont confrontées A POSTERIORI aux 2 checkpoints user (palette en 3B-2-checkpoint et style en 3B-7-checkpoint) via des mini-checks LLM advisory non-bloquants. Voir D57.
 

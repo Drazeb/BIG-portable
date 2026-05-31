@@ -202,6 +202,22 @@ def build_batch2_substitutions(inventory_html: str) -> dict:
     return substitutions
 
 
+def extract_batch2_css(inventory_html: str) -> str:
+    """
+    Récupère le CSS batch2 depuis la section <section data-inv="_css"> de
+    l'inventory (déposée par extract-batch2-inventory.py). Retourne "" si
+    absent (cas legacy inventory sans CSS).
+    """
+    m = re.search(
+        r'<section\s+data-inv="_css"[^>]*>\s*(?:<!--.*?-->\s*)?<style\b[^>]*>(.*?)</style>',
+        inventory_html,
+        re.DOTALL | re.IGNORECASE,
+    )
+    if not m:
+        return ""
+    return m.group(1)
+
+
 def substitute_slots(
     template_html: str,
     vars_dict: dict,
@@ -301,7 +317,8 @@ def main():
         sys.exit(1)
     print(f"[INFO] Variables fournies  : {len(vars_dict)}")
 
-    # Injection automatique des 8 slots BATCH2_INVENTORY_*.
+    # Injection automatique des 8 slots BATCH2_INVENTORY_* + récupération CSS batch2.
+    batch2_css = ""
     if inventory_path:
         inventory_html = inventory_path.read_text(encoding="utf-8")
         batch2_subs = build_batch2_substitutions(inventory_html)
@@ -309,11 +326,16 @@ def main():
         for slot_name, html_block in batch2_subs.items():
             if slot_name not in vars_dict:
                 vars_dict[slot_name] = html_block
-        counts_str = " · ".join(
-            f"{slot.split('_')[-1].lower()}={len(SLOT_PATTERN.sub('', batch2_subs[slot]).split('<article'))-1}"
-            for slot in batch2_subs
-        )
         print(f"[INFO] Injection auto batch2-inventory : 8 slots remplis")
+        # Récupération du CSS batch2 pour réinjection dans le brand book final.
+        # Sans ce CSS, les composants extraits (classes .glyph, .btn, .badge, .toggle,
+        # .alert, .card--depth, etc.) s'affichent en HTML brut sans style → bug
+        # observé Vermeil test E2E 31/05/2026.
+        batch2_css = extract_batch2_css(inventory_html)
+        if batch2_css:
+            print(f"[INFO] CSS batch2 récupéré : {len(batch2_css):,} caractères ({len(batch2_css.splitlines()):,} lignes)")
+        else:
+            print(f"[WARN] Pas de CSS batch2 trouvé dans l'inventory (inventory legacy ?). Composants extraits seront non-stylés.")
 
     # Substitution.
     output_html, missing, substituted = substitute_slots(
@@ -339,6 +361,26 @@ def main():
         for r in set(residual):
             print(f"         · {{{{{r}}}}}")
         sys.exit(1)
+
+    # Injection du CSS batch2 juste avant </head> (cascade : après le CSS template,
+    # donc le CSS batch2 prend précédence pour les classes communes — souhaité car
+    # les composants extraits utilisent les classes batch2).
+    if batch2_css:
+        css_block = (
+            '\n<style data-source="batch2-inventory">\n'
+            '/* CSS extrait de batch2.html via extract-batch2-inventory.py, '
+            'réinjecté ici par render-brand-book.py pour styliser les composants '
+            'UI / icônes / charts injectés verbatim dans le brand book. */\n'
+            + batch2_css
+            + '\n</style>\n'
+        )
+        # Insérer juste avant </head> (case-insensitive, premier match).
+        m = re.search(r"</head>", output_html, re.IGNORECASE)
+        if m:
+            output_html = output_html[:m.start()] + css_block + output_html[m.start():]
+            print(f"[OK]   CSS batch2 injecté dans le brand book ({len(batch2_css):,} chars)")
+        else:
+            print(f"[WARN] Pas de </head> trouvé dans le template : CSS batch2 NON injecté.")
 
     output_path.write_text(output_html, encoding="utf-8")
     size_kb = output_path.stat().st_size / 1024

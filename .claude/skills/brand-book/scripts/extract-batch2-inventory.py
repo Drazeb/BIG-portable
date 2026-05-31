@@ -237,6 +237,25 @@ def extract_primary_class(block: str, target_classes: list) -> str:
 # DEFS INDEX (gère url(#xxx) référencés via <defs> centralisés)
 # ============================================================================
 
+def extract_inline_css(html: str) -> str:
+    """
+    Extrait le contenu CONCATÉNÉ de tous les <style>...</style> du document batch2.
+
+    Pourquoi : sans ce CSS, les composants UI/icônes/charts injectés verbatim
+    dans le brand book s'affichent en HTML brut (classes `.glyph`, `.btn--*`,
+    `.toggle__track`, `.badge--*`, etc. non définies) → rendu cassé / invisible.
+
+    Bug observé Vermeil test E2E 31/05/2026 : section Composants UI quasi
+    vide, section Dataviz vide alors que les hashes MD5 disaient 46/46 OK.
+
+    Le CSS extrait est inclus dans `batch2-inventory.html` sous une section
+    `<section data-inv="_css" hidden>` et réinjecté dans le brand book final
+    par `render-brand-book.py`.
+    """
+    blocks = re.findall(r"<style\b[^>]*>(.*?)</style>", html, re.DOTALL | re.IGNORECASE)
+    return "\n".join(blocks)
+
+
 def build_defs_index(html: str) -> dict:
     """
     Scanne TOUS les <defs>...</defs> du document (qu'ils soient dans un SVG
@@ -676,8 +695,19 @@ def render_inventory_html(
     source_path: Path,
     brand: str,
     total_count: int,
+    batch2_css: str = "",
 ) -> str:
     sections_html = []
+    # Section _css cachée : CSS batch2 verbatim, sera réinjecté par render-brand-book.py
+    # dans le brand book final pour styliser les composants extraits.
+    if batch2_css:
+        sections_html.append(
+            f'<section data-inv="_css" hidden aria-hidden="true">\n'
+            f'  <!-- CSS verbatim extrait de batch2.html — réinjecté dans le brand book\n'
+            f'       par render-brand-book.py pour styliser les composants UI/icônes/charts. -->\n'
+            f'  <style data-source="batch2-inventory">{batch2_css}</style>\n'
+            f'</section>'
+        )
     for cat in CATEGORIES:
         items = components_by_category.get(cat, [])
         if not items:
@@ -825,6 +855,10 @@ def main():
     defs_index = build_defs_index(html)
     print(f"[INFO] Defs index : {len(defs_index)} éléments indexés ({', '.join(sorted(defs_index)[:8])}{'…' if len(defs_index) > 8 else ''})")
 
+    # Extraction du CSS batch2 (pour réinjection dans le brand book final).
+    batch2_css = extract_inline_css(html)
+    print(f"[INFO] CSS batch2 : {len(batch2_css):,} caractères extraits ({len(batch2_css.splitlines()):,} lignes)")
+
     # Extraction par catégorie. Ordre : conteneurs (icons/charts/tabs/cards) AVANT
     # composants à input interne (toggles/checkboxes) AVANT inputs (qui ne prend
     # que les wrappers .field/.input/.select, pas les inputs nus à l'intérieur
@@ -870,7 +904,7 @@ def main():
         sys.exit(1)
 
     # Render.
-    inventory_html = render_inventory_html(components_by_category, src, brand, total)
+    inventory_html = render_inventory_html(components_by_category, src, brand, total, batch2_css=batch2_css)
     dst_html.write_text(inventory_html, encoding="utf-8")
     print(f"[OK]   Inventory HTML écrit : {dst_html} ({dst_html.stat().st_size:,} octets)")
 
