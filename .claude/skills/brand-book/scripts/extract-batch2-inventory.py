@@ -248,21 +248,136 @@ def extract_primary_class(block: str, target_classes: list) -> str:
 
 def extract_inline_css(html: str) -> str:
     """
-    Extrait le contenu CONCATÉNÉ de tous les <style>...</style> du document batch2.
+    Extrait le contenu CONCATÉNÉ de tous les <style>...</style> du document
+    batch2, en FILTRANT les sélecteurs globaux dangereux (body / html / :root /
+    universal) qui causeraient une cascade override sur le brand book.
 
-    Pourquoi : sans ce CSS, les composants UI/icônes/charts injectés verbatim
-    dans le brand book s'affichent en HTML brut (classes `.glyph`, `.btn--*`,
-    `.toggle__track`, `.badge--*`, etc. non définies) → rendu cassé / invisible.
+    Pourquoi le filtrage : le CSS batch2 contient des règles globales
+    (`:root { --color-text-primary: oklch(0.91 ...) }`, `body { color: var(...) }`,
+    `*, *::before, *::after { ... }`) qui sont VALIDES dans le contexte batch2
+    (mode dark cinema natif) mais qui CASSENT le brand book qui a son propre
+    contexte (sections positives sur fond clair). Bug observé Vermeil
+    01/06/2026 : bento Identity Card quasi invisible (texte beige clair sur
+    fond beige clair) à cause du :root batch2 qui override --color-text-primary.
 
-    Bug observé Vermeil test E2E 31/05/2026 : section Composants UI quasi
-    vide, section Dataviz vide alors que les hashes MD5 disaient 46/46 OK.
-
-    Le CSS extrait est inclus dans `batch2-inventory.html` sous une section
-    `<section data-inv="_css" hidden>` et réinjecté dans le brand book final
-    par `render-brand-book.py`.
+    Filtrage : on garde uniquement les sélecteurs de CLASSES (`.foo`),
+    de balises spécifiques pas globales (ex: `button`, `input` — utiles pour
+    le reset des composants UI extraits), et les pseudo-classes / variables
+    locales. On EXCLUT : `body`, `html`, `:root`, `*` (et les `:where(...)`
+    qui les ciblent).
     """
     blocks = re.findall(r"<style\b[^>]*>(.*?)</style>", html, re.DOTALL | re.IGNORECASE)
-    return "\n".join(blocks)
+    raw_css = "\n".join(blocks)
+    return _filter_global_selectors(raw_css)
+
+
+def _filter_global_selectors(css: str) -> str:
+    """
+    Retire les règles CSS dont le sélecteur est globalement dangereux pour
+    le brand book : body, html, :root, * (et combinaisons).
+
+    Pré-traitement : strip TOUS les commentaires CSS `/* ... */` (multi-line)
+    AVANT parsing. Sans ça, les sélecteurs précédés de commentaires (ex:
+    `/* commentaire */ body { ... }` fréquent dans batch2) ne sont pas
+    reconnus comme dangereux par le dangerous_pattern (qui exige `(^|,)\s*` au
+    début du sélecteur). Bug observé Vermeil 01/06/2026.
+
+    Approche : parsing simple par accolades équilibrées. Pour chaque règle
+    `selector { ... }`, garde la règle uniquement si le sélecteur ne matche
+    PAS le pattern dangereux.
+
+    Gère les @-rules (`@media`, `@supports`, `@layer`, `@container`, etc.) en
+    traversant leur contenu interne (les règles internes sont aussi filtrées).
+    Les @font-face / @keyframes / @property sont gardés tels quels.
+    """
+    # Strip commentaires CSS /* ... */ — ne servent à rien dans le rendu.
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL)
+
+    dangerous_pattern = re.compile(
+        r"(^|,)\s*(:root\b|\bhtml\b|\bbody\b|\*\s*[,{>+~]?|:where\s*\(\s*(html|body|:root)\b)",
+        re.IGNORECASE,
+    )
+
+    def filter_block(content: str) -> str:
+        """Filtre récursivement un bloc CSS (gère les @-rules imbriquées)."""
+        result = []
+        pos = 0
+        n = len(content)
+        while pos < n:
+            # Skip whitespace.
+            while pos < n and content[pos].isspace():
+                result.append(content[pos])
+                pos += 1
+            if pos >= n:
+                break
+            # @-rule (@media, @supports, @keyframes, @font-face, etc.) ?
+            if content[pos] == "@":
+                end_at_decl = content.find("{", pos)
+                end_at_semi = content.find(";", pos)
+                if end_at_semi != -1 and (end_at_decl == -1 or end_at_semi < end_at_decl):
+                    # @-rule sans bloc (ex: @import, @charset)
+                    result.append(content[pos:end_at_semi + 1])
+                    pos = end_at_semi + 1
+                    continue
+                if end_at_decl == -1:
+                    result.append(content[pos:])
+                    break
+                at_header = content[pos:end_at_decl]
+                # Trouver le bloc équilibré
+                depth = 1
+                block_start = end_at_decl + 1
+                p = block_start
+                while p < n and depth > 0:
+                    if content[p] == "{":
+                        depth += 1
+                    elif content[p] == "}":
+                        depth -= 1
+                    p += 1
+                if depth != 0:
+                    result.append(content[pos:])
+                    break
+                inner = content[block_start:p - 1]
+                # Pour @font-face / @keyframes : garder tel quel (pas de
+                # règles globales à filtrer dedans).
+                header_lower = at_header.strip().lower()
+                if header_lower.startswith("@font-face") or header_lower.startswith("@keyframes") or header_lower.startswith("@property"):
+                    result.append(content[pos:p])
+                else:
+                    # @media / @supports / @container : filtrer le contenu interne
+                    filtered_inner = filter_block(inner)
+                    result.append(f"{at_header}{{{filtered_inner}}}")
+                pos = p
+                continue
+            # Règle normale : selector { declarations }
+            end_brace = content.find("{", pos)
+            if end_brace == -1:
+                # Pas de bloc → reste = sans règle, garder
+                result.append(content[pos:])
+                break
+            selector = content[pos:end_brace]
+            # Trouver le bloc équilibré
+            depth = 1
+            block_start = end_brace + 1
+            p = block_start
+            while p < n and depth > 0:
+                if content[p] == "{":
+                    depth += 1
+                elif content[p] == "}":
+                    depth -= 1
+                p += 1
+            if depth != 0:
+                result.append(content[pos:])
+                break
+            block = content[end_brace:p]
+            # Test du sélecteur
+            is_dangerous = bool(dangerous_pattern.search("," + selector))
+            if not is_dangerous:
+                result.append(selector + block)
+            # else : règle filtrée (pas réinjectée)
+            pos = p
+        return "".join(result)
+
+    return filter_block(css)
 
 
 def build_defs_index(html: str) -> dict:
