@@ -85,7 +85,9 @@
          ne peut plus les "fournir" implicitement, il faut les définir ici. */
       --brand-color-positive-muted: color-mix(in srgb, var(--brand-color-positive-text) 60%, transparent);
       --brand-color-text-secondary: color-mix(in srgb, var(--brand-color-positive-text) 70%, transparent);
-      --color-text-primary:         var(--brand-color-positive-text);
+      /* NOTE : `--color-text-primary` PAS redéfinie ici — laissée à batch2 (qui
+         l'utilise pour styler les .lockup__mark en couleur claire sur ses fonds
+         sombres). La redéfinir en clair-sur-clair casse les wordmarks batch2. */
       --color-beacon:               var(--brand-color-accent);
       --color-beacon-warm:          var(--brand-color-accent-2);
       --color-chart-mist:           color-mix(in srgb, var(--brand-color-positive-bg) 92%, var(--brand-color-positive-text));
@@ -1211,9 +1213,16 @@
       margin-block-start: var(--space-xl, 48px);
     }
     .bk-identity-lockups > * { max-width: 100%; }
-    /* Le CSS batch2 (injecté par render-brand-book.py) style les .wordmark /
-       .wordmark-plate / .lockup__mark / .clearspace / .exclusion__inner
-       contenus dans .bk-identity-lockups. */
+    /* `color: revert-layer` à l'intérieur de .bk-identity-lockups → revert à
+       la valeur définie dans @layer batch2-injected. Empêche les couleurs
+       sombres du brand-book (`--brand-color-positive-text`) de cascader sur
+       les `.lockup__mark` qui sont sur fonds sombres batch2 (texte sombre
+       sur fond sombre = invisible). Batch2 connaît le contexte de chaque
+       variant lockup et applique la bonne couleur native. */
+    .bk-identity-lockups,
+    .bk-identity-lockups * {
+      color: revert-layer;
+    }
 
     .bk-palette-pages {
       display: grid;
@@ -1424,12 +1433,12 @@
       <div class="bento-v4">
 
         <!-- COVER (col 1, rows 1-4) -->
-        <div class="bv4-cover grain grain--dark">
+        <div class="bv4-cover">
           <span class="bv4-cover__label">Cover · atmosphère hero</span>
         </div>
 
         <!-- WORDMARK ENRICHI (col 1, rows 5-6) — overline · wordmark · signature -->
-        <div class="bv4-wordmark grain grain--dark">
+        <div class="bv4-wordmark">
           <span class="bv4-wordmark__overline">{{WORDMARK_OVERLINE}}</span>
           <div class="bv4-wordmark__center">
             <span class="bv4-wordmark__text">{{BRAND}}<span class="accent">.</span></span>
@@ -1441,7 +1450,7 @@
         </div>
 
         <!-- MANIFESTO (col 2-3, rows 1-2) -->
-        <div class="bv4-manifesto grain">
+        <div class="bv4-manifesto">
           <span class="bv4-manifesto__label">Manifesto</span>
           <p class="bv4-manifesto__text">{{MANIFESTO_LINE1}}<span class="dot">.</span><br>{{MANIFESTO_LINE2}}<span class="dot">.</span></p>
           <p class="bv4-manifesto__sub">{{MANIFESTO_SUB}}</p>
@@ -1450,7 +1459,7 @@
         <!-- ICÔNES MINI 4× (col 2, row 3) — 4 SVG signature inline, 32px taille naturelle
              extraites de batch2 (chercher les <svg aria-label="..."> dans la planche
              iconographique métier). NE PAS zoomer : taille 32px par cellule. -->
-        <div class="bv4-icongrid grain">
+        <div class="bv4-icongrid">
           <span class="bv4-icongrid__label">{{ICONGRID_LABEL}}</span>
           <div class="bv4-icongrid__row">
             {{IDENTITY_CARD_ICONS_4}}
@@ -1458,7 +1467,7 @@
         </div>
 
         <!-- TYPO MINI (col 2, row 4) — Aa Display + Aa Mono, baseline align -->
-        <div class="bv4-typo grain">
+        <div class="bv4-typo">
           <span class="bv4-typo__label">Typographie</span>
           <div class="bv4-typo__row">
             <div class="bv4-typo__block">
@@ -1473,7 +1482,7 @@
         </div>
 
         <!-- DATAVIZ (col 2, rows 5-6) — bar chart signature -->
-        <div class="bv4-dataviz grain grain--dark">
+        <div class="bv4-dataviz">
           <span class="bv4-dataviz__label">{{DATAVIZ_LABEL}}</span>
           <div class="bv4-dataviz__viz">
             {{DATAVIZ_SIGNATURE_SVG}}
@@ -1484,42 +1493,42 @@
              6 blocs nommés par rôle (fond profond, fond surface, détail froid,
              surface claire, accent signal, accent chaud). -->
         <div class="bv4-palette">
-          <div class="bv4-palette__bloc bv4-palette__bloc--nuit grain grain--dark">
+          <div class="bv4-palette__bloc bv4-palette__bloc--nuit">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_1_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_1_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_1_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--night grain grain--dark">
+          <div class="bv4-palette__bloc bv4-palette__bloc--night">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_2_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_2_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_2_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--marine grain grain--dark">
+          <div class="bv4-palette__bloc bv4-palette__bloc--marine">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_3_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_3_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_3_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--mist grain">
+          <div class="bv4-palette__bloc bv4-palette__bloc--mist">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_4_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_4_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_4_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--foyer grain">
+          <div class="bv4-palette__bloc bv4-palette__bloc--foyer">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_5_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_5_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_5_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--foyer-warm grain">
+          <div class="bv4-palette__bloc bv4-palette__bloc--foyer-warm">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_6_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_6_NAME}}</span>

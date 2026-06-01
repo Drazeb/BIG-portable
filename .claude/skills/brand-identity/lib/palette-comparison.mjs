@@ -327,7 +327,7 @@ function generateHtml() {
        3 cartes par rangée (5 variantes → rangée de 3 + rangée de 2) ; chaque carte garde
        sa pleine largeur (spécimen entier + 7 pastilles lisibles). Si 3 cartes dépassent
        l'écran, on SCROLLE horizontalement pour voir la 3e — on n'écrase pas. */
-    .palettes-row { display: grid; grid-template-columns: repeat(3, 440px); gap: 24px; overflow-x: auto; padding-bottom: 12px; }
+    .palettes-row { display: grid; grid-template-columns: repeat(3, 520px); gap: 24px; overflow-x: auto; padding-bottom: 12px; }
 
     .palette-card {
       background: #FFFFFF; border: 1px solid #E5E7EB;
