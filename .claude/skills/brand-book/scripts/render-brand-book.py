@@ -97,6 +97,8 @@ BATCH2_SLOT_MAPPING = {
     "BATCH2_INVENTORY_MISC_UI": ["tabs", "alerts", "progress"],
     "BATCH2_INVENTORY_CHARTS": ["charts"],
     "BATCH2_INVENTORY_LOCKUPS": ["lockups"],
+    "BATCH2_INVENTORY_ICON_TREATMENTS": ["icon_treatments"],
+    "BATCH2_INVENTORY_ICON_MOCKUP": ["icon_mockup"],
 }
 
 
@@ -332,6 +334,39 @@ def compose_photo_gallery(visual_final_dir: Path, brand: str = "") -> str:
     return '<div class="bk-photo-gallery">\n' + "\n".join(items) + '\n</div>'
 
 
+def compose_identity_card_icons_4(inventory_html: str) -> str:
+    """
+    Auto-compose les 4 icônes du bento Identity Card depuis les 4 PREMIÈRES
+    icônes batch2 de l'inventory. Règle simple, universelle (marche pour
+    toute marque, qu'elle utilise des hachures ou pas).
+
+    Si l'utilisateur souhaite des icônes spécifiques (plus signature, plus
+    métier), il peut éditer manuellement IDENTITY_CARD_ICONS_4 dans
+    template-vars.json — sa valeur écrasera l'auto-composition au prochain
+    render (override dans render_brand_book main avant `if … not in vars_dict`).
+
+    Format : 4 `<div class="bv4-icongrid__cell">…<svg>…</svg></div>`.
+    """
+    section_match = re.search(
+        r'<section\s+data-inv="icons"[^>]*>(.*?)</section>',
+        inventory_html,
+        re.DOTALL | re.IGNORECASE,
+    )
+    if not section_match:
+        return ""
+    section_content = section_match.group(1)
+    articles = re.findall(r'<article\b[^>]*data-component="icons"[^>]*>.*?</article>', section_content, re.DOTALL)
+    if not articles:
+        return ""
+    cells = []
+    for art in articles[:4]:
+        svg_match = re.search(r'<svg\b.*?</svg>', art, re.DOTALL)
+        if not svg_match:
+            continue
+        cells.append(f'<div class="bv4-icongrid__cell">{svg_match.group(0)}</div>')
+    return "".join(cells)
+
+
 def extract_batch2_css(inventory_html: str) -> str:
     """
     Récupère le CSS batch2 depuis la section <section data-inv="_css"> de
@@ -474,6 +509,16 @@ def main():
             if slot_name not in vars_dict:
                 vars_dict[slot_name] = html_block
         print(f"[INFO] Injection auto batch2-inventory : 8 slots remplis")
+        # Auto-composition IDENTITY_CARD_ICONS_4 (override systématique pour
+        # garantir que les 4 icônes du bento = 4 premières icônes batch2 avec
+        # hachures, pas des icônes redessinées par le sub-agent).
+        # Demande Charles 01/06/2026 — incohérence visuelle bento vs section
+        # Iconographie observée.
+        composed_icons_4 = compose_identity_card_icons_4(inventory_html)
+        if composed_icons_4:
+            vars_dict["IDENTITY_CARD_ICONS_4"] = composed_icons_4
+            print(f"[INFO] Auto-composition IDENTITY_CARD_ICONS_4 : 4 icônes batch2 ({len(composed_icons_4):,} chars)")
+
         # Récupération du CSS batch2 pour réinjection dans le brand book final.
         # Sans ce CSS, les composants extraits (classes .glyph, .btn, .badge, .toggle,
         # .alert, .card--depth, etc.) s'affichent en HTML brut sans style → bug

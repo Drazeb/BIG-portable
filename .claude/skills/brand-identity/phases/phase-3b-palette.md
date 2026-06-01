@@ -24,7 +24,7 @@ Ces buckets sont déterminés EN AMONT. Tu ne les re-dérives PAS — tu travail
 ### Mapping rôle → bucket (RÈGLE STRUCTURELLE)
 - **Primary, Secondary** (les 2 dominantes d'identité) → tu DOIS les choisir dans le **bucket DOMINANTE**. Une dominante ne peut PAS venir d'un autre bucket. (Tu choisis l'hex précis librement à l'intérieur de la gamme choisie.)
 - **Accent** → le **bucket ACCENT** est ta source prioritaire, mais l'accent reste **LIBRE** : si le concept le justifie, tu peux prendre une gamme d'un autre bucket, voire une gamme intense non listée. L'accent est un événement, pas une contrainte.
-- **Bg dark, Bg light, Text primary, Text secondary** (les neutres) → le **bucket BASE** te donne l'**orientation** (quelles familles neutres servent ce terrain). Mais tu FABRIQUES les hex toi-même en les **teintant vers TA dominante choisie** (cf. règle anti-slop 2). Tu n'es pas tenu de recopier un hex du bucket base — tu t'en sers comme boussole d'orientation chromatique.
+- **Bg dark, Bg light, Text primary, Text secondary** (les neutres) → le **bucket BASE** te donne l'**orientation** (quelles familles neutres servent ce terrain). Mais tu FABRIQUES les hex toi-même en les **teintant vers TA dominante choisie** (cf. règle anti-slop 2). Tu n'es pas tenu de recopier un hex du bucket base — tu t'en sers comme boussole d'orientation chromatique. ⚠ **Le fond est un levier de variété** : en mode divergence (si la directive liste des familles BASE + les fonds déjà pris), choisis pour ton fond dominant une **famille BASE DIFFÉRENTE** des variantes précédentes (un ivoire chaud, une craie plus froide, un taupe minéral…), PUIS re-teinte-la vers ta dominante. Deux variantes ne doivent pas avoir le même fond.
 
 ## MISSION
 

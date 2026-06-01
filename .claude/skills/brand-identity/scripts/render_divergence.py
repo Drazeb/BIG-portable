@@ -125,10 +125,10 @@ def hard_excluded_labels(grid_path) -> list[str]:
 
 
 def bucket_families(buckets_path: Path):
-    """{'DOMINANTE':[(label, core)], 'ACCENT':[(label, core)]}"""
+    """{'DOMINANTE':[(label, core)], 'ACCENT':[(label, core)], 'BASE':[(label, core)]}"""
     c = buckets_path.read_text(encoding='utf-8')
-    out = {'DOMINANTE': [], 'ACCENT': []}
-    for sec in ('DOMINANTE', 'ACCENT'):
+    out = {'DOMINANTE': [], 'ACCENT': [], 'BASE': []}
+    for sec in ('DOMINANTE', 'ACCENT', 'BASE'):
         m = re.search(r'### Bucket ' + sec + r'.*?\n(.*?)(?:\n### |\Z)', c, re.S)
         if not m:
             continue
@@ -267,6 +267,30 @@ def main() -> int:
         L.append("Ton accent doit être dans une **zone de teinte différente** OU à **saturation franchement "
                  "différente** de TOUS ceux ci-dessus — pas une variation imperceptible de la même teinte "
                  "(deux accents ne doivent pas être des jumeaux).")
+        L.append("")
+    # Levier fond/neutres — varier la FAMILLE de base (le fond ne doit pas être identique partout)
+    base_fams = [label for (label, _) in buckets.get('BASE', [])]
+    prev_bg = []
+    for i, c in enumerate(prev_contents, start=1):
+        m = extract_mode(c) or '?'
+        nm_l, hx_l = extract_role(c, 'Bg light')
+        nm_d, hx_d = extract_role(c, 'Bg dark')
+        hero = (hx_l, 'Bg light', nm_l) if m == 'CLAIR' else (hx_d, 'Bg dark', nm_d)
+        if hero[0]:
+            prev_bg.append((i, m, hero[1], hero[0], hero[2] or ''))
+    if base_fams:
+        L.append("### Fond / neutres — varie la FAMILLE de base (levier de variété)")
+        L.append("Le fond (la plus grande surface) ne doit PAS être quasi identique d'une variante à l'autre. "
+                 "Pour ton fond dominant (Bg light si mode clair, Bg dark si sombre), choisis une **famille du "
+                 "bucket BASE DIFFÉRENTE** de celles déjà prises, PUIS re-teinte-la vers TA dominante (l'écho "
+                 "fond↔identité reste). Familles BASE disponibles :")
+        for f in base_fams:
+            L.append(f"- {f}")
+        if prev_bg:
+            L.append("")
+            L.append("Fonds dominants déjà utilisés (NE les répète pas — prends une autre direction de neutre) :")
+            for i, m, role, hx, nm in prev_bg:
+                L.append(f"- V{i} [{m}] {role} {hx}" + (f" ({nm})" if nm else ""))
         L.append("")
     # Accent : exclusions DURES interdites (même si l'accent est libre)
     hard_labels = hard_excluded_labels(args.grid)

@@ -1146,6 +1146,64 @@
       padding-block-start: 0;
       border-block-start: 0;
     }
+
+    /* ÎLOTS DARK — sous-sections Système (Iconographie, Composants UI,
+       Data viz). Charles 01/06/2026 : les composants UI / icônes / charts
+       doivent être présentés sur leur "vrai background" brand (mode dark
+       cinema), pas sur le fond clair minimaliste du brand book. Sinon
+       l'iconographie hachurée et les composants foncés ne ressortent pas.
+       L'îlot dark donne le contexte de production des composants. */
+    .bk-subsection--icons,
+    .bk-subsection--ui,
+    .bk-subsection--charts {
+      background: var(--brand-color-dark-bg);
+      color: var(--brand-color-dark-text);
+      padding: clamp(40px, 5vw, 64px) clamp(32px, 4vw, 56px);
+      border-radius: var(--brand-radius-md, 8px);
+      border-block-start: 0;  /* override le séparateur générique */
+    }
+    .bk-subsection--icons .bk-subsection__title,
+    .bk-subsection--ui .bk-subsection__title,
+    .bk-subsection--charts .bk-subsection__title,
+    .bk-subsection--icons .bk-subsection__caption,
+    .bk-subsection--ui .bk-subsection__caption,
+    .bk-subsection--charts .bk-subsection__caption {
+      color: var(--brand-color-dark-text);
+    }
+    .bk-subsection--icons .bk-subsection__eyebrow,
+    .bk-subsection--ui .bk-subsection__eyebrow,
+    .bk-subsection--charts .bk-subsection__eyebrow {
+      color: var(--brand-color-accent);  /* eyebrow accent visible sur fond dark */
+    }
+    .bk-icons-treatments,
+    .bk-icons-mockup {
+      margin-block-start: var(--space-lg, 40px);
+    }
+    .bk-icons-treatments:empty,
+    .bk-icons-mockup:empty { display: none; }
+
+    /* ÎLOT DARK pour la section Identité (lockups + variants de contexte) —
+       même logique que pour Système : présenter le système de lockups sur le
+       fond brand natif (mode production), pas sur fond clair brand book.
+       Demande Charles 01/06/2026. */
+    .section--positive#identity {
+      background: var(--brand-color-dark-bg);
+      color: var(--brand-color-dark-text);
+    }
+    .section--positive#identity .section__eyebrow {
+      color: var(--brand-color-accent);
+    }
+    .section--positive#identity .section__title,
+    .section--positive#identity .section__subtitle {
+      color: var(--brand-color-dark-text);
+    }
+    /* Les overrides .block-title / .block-note du brand book qui forcaient
+       la couleur sombre sont annulés dans cet îlot dark : revert à la valeur
+       claire de batch2. */
+    .section--positive#identity .bk-identity-lockups .block-title,
+    .section--positive#identity .bk-identity-lockups .block-note {
+      color: var(--brand-color-dark-text) !important;
+    }
     .bk-subsection__eyebrow {
       font: var(--type-eyebrow, 500 12px/1.4 system-ui);
       letter-spacing: 0.08em;
@@ -1692,13 +1750,25 @@
       <!-- Section Système (07) — auto-composée par render-brand-book.py via
            extract-then-inject mécanique. Doc complète : SKILL.md règle 12. -->
 
-      <!-- 07a Iconographie — injection depuis batch2-inventory.html data-inv="icons" -->
+      <!-- 07a Iconographie — injection depuis batch2-inventory.html data-inv="icons"
+           + mockup d'usage en situation (mock-sidebar) extrait de batch2. -->
       <div class="bk-subsection bk-subsection--icons" id="system-icons">
         <p class="bk-subsection__eyebrow">07a — Iconographie</p>
         <h3 class="bk-subsection__title">{{ICONOGRAPHY_SUB_TITLE}}</h3>
         <p class="bk-subsection__caption">{{ICONOGRAPHY_CAPTION}}</p>
         <div class="bk-icons-grid">
           {{BATCH2_INVENTORY_ICONS}}
+        </div>
+        <!-- Traitements d'icônes (variantes stylistiques : aplat gravé, taille
+             pleine, contre-taille safran, etc.). Auto-injecté depuis batch2
+             data-inv="icon_treatments". Si absent → slot vide. -->
+        <div class="bk-icons-treatments">
+          {{BATCH2_INVENTORY_ICON_TREATMENTS}}
+        </div>
+        <!-- Mockup d'icônes en contexte d'usage (sidebar app, nav latérale).
+             Auto-injecté depuis batch2 data-inv="icon_mockup". -->
+        <div class="bk-icons-mockup">
+          {{BATCH2_INVENTORY_ICON_MOCKUP}}
         </div>
       </div>
 

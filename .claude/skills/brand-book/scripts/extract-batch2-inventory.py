@@ -118,6 +118,24 @@ CHART_MIN_VIEWBOX_DIM = 150
 CATEGORIES = [
     "icons", "buttons", "inputs", "badges", "toggles", "checkboxes",
     "cards", "tabs", "alerts", "progress", "charts", "lockups",
+    "icon_treatments", "icon_mockup",
+]
+
+# Wrappers de "mockup en situation" des icônes — pour la sous-section 06a
+# Iconographie du brand book, juste sous la grille d'icônes. Met les icônes
+# dans un contexte d'usage réel (sidebar app, nav latérale, dashboard).
+ICON_MOCKUP_WRAPPER_CLASSES = [
+    "mock-sidebar", "mock-nav-wrapper", "icon-mockup", "icon-context",
+    "icon-in-context", "app-mock", "mock-app",
+]
+
+# Wrappers de "traitements d'icônes" — sous-section "Aplat gravé / Taille
+# pleine / Contre-taille safran" de batch2 06.2. Présente les variantes
+# stylistiques d'icônes (états, accents, traitements). Brand book affiche
+# entre la grille d'icônes et le mockup d'usage.
+ICON_TREATMENT_WRAPPER_CLASSES = [
+    "treatments", "icon-treatments", "icon-styles", "icon-variants",
+    "stroke-grid", "engraving-grid",
 ]
 
 # Classes BEM qui indiquent qu'une chapter de batch2 documente le logotype /
@@ -537,10 +555,47 @@ def extract_icons(html: str, defs_index: dict, consumed: set, warnings: list) ->
 
 def extract_charts(html: str, defs_index: dict, consumed: set, warnings: list) -> list:
     """
-    Extraction charts dataviz : SVG avec viewBox > CHART_MIN_VIEWBOX_DIM dans
-    AU MOINS UNE dimension. Inclut son wrapper s'il y en a un (.viz, .chart-card).
+    Extraction charts dataviz en 2 passes :
+    1. Wrappers `.viz` ou `.chart` ou `.chart-card` (cards complètes batch2
+       qui contiennent un SVG + ses metadata head/label/note + axes natifs).
+       Permet de capturer les charts qui ont un viewBox petit (ex 120×120
+       pour un donut) mais qui sont identifiés comme charts par leur wrapper.
+    2. Fallback SVG nus avec viewBox >= CHART_MIN_VIEWBOX_DIM (pour
+       compatibilité avec batch2 qui n'utilise pas de wrapper).
+    Injecte les defs (gradients, patterns) inline dans chaque SVG.
     """
     components = []
+    # Pass 1 : wrappers .viz / .chart / .chart-card
+    found = _find_wrappers_by_classes(html, ["div", "figure", "article", "section"], ["viz", "chart", "chart-card"])
+    for tag_name, start in found:
+        if start in consumed:
+            continue
+        balanced = find_balanced_block(html, start, tag_name)
+        if balanced is None:
+            continue
+        block = html[balanced[0]:balanced[1]]
+        # Injecter les defs dans tous les SVG du bloc
+        block_with_defs = re.sub(
+            r"<svg\b.*?</svg>",
+            lambda m: inject_defs_inline(m.group(0), defs_index, warnings),
+            block,
+            flags=re.DOTALL,
+        )
+        viewbox = extract_viewbox(block_with_defs)
+        components.append(Component(
+            category="charts",
+            source_line=line_at_pos(html, start),
+            source_wrapper_class=extract_primary_class(block, ["viz", "chart", "chart-card"]),
+            source_viewbox=viewbox,
+            block_html=block_with_defs,
+            md5=compute_md5(block_with_defs),
+            label=extract_label(block),
+            source_pos_start=balanced[0],
+            source_pos_end=balanced[1],
+        ))
+        for p in range(balanced[0], balanced[1]):
+            consumed.add(p)
+    # Pass 2 : SVG nus orphelins (pas dans un wrapper) avec viewBox >= 150
     svg_pattern = re.compile(r"<svg\b", re.IGNORECASE)
     for m in svg_pattern.finditer(html):
         if m.start() in consumed:
@@ -558,10 +613,8 @@ def extract_charts(html: str, defs_index: dict, consumed: set, warnings: list) -
             continue
         if max(w, h) < CHART_MIN_VIEWBOX_DIM:
             continue
-        # Exclure les SVG width="0" (defs invisibles).
         if 'width="0"' in svg_block[:200] and 'height="0"' in svg_block[:200]:
             continue
-
         block_with_defs = inject_defs_inline(svg_block, defs_index, warnings)
         components.append(Component(
             category="charts",
@@ -738,6 +791,84 @@ def extract_alerts(html: str, consumed: set) -> list:
 
 def extract_progress(html: str, consumed: set) -> list:
     return _extract_simple_wrappers(html, consumed, "progress", ["div", "progress"], PROGRESS_CLASSES)
+
+
+def extract_icon_treatments(html: str, defs_index: dict, consumed: set, warnings: list) -> list:
+    """
+    Extraction des traitements stylistiques d'icônes : wrapper `.treatments`
+    (batch2 sous-section "Aplat gravé / Taille pleine / Contre-taille safran"
+    ou équivalent selon la marque). Présente les variantes d'icônes
+    (états, accents, traitements visuels).
+
+    Demande Charles 01/06/2026 : extraire toutes les sous-sections icônes de
+    batch2 — le set, les traitements, l'usage en contexte.
+    """
+    components = []
+    found = _find_wrappers_by_classes(html, ["div", "section"], ICON_TREATMENT_WRAPPER_CLASSES)
+    for tag_name, start in found:
+        if start in consumed:
+            continue
+        balanced = find_balanced_block(html, start, tag_name)
+        if balanced is None:
+            continue
+        block = html[balanced[0]:balanced[1]]
+        # Injecter les defs SVG inline (les icônes hachurées ont besoin des
+        # patterns hatch-* définis dans le defs global).
+        block_with_defs = re.sub(
+            r"<svg\b.*?</svg>",
+            lambda m: inject_defs_inline(m.group(0), defs_index, warnings),
+            block,
+            flags=re.DOTALL,
+        )
+        components.append(Component(
+            category="icon_treatments",
+            source_line=line_at_pos(html, start),
+            source_wrapper_class=extract_primary_class(block, ICON_TREATMENT_WRAPPER_CLASSES),
+            source_viewbox="",
+            block_html=block_with_defs,
+            md5=compute_md5(block_with_defs),
+            label="icon-treatments",
+            source_pos_start=balanced[0],
+            source_pos_end=balanced[1],
+        ))
+        for p in range(balanced[0], balanced[1]):
+            consumed.add(p)
+    return components
+
+
+def extract_icon_mockup(html: str, consumed: set) -> list:
+    """
+    Extraction du mockup d'icônes en situation : wrapper `.mock-sidebar` ou
+    similaire qui contient les icônes dans un contexte d'usage réel
+    (navigation app, sidebar dashboard, etc.). À afficher dans le brand book
+    sous la grille d'icônes pour donner du contexte.
+
+    Demande Charles 01/06/2026 : "il y a une mise en situation des icônes qui
+    est vachement bien, c'est un principe qui est très bien".
+    """
+    components = []
+    found = _find_wrappers_by_classes(html, ["div", "section", "aside"], ICON_MOCKUP_WRAPPER_CLASSES)
+    for tag_name, start in found:
+        if start in consumed:
+            continue
+        balanced = find_balanced_block(html, start, tag_name)
+        if balanced is None:
+            continue
+        block = html[balanced[0]:balanced[1]]
+        components.append(Component(
+            category="icon_mockup",
+            source_line=line_at_pos(html, start),
+            source_wrapper_class=extract_primary_class(block, ICON_MOCKUP_WRAPPER_CLASSES),
+            source_viewbox="",
+            block_html=block,
+            md5=compute_md5(block),
+            label="icon-mockup",
+            source_pos_start=balanced[0],
+            source_pos_end=balanced[1],
+        ))
+        for p in range(balanced[0], balanced[1]):
+            consumed.add(p)
+    return components
 
 
 def extract_lockups(html: str, consumed: set) -> list:
@@ -1061,6 +1192,11 @@ def main():
     # Lockups EN PREMIER (consume la chapter Logotype entière, pour ne pas que
     # ses SVG soient re-extraits comme icons).
     components_by_category["lockups"] = extract_lockups(html, consumed)
+    # Icon treatments + mockup AVANT icons : ces wrappers contiennent leurs
+    # propres SVG (variantes stylistiques + contexte d'usage), on ne veut pas
+    # qu'ils soient re-extraits comme icons isolés.
+    components_by_category["icon_treatments"] = extract_icon_treatments(html, defs_index, consumed, warnings)
+    components_by_category["icon_mockup"] = extract_icon_mockup(html, consumed)
     components_by_category["icons"] = extract_icons(html, defs_index, consumed, warnings)
     components_by_category["charts"] = extract_charts(html, defs_index, consumed, warnings)
     components_by_category["tabs"] = extract_tabs(html, consumed)
