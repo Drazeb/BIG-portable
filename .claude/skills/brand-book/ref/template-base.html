@@ -1558,29 +1558,8 @@
       <h2 class="section__title">Une grammaire iconique tenue.</h2>
       <p class="section__subtitle">{{ICONOGRAPHY_SUBTITLE}}</p>
 
-      <!-- ═══════════════════════════════════════════════════════════════════════
-           RÈGLE 12 — FIDÉLITÉ AU PACK SOURCE (MÉCANIQUE EXTRACT-THEN-INJECT v5)
-
-           Les sous-sections 07a Iconographie / 07b Composants UI / 07c Data
-           viz ci-dessous sont CONFIGURÉES PAR INJECTION AUTOMATIQUE depuis
-           `batch2-inventory.html` produit par `scripts/extract-batch2-
-           inventory.py` (Étape 2.5 du SKILL.md). Tu copies VERBATIM les
-           blocs `<!-- BEGIN_BLOCK md5=… -->…<!-- END_BLOCK -->` extraits
-           dans les slots {{BATCH2_INVENTORY_*}} ci-dessous. Tu NE modifies
-           PAS un seul caractère à l'intérieur d'un bloc — un seul char
-           changé invalide le hash MD5 et fait échouer le quality gate
-           Étape 5.
-
-           Tu composes LIBREMENT autour : wrappers, h3, captions, eyebrows,
-           annotations Mono (à partir de data-label sur l'<article>).
-
-           Pour 07d Composition : pas d'extract automatique — la grille
-           canonique est déduite du design-specs.
-
-           Voir SKILL.md règle 12 + style-guide.md §8quater. Quality gate
-           Étape 5 : `verify-md5-fidelity.py` bloque la livraison si un
-           bloc manque ou a été altéré.
-           ═══════════════════════════════════════════════════════════════════════ -->
+      <!-- Section Système (07) — auto-composée par render-brand-book.py via
+           extract-then-inject mécanique. Doc complète : SKILL.md règle 12. -->
 
       <!-- 07a Iconographie — injection depuis batch2-inventory.html data-inv="icons" -->
       <div class="bk-subsection bk-subsection--icons" id="system-icons">

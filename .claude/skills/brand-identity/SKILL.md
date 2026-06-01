@@ -1350,13 +1350,13 @@ Informer l'utilisateur :
 
 ---
 
-#### Vague 1 — Palettes par divergence séquentielle dégressive (3 palettes × 3 concepts)
+#### Vague 1 — Palettes par divergence séquentielle dégressive (5 palettes × 3 concepts)
 
 <!-- mini-annonce: ℹ Maintenant : génération des palettes A/B/C en parallèle pour chaque concept (3 subagents simultanés) -->
 
 **Pourquoi un subagent séparé** : Le designer principal reçoit les territoires créatifs (nécessaires pour surface, rythme, typo). Or les territoires contaminent le choix chromatique — le LLM ne compartimente pas. Le subagent palette reçoit UNIQUEMENT le concept narratif + les **buckets chromatiques** (projetés depuis la grille du routeur, axe territoire retiré), sans territoires. Isolation structurelle.
 
-**Pourquoi 3 palettes (divergence dégressive)** : La palette A est libre (dérivation directe du concept). B et C divergent **mécaniquement** — la directive de divergence est GÉNÉRÉE par script (familles inexploitées + cap d'usage 2× + accents déjà pris + étalement clair/sombre), JAMAIS rédigée à la main (un texte libre de l'orchestrateur souffle des réponses au subagent et contamine le choix, notamment le mode). Seuil dégressif : V2 diffère sur ≥4 leviers, V3 sur ≥3 (sur 5 : famille / mode / saturation / harmonie / accent). L'utilisateur choisit 1 palette par concept avant les spécimens.
+**Pourquoi 5 palettes (divergence dégressive)** : La palette A est libre (dérivation directe du concept). B→E divergent **mécaniquement** — la directive de divergence est GÉNÉRÉE par script (familles inexploitées + cap d'usage 2× + accents déjà pris + étalement clair/sombre), JAMAIS rédigée à la main (un texte libre de l'orchestrateur souffle des réponses au subagent et contamine le choix, notamment le mode). Seuil dégressif : V2 diffère sur ≥4 leviers, V3 ≥3, V4 ≥2, V5 ≥1 (sur 5 : famille / mode / saturation / harmonie / accent). L'utilisateur choisit 1 palette par concept avant les spécimens.
 
 ##### Pré-calcul (orchestrateur, UNE fois avant les 3 vagues)
 
@@ -1392,40 +1392,28 @@ Lancer 3 subagents (Task tool, general-purpose) simultanément. Chaque subagent 
 
 Attendre les 3. Écrire chaque sortie dans `{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md`. Puis **GATES** (voir ci-dessous) sur chaque palette A.
 
-##### Vague 1-B : Palette divergente B (3 subagents EN PARALLÈLE)
+##### Vagues 1-B à 1-E : Palettes divergentes (SÉQUENTIELLES, 3 subagents EN PARALLÈLE par vague)
 
-**⚠ ANTI-DÉGRADATION** : Relire `{skill_dir}/phases/phase-3b-palette.md` depuis le disque. Ne PAS réutiliser le prompt de la vague A en mémoire.
+**⚠ ANTI-DÉGRADATION** : à CHAQUE vague, relire `{skill_dir}/phases/phase-3b-palette.md` depuis le disque. Ne PAS réutiliser le prompt d'une vague précédente en mémoire.
 
-Pour CHAQUE concept N, générer la directive de divergence MÉCANIQUEMENT (ne JAMAIS la rédiger à la main) :
+Produire 4 variantes divergentes supplémentaires — **b, c, d, e dans l'ordre** (5 variantes au total avec la `a`). Les vagues sont SÉQUENTIELLES (la variante b doit exister avant de générer c, etc.) mais les 3 concepts d'une même vague tournent EN PARALLÈLE.
+
+Pour chaque variante V ∈ {b, c, d, e}, pour CHAQUE concept N, générer la directive de divergence MÉCANIQUEMENT (ne JAMAIS la rédiger à la main), en passant **toutes les variantes précédentes du concept, dans l'ordre** (a … jusqu'à V-1) :
 ```bash
 python3 "{skill_dir}/scripts/render_divergence.py" \
-  --prev "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md" \
+  --prev {liste ordonnée des fichiers -a … -{V-1} du concept N} \
   --buckets "{skill_dir}/outputs/{session_dir}/{brand}-buckets.md" \
   --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
-  --total 3 \
-  --output "{skill_dir}/outputs/{session_dir}/.tmp-divergence-c{N}-b.md"
+  --total 5 \
+  --output "{skill_dir}/outputs/{session_dir}/.tmp-divergence-c{N}-{V}.md"
 ```
-Le contenu de ce fichier devient `{divergence_directive}` pour le concept N. (`--grid` interdit à l'accent les gammes exclues pour raison DURE ; `--total 3` active l'étalement clair/sombre ; le seuil dégressif découle du nombre de précédentes.)
+`--prev` selon la variante : **b** → `…-c{N}-a.md` · **c** → `…-a.md …-b.md` · **d** → `…-a.md …-b.md …-c.md` · **e** → `…-a.md …-b.md …-c.md …-d.md`.
 
-Lancer 3 subagents. Écrire chaque sortie dans `{brand}-palette-c{N}-b.md`. Puis **GATES** sur chaque palette B (gate d'unicité inclus).
+Le contenu devient `{divergence_directive}` pour le concept N. (`--grid` interdit à l'accent les gammes exclues pour raison DURE ; `--total 5` garantit l'étalement clair/sombre sur l'ensemble du set ; le **seuil dégressif** découle du nombre de précédentes : V2 diffère sur ≥4 leviers, V3 ≥3, V4 ≥2, V5 ≥1, sur 5 — famille / mode / saturation / harmonie / accent.)
 
-##### Vague 1-C : Palette divergente C (3 subagents EN PARALLÈLE)
+À chaque vague : lancer 3 subagents (1 par concept). Écrire chaque sortie dans `{brand}-palette-c{N}-{V}.md`. Puis **GATES** sur chaque palette (gate d'unicité inclus). Enchaîner b→c→d→e sans pause.
 
-**⚠ ANTI-DÉGRADATION** : Relire `{skill_dir}/phases/phase-3b-palette.md` depuis le disque.
-
-Idem vague B, mais passer les DEUX précédentes (dans l'ordre A puis B) à `render_divergence.py` :
-```bash
-python3 "{skill_dir}/scripts/render_divergence.py" \
-  --prev "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-a.md" \
-          "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-b.md" \
-  --buckets "{skill_dir}/outputs/{session_dir}/{brand}-buckets.md" \
-  --grid "{skill_dir}/outputs/{session_dir}/{brand}-chromatic-gamuts.md" \
-  --total 3 \
-  --output "{skill_dir}/outputs/{session_dir}/.tmp-divergence-c{N}-c.md"
-```
-Écrire chaque sortie dans `{brand}-palette-c{N}-c.md`. Puis **GATES** sur chaque palette C.
-
-##### GATES (orchestrateur, OBLIGATOIRE — appliqués à CHAQUE palette A/B/C)
+##### GATES (orchestrateur, OBLIGATOIRE — appliqués à CHAQUE palette a→e)
 
 Pour chaque fichier palette produit, enchaîner les gates déterministes (sauver les JSON dans `{brand}-palette-c{N}-{V}-gate.json`) :
 
@@ -1447,7 +1435,7 @@ python3 "{skill_dir}/scripts/phase3b-palette-anti-slop.py" "{skill_dir}/outputs/
 3. **Gate d'unicité ΔE** (variantes B et C UNIQUEMENT — le « finisseur ») — garantit qu'aucun rôle porteur (Primary / Secondary / Accent) n'est un jumeau perceptuel (ΔE Lab < 10) du même rôle d'une variante antérieure, ce que la consigne ne peut PAS garantir (un LLM recopie parfois un hex à l'identique) :
 ```bash
 python3 "{skill_dir}/scripts/divergence_gate.py" "{skill_dir}/outputs/{session_dir}/{brand}-palette-c{N}-{V}.md" \
-  --prev {les -a (variante B) ou -a et -b (variante C) du concept N} --json-output
+  --prev {toutes les variantes précédentes du concept N, dans l'ordre : -a … jusqu'à -{V-1}} --json-output
 ```
 
 **Traitement des FAIL** (n'importe lequel des gates) → **resume du sub-agent palette correspondant** (Task fresh, anti-dégradation : `phase-3b-palette.md` relu depuis le disque, mêmes variables que l'invocation initiale + la directive de divergence du concept) avec une section feedback :
@@ -1465,11 +1453,11 @@ Réécrire le fichier palette, ré-exécuter les gates. **Max 2 itérations** pa
 
 ⚠ **OBLIGATOIRE — NE PAS SAUTER CETTE ÉTAPE.** La planche HTML comparative DOIT être générée et ouverte AVANT de demander le choix de palette à l'utilisateur. Ne PAS présenter un résumé texte à la place — l'utilisateur a besoin de voir les mockups visuels pour choisir. Même si le contexte est chargé (fonts en parallèle, etc.), cette étape est non-négociable.
 
-Après les 3 vagues (9 palettes au total, 3 par concept), générer la planche comparative HTML.
+Après les 5 vagues (15 palettes au total, 5 par concept), générer la planche comparative HTML.
 
 1. **Générer le fichier de config** : Écrire `{session_dir}/.tmp-palette-comparison-config.json` :
 
-   Pour chaque concept N, pour chaque variante V (a, b, c), extraire de `{brand}-palette-c{N}-{V}.md` :
+   Pour chaque concept N, pour chaque variante V (a, b, c, d, e), extraire de `{brand}-palette-c{N}-{V}.md` :
 
    ⚠ **EXTRACTION CIBLÉE** : Chercher spécifiquement la section "**Palette complète**" (le tableau markdown avec les colonnes Rôle | Nom évocateur | Hex | Justification). Ne PAS extraire des hex trouvés ailleurs dans le fichier (le subagent peut avoir inclus un tableau comparatif ou des notes d'analyse contenant des hex d'autres palettes). Seul le tableau "Palette complète" fait foi.
 

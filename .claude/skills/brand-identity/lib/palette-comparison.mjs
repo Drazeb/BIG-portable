@@ -293,7 +293,7 @@ function conceptRowHtml(concept) {
   <div class="concept-row">
     ${intentionBlock}
     <div class="concept-label">Concept ${number} — "${name}"</div>
-    <div class="palettes-row">${cards}</div>
+    <div class="palettes-row" style="--variant-count:${palettes.length}">${cards}</div>
   </div>`;
 }
 
@@ -323,7 +323,7 @@ function generateHtml() {
       color: #888; margin-bottom: 16px; padding-bottom: 8px;
       border-bottom: 1px solid #E0E0E0;
     }
-    .palettes-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .palettes-row { display: grid; grid-template-columns: repeat(var(--variant-count, 3), minmax(190px, 1fr)); gap: 20px; }
 
     .palette-card {
       background: #FFFFFF; border: 1px solid #E5E7EB;
