@@ -74,7 +74,8 @@ BATCH_DEMOTE_TO_WARN = {
 }
 
 # labels de sections obligatoires (cf. CHECKLIST des prompts phase-6a-batch2.md / phase-6b-batch3.md)
-BATCH2_SECTIONS = ["06.1", "06.2", "06.3", "06.4",
+# Chapitre 06 : 3 sections orientées USAGE depuis refactor D59 (27 mai 2026) — auparavant 4 sections (06.1 Outline / 06.2 Solid / 06.3 Duotone / 06.4 Usage en contexte). La nouvelle structure est 06.1 Set d'icônes UI utilisables / 06.2 Traitements alternatifs / 06.3 Usage en contexte.
+BATCH2_SECTIONS = ["06.1", "06.2", "06.3",
                    "04.1", "04.2", "04.3", "04.4", "04.5",
                    "07.1", "07.2", "07.3", "07.4"]
 BATCH3_SECTIONS = ["08.1", "08.2", "08.3", "08.4",

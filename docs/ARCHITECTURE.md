@@ -18,15 +18,15 @@ Phase 1 · Analyse du brief      → Score de confiance + Ventre Mou + signaux d
      ↓
 Phase 2 · Scoping                → Tension de Marque + Curseurs A×B + Territoires Créatifs (mots-clés → clusters → mix pondéré)
      ↓
-Phase 3A · Concepts narratifs    → Mode Sélectif : registre → pool 100 mots → 10 évaluateurs filtrent → 0-3 concepts retenus (batches accumulables)
+Phase 3A · Concepts narratifs    → Mode Sélectif : registre → pool 100 mots → 10 évaluateurs filtrent → 0-3 retenus par batch ; SÉLECTION FINALE = 1 concept (mode mono D65)
      ↓
-Phase 3B · Design dérivé         → 3 pitchs complets (récit + direction visuelle)
+Phase 3B · Design dérivé         → 1 pitch complet pour le concept retenu (récit + direction visuelle) avec divergence intra-concept préservée (5 palettes a→e + 3 styles A/B/C)
      ↓
 Phase 3C · Visuels de référence  → Prompts MidJourney (optionnel, toujours proposé)
      ↓
-Phase 4 · Style-Tiles HTML       → 3 fichiers HTML immersifs (triptyque Voice/Artefact/Atmosphere)
+Phase 4 · Style-Tiles HTML       → 1 fichier HTML immersif pour le concept retenu (triptyque Voice/Artefact/Atmosphere)
      ↓
-Phase 5 · Choix + itération      → 1 concept retenu, slug généré
+Phase 5 · Choix + itération      → Validation finale + slug généré
      ↓
 [5D · Animation] · Optionnel     → Preset recommandé + 2-3 variantes de dosage → `{tile}-animated.html` (coexiste avec le statique)
      ↓
@@ -113,7 +113,7 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
   - **Curseur A** (Audace Créative) : intensité du traitement visuel (1=Prudent / 2=Décalé / 3=Rupture). Indexe la typo, les layouts, la complexité CSS
   - **Curseur B** (Différenciation) : distance par rapport aux normes du secteur (1=Mimétisme / 2=Distinction / 3=Contre-pied ZAG). Indexe la palette, le ton, le langage visuel
   - Les 2 curseurs sont découplés — A=3 avec B=1 est valide
-  - L'utilisateur choisit UNE combinaison A×B qui s'applique aux 3 concepts
+  - L'utilisateur choisit UNE combinaison A×B qui s'applique au concept retenu
   - 15-20 mots-clés extraits du brief (4 axes) → clustering en 4-5 territoires créatifs → mix pondéré par l'utilisateur (Principal/Secondaire/Accent)
 
 **Sous le capot** — cette phase a 4 étapes distinctes :
@@ -134,14 +134,14 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 
 - **Ce qu'elle fait** : Génère des récits conceptuels distincts à partir du mix de territoires créatifs. Zéro design — que du narratif. **Mode Sélectif unique (depuis le 28 mai 2026 — suppression des modes Génératif)** : l'utilisateur choisit un registre culturel ; les concepts sont CHOISIS dans un pool de ~100 mots tirés de ce registre puis filtrés contre le brief, ce qui produit des noms sobres ("Phare", "Magnitude") au lieu de noms enrichis artificiels ("Le Phare de Ralliement").
 - **Input** : `{brand}-context-clean.md` (mix décontaminé, produit en Étape 2D-bis) + `{brand}-scoping.md` (Ventre Mou Narratif) + un registre choisi + curseurs A×B
-- **Output** : `{brand}-concepts-narratifs-v{N}.md` (1 à 3 concepts par batch retenu) → la sélection finale assemble `{brand}-concepts-narratifs.md`, seul fichier lu par toute la Phase 3B
+- **Output** : `{brand}-concepts-narratifs-v{N}.md` (0 à 3 concepts par batch retenu, batches accumulables) → la sélection finale assemble `{brand}-concepts-narratifs.md` avec **EXACTEMENT 1 concept** (mode mono D65 — gate stricte si user saisit plusieurs), seul fichier lu par toute la Phase 3B
 - **Règles clés** :
   - **Choix du registre à l'Étape 2E** : l'utilisateur choisit un registre dans `ref/registres-creatifs.md` (28 registres). Plus aucun choix de mode.
   - **Choix dans un pool** : le LLM choisit dans 100 mots du registre, pas d'invention de nom → noms mono-mots ou composés courts limpides
   - **Filtrage ancré sur le brief** : 10 évaluateurs parallèles classent les mots contre le mix de territoires + le ventre mou → seuls les mieux ancrés remontent comme candidats
   - **Sortie flexible 0 à 3** : l'utilisateur retient 0 à 3 mots par registre ; 0 retenu = exploration jetable (aucun fichier produit, aucun numéro de version consommé)
   - **Zéro spec visuelle** (pas de couleur, police, HEX) — le récit est jugé sur sa force conceptuelle uniquement
-  - **Accumulation cross-batch** : un user peut accumuler v1 (registre A) + v2 (registre B) + v3 (registre A relancé) → sélection finale libre de 1 à 3 concepts parmi tout l'accumulé
+  - **Accumulation cross-batch** : un user peut accumuler v1 (registre A) + v2 (registre B) + v3 (registre A relancé) → sélection finale **1 concept** parmi tout l'accumulé (mode mono D65 — pour explorer plusieurs en parallèle, lancer N sessions test-big depuis le même brief)
 
 **Sous le capot** (10 sous-étapes orchestrées) :
 
@@ -186,14 +186,14 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
    - DÉRIVE la direction visuelle, dans l'ordre : palette HEX (Vague 1 — composeur v2 alimenté par les **buckets d'aptitude** du routeur, Primary/Secondary ∈ bucket dominante ; divergence séquentielle **dégressive** A/B/C générée mécaniquement, 3 gates bucket/anti-slop/unicité ΔE, choix utilisateur), puis typographie (Vague 2/2bis/2ter, choisie dans le pool du curseur A via Google Fonts), puis surface (radius/shadows/transitions), atmosphère
    - Ajoute les 4 éléments stratégiques : quel type de composant UI pour l'artefact (lié au secteur du brief), quel vocabulaire d'interaction (comment les éléments réagissent au hover/clic), quelles techniques CSS prioritaires (2-3, justifiées par le concept), quel registre atmosphérique (sombre/clair/coloré/texturé)
    - Produit une Carte d'Inspiration (classification du territoire visuel, pas invention)
-   - Inclut un tableau comparatif des 3 concepts avec pastilles couleur inline
-5. **Checklist calibrage** : avant de finaliser, le subagent vérifie que le TRAITEMENT de chaque concept correspond au curseur A (checklist explicite dans le prompt). Si A=2, chaque concept DOIT avoir ≥1 asymétrie, ≥1 surface expressive, ≥1 interaction qui exprime le concept, ≥1 technique CSS non-standard. Sinon → réajustement.
-6. **Vérification visuelle typo + palette (3B-bis)** : l'orchestrateur extrait fonts + palettes du pitch, génère un HTML specimen (via `lib/font-palette-specimen.mjs`) chargé avec les Google Fonts réelles + swatches de palette + texte sur fonds colorés, capture un screenshot via Puppeteer, et resume le subagent 3B avec le screenshot. Le subagent voit le RENDU RÉEL de ses choix pour la première fois et peut corriger (max 2 itérations). Raison : sans cette étape, les incohérences typo ne sont découvertes qu'en Phase 4bis (audit DA), soit 2 phases trop tard.
-7. L'orchestrateur ouvre le fichier dans TextEdit, affiche un résumé court dans le chat (~400 tokens : nom + palette + typo + territoire visuel pour chaque concept), et demande validation des 3 concepts. **Pas encore de choix** — les 3 sont validés ensemble.
+   - **Mode mono D65** : 1 seul pitch produit (`pitch-c1.md`), pas de tableau comparatif (sans objet à 1 concept). Le fichier canonique `pitch.md` est une simple copie de `pitch-c1.md`.
+5. **Checklist calibrage** : avant de finaliser, le subagent vérifie que le TRAITEMENT correspond au curseur A (checklist explicite dans le prompt). Si A=2, le pitch DOIT avoir ≥1 asymétrie, ≥1 surface expressive, ≥1 interaction qui exprime le concept, ≥1 technique CSS non-standard. Sinon → réajustement.
+6. **Vérification visuelle typo + palette (3B-bis)** : l'orchestrateur extrait fonts + palette du pitch, génère un HTML specimen (via `lib/font-palette-specimen.mjs`) chargé avec les Google Fonts réelles + swatches de palette + texte sur fonds colorés, capture un screenshot via Puppeteer, et resume le subagent 3B avec le screenshot. Le subagent voit le RENDU RÉEL de ses choix pour la première fois et peut corriger (max 2 itérations). Raison : sans cette étape, les incohérences typo ne sont découvertes qu'en Phase 4bis (audit DA), soit 2 phases trop tard.
+7. L'orchestrateur ouvre le fichier dans TextEdit, affiche un résumé court dans le chat (~400 tokens : nom + palette + typo + territoire visuel du concept retenu), et demande validation.
 
 **Règle typographique critique** : les polices doivent venir de Google Fonts (vérifiable). Chaque curseur A a un pool de 50+ polices. L'interdiction des "fausses" polices type Fontshare (General Sans, Satoshi, etc.) est dans le prompt car le subagent a tendance à les inventer.
 
-**Sous-pipeline post-spécimens (depuis D51, 29 avril 2026)** : après les spécimens typo+palette validés (Vague 3), la séquence est `3B-7a (styliste) → 3B-7b (spécimens stylisés) → 3B-7-checkpoint (choix variante de style) → 3B-7c (penseur visuel) → 3B-7d (pitch) → 3B-7e (génération visuels MJ/Recraft)`. Le styliste choisit le style officiel reconnu (parmi 34 fiches du catalogue), valide visuellement par 9 spécimens stylisés (3 concepts × 3 variantes), l'utilisateur arbitre 1 variante par concept au checkpoint. Le penseur visuel **reçoit alors la fiche styliste retenue en input** et DÉRIVE son ancre stylistique (registre, lumière, grain, abstraction, bords) des signatures et références culturelles de la fiche — il n'invente plus librement. La direction visuelle est ensuite consommée par le pitch (qui reçoit aussi la fiche styliste) et par le skill `/visual-prompt` (3B-7e en mode variantes) pour la génération MJ/Nano Banana 2/Recraft. Cohérence garantie : un seul univers stylistique de bout en bout.
+**Sous-pipeline post-spécimens (depuis D51, 29 avril 2026 — adapté mode mono D65 le 1er juin 2026)** : après les spécimens typo+palette validés (Vague 3), la séquence est `3B-7a (styliste) → 3B-7b (spécimens stylisés) → 3B-7-checkpoint (choix variante de style) → 3B-7c (penseur visuel) → 3B-7d (pitch) → 3B-7e (génération visuels MJ/Recraft)`. Le styliste choisit le style officiel reconnu (parmi 34 fiches du catalogue), valide visuellement par **3 spécimens stylisés (concept retenu × 3 variantes A/B/C)**, l'utilisateur arbitre 1 variante au checkpoint (🚦 GATE UTILISATEUR — NON-SKIPPABLE depuis D65, REX 2026-05-29). Le penseur visuel **reçoit alors la fiche styliste retenue en input** et DÉRIVE son ancre stylistique (registre, lumière, grain, abstraction, bords) des signatures et références culturelles de la fiche — il n'invente plus librement. La direction visuelle est ensuite consommée par le pitch (qui reçoit aussi la fiche styliste) et par le skill `/visual-prompt` (3B-7e en mode variantes) pour la génération MJ/Nano Banana 2/Recraft. Cohérence garantie : un seul univers stylistique de bout en bout.
 
 **Routeur chromatique 3B-0a v2 — grille territoire×aptitude (depuis le rebranchement v2, 31 mai 2026 — D64)** : étape pré-design qui précède la divergence des concepts. Subagent isolé (custom agent `chromatic-router`, aucun accès fichier) qui scanne le catalogue canonique de ~45 sous-gammes (`ref/chromatic-spectrum-catalog.md`) et classe chacune en **binaire** : soit **validée** sous le(s) territoire(s) qu'elle exprime avec une **aptitude** (base / dominante / accent, dérivée de l'intensité), soit **exclue** (avec raison). Plus de 3e catégorie « non applicable » refuge. Jugement **territoire par territoire** (anti-laminage : une couleur saturée survit si UN seul territoire la justifie). Le routeur ne pose AUCUN tag ni hex. Pipeline mécanique en aval : (1) `scripts/enforce_filters.py` DÉPLACE déterministiquement vers les exclues toute gamme sectorielle (B=3) ou à contre-température en dominante/accent (filtre `minimal` : seulement dominante/accent franchement vifs, préserve les territoires calmes) ; (2) `scripts/gate_v2.py` (11 checks : exhaustivité 45 familles, anti-amputation ≥3/territoire, complétude aptitude + **≥2 accents**, sectoral_conflict/inclusion, temperature_coherence, aptitude_validity…) ; (3) `scripts/tags.py` pose mécaniquement [SECTORIEL]/[SLOP_RISQUE]. Directive sectorielle générée par `scripts/gamut-render-directive.py` (selon curseur B). Planche HTML par `lib/grid-visual.mjs`. L'étage palette aval (3B-2) consomme la grille via `scripts/project_buckets.py` → 3 buckets (dominante/accent/base). Avant le 31 mai 2026 : routeur 3 catégories (recommandées/non recommandées/fortement non recommandées) sans aptitude, `gamut-visual.mjs`, `phase3b-gamut-router-anti-slop.py` (D53). Source des étages v2 : mini-apps de test `tools/chromatic-router-v2/` + `tools/palette-composer-v2/`, validées puis rebranchées.
 
@@ -236,7 +236,7 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
   - **11 quality gates** : Screenshot Test, Mason's Rule, cohérence curseurs, alignement brief, pas d'images auto-générées, zéro code mort, couverture custom properties, profondeur de surface, CSS moderne (min 4 techniques 2023-2026), anti-patterns datés (blacklist mécanique via `phase4-blacklist-gate.py` — aucun translateY hover, aucune animation infinite, aucun glow shadow, aucun séparateur fantaisie, etc.), finition élite
 
 **Sous le capot** :
-1. L'orchestrateur lance **3 subagents EN PARALLÈLE** (dans un seul message avec 3 Task tools) — un par concept
+1. L'orchestrateur lance **1 subagent** pour le concept retenu (mode mono D65 — `.phase4-concepts.txt` = "1")
 2. Chaque subagent reçoit un prompt quasi-identique, sauf :
    - Le numéro et nom du concept
    - Les détails visuels extraits du pitch (palette, typo, artefact recommandé, philosophie d'interaction, techniques CSS, registre atmosphérique)
@@ -247,7 +247,7 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 6. Le bloc `:root` contient les 7 catégories de custom properties : palette (primary, secondary, accent, surface, text, semantic, dataviz), typo (display, body, mono), type-scale (ratio indexé sur curseur A + tailles calculées), spacing, radius, shadows, transitions
 7. Le subagent auto-vérifie les 11 gates avant de finaliser. Si un gate échoue → il corrige avant de livrer
 8. **Mécanisme de l'artefact témoin (méthode 3 étapes — D52)** : un subagent dédié `phase-4-artefact.md` produit la zone médiane (composant UI complexe) selon une méthode hybride en 3 étapes — **(1) Ancrage support n°1 du brief** : le subagent identifie le type d'objet attendu par le brief (le support sur lequel la marque vit prioritairement) et le respecte. Le style retenu dit COMMENT signer, pas QUOI produire à la place. **(2) Grammaire interne libre** : le subagent pose en commentaire HTML (1-3 lignes) la forme de composition de l'artefact à l'intérieur du type d'objet imposé. La grammaire émerge du dialogue pitch + style + palette + fonts + interdits + brief, pas d'un catalogue d'archétypes pré-défini. **(3) Quotas par catégorie** : 5 catégories fonctionnelles avec quotas minimum (typographie ≥4 niveaux, donnée ≥2, état ≥1, action ≥1, identité brand ≥1 = ~9 atomes minimum). Le format de chaque atome est dicté par la grammaire posée à l'étape 2, pas par un template imposé. **Anti-contamination stricte** : aucun exemple concret d'archétype ou de format d'atome dans les consignes — les exemples deviennent un menu déguisé qui pousse le LLM à piocher au lieu d'inventer. La complétude design system est préservée par la checklist obligatoire de Batch 2 (chapitre 04 — Code Civil Atomique) qui force la création des composants UI manquants en s'appuyant sur le design language posé. Avant D52, l'artefact suivait une liste rigide de 15 atomes nommés (KPI dominant + segmented control + table + alerte + boutons primary/secondary + input + 2 cards + 5 niveaux typo + badge + navigation hint) qui forçait systématiquement le format dashboard productivity, quel que soit le concept.
-9. Après livraison, **3 subagents contrôleurs** (étape 4A-ter) exécutent 2 scripts de gate mécaniques : `phase4-finishing-gate.py` (qualité CSS) + `phase4-blacklist-gate.py` (patterns datés). Si FAIL → renvoi au subagent Phase 4 pour correction (max 2 itérations)
+9. Après livraison, **1 subagent contrôleur** (étape 4A-ter) exécute 2 scripts de gate mécaniques : `phase4-finishing-gate.py` (qualité CSS) + `phase4-blacklist-gate.py` (patterns datés). Si FAIL → renvoi au subagent Phase 4 pour correction (max 2 itérations)
 10. L'orchestrateur ouvre les **3 fichiers dans 3 fenêtres de navigateur** (3 `open` successifs), présente les noms des concepts (A, B, C), et demande si ajustements souhaités avant le choix final
 
 **Calibrage CSS par curseur A** — ce que chaque niveau exige concrètement dans le HTML :
@@ -264,8 +264,8 @@ Tous les fichiers de la session vivent dans ce dossier. Ça permet de lancer plu
 - **Output** : Concept choisi + slug
 
 **Sous le capot** :
-1. L'orchestrateur présente les 3 concepts par lettre (A, B, C) et demande si ajustements souhaités
-2. Si ajustement sur un concept → **resume le subagent correspondant** (via `resume: agentId` du Task tool Phase 4) avec le feedback ciblé. Le subagent reprend avec tout son contexte + le feedback, modifie le HTML, et l'orchestrateur ré-ouvre le fichier dans le navigateur
+1. L'orchestrateur présente le style-tile du concept retenu et demande si ajustements souhaités
+2. Si ajustement → **resume le subagent** (via `resume: agentId` du Task tool Phase 4) avec le feedback ciblé. Le subagent reprend avec tout son contexte + le feedback, modifie le HTML, et l'orchestrateur ré-ouvre le fichier dans le navigateur
 3. Boucle jusqu'à validation explicite
 4. Quand l'utilisateur choisit : l'orchestrateur stocke le numéro (1/2/3), le nom, et génère le **slug** (version URL-safe du nom, via un script Python : normalisation Unicode, minuscules, tirets, max 40 caractères)
 5. Le slug est utilisé dans TOUS les noms de fichiers des phases suivantes
@@ -353,7 +353,7 @@ Les lockups nécessitent un calcul de tight viewBox (les paths vtracer ont du pa
 1. **Préparation par l'orchestrateur** (avant de lancer le subagent) — 5 étapes de préparation :
    - **Extraction du :root** : lit le HTML du style-tile choisi, extrait le bloc `<style>` contenant `:root { ... }` et les `<link>` Google Fonts
    - **Allègement du style-tile** : si le fichier fait > 200 Ko (images base64 embarquées), crée une version allégée (remplace les data URIs par des placeholders) pour ne pas exploser le contexte du subagent
-   - **Extraction du concept choisi** : au lieu d'envoyer le pitch complet (~16K tokens, 3 concepts), extrait seulement le concept choisi + les métadonnées du header. Méthode : grep le heading du concept, lire de là jusqu'au heading du concept suivant
+   - **Extraction du concept choisi** : en mode mono D65, le pitch.md ne contient qu'1 concept (= cp de pitch-c1.md). L'orchestrateur passe le contenu intégral du pitch (plus de tableau comparatif multi-concept à filtrer)
    - **Extraction du catalogue CSS** : extrait la section 6 de `html-showroom-spec.md` (vocabulaire CSS moderne) au lieu d'envoyer le fichier complet
    - **Si logo disponible** : extrait les dimensions du viewBox du SVG bicolore et construit un bloc d'instructions pour l'utilisation des placeholders (quels placeholders pour quelles sections, règles CSS obligatoires pour dimensionner les SVG injectés)
    - **Inventaire des visuels finaux dérivés** (D54) : scanne `{session_dir}/visual-final/`, parse le naming `{brand}-c{N}-{paletteID}-{type}[-{variante}].{ext}` (7 types : hero, animation, atmosphere ×4 intensités, closeup, macro, pov, schema), exclut les sources hires, restreint au concept retenu. Si plusieurs palettes → demande à l'utilisateur laquelle correspond au style-tile retenu. Construit `{cover_visual_rel}` (1 visuel pour Batch 2, hero de préférence), `{visual_library_ch08}` et `{visual_library_ch10}` (blocs table + règles d'affichage pour Batch 3). Dossier absent → les 3 variables vides, pipeline inchangé

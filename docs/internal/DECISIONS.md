@@ -4,6 +4,28 @@ Chaque décision architecturale est documentée ici avec son contexte et sa rais
 
 ---
 
+### D65. Refactor mode mono BIG — pipeline concept-unique pour la version externe portable
+**Date** : 1er juin 2026
+**Choix** : Passer le pipeline BIG du mode "3 concepts narratifs en parallèle" à un mode **concept-unique pur**. À la sélection finale Phase 3A (Pass A), l'utilisateur retient **exactement 1 concept** (gate stricte) et toute la Phase 3B aval (palettes 5 variantes a→e, typo 1 pairing, styliste A/B/C, spécimens, pitch) dérive en mono. La Phase 4 produit 1 seul style-tile. La Phase 3B-7c (penseur visuel Perplexity) était déjà mono depuis le 5 mai 2026.
+**Pourquoi** : préparation publication portable open-source GitHub (`~/repos/BIG-portable/`) pour utilisateurs externes (clients intéressés). 3 problèmes du mode 3 en parallèle :
+1. **Charge cognitive** : gérer 3 palettes/typos/styles en parallèle est trop lourd pour un non-initié
+2. **Coût token** : 3 concepts en parallèle = 3× coût, problématique pour ceux qui n'ont pas le plan max
+3. **Pas toujours utile** : même Charles termine ses BIG sur un seul concept au final
+**Conséquences** :
+- Pipeline propre, 0 conditionnel niché (Option A pure plutôt qu'un dual-mode conditionnel — recommandation REX session de plan).
+- Exploration multi-variantes inter-concepts assurée via `test-big × N` sessions parallèles depuis le même brief (charge cognitive externalisée à l'orchestration utilisateur, pas dans le code).
+- **Variantes intra-concept STRICTEMENT préservées** : 5 palettes a→e (Vague 1) + 3 styles A/B/C (Étape 3B-7a) restent — c'est le SEUL espace de divergence créative restant à 1 concept, donc plus important qu'en mode 3.
+- Marqueur uniforme `🚦 GATE UTILISATEUR — NON-SKIPPABLE` posé sur tous les checkpoints user de Phase 3B (palette, typo, styliste — REX 2026-05-29).
+- Section "Adaptation concept unique" ajoutée en tête de Phase 3B qui sanctuarise la distinction **dispositifs internes** (anti-biais, blind-planche — allégeables) vs **gates décisionnelles utilisateur** (NON allégeables) + règle anti-récidive : l'orchestrateur ne propose JAMAIS spontanément un raccourci sur une gate 🚦.
+- Suppression du **Mode Divergence Pitch** (~85 lignes — mode expérimental incompatible mono qui utilisait la machinerie pitch-c1/c2/c3.md).
+- Suppression de l'**Étape 5bis** du checkpoint 3B-7 (qui demandait à l'user de choisir 1 concept parmi 3 pour la phase visuelle — devient déterministe en mono : echo "1" > `.concept-pour-3B-7c`).
+- Suppression de l'**assemblage pitch** (cat pitch-c1/c2/c3 + tableau comparatif → simple `cp pitch-c1.md pitch.md`).
+- Phase 4 : mécanique de détection dynamique `.phase4-concepts.txt` préservée (forcée à "1" en mode mono, mais respecte une valeur pré-écrite par test-big pour rejouer un autre concept historique si besoin).
+- ~900 lignes modifiées dans le SKILL.md (7840 lignes total), majoritairement suppression de boucles et adaptation de wording. **Aucune modif phases/* externalisées** (toutes déjà mono-compatibles, reçoivent `{concept_narrative}` = 1 string). **Aucune modif scripts Python/Node** (déjà mono-compatibles via `$CONCEPTS` dynamique ou via signatures déjà flexibles).
+- 7 commits séquentiels (1 par étape) pour rollback granulaire.
+**Anti-récidive REX 2026-05-29** : Les 2 REX rapatriés du portable (checkpoint typo sauté + styliste A/B/C sauté en mode concept-unique informel) sont les enseignements de référence. Le marqueur 🚦 GATE UTILISATEUR — NON-SKIPPABLE et la section "Adaptation concept unique" prémunissent contre la récidive : un orchestrateur "qui streamline" doit distinguer en un coup d'œil dispositif interne allégeable vs gate user intouchable.
+**Test E2E** : à exécuter sur Camille (brief connu, baseline visuelle existante), de Phase 1 jusqu'au packaging final. Points de vérif obligatoires : Phase 3A force 1 concept en sélection finale ; Phase 3B-1 affiche 5 palettes (pas 15) ; Phase 3B-3 propose planche récap typo + swap avant le specimen ; Phase 3B-7-checkpoint ouvre 4 onglets (3 spécimens + 1 matrice) au lieu de 12 ; Phase 4 produit 1 style-tile.
+
 ### D64. Rebranchement de la chaîne chromatique v2 dans BIG (routeur grille×aptitude + composeur à buckets)
 **Date** : 31 mai 2026
 **Choix** : Remplacer les deux étages chromatiques vivants de la Phase 3B par leurs versions v2, développées et validées dans les mini-apps de test `tools/chromatic-router-v2/` + `tools/palette-composer-v2/`, jusque-là NON branchées.

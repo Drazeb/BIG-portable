@@ -99,15 +99,15 @@ C'est l'étape la plus dense du pipeline : elle construit les directions narrati
 
 **4a. Territoires créatifs.** J'extrais 15-20 mots-clés de ton brief (selon 4 axes : métier, valeurs, marché, aspirations), je les clusterise en 4-5 territoires. Tu attribues un rôle à chacun (Principal / Secondaire / Tertiaire) — ce mix donne le ton dominant des concepts à venir.
 
-**4b. Concepts narratifs — Mode Sélectif par registre.** Tu choisis un registre culturel dans le catalogue (28 registres : signalisation maritime, artisanat normand, magazine éditorial 70s…). Je tire un pool de ~210 mots, je dédoublonne et sélectionne 100, je les passe à 10 évaluateurs parallèles qui les filtrent contre ton brief. Tu reçois 10 candidats limpides et tu en gardes 0 à 3 (ils deviennent les noms-piliers des concepts). Au checkpoint, tu peux relancer un autre registre — ou le même — pour accumuler des concepts ; à la fin tu sélectionnes 1 à 3 concepts parmi tout l'accumulé.
+**4b. Concepts narratifs — Mode Sélectif par registre.** Tu choisis un registre culturel dans le catalogue (28 registres : signalisation maritime, artisanat normand, magazine éditorial 70s…). Je tire un pool de ~210 mots, je dédoublonne et sélectionne 100, je les passe à 10 évaluateurs parallèles qui les filtrent contre ton brief. Tu reçois 10 candidats limpides et tu en gardes 0 à 3 (ils deviennent les noms-piliers des concepts). Au checkpoint, tu peux relancer un autre registre — ou le même — pour accumuler des concepts (la sortie est flexible 0 à 3 par batch). À la sélection finale, tu en retiens **exactement 1** parmi tout l'accumulé (mode mono depuis D65 — gate utilisateur stricte : si tu saisis plusieurs, je redemande). Pour explorer plusieurs concepts en parallèle, lance N sessions `test-big` depuis le même brief.
 
 **4c. Direction visuelle.** Pour chaque concept, je dérive 4 éléments — avec un checkpoint utilisateur sur les 3 principaux :
-  · **Palette** — je te propose 3 palettes par concept (rendues sur un specimen visuel), tu en choisis 1
+  · **Palette** — je te propose 5 variantes (a→e) divergence dégressive mécanique, tu en choisis 1
   · **Typographies** — je te propose 1 pairing (titre + texte) chargé via Google Fonts et capturé en screenshot pour validation visuelle, tu valides ou demandes un remplacement
   · **Style HTML** — je te présente 4 spécimens stylisés par concept (combinant palette + typo + style), tu en choisis 1
   · **Image-pivot** (pour 1 seul concept) — tu choisis quel concept va recevoir une image de référence générée via Perplexity ; les 2 autres concepts restent en HTML classique
 
-**4d. Pitch écrit.** Je te présente le pitch éditorial complet pour les 3 concepts, ancré sur tous les choix précédents (et sur la description multimodale de l'image-pivot pour le concept concerné). Tu valides ou demandes des ajustements.
+**4d. Pitch écrit.** Je te présente le pitch éditorial complet pour le concept retenu, ancré sur tous les choix précédents (et sur la description multimodale de l'image-pivot si elle a été générée). Tu valides ou demandes des ajustements.
 
 Avant de te présenter le pitch final, je vérifie visuellement que les fonts, palettes et styles choisis correspondent bien à l'intention — si un rendu ne colle pas, je corrige avant que tu ne voies le résultat.
 → Tes inputs : **choix du registre** + **sélection des finalistes (0 à 3 par registre, batches accumulables)** + **attribution des rôles aux territoires** (Principal/Secondaire/Tertiaire) + **validation des directions narratives** + **choix de palette** (avec alerte aversion si applicable) + **choix de style** (avec alerte aversion si applicable) + **validation du pitch complet**
@@ -120,8 +120,8 @@ Si certains concepts recommandent de la photo ou de l'illustration, je te propos
 
 ---
 
-**6. Style-Tiles — 3 showrooms visuels** *(~60-120 min — variable selon le nombre d'itérations)*
-Je génère 3 fichiers HTML immersifs (un par concept) : Voice Block, Artefact Témoin, Atmosphere Block. Chaque fichier s'ouvre dans une fenêtre de navigateur distincte pour comparaison côte à côte.
+**6. Style-Tile — 1 showroom visuel pour le concept retenu** *(~30-60 min — variable selon le nombre d'itérations)*
+Je génère 1 fichier HTML immersif pour le concept retenu en sélection finale Phase 3A : Voice Block, Artefact Témoin, Atmosphere Block. Il s'ouvre dans une fenêtre de navigateur pour examen.
 
 Chaque style-tile passe par 3 niveaux de contrôle qualité avant de t'être présenté :
   · **Gates structurels** — vérifient automatiquement que palette, typo et layout choisis sont appliqués sans déviation
@@ -133,15 +133,15 @@ Chaque style-tile passe par 3 niveaux de contrôle qualité avant de t'être pr�
 
 ---
 
-**6bis. Audit DA** *(optionnel — ~7-14 min)*
-Avant de te présenter les résultats, je te propose un audit qualité : je capture des screenshots des 3 Style-Tiles et je les compare au pitch pour vérifier que le rendu est fidèle (fonts, palette, atmosphère, artefacts). Si des écarts sont détectés, je te présente les corrections à valider.
+**6bis. Audit DA** *(optionnel — ~5-10 min)*
+Avant la validation finale, je te propose un audit qualité : je capture des screenshots du Style-Tile et je le compare au pitch pour vérifier que le rendu est fidèle (fonts, palette, atmosphère, artefacts). Si des écarts sont détectés, je te présente les corrections à valider.
 → Tes inputs : **Oui/Non** pour lancer l'audit + **validation des corrections** si écarts détectés
 
 ---
 
-**7. Itération & Choix final** *(~10-30 min)*
-Tu compares les 3 Style-Tiles, tu demandes des ajustements si besoin, et tu choisis ton concept final.
-→ Tes inputs : **ajustements** (optionnel) + **choix du concept** (A, B ou C)
+**7. Validation finale & Itération** *(~5-15 min)*
+Tu valides le Style-Tile du concept retenu, ou tu demandes des ajustements (typo, palette, composition, artefact) puis tu valides. En mode mono D65, le choix de concept a déjà été fait en sélection finale Phase 3A — cette étape est uniquement une validation visuelle + opportunity d'ajustement.
+→ Tes inputs : **ajustements** (optionnel) + **validation**
 
 ---
 
