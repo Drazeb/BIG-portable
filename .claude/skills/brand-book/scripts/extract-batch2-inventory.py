@@ -798,9 +798,14 @@ def render_inventory_html(
                 f'data-source-viewbox="{c.source_viewbox}" '
                 f'data-label="{c.label}"'
             )
+            # Pas de <span class="article-meta"> visible — les métadonnées sont
+            # dans les attributs data-* de l'<article> (visibles via DevTools,
+            # invisibles au rendu). Le span était utile pour auditer l'inventory
+            # standalone, mais POLLUE le brand book final quand l'article est
+            # injecté verbatim (CSS .article-meta absent du brand book → texte
+            # md5=xxx affiché en taille normale, observé Vermeil 01/06/2026).
             articles.append(
                 f'  <article {meta}>\n'
-                f'    <span class="article-meta">md5={c.md5[:12]}… · line={c.source_line} · {c.label or "—"}</span>\n'
                 f'    <!-- BEGIN_BLOCK md5={c.md5} -->\n'
                 f'    {c.block_html}\n'
                 f'    <!-- END_BLOCK -->\n'
