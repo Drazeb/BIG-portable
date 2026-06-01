@@ -916,6 +916,16 @@ def extract_lockups(html: str, consumed: set) -> list:
     # Retirer aussi les balises <section …> et </section> wrapper.
     cleaned = re.sub(r'^<section\b[^>]*>', '', cleaned, count=1, flags=re.IGNORECASE).strip()
     cleaned = re.sub(r'</section>\s*$', '', cleaned, count=1, flags=re.IGNORECASE).strip()
+    # Retirer les préfixes numérotés des block-titles batch2 (`05.1 — Title` →
+    # `Title`). Évite l'incohérence avec la numérotation de la section
+    # brand-book (ex : section 04 Identité contenant des sous-blocks 05.1).
+    # Demande Charles 01/06/2026.
+    cleaned = re.sub(
+        r'(<h\d\b[^>]*class="[^"]*block-title[^"]*"[^>]*>)\s*\d+(?:\.\d+)*\s*[—–-]\s*',
+        r'\1',
+        cleaned,
+        flags=re.IGNORECASE,
+    )
 
     components.append(Component(
         category="lockups",
