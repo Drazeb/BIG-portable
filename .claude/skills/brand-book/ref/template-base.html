@@ -14,6 +14,25 @@
 
   <style>
     /* =========================================================
+       CSS CASCADE LAYERS — sanctuarisée v8 (01/06/2026)
+       Ordre des couches : priorité croissante de gauche à droite.
+       - batch2-injected (basse) : CSS extrait verbatim depuis batch2.html
+         par render-brand-book.py, injecté en bas de <head> dans un
+         <style data-source="batch2-inventory">. Contient des règles
+         globales (`:root`, `body`, `html`, `*`) qui sont VALIDES pour
+         batch2 mais qui auraient cassé le brand book sans isolation.
+       - brand-book (haute) : tout le CSS ci-dessous, qui définit le
+         contexte propre du brand book (sections positives, mode mixte,
+         bento Identity Card v4, slide rythm, etc.).
+       En cas de conflit (`:root`, `body`...), brand-book gagne TOUJOURS.
+       Pour les classes spécifiques batch2 non redéfinies par brand-book
+       (`.glyph`, `.btn`, `.card`, `.toggle`, etc.), batch2 s'applique.
+       ========================================================= */
+    @layer batch2-injected, brand-book;
+
+    @layer brand-book {
+
+    /* =========================================================
        :ROOT — TOKENS CANONIQUES DE LA MARQUE
        Tous les tokens ci-dessous DOIVENT être remplacés par les
        valeurs réelles extraites du style-tile au moment de la
@@ -58,6 +77,32 @@
       --font-display:       var(--brand-display);
       --font-mono:          var(--brand-body);
       --radius:             var(--brand-radius-xs);
+
+      /* --- Variables dérivées (utilisées par .bv4-* bento et .bk-* sections) ---
+         Sanctuarisées 01/06/2026 : ces vars étaient utilisées par le CSS du
+         template mais non définies → résolution à `unset` au runtime → texte
+         invisible (bento Identity Card transparent). Avec CSS @layer, batch2
+         ne peut plus les "fournir" implicitement, il faut les définir ici. */
+      --brand-color-positive-muted: color-mix(in srgb, var(--brand-color-positive-text) 60%, transparent);
+      --brand-color-text-secondary: color-mix(in srgb, var(--brand-color-positive-text) 70%, transparent);
+      --color-text-primary:         var(--brand-color-positive-text);
+      --color-beacon:               var(--brand-color-accent);
+      --color-beacon-warm:          var(--brand-color-accent-2);
+      --color-chart-mist:           color-mix(in srgb, var(--brand-color-positive-bg) 92%, var(--brand-color-positive-text));
+
+      /* Spacing scale */
+      --space-xs:  8px;
+      --space-sm:  16px;
+      --space-md:  24px;
+      --space-lg:  40px;
+      --space-xl:  64px;
+      --space-2xl: 104px;
+      --space-3xl: 168px;
+
+      /* Type tokens (font shorthand pour les .bk-* sections) */
+      --type-eyebrow:    500 12px/1.4 var(--brand-body, system-ui), system-ui, sans-serif;
+      --type-body:       400 16px/1.6 var(--brand-body, system-ui), system-ui, sans-serif;
+      --type-sub-title:  600 clamp(24px, 3vw, 36px)/1.2 var(--brand-display, serif), serif;
 
       /* --- Typography Hierarchy — FIGÉE (voir style-guide.md §4bis) --- */
       /* Eyebrow (numéro + nom section) */
@@ -1269,6 +1314,42 @@
       opacity: 0.7;
     }
     .bk-mono { font-family: ui-monospace, monospace; }
+
+    /* =========================================================
+       Neutralisation des classes batch2 problématiques quand combinées
+       avec les wrappers brand-book. Sanctuarisée 01/06/2026.
+
+       `.grain` (batch2) est un OVERLAY décoratif (position absolute,
+       opacity 0.4) censé être posé EN SURIMPRESSION d'un parent. Quand
+       le sub-agent l'applique directement à un élément principal du
+       bento (`.bv4-manifesto.grain`, `.bv4-cover.grain`, etc.), c'est
+       l'élément lui-même qui devient transparent → bug observé
+       Vermeil 01/06/2026 (bento "à peine visible").
+
+       Override : annule les propriétés de .grain quand combinée avec
+       un wrapper .bv4-* ou .bk-*. Le sub-agent peut continuer de
+       l'utiliser (compatibilité), mais l'effet visuel n'écrase plus
+       le contenu.
+       ========================================================= */
+    .bv4-cover.grain,
+    .bv4-manifesto.grain,
+    .bv4-typo.grain,
+    .bv4-dataviz.grain,
+    .bv4-icongrid.grain,
+    .bv4-palette__bloc.grain,
+    .bv4-wordmark.grain,
+    [class*="bv4-"].grain,
+    [class*="bk-"].grain {
+      position: static !important;
+      inset: auto !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      mix-blend-mode: normal !important;
+      background-image: none !important;
+      z-index: auto !important;
+    }
+
+    } /* fin @layer brand-book */
   </style>
 </head>
 <body>

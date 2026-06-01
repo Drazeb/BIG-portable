@@ -293,7 +293,7 @@ function conceptRowHtml(concept) {
   <div class="concept-row">
     ${intentionBlock}
     <div class="concept-label">Concept ${number} — "${name}"</div>
-    <div class="palettes-row" style="--variant-count:${palettes.length}">${cards}</div>
+    <div class="palettes-row">${cards}</div>
   </div>`;
 }
 
@@ -323,7 +323,10 @@ function generateHtml() {
       color: #888; margin-bottom: 16px; padding-bottom: 8px;
       border-bottom: 1px solid #E0E0E0;
     }
-    .palettes-row { display: grid; grid-template-columns: repeat(var(--variant-count, 3), minmax(190px, 1fr)); gap: 20px; }
+    /* 3 colonnes max → 5 variantes s'affichent en 3 + 2 (jamais compactées sur une seule ligne).
+       minmax(260px,…) garantit une largeur de carte lisible ; overflow-x permet de scroller
+       horizontalement plutôt que d'écraser les cartes si la fenêtre est trop étroite. */
+    .palettes-row { display: grid; grid-template-columns: repeat(3, minmax(260px, 1fr)); gap: 20px; overflow-x: auto; }
 
     .palette-card {
       background: #FFFFFF; border: 1px solid #E5E7EB;

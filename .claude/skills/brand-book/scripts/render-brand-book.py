@@ -509,23 +509,35 @@ def main():
             print(f"         · {{{{{r}}}}}")
         sys.exit(1)
 
-    # Injection du CSS batch2 juste avant </head> (cascade : après le CSS template,
-    # donc le CSS batch2 prend précédence pour les classes communes — souhaité car
-    # les composants extraits utilisent les classes batch2).
+    # Injection du CSS batch2 juste avant </head>, WRAPPÉE dans @layer
+    # batch2-injected (couche BASSE priorité). Le template déclare en tête de
+    # son <style> l'ordre `@layer batch2-injected, brand-book;` — donc les
+    # règles du template (dans @layer brand-book) gagnent sur les règles
+    # batch2 en cas de conflit (ex: :root, body, html). Les classes batch2
+    # spécifiques non redéfinies dans brand-book (.glyph, .btn, .card, etc.)
+    # s'appliquent normalement (cascade native).
+    #
+    # Pourquoi @layer : le filtrage manuel des règles globales batch2 (essayé
+    # 31/05+01/06/2026) cassait les composants qui dépendaient du reset/
+    # box-sizing/font hérité. @layer est une feature CSS native (W3C Cascade
+    # Layers, supportée tous navigateurs depuis 2022) qui résout proprement
+    # le problème sans toucher au CSS source.
     if batch2_css:
         css_block = (
             '\n<style data-source="batch2-inventory">\n'
             '/* CSS extrait de batch2.html via extract-batch2-inventory.py, '
-            'réinjecté ici par render-brand-book.py pour styliser les composants '
-            'UI / icônes / charts injectés verbatim dans le brand book. */\n'
+            'injecté dans @layer batch2-injected (couche basse priorité). '
+            'Le template déclare l\'ordre des layers dans son <style> natif : '
+            '@layer batch2-injected, brand-book. */\n'
+            '@layer batch2-injected {\n'
             + batch2_css
-            + '\n</style>\n'
+            + '\n}\n</style>\n'
         )
         # Insérer juste avant </head> (case-insensitive, premier match).
         m = re.search(r"</head>", output_html, re.IGNORECASE)
         if m:
             output_html = output_html[:m.start()] + css_block + output_html[m.start():]
-            print(f"[OK]   CSS batch2 injecté dans le brand book ({len(batch2_css):,} chars)")
+            print(f"[OK]   CSS batch2 injecté dans @layer batch2-injected ({len(batch2_css):,} chars)")
         else:
             print(f"[WARN] Pas de </head> trouvé dans le template : CSS batch2 NON injecté.")
 

@@ -249,26 +249,26 @@ def extract_primary_class(block: str, target_classes: list) -> str:
 def extract_inline_css(html: str) -> str:
     """
     Extrait le contenu CONCATÉNÉ de tous les <style>...</style> du document
-    batch2, en FILTRANT les sélecteurs globaux dangereux (body / html / :root /
-    universal) qui causeraient une cascade override sur le brand book.
+    batch2, SANS aucun filtrage. L'isolation contre les collisions avec le
+    CSS du brand book est garantie au runtime par les CSS Cascade Layers
+    (@layer) : `render-brand-book.py` wrap ce CSS dans `@layer batch2-injected`
+    (couche basse priorité), et le template wrap son propre CSS dans
+    `@layer brand-book` (couche haute priorité).
 
-    Pourquoi le filtrage : le CSS batch2 contient des règles globales
-    (`:root { --color-text-primary: oklch(0.91 ...) }`, `body { color: var(...) }`,
-    `*, *::before, *::after { ... }`) qui sont VALIDES dans le contexte batch2
-    (mode dark cinema natif) mais qui CASSENT le brand book qui a son propre
-    contexte (sections positives sur fond clair). Bug observé Vermeil
-    01/06/2026 : bento Identity Card quasi invisible (texte beige clair sur
-    fond beige clair) à cause du :root batch2 qui override --color-text-primary.
+    Conséquence : si batch2 définit `:root { --color-text-primary: clair }` et
+    brand-book définit `:root { --color-text-primary: sombre }`, brand-book
+    gagne (couche haute). Les classes spécifiques de batch2 (`.glyph`, `.btn`,
+    `.card`) restent appliquées si brand-book ne les redéfinit pas.
 
-    Filtrage : on garde uniquement les sélecteurs de CLASSES (`.foo`),
-    de balises spécifiques pas globales (ex: `button`, `input` — utiles pour
-    le reset des composants UI extraits), et les pseudo-classes / variables
-    locales. On EXCLUT : `body`, `html`, `:root`, `*` (et les `:where(...)`
-    qui les ciblent).
+    Pourquoi cette approche (vs filtrage manuel) : le filtrage manuel des
+    sélecteurs globaux (essayé 31/05 + 01/06/2026) est instable — chaque
+    règle filtrée déstabilise les composants qui en dépendaient (reset,
+    box-sizing, fonts hérités). @layer est une feature CSS native (W3C
+    Cascade Layers, supportée tous navigateurs depuis 2022) qui résout
+    proprement le problème sans toucher au CSS source.
     """
     blocks = re.findall(r"<style\b[^>]*>(.*?)</style>", html, re.DOTALL | re.IGNORECASE)
-    raw_css = "\n".join(blocks)
-    return _filter_global_selectors(raw_css)
+    return "\n".join(blocks)
 
 
 def _filter_global_selectors(css: str) -> str:
