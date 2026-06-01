@@ -1182,28 +1182,15 @@
     .bk-icons-treatments:empty,
     .bk-icons-mockup:empty { display: none; }
 
-    /* ÎLOT DARK pour la section Identité (lockups + variants de contexte) —
-       même logique que pour Système : présenter le système de lockups sur le
-       fond brand natif (mode production), pas sur fond clair brand book.
-       Demande Charles 01/06/2026. */
-    .section--positive#identity {
-      background: var(--brand-color-dark-bg);
-      color: var(--brand-color-dark-text);
-    }
-    .section--positive#identity .section__eyebrow {
-      color: var(--brand-color-accent);
-    }
-    .section--positive#identity .section__title,
-    .section--positive#identity .section__subtitle {
-      color: var(--brand-color-dark-text);
-    }
-    /* Les overrides .block-title / .block-note du brand book qui forcaient
-       la couleur sombre sont annulés dans cet îlot dark : revert à la valeur
-       claire de batch2. */
-    .section--positive#identity .bk-identity-lockups .block-title,
-    .section--positive#identity .bk-identity-lockups .block-note {
-      color: var(--brand-color-dark-text) !important;
-    }
+    /* Section Identité reste en fond CLAIR (Brume) — c'est sur fond clair que
+       les lockups sortent le mieux (typo en noir/sombre, accent foyer).
+       Les variantes ctx--dark / mono / oled ont leur fond batch2 sombre qui
+       contraste naturellement avec le fond clair de la section. Seul
+       ctx--light reste sur fond identique → bordure subtile via override
+       ci-dessous.
+       Décision Charles 01/06/2026 : "on fait varier le fond pour que les
+       cards ressortent" → contraste naturel des fonds batch2 vs section,
+       sans empiler les bordures partout. */
     .bk-subsection__eyebrow {
       font: var(--type-eyebrow, 500 12px/1.4 system-ui);
       letter-spacing: 0.08em;
@@ -1221,24 +1208,19 @@
       margin: 0 0 24px;
       max-width: 60ch;
     }
+    /* .bk-icons-grid empile les wrappers PARENTS d'iconographie batch2
+       (icon-grid, icon-grammar, stroke-scale, abstraction-scale, business-icons,
+       treatments, etc.) verticalement. Chaque wrapper conserve son layout
+       natif batch2 (CSS injecté par render-brand-book.py @layer
+       batch2-injected). Fix Camille 01/06/2026 : l'ancien grid uniforme
+       écrasait les 4 layouts différents de Camille en superposition. */
     .bk-icons-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-      gap: 16px;
-      align-items: start;
-    }
-    .bk-icons-grid > article {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 12px;
-      border: 1px solid color-mix(in srgb, currentColor 8%, transparent);
-      border-radius: 8px;
-      background: color-mix(in srgb, currentColor 2%, transparent);
+      gap: var(--space-xl, 48px);
     }
-    .bk-icons-grid > article > .article-meta { font: 10px/1.3 ui-monospace, monospace; color: color-mix(in srgb, currentColor 50%, transparent); }
-    .bk-icons-grid svg { width: 48px; height: 48px; }
+    .bk-icons-grid > article { display: block; }
+    .bk-icons-grid > article > .article-meta { font: 10px/1.3 ui-monospace, monospace; color: color-mix(in srgb, currentColor 50%, transparent); display: none; }
     .bk-ui-grid {
       display: flex;
       flex-wrap: wrap;
@@ -1278,6 +1260,9 @@
        ========================================================= */
     .bk-identity-lockups {
       margin-block-start: var(--space-xl, 48px);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xl, 80px);  /* espacement généreux entre sous-grilles (lockups / exclusion-grid / context-grid) pour éviter l'effet de chevauchement visuel */
     }
     .bk-identity-lockups > * { max-width: 100%; }
     /* `color: revert-layer` à l'intérieur de .bk-identity-lockups → revert à
@@ -1303,11 +1288,12 @@
       color: var(--brand-color-positive-text) !important;
     }
 
-    /* Variantes de contexte (05.4) : les .ctx--light et .ctx--mono ont un
-       fond clair (`oklch(0.93)`) identique au fond de la section brand-book
-       → bloc invisible (fond sur fond — cas règle 11 du SKILL.md §contraste).
-       Solution : bordure subtile pour matérialiser les cards. Les .ctx--dark
-       et .ctx--oled ont déjà du contraste natif. */
+    /* RÈGLE 11 §CONTRASTE — Section Identité en fond clair (Brume) :
+       seules les cards qui ont aussi un fond clair (ctx--light, ou lockups
+       sans fond batch2 sur la même nuance) risquent le "fond sur fond".
+       Bordure subtile uniquement sur ces cas-là, pour matérialiser sans
+       empiler les bordures partout. Les autres variantes (ctx--dark / mono
+       / oled) contrastent naturellement avec le fond clair de la section. */
     .bk-identity-lockups .ctx--light,
     .bk-identity-lockups .ctx--mono {
       border: 1px solid color-mix(in srgb, var(--brand-color-positive-text) 15%, transparent);

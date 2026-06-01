@@ -70,13 +70,31 @@ from typing import Optional
 # CONSTANTES
 # ============================================================================
 
-# Classes wrappers reconnues comme icônes (toutes les conventions BIG observées).
-# Polymorphisme batch2 : Vermeil utilise .glyph, Camille utilise .icon-card,
-# .stroke-step, .abstraction-step, .business-icon (spécimens grammaire icône).
-# Le matching est exact OU par préfixe BEM (`target--variant`).
+# Classes wrappers reconnues comme zones d'iconographie (PARENT containers,
+# pas enfants individuels). Chaque wrapper a son layout natif batch2 que le
+# brand book doit préserver. Polymorphisme :
+# - Vermeil : `icon-grid` (1 wrapper, 24 .glyph dedans) + `treatments`
+#   (Taille pleine / Contre-taille safran).
+# - Camille : 4 wrappers — `icon-grammar` (Repère/Signal/Portée),
+#   `stroke-scale` (1.0/1.5/2.0/3.0 px), `abstraction-scale` (Littéral/
+#   Stylisé/Schématique/Géométrique/Abstrait), `business-icons` (les vraies).
+#
+# Refactor 01/06/2026 : on extrait les WRAPPERS PARENTS au lieu des enfants
+# individuels (.glyph, .icon-card, .stroke-step, etc.) pour que le brand book
+# préserve les LAYOUTS NATIFS batch2. L'ancienne approche cassait l'affichage
+# Camille (4 layouts différents collés dans une grille uniforme = chevauchement).
 ICON_WRAPPER_CLASSES = [
-    "glyph", "icon-card", "icon-cell", "icon-tile", "icon-spec",
-    "stroke-step", "abstraction-step", "business-icon",
+    # Sets simples (grille plate)
+    "icon-grid", "glyph-grid", "icon-set",
+    # Grammaires (variations de style)
+    "icon-grammar", "icon-family", "families",
+    # Scales (épaisseur, abstraction, taille)
+    "stroke-scale", "stroke-grid", "abstraction-scale", "abstraction-grid",
+    "size-scale",
+    # Catégories métier
+    "business-icons", "sector-icons", "metier-icons",
+    # Traitements (variantes stylistiques : taille pleine, contre-taille, etc.)
+    "treatments", "icon-treatments", "icon-styles", "engraving-grid",
 ]
 
 # Boutons : tous les <button class="btn..."> SAUF les tabs (catégorie séparée).
