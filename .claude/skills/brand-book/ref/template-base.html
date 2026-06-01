@@ -206,6 +206,15 @@
       min-height: clamp(720px, 90vh, 900px);
       position: relative;
     }
+    /* Sections éditoriales courtes (Big Idea, Concept) : contenu = titre +
+       sous-titre + 3 paragraphes courts. Le min-height de 720px force ~200-300px
+       d'espace vide après le texte → scroll trop long, expérience moins fluide.
+       Override : laisser le contenu déterminer la hauteur (le padding-block
+       suffit à donner de l'air). Sanctuarisé 01/06/2026. */
+    #big-idea,
+    #concept {
+      min-height: auto;
+    }
     .section__inner {
       max-width: 1320px;
       margin-inline: auto;
@@ -1222,6 +1231,28 @@
     .bk-identity-lockups,
     .bk-identity-lockups * {
       color: revert-layer;
+    }
+
+    /* Mais les TITRES de sous-section (05.1, 05.2, 05.3, 05.4) sont sur le
+       fond clair de la section brand-book, pas sur les cards. Batch2 leur
+       donne color claire (--color-text-primary oklch 0.91) adaptée à son
+       contexte dark cinema. Sur fond clair brand-book → invisibles. Override
+       explicite pour les remettre en sombre. Bug observé Vermeil 01/06. */
+    .bk-identity-lockups .block-title,
+    .bk-identity-lockups .block-note,
+    .bk-identity-lockups > .block > .block-title,
+    .bk-identity-lockups > .block > .block-note {
+      color: var(--brand-color-positive-text) !important;
+    }
+
+    /* Variantes de contexte (05.4) : les .ctx--light et .ctx--mono ont un
+       fond clair (`oklch(0.93)`) identique au fond de la section brand-book
+       → bloc invisible (fond sur fond — cas règle 11 du SKILL.md §contraste).
+       Solution : bordure subtile pour matérialiser les cards. Les .ctx--dark
+       et .ctx--oled ont déjà du contraste natif. */
+    .bk-identity-lockups .ctx--light,
+    .bk-identity-lockups .ctx--mono {
+      border: 1px solid color-mix(in srgb, var(--brand-color-positive-text) 15%, transparent);
     }
 
     .bk-palette-pages {
