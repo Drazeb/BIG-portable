@@ -323,10 +323,11 @@ function generateHtml() {
       color: #888; margin-bottom: 16px; padding-bottom: 8px;
       border-bottom: 1px solid #E0E0E0;
     }
-    /* 3 colonnes max → 5 variantes s'affichent en 3 + 2 (jamais compactées sur une seule ligne).
-       minmax(260px,…) garantit une largeur de carte lisible ; overflow-x permet de scroller
-       horizontalement plutôt que d'écraser les cartes si la fenêtre est trop étroite. */
-    .palettes-row { display: grid; grid-template-columns: repeat(3, minmax(260px, 1fr)); gap: 20px; overflow-x: auto; }
+    /* Largeur de carte FIXE (jamais 1fr → jamais compactée pour rentrer dans l'écran).
+       3 cartes par rangée (5 variantes → rangée de 3 + rangée de 2) ; chaque carte garde
+       sa pleine largeur (spécimen entier + 7 pastilles lisibles). Si 3 cartes dépassent
+       l'écran, on SCROLLE horizontalement pour voir la 3e — on n'écrase pas. */
+    .palettes-row { display: grid; grid-template-columns: repeat(3, 440px); gap: 24px; overflow-x: auto; padding-bottom: 12px; }
 
     .palette-card {
       background: #FFFFFF; border: 1px solid #E5E7EB;
@@ -412,7 +413,7 @@ function generateHtml() {
 </head>
 <body>
   <div class="page-title">Palettes — ${config.brandName}</div>
-  <div class="page-subtitle">3 directions chromatiques par concept · Stacked par défaut, utilisez le toggle pour passer en Split</div>
+  <div class="page-subtitle">5 directions chromatiques par concept (a→e) · Stacked par défaut, utilisez le toggle pour passer en Split</div>
 
   ${conceptRows}
 

@@ -1331,13 +1331,9 @@
        l'utiliser (compatibilité), mais l'effet visuel n'écrase plus
        le contenu.
        ========================================================= */
-    .bv4-cover.grain,
-    .bv4-manifesto.grain,
-    .bv4-typo.grain,
-    .bv4-dataviz.grain,
-    .bv4-icongrid.grain,
-    .bv4-palette__bloc.grain,
-    .bv4-wordmark.grain,
+    /* Neutralisation des propriétés problématiques de .grain quand combinée
+       avec un wrapper brand-book. Préserve le background-image du wrapper
+       (cf. .bv4-cover qui définit son hero via background-image). */
     [class*="bv4-"].grain,
     [class*="bk-"].grain {
       position: static !important;
@@ -1345,9 +1341,23 @@
       opacity: 1 !important;
       pointer-events: auto !important;
       mix-blend-mode: normal !important;
-      background-image: none !important;
       z-index: auto !important;
     }
+
+    /* Pour les wrappers qui n'ont PAS de background image propre (manifesto,
+       typo, dataviz, icongrid, palette blocs, wordmark), tuer le grain SVG
+       (sinon overlay texturé visible et moche). On EXCLUT .bv4-cover qui
+       garde son hero PNG en background-image. */
+    .bv4-manifesto.grain,
+    .bv4-wordmark.grain,
+    .bv4-typo.grain,
+    .bv4-dataviz.grain,
+    .bv4-icongrid.grain,
+    .bv4-palette__bloc.grain,
+    [class*="bk-"].grain {
+      background-image: none !important;
+    }
+    /* .bv4-cover.grain : NE PAS toucher au background-image (préserve hero). */
 
     } /* fin @layer brand-book */
   </style>
