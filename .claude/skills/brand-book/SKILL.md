@@ -392,21 +392,49 @@ Les 6 noms (col "Nom") sont **propres à chaque marque** — le skill reprend le
 
 **Pourquoi ce refactor** : les anciens rôles ("Fond profond / Surface beige / Accent chaud") n'avaient de sens que pour des marques avec un univers chromatique riche en surfaces sombres + accent chaud (Camille, Vermeil, VoltaPilot). Pour une marque SaaS clair (Brevo : vert forêt + iris + mint), ces rôles forçaient des mappings absurdes. Les rôles agnostiques (Primaire/Secondaire/...) fonctionnent pour tous les univers chromatiques sans biais.
 
-**Variables :root alias à injecter** (Étape 4 — :root sacré) :
+**Variables :root alias à injecter — UNIVERSELLES (refondu 2026-06-02)** (Étape 4 — :root sacré) :
+
+Les anciens aliases `--color-foyer/foyer-warm/mist/mist-cool/marine-cliff/night-clear` (calibrés sur Camille) ont été remplacés par des aliases **universels par rôle fonctionnel** avec préfixe `--bb-*`. Le template ne contient plus aucun nom poétique Camille.
 
 ```
---color-foyer:        var(--brand-color-accent);     /* ou alias direct vers la couleur native */
---color-foyer-warm:   {{COLOR_FOYER_WARM}};          /* version chaude/claire de l'accent */
---color-mist:         var(--brand-color-positive-bg); /* ou couleur Brume native */
---color-mist-cool:    {{COLOR_MIST_COOL}};           /* version plus claire (text-primary clair) */
---color-marine-cliff: {{COLOR_MARINE_CLIFF}};        /* détail froid — variante cliff/marine, sinon `--brand-color-accent-2` */
---color-night-clear:  {{COLOR_NIGHT_CLEAR}};         /* fond surface — Nuit Claire, lighten(--brand-color-dark-bg, ~5%) ; le CSS a un fallback `#142133` */
---font-display:       var(--brand-display);
---font-mono:          var(--brand-body);
---radius:             var(--brand-radius-xs);
+--bb-color-accent:                {{COLOR_FOYER}};         /* Accent primaire de la marque (slot legacy nommé) */
+--bb-color-accent-warm:           {{COLOR_FOYER_WARM}};    /* Variante chaude/secondaire de l'accent */
+--bb-color-surface-light:         {{COLOR_MIST}};          /* Surface claire dominante */
+--bb-color-text-on-surface:       {{COLOR_MIST_COOL}};     /* Texte sur surface claire */
+--bb-color-detail-cool:           {{COLOR_MARINE_CLIFF}};  /* Détail froid (séparateurs, borders) */
+--bb-color-surface-elevated-dark: {{COLOR_NIGHT_CLEAR}};   /* Surface élevée sur fond dark */
+--font-display:                   var(--brand-display);
+--font-mono:                      var(--brand-body);
+--radius:                         var(--brand-radius-xs);
 ```
 
-**Quality gate** : 4 icônes extraites, 2 lignes manifesto extraites, 6 couleurs nommées et classées par rôle, signature wordmark (coords + cadence) extraite ou forgée. Si une composition échoue (ex: batch2 n'a pas d'icônes métier identifiables, ou la marque n'a pas de coords/cadence évidentes), log un warning et utiliser un placeholder visuel ou textuel cohérent (icône abstrait `circle + cross`, signature `"—"` / `"—"`).
+**Note** : les slots Mustache (`{{COLOR_FOYER}}`, `{{COLOR_MIST}}`, etc.) sont conservés tels quels pour minimiser les changements au pipeline. Tu peux continuer à les fournir avec les couleurs RÉELLES de la marque (pas Camille) — l'aliasage CSS s'occupe du reste.
+
+**Couleurs de texte calculées par luminance WCAG (nouveau slot 2026-06-02)** :
+
+Pour chaque bloc de la palette 6 couleurs (6 jeux `COLOR_N_*`), tu dois **également produire** un slot `COLOR_N_TEXT` qui contient la couleur de texte adaptée à la couleur de fond, calculée par luminance WCAG :
+
+```python
+def luminance(hex_color):
+    hex_color = hex_color.lstrip('#')
+    r, g, b = int(hex_color[0:2], 16) / 255, int(hex_color[2:4], 16) / 255, int(hex_color[4:6], 16) / 255
+    def lin(c):
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+
+# Pour chaque COLOR_N_HEX :
+#   COLOR_N_TEXT = "#1B1B1B" si luminance(COLOR_N_HEX) > 0.5
+#   COLOR_N_TEXT = "#FFFFFF" sinon
+```
+
+Le HTML du bloc utilise ces 2 slots en inline style :
+```html
+<div class="bv4-palette__bloc" style="background-color: {{COLOR_N_HEX}}; color: {{COLOR_N_TEXT}};">
+```
+
+**Pourquoi inline style** : les anciennes classes `.bv4-palette__bloc--nuit/night/marine/mist/foyer/foyer-warm` avaient des fonds hardcodés Camille. Les supprimer en faveur d'inline style permet à chaque bloc d'afficher SA propre couleur (universel par construction).
+
+**Quality gate** : 4 icônes extraites, 2 lignes manifesto extraites, 6 couleurs nommées et classées par rôle (Primaire/Secondaire/Accent/Surface/Texte/Bord ou équivalent marque), **6 valeurs `COLOR_N_TEXT` calculées par luminance**, signature wordmark (méta-données signature) extraite ou forgée. Si une composition échoue, log un warning et utiliser un placeholder cohérent.
 
 ---
 
@@ -496,7 +524,39 @@ Pour CHAQUE slot non-BATCH2, produis une valeur en suivant les sources ci-dessou
 - `YEAR` : année courante (ex: `"2026"`)
 - `BRAND_THEME_COLOR` : hex `#RRGGBB` (couleur dominante palette, pour theme-color meta)
 - `GOOGLE_FONTS_LINK` : balise `<link>` complète copiée depuis le style-tile
-- **`MODE_CHROMATIQUE`** : valeur lue depuis le `:root` du style-tile (variable `--mode-chromatique`). Si absente : fallback `"dark"` (comportement legacy Camille). Valeurs possibles : `"light"`, `"dark"`, `"mixed"`. Pilote `<body data-mode="...">` qui active les overrides CSS adaptatifs du template (Cover, Closing, Photo s'adaptent à la luminance dominante de la marque).
+- **`MODE_CHROMATIQUE`** : valeur lue depuis le `:root` du style-tile (variable `--mode-chromatique`). Si absente : **inférer par heuristique WCAG luminance** (cf. procédure ci-dessous). Valeurs possibles : `"light"`, `"dark"`, `"mixed"`. Pilote `<body data-mode="...">` qui active les overrides CSS adaptatifs du template (Cover, Closing, Photo s'adaptent à la luminance dominante de la marque).
+
+  **Procédure d'inférence (si `--mode-chromatique` absent du `:root` du style-tile — cas standard mode A pré-2026-06-02 ou anciennes sessions)** :
+
+  1. Trouver la **surface dominante** dans le `:root` du style-tile. Priorité de lecture :
+     - `--brand-color-positive-bg` (si présente)
+     - `--color-surface` (si présente)
+     - `--color-bg`
+     - `--background-color` ou équivalent
+     - À défaut : `#FFFFFF` par défaut
+
+  2. Convertir la couleur en luminance perçue (formule WCAG simplifiée) :
+     ```python
+     # Soit hex la couleur de surface dominante (ex: "#FFFFFF" ou "#1B1B1B")
+     def luminance(hex_color):
+         hex_color = hex_color.lstrip('#')
+         r, g, b = int(hex_color[0:2], 16) / 255, int(hex_color[2:4], 16) / 255, int(hex_color[4:6], 16) / 255
+         # Linéariser
+         def lin(c):
+             return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+         return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+     ```
+
+  3. Classifier :
+     - **luminance > 0.7** → `MODE_CHROMATIQUE = "light"` (cas SaaS clair, sites corporates, marques aérées)
+     - **luminance < 0.15** → `MODE_CHROMATIQUE = "dark"` (cas Camille nuit, marques cinéma/luxe sombres)
+     - **0.15 ≤ luminance ≤ 0.7** → `MODE_CHROMATIQUE = "mixed"` (cas tons moyens, sépia, marines moyens, etc.)
+
+  4. **Logger explicitement** au début de l'Étape 1 :
+     - Si lu depuis `:root` : `"Mode chromatique lu depuis style-tile :root --mode-chromatique = {VALEUR}"`
+     - Si inféré : `"Mode chromatique inféré par luminance (surface dominante {HEX}, luminance {L:.2f}) → {VALEUR}"`
+
+  Cette heuristique permet à toute marque (mode A ou D, ancienne ou nouvelle) de bénéficier du mode chromatique adaptatif **sans modification des prompts amont**. Marges d'erreur uniquement sur les marques exactement à mid-range (classées en `mixed`, ce qui = comportement Camille actuel).
 - **`HAS_COVER_VISUAL`** : `"true"` si un fichier hero existe dans `visual-final/` (chercher `{brand}-c{N}-{paletteID}-hero*.{png,jpg,jpeg,webp}`), `"false"` sinon. Pilote `<body data-has-cover-visual="...">` qui force le fond solide (sans image) selon le mode chromatique en cas d'absence.
 - **`HAS_CLOSING_VISUAL`** : idem pour le closing (chercher `{brand}-c{N}-{paletteID}-closing*` ou réutiliser le hero si absent).
 

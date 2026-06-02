@@ -58,20 +58,20 @@ Le brand book alterne **trois modes** selon la section :
 
 | Mode | Sections | Fond |
 |------|----------|------|
-| **Dark Cinema natif** | COVER, CLOSING, section 09 PHOTO | Nuit d'Indigo de la marque (ou équivalent dark de la palette) |
-| **Positif** | 01 BIG IDEA, 02 CONCEPT, 03 IDENTITY, 04 PALETTE (wrapper), 05 TYPO, 06 VOICE | Brume de Plan ou équivalent clair de la palette |
+| **Dark Cinema natif** | COVER, CLOSING, section 09 PHOTO | surface sombre dominante de la marque (ou équivalent dark de la palette) |
+| **Positif** | 01 BIG IDEA, 02 CONCEPT, 03 IDENTITY, 04 PALETTE (wrapper), 05 TYPO, 06 VOICE | surface claire dominante ou équivalent clair de la palette |
 | **Positif wrapper + îlots dark** | 07 SYSTEM, 08 WEB | Fond positif, mais les composants/captures sont en îlots dark canoniques |
 
 ### Application
 
 ```css
 .section--positive {
-  background-color: var(--brand-color-positive-bg); /* Brume de Plan */
+  background-color: var(--brand-color-positive-bg); /* surface claire dominante */
   color: var(--brand-color-positive-text);
 }
 
 .section--dark-cinema {
-  background-color: var(--brand-color-dark-bg); /* Nuit d'Indigo */
+  background-color: var(--brand-color-dark-bg); /* surface sombre dominante */
   color: var(--brand-color-dark-text);
 }
 
@@ -135,7 +135,7 @@ Les **atomes esthétiques** sont des artefacts d'expérience (une couleur, c'est
   --type-eyebrow-letter-spacing: 0.14em;
   --type-eyebrow-weight: 500;
   --type-eyebrow-text-transform: uppercase;
-  --type-eyebrow-color: var(--brand-color-accent); /* Foyer du Phare ou équivalent */
+  --type-eyebrow-color: var(--brand-color-accent); /* accent primaire ou équivalent */
 
   /* Section title — grand H2 de la section (ex: "Le phare immobile") */
   --type-section-title-size: clamp(40px, 5vw, 64px);
@@ -266,9 +266,9 @@ Tokens à extraire systématiquement :
   --brand-color-primary: oklch(...);
   --brand-color-secondary: oklch(...);
   --brand-color-accent: oklch(...);
-  --brand-color-positive-bg: oklch(...);  /* Brume de Plan */
+  --brand-color-positive-bg: oklch(...);  /* surface claire dominante */
   --brand-color-positive-text: oklch(...);
-  --brand-color-dark-bg: oklch(...);      /* Nuit d'Indigo */
+  --brand-color-dark-bg: oklch(...);      /* surface sombre dominante */
   --brand-color-dark-text: oklch(...);
   --brand-color-success: oklch(...);
   --brand-color-warning: oklch(...);
@@ -304,13 +304,13 @@ C'est le radius canonique BIG dans la quasi-totalité des cas. Si la marque l'a 
 
 ### Pas de pur noir #000 ni pur blanc #FFF
 - Le pur noir et le pur blanc sont **bannis** car ils écrasent la palette de la marque.
-- Utiliser la Nuit d'Indigo (`--brand-color-dark-bg`) à la place de `#000`.
-- Utiliser la Brume de Plan (`--brand-color-positive-bg`) à la place de `#FFF`.
+- Utiliser la surface sombre dominante (`--brand-color-dark-bg`) à la place de `#000`.
+- Utiliser la surface claire dominante (`--brand-color-positive-bg`) à la place de `#FFF`.
 
 ### Si la marque n'a pas explicité ces tokens
 Dériver depuis la palette principale :
-- Nuit d'Indigo ≈ `oklch(0.18 0.04 270)` (sombre, légèrement teinté de la couleur primaire)
-- Brume de Plan ≈ `oklch(0.97 0.005 90)` (clair chaud, jamais blanc cassé glacial)
+- surface sombre dominante ≈ `oklch(0.18 0.04 270)` (sombre, légèrement teinté de la couleur primaire)
+- surface claire dominante ≈ `oklch(0.97 0.005 90)` (clair chaud, jamais blanc cassé glacial)
 
 ---
 

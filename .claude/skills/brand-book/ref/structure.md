@@ -38,7 +38,7 @@ Ce document décrit **précisément** ce que doit contenir chaque section, **où
 
 - **Contenu** : peinture pivot pleine page (hero) en background, wordmark `{brand}.` centré (point final en couleur d'accent), petit caption en bas ("Brand Book v{N}" + année).
 - **Source** : `visual-final/{brand}-c{N}-{paletteID}-hero-*.png` (le plus large disponible, idéalement painterly atmospheric).
-- **Mode chromatique** : **Dark Cinema natif** — pas de wrapper clair, le fond Nuit d'Indigo de la marque englobe tout.
+- **Mode chromatique** : **Dark Cinema natif** — pas de wrapper clair, le fond surface sombre dominante de la marque englobe tout.
 - **Mode de présentation** : fullbleed `100vw × 100vh` (ou min-height 720px si écran petit).
 - **Hauteur** : ~100vh (full viewport).
 - **Règles** :
@@ -53,7 +53,7 @@ Ce document décrit **précisément** ce que doit contenir chaque section, **où
 
 - **Contenu** : liste des sections (Identity Card en intro + 8 sections numérotées de 01 BIG IDEA à 08 PHOTO & ILLUSTRATION), 1 ligne par entrée.
 - **Source** : statique (fait partie du squelette).
-- **Mode chromatique** : positif (fond Brume de Plan).
+- **Mode chromatique** : positif (fond surface claire dominante).
 - **Mode de présentation** : **CSS multicol 2 colonnes** (`column-count: 2`, `column-gap: clamp(40px, 5vw, 80px)`, `column-fill: balance`, `break-inside: avoid` sur chaque `.toc__item`). Liste max-width 1200px, ordre top→bottom col1 puis col2 (lecture naturelle). Non-sticky, lieu de transition entre cover et corps.
 - **Hauteur** : ~520-640px.
 - **Règles** :
@@ -92,11 +92,11 @@ Bento d'ouverture inséré entre le sommaire et la section 01 BIG IDEA. Donne en
 
 - **Contenu** : le grand énoncé conceptuel de la marque, en mode éditorial minimaliste (PAS un statement-poster gigantesque, PAS de méta-fields en grille).
 - **Source** : `{brand}-pitch.md` section "Big Idea" + `{brand}-design-specs.md` §01.2 "Intention Créative".
-- **Mode chromatique** : **positif** (Brume de Plan ou équivalent clair de la palette).
+- **Mode chromatique** : **positif** (surface claire dominante ou équivalent clair de la palette).
 - **Mode de présentation** : **éditorial 2-cols magazine** (voir `editorial-patterns.md`) :
   - Titre `01 — BIG IDEA` en eyebrow petit caps
   - H1 simple en `--brand-display` (3-4 mots maximum, jamais une phrase entière)
-  - Sous-titre italique en accent (couleur Foyer du Phare ou équivalent) — facultatif
+  - Sous-titre italique en accent (couleur accent primaire ou équivalent) — facultatif
   - **Corps en `.editorial-column` 2 colonnes CSS multicol** : `column-count: 2`, `column-gap: clamp(40px, 5vw, 80px)`, `column-fill: balance`, `max-width: 1100px`, `break-inside: avoid` sur chaque `<p>`. Fallback 1 col + max-width 55ch sous 768px.
   - 4-5 paragraphes courants de 2-4 lignes
 - **Hauteur** : ~720-820px.
@@ -287,7 +287,7 @@ La section 07 est **éclatée en 3 sous-blocs**, chacun en sa propre slide (sauf
 
 - **Contenu** : 6 slides 16:9 (1280×720 natives) générées par le sous-skill `generate-mini-deck` (qui invoque SPG Phase 0 mode mini), présentées dans un **spread asymétrique horizontal sur 2 lignes × 3 slides**.
 - **Source** : sous-skill `/Slide Presentation Generator/.claude/skills/generate-mini-deck/` invoqué via sub-agent Task. Mapping figé : Cover (#1) · Case Study (#12) · Data Viz (#9) · Dashboard KPI (#10) · Process/Timeline (#7) · Icon Grid (#19).
-- **Mode chromatique** : positif wrapper (fond Brume de Plan ou équivalent palette brand). Slides individuelles en alternance Dark/Light pilotée par Sub0-B SPG selon VISUAL-ANALYSIS.md §7.
+- **Mode chromatique** : positif wrapper (fond surface claire dominante ou équivalent palette brand). Slides individuelles en alternance Dark/Light pilotée par Sub0-B SPG selon VISUAL-ANALYSIS.md §7.
 - **Mode de présentation** — SPREAD ASYMÉTRIQUE :
 
 ```
@@ -431,7 +431,7 @@ Section calibrée sur référence Khairallah AL-Awady (X officiel) + LinkedIn en
   - **Signature de prompting MJ** (formule récurrente que la marque utilise pour générer ses visuels)
   - **Galerie** : 4-8 visuels finaux issus de `visual-final/`
 - **Source** : `{brand}-batch3.html` + `{brand}-design-specs.md` §08 DIRECTION PHOTOGRAPHIQUE (§08.1 style, §08.2 traitement, §08.3 scénographie, §08.4 signature prompting) + §10 ILLUSTRATION (si applicable) + dossier `visual-final/`.
-- **Mode chromatique** : **Dark Cinema natif** (la section entière est en fond Nuit d'Indigo, pas un wrapper clair).
+- **Mode chromatique** : **Dark Cinema natif** (la section entière est en fond surface sombre dominante, pas un wrapper clair).
 - **Mode de présentation** :
   - Titre `08 — PHOTO & ILLUSTRATION` en blanc/clair
   - 4 cadrages canoniques en grille 2×2 ou 4×1, chacun avec titre + description courte

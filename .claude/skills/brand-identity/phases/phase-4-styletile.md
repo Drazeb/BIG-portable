@@ -181,6 +181,46 @@ Génère UN fichier HTML Style-Tile complet au format TRIPTYQUE :
 - **CONSULTE le pitch** : la section "Prescriptions d'exécution visuelle" décrit les SENSATIONS que la surface, les interactions et les transitions doivent produire. C'est TOI qui choisis les techniques CSS les plus adaptées pour produire ces effets — tu as le catalogue complet dans html-showroom-spec.md §6. Le pitch décrit l'INTENTION, tu décides des MOYENS.
 - **CONSULTE le pitch** : la section "Philosophie d'interaction" de la Direction visuelle décrit la SENSATION de hover pour ce concept. TRADUIS cette sensation en techniques CSS concrètes et APPLIQUE-les à TOUS les éléments interactifs (boutons, cards, liens).
 
+### Variables CHROMATIQUES sanctuarisées dans le :root (2026-06-02)
+
+En PLUS des tokens habituels, le `:root` DOIT contenir les 3 variables suivantes qui pilotent l'adaptation chromatique du brand book et du design-system en aval :
+
+```css
+:root {
+  /* === MODE CHROMATIQUE DOMINANT (sanctuarisé 2026-06-02) === */
+  --mode-chromatique: light;         /* light | dark | mixed — voir procédure de détermination ci-dessous */
+  --brand-color-positive-bg: #XXXXXX; /* surface CLAIRE dominante */
+  --brand-color-dark-bg: #XXXXXX;     /* surface SOMBRE dominante */
+}
+```
+
+**Procédure de détermination du `--mode-chromatique`** :
+
+1. **Lire la section "Registre atmosphérique"** de la Direction visuelle du pitch (déjà consultée ci-dessus). Si elle dit explicitement "sombre/cinéma noir/nocturne" → `dark`. Si elle dit "clair/aéré/lumineux" → `light`. Sinon, passer à l'étape 2.
+
+2. **Calculer la luminance WCAG de la surface dominante** de la palette intégrée du pitch. La surface dominante est typiquement le fond principal des sections (`--color-surface` ou équivalent — la couleur la plus utilisée comme background dans tes choix CSS) :
+
+   ```python
+   def luminance(hex_color):
+       hex_color = hex_color.lstrip('#')
+       r, g, b = int(hex_color[0:2], 16) / 255, int(hex_color[2:4], 16) / 255, int(hex_color[4:6], 16) / 255
+       def lin(c):
+           return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+       return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+   ```
+
+   - luminance > 0.7 → `light` (cas SaaS clair, sites corporates aérés)
+   - luminance < 0.15 → `dark` (cas cinéma noir, luxe, marques nocturnes)
+   - 0.15 ≤ luminance ≤ 0.7 → `mixed` (tons moyens, sépia, marines, palette équilibrée)
+
+3. **Croiser avec le style retenu** :
+   - Si la fiche styliste retenue pointe un style intrinsèquement dark (Cinéma noir, Dark Editorial, Brutalisme nocturne) → forcer `dark`
+   - Si elle pointe un style intrinsèquement light (Minimalisme, Wellness, Pastel modern) → forcer `light`
+
+4. **Output** : écrire `--mode-chromatique: VALEUR;` dans le `:root` + définir `--brand-color-positive-bg` (surface claire dominante de la palette) et `--brand-color-dark-bg` (surface sombre dominante OU couleur de texte principale si la marque est intégralement claire).
+
+**Pourquoi ces variables** : le brand book (Phase 8) et le design-system (Phase 8b) LISENT ces 3 variables pour adapter leur mode chromatique aux marques light-dominant ou dark-dominant. Sans elles, ils retombent sur un fallback heuristique luminance (qui marche mais c'est une rustine). Avec elles présentes, le pipeline est cohérent bout en bout.
+
 ## SOCLE DE FINITION ÉLITE — Universel, quel que soit le curseur A
 
 {finition_elite_tier1}
@@ -315,8 +355,8 @@ Le curseur te dit À QUEL POINT tu pousses la composition. Le pitch te dit DANS 
 3. **Cursor Coherence** : Le traitement CSS correspond au curseur A (voir CALIBRAGE COMPOSITION PAR CURSEUR A). Si A=2, vérifier qu'il y a au moins une asymétrie, une surface expressive, et une technique non-standard. Si A=3, vérifier qu'au moins une convention de layout est cassée.
 4. **Brief Alignment** : Le contenu fictif est cohérent avec le brief de la marque
 5. **data-visual intact** : Si des images avec `data-visual` ont été fournies, vérifier que CHAQUE attribut `data-visual` est préservé intact dans le HTML final (nécessaire pour le swap haute résolution). Seuls les visuels FOURNIS PAR L'UTILISATEUR (base64 via `{visual_reference_block}`) peuvent être intégrés comme `<img>` — pas de photos ou illustrations générées.
-6. **Zero Dead Code** : Chaque `@keyframes` DOIT être utilisé par au moins un sélecteur. Chaque custom property définie dans `:root` DOIT être référencée au moins une fois dans le CSS. Zéro code mort — supprime tout ce qui n'est pas utilisé.
-7. **Couverture Custom Properties** : Le `:root` DOIT couvrir les 7 catégories (palette, typo, type-scale, spacing, radius, shadows, transitions). Le nombre de variables est libre — un concept minimaliste peut avoir 25 properties, un concept riche 60.
+6. **Zero Dead Code** : Chaque `@keyframes` DOIT être utilisé par au moins un sélecteur. Chaque custom property définie dans `:root` DOIT être référencée au moins une fois dans le CSS. Zéro code mort — supprime tout ce qui n'est pas utilisé. **Exception légitime** : les 3 variables chromatiques sanctuarisées (`--mode-chromatique`, `--brand-color-positive-bg`, `--brand-color-dark-bg`) peuvent ne pas être référencées par le CSS du style-tile lui-même — elles sont là pour les phases aval (brand book, design-system) qui les lisent. Pour passer le gate, les inclure dans une règle technique au moins (ex: `body { /* mode-chromatique: var(--mode-chromatique); */ }` en commentaire CSS ou usage symbolique).
+7. **Couverture Custom Properties** : Le `:root` DOIT couvrir les 7 catégories standards (palette, typo, type-scale, spacing, radius, shadows, transitions) + les **3 variables chromatiques sanctuarisées 2026-06-02** (`--mode-chromatique`, `--brand-color-positive-bg`, `--brand-color-dark-bg`) qui pilotent l'adaptation du brand book et du design-system aux marques light/dark. Le nombre de variables est libre — un concept minimaliste peut avoir 28 properties, un concept riche 63.
 8. **Surface Depth** : Les techniques de profondeur sont libres : mix-blend-mode, backdrop-filter, clip-path, mask-image, ombres colorées, textures, ou toute technique CSS moderne. Les Atmosphere Blocks DOIVENT avoir de la profondeur visuelle — pas de background plat (couleur unie sans overlay, gradient, ou texture).
 9. **CSS Moderne** : Le socle (oklch, @layer, @property, color-mix, text-wrap, clamp) est TOUJOURS obligatoire. Les techniques avancées : ≥4 obligatoires QUEL QUE SOIT le curseur A (c'est de la fabrication, pas de l'audace). Voir "TECHNIQUES CSS AVANCÉES — SOCLE COMMUN" ci-dessus. Consulte la **section 6 de html-showroom-spec.md** pour le catalogue complet.
 10. **Anti-Patterns Datés** : Vérifier que le fichier ne contient AUCUN pattern de la section "ANTI-PATTERNS DATÉS — BLACKLIST". En particulier : (a) AUCUN `transform: translateY()` dans un sélecteur `:hover` — quel que soit le curseur A. (b) AUCUNE animation `infinite` décorative (pulse, breathe, drift, flicker). (c) AUCUN `box-shadow: 0 0 Npx` (glow sans offset) — les ombres ont un offset vertical. (d) AUCUN séparateur décoratif entre sections (wave, zigzag, gradient line). (e) AUCUN `@keyframes` de type fade-up staggeré (translateY + opacity + delay manuel) — utiliser `@starting-style`.

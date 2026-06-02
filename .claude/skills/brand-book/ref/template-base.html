@@ -40,13 +40,13 @@
        ========================================================= */
     :root {
       /* --- Palette (9+ couleurs en oklch) --- */
-      --brand-color-primary:        {{COLOR_PRIMARY}};        /* ex: oklch(0.55 0.18 250) */
-      --brand-color-secondary:      {{COLOR_SECONDARY}};
-      --brand-color-accent:         {{COLOR_ACCENT}};         /* couleur signature, ex: Foyer du Phare */
-      --brand-color-accent-2:       {{COLOR_ACCENT_2}};       /* utilisée pour les gradients section 08 */
-      --brand-color-positive-bg:    {{COLOR_POSITIVE_BG}};    /* Brume de Plan — fond clair sections positives */
+      --brand-color-primary:        {{COLOR_PRIMARY}};        /* couleur primaire de la marque */
+      --brand-color-secondary:      {{COLOR_SECONDARY}};      /* couleur secondaire de la marque */
+      --brand-color-accent:         {{COLOR_ACCENT}};         /* couleur d'accent / signature */
+      --brand-color-accent-2:       {{COLOR_ACCENT_2}};       /* variante secondaire de l'accent (gradients section 08) */
+      --brand-color-positive-bg:    {{COLOR_POSITIVE_BG}};    /* surface claire dominante — fond des sections positives */
       --brand-color-positive-text:  {{COLOR_POSITIVE_TEXT}};  /* texte principal sur fond clair */
-      --brand-color-dark-bg:        {{COLOR_DARK_BG}};        /* Nuit d'Indigo — fond Dark Cinema */
+      --brand-color-dark-bg:        {{COLOR_DARK_BG}};        /* surface sombre dominante — fond des sections Dark Cinema */
       --brand-color-dark-text:      {{COLOR_DARK_TEXT}};      /* texte principal sur fond sombre */
       --brand-color-success:        {{COLOR_SUCCESS}};
       --brand-color-warning:        {{COLOR_WARNING}};
@@ -63,17 +63,19 @@
       --brand-radius-md:            {{RADIUS_MD}};            /* 8px */
       --brand-radius-lg:            {{RADIUS_LG}};            /* 16px */
 
-      /* --- Aliases pour Identity Card v4 (bento intro "Le pack en une vue")
-             SANCTUARISÉ 27 mai 2026 (v4). Ces alias permettent au bloc bento
-             .bv4-* de référencer les couleurs/fontes de la marque sous
-             des noms sémantiques génériques. Substituer avec les vraies
-             valeurs marque au moment de la génération. --- */
-      --color-foyer:        {{COLOR_FOYER}};         /* ex: var(--color-beacon) */
-      --color-foyer-warm:   {{COLOR_FOYER_WARM}};    /* ex: var(--color-beacon-warm) */
-      --color-mist:         {{COLOR_MIST}};          /* ex: var(--color-chart-mist) */
-      --color-mist-cool:    {{COLOR_MIST_COOL}};     /* ex: var(--color-text-primary) */
-      --color-marine-cliff: {{COLOR_MARINE_CLIFF}};  /* ex: var(--brand-color-accent-2) — détail froid */
-      --color-night-clear:  {{COLOR_NIGHT_CLEAR}};   /* ex: lighten(--brand-color-dark-bg, 5%) — fond surface (fallback CSS: #142133) */
+      /* --- Aliases universels par rôle fonctionnel pour Identity Card v4 bento (refondu 2026-06-02) ---
+             Ces alias définissent les rôles fonctionnels universels utilisés par les blocs `.bv4-*`
+             du bento Identity Card. Chaque alias prend sa valeur depuis le slot Mustache correspondant,
+             qui est rempli par le sub-agent à partir des couleurs RÉELLES de la marque (pas Camille).
+             Plus aucun nom poétique calibré sur Camille (foyer/mist/marine/nuit).
+             SANCTUARISÉ 2026-06-02 (refactor universalité). --- */
+      --bb-color-accent:                {{COLOR_FOYER}};          /* Accent primaire de la marque */
+      --bb-color-accent-warm:           {{COLOR_FOYER_WARM}};     /* Variante chaude/secondaire de l'accent (gradients bento) */
+      --bb-color-surface-light:         {{COLOR_MIST}};           /* Surface claire dominante (cartes typo/manifesto) */
+      --bb-color-text-on-surface:       {{COLOR_MIST_COOL}};      /* Texte principal sur surface claire */
+      --bb-color-detail-cool:           {{COLOR_MARINE_CLIFF}};   /* Détail froid (séparateurs, borders, accents minoritaires) */
+      --bb-color-surface-elevated-dark: {{COLOR_NIGHT_CLEAR}};    /* Surface élevée sur fond dark (Nuit Claire, lighter que dark-bg de ~5%) */
+
       --font-display:       var(--brand-display);
       --font-mono:          var(--brand-body);
       --radius:             var(--brand-radius-xs);
@@ -88,19 +90,28 @@
       /* NOTE : `--color-text-primary` PAS redéfinie ici — laissée à batch2 (qui
          l'utilise pour styler les .lockup__mark en couleur claire sur ses fonds
          sombres). La redéfinir en clair-sur-clair casse les wordmarks batch2. */
-      --color-beacon:               var(--brand-color-accent);
-      --color-beacon-warm:          var(--brand-color-accent-2);
-      --color-chart-mist:           color-mix(in srgb, var(--brand-color-positive-bg) 92%, var(--brand-color-positive-text));
+      /* Aliases legacy --color-beacon / --color-beacon-warm / --color-chart-mist supprimés 2026-06-02
+         (dead code, jamais référencés dans les sélecteurs CSS — refactor universalité). */
 
       /* === MODE CHROMATIQUE ADAPTATIF (sanctuarisé 2026-06-02) ===
-         Variables qui pilotent l'apparence des sections "immersives" (Cover, Closing, Photo).
-         Par défaut = comportement legacy Camille (Dark Cinema natif).
-         Override via [data-mode="light"] plus bas.
+         Variables qui pilotent l'apparence des sections "immersives" (Cover, Closing, Photo)
+         et des blocs du bento Identity Card. Par défaut = Dark Cinema (compatible marques dark-dominant).
+         Override via [data-mode="light"] plus bas pour marques light-dominant.
        */
       --bk-immersive-bg:          var(--brand-color-dark-bg);    /* fond des sections immersives */
       --bk-immersive-text:        #fff;                          /* texte sur fond immersif */
       --bk-cover-fallback-bg:     var(--brand-color-dark-bg);    /* fallback cover sans image */
       --bk-closing-fallback-bg:   var(--brand-color-dark-bg);    /* fallback closing sans image */
+
+      /* === BENTO IDENTITY CARD — backgrounds paramétrables par bloc (refondu 2026-06-02) ===
+         Chaque bloc du bento (manifesto/icongrid/typo/dataviz) lit une variable dédiée
+         qui a une valeur par défaut FONCTIONNELLE (rôle), pas un nom poétique Camille.
+         Le sub-agent peut overrider via inline style si besoin de personnalisation par marque.
+       */
+      --bb-bento-manifesto-bg: var(--bb-color-surface-light);  /* manifesto sur surface claire par défaut */
+      --bb-bento-icongrid-bg:  var(--bb-color-accent);         /* icongrid sur accent de la marque par défaut */
+      --bb-bento-typo-bg:      var(--bb-color-surface-light);  /* typo specimens sur surface claire par défaut */
+      --bb-bento-dataviz-bg:   var(--brand-color-dark-bg);     /* dataviz sur fond dark par défaut (lisibilité barres) */
 
       /* Spacing scale */
       --space-xs:  8px;
@@ -595,7 +606,7 @@
       font-size: 10px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--color-foyer);
+      color: var(--bb-color-accent);
       opacity: 0.85;
       position: relative;
       z-index: 2;
@@ -614,7 +625,7 @@
       letter-spacing: -0.02em;
       line-height: 1;
     }
-    .bv4-wordmark__text .accent { color: var(--color-foyer); }
+    .bv4-wordmark__text .accent { color: var(--bb-color-accent); }
     .bv4-wordmark__signature {
       font-family: var(--font-mono);
       font-size: 10px;
@@ -633,9 +644,9 @@
       grid-column: 2 / span 2;
       grid-row: 1 / span 2;
       background:
-        radial-gradient(ellipse 600px 360px at 100% 0%, rgba(232,146,72,0.10) 0%, rgba(232,146,72,0.04) 30%, transparent 65%),
-        radial-gradient(ellipse 480px 320px at 0% 100%, rgba(42,77,94,0.06) 0%, transparent 55%),
-        var(--color-mist);
+        radial-gradient(ellipse 600px 360px at 100% 0%, color-mix(in srgb, var(--bb-color-accent) 10%, transparent) 0%, color-mix(in srgb, var(--bb-color-accent) 4%, transparent) 30%, transparent 65%),
+        radial-gradient(ellipse 480px 320px at 0% 100%, color-mix(in srgb, var(--bb-color-detail-cool) 6%, transparent) 0%, transparent 55%),
+        var(--bb-bento-manifesto-bg);
       padding: 36px 44px 32px;
       display: flex;
       flex-direction: column;
@@ -658,7 +669,7 @@
       color: var(--brand-color-dark-bg);
       margin: 0;
     }
-    .bv4-manifesto__text .dot { color: var(--color-foyer); }
+    .bv4-manifesto__text .dot { color: var(--bb-color-accent); }
     .bv4-manifesto__sub {
       font-family: var(--font-mono);
       font-size: 13px;
@@ -675,8 +686,8 @@
       grid-column: 2;
       grid-row: 3;
       background:
-        radial-gradient(ellipse 240px 140px at 50% 50%, var(--color-foyer-warm) 0%, var(--color-foyer) 60%, rgba(232,146,72,0.92) 100%),
-        var(--color-foyer);
+        radial-gradient(ellipse 240px 140px at 50% 50%, var(--bb-color-accent-warm) 0%, var(--bb-color-accent) 60%, var(--bb-color-accent) 100%),
+        var(--bb-bento-icongrid-bg);
       padding: 16px 22px 14px;
       display: flex;
       flex-direction: column;
@@ -718,8 +729,8 @@
       grid-column: 2;
       grid-row: 4;
       background:
-        radial-gradient(ellipse 320px 140px at 0% 0%, rgba(42,77,94,0.07) 0%, transparent 55%),
-        var(--color-mist);
+        radial-gradient(ellipse 320px 140px at 0% 0%, color-mix(in srgb, var(--bb-color-detail-cool) 7%, transparent) 0%, transparent 55%),
+        var(--bb-bento-typo-bg);
       padding: 14px 22px 12px;
       display: flex;
       flex-direction: column;
@@ -781,8 +792,8 @@
       grid-column: 2;
       grid-row: 5 / span 2;
       background:
-        radial-gradient(ellipse 320px 220px at 100% 100%, rgba(232,146,72,0.10) 0%, transparent 55%),
-        var(--brand-color-dark-bg);
+        radial-gradient(ellipse 320px 220px at 100% 100%, color-mix(in srgb, var(--bb-color-accent) 10%, transparent) 0%, transparent 55%),
+        var(--bb-bento-dataviz-bg);
       padding: 20px 24px 18px;
       display: flex;
       flex-direction: column;
@@ -802,11 +813,11 @@
     .bv4-dataviz__viz svg { width: 100%; height: 100%; display: block; }
     .bv4-dataviz .viz-gridline { stroke: rgba(255,255,255,0.08); stroke-width: 1; stroke-dasharray: 2 4; }
     .bv4-dataviz .viz-axis     { stroke: rgba(255,255,255,0.25); stroke-width: 1; }
-    .bv4-dataviz .viz-baseline { stroke: var(--color-foyer); stroke-width: 1; opacity: 0.7; }
+    .bv4-dataviz .viz-baseline { stroke: var(--bb-color-accent); stroke-width: 1; opacity: 0.7; }
     .bv4-dataviz .viz-bar      { fill: rgba(232,146,72,0.55); }
-    .bv4-dataviz .viz-bar.is-active { fill: var(--color-foyer); }
+    .bv4-dataviz .viz-bar.is-active { fill: var(--bb-color-accent); }
     .bv4-dataviz .viz-label-axis { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.12em; fill: rgba(255,255,255,0.45); }
-    .bv4-dataviz .viz-label-axis.is-on { fill: var(--color-foyer); }
+    .bv4-dataviz .viz-label-axis.is-on { fill: var(--bb-color-accent); }
 
     /* PALETTE ÉTENDUE 6 COULEURS — col 3, rows 3-6 (480px) — grille 2 cols × 3 rows */
     .bv4-palette {
@@ -853,42 +864,42 @@
       font-size: 11px;
       letter-spacing: 0.12em;
     }
-    .bv4-palette__bloc--nuit {
-      background:
-        radial-gradient(ellipse 260px 200px at 0% 100%, rgba(42,77,94,0.55) 0%, transparent 55%),
-        var(--brand-color-dark-bg);
-      color: #fff;
+    /* =========================================================
+       PALETTE 6 BLOCS — UNIVERSEL (refondu 2026-06-02)
+
+       Les 6 blocs palette utilisent désormais INLINE STYLE pour leur background
+       et leur color, fournis par le sub-agent du brand-book à partir des couleurs
+       RÉELLES de la marque. Plus de classes nominées --nuit/night/marine/mist/foyer/foyer-warm
+       qui imposaient un mapping Camille par position.
+
+       Pattern dans le HTML :
+         <div class="bv4-palette__bloc" style="background-color: {{COLOR_N_HEX}}; color: {{COLOR_N_TEXT}};">
+           <div class="bv4-palette__bloc-head">
+             <span class="bv4-palette__bloc-role">{{COLOR_N_ROLE}}</span>
+             <span class="bv4-palette__bloc-name">{{COLOR_N_NAME}}</span>
+           </div>
+           <div class="bv4-palette__bloc-foot">{{COLOR_N_HEX}}</div>
+         </div>
+
+       {{COLOR_N_TEXT}} est calculé par le sub-agent via la luminance WCAG du fond :
+       - luminance > 0.5 → texte sombre (--brand-color-positive-text ou #1B1B1B)
+       - luminance < 0.5 → texte clair (#fff)
+
+       Ambiance subtile (radial gradient) ajoutée par ::after pour ne pas écraser
+       l'inline style background-color du bloc.
+       ========================================================= */
+
+    .bv4-palette__bloc { position: relative; isolation: isolate; }
+    .bv4-palette__bloc::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 260px 200px at 50% 100%, rgba(255,255,255,0.10) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
     }
-    .bv4-palette__bloc--night {
-      background:
-        radial-gradient(ellipse 260px 200px at 100% 0%, rgba(42,77,94,0.40) 0%, transparent 55%),
-        var(--color-night-clear, #142133);
-      color: #fff;
-    }
-    .bv4-palette__bloc--marine {
-      background:
-        radial-gradient(ellipse 260px 200px at 50% 100%, rgba(232,146,72,0.10) 0%, transparent 60%),
-        var(--color-marine-cliff);
-      color: #fff;
-    }
-    .bv4-palette__bloc--mist {
-      background:
-        radial-gradient(ellipse 260px 200px at 50% 50%, rgba(255,255,255,0.7) 0%, var(--color-mist-cool) 60%),
-        var(--color-mist-cool);
-      color: var(--brand-color-dark-bg);
-    }
-    .bv4-palette__bloc--foyer {
-      background:
-        radial-gradient(ellipse 260px 200px at 0% 100%, rgba(242,166,99,0.55) 0%, transparent 60%),
-        var(--color-foyer);
-      color: var(--brand-color-dark-bg);
-    }
-    .bv4-palette__bloc--foyer-warm {
-      background:
-        radial-gradient(ellipse 260px 200px at 100% 100%, rgba(255,200,140,0.55) 0%, transparent 60%),
-        var(--color-foyer-warm);
-      color: var(--brand-color-dark-bg);
-    }
+    .bv4-palette__bloc-head,
+    .bv4-palette__bloc-foot { position: relative; z-index: 2; }
 
     /* =========================================================
        07a WEB — header contenu, stage en FULLBLEED viewport (touche bords)
@@ -1045,7 +1056,7 @@
        - Section transparente (pas de fond global)
        - 2 cellules fullbleed strict (gap: 0, pas de max-width, pas de padding latéral)
        - Cellule LinkedIn : fond beige clair chaud DISTINCT du --brand-color-positive-bg
-       - Cellule X : fond Nuit = --brand-color-dark-bg
+       - Cellule X : fond surface sombre = --brand-color-dark-bg
        - Mockups 1000×1000 capturés via Playwright (LinkedIn omit_background, X non)
        - Wrapper mockup neutralisé côté LinkedIn (la card a ses styles natifs)
        ========================================================= */
@@ -1098,7 +1109,7 @@
       justify-content: center;
       min-height: 720px;
     }
-    /* Cellule LinkedIn : fond beige clair chaud, DISTINCT du fond Brume
+    /* Cellule LinkedIn : fond beige clair chaud, DISTINCT du fond surface claire
        (--brand-color-positive-bg) du body. À ajuster par marque pour
        garantir un contraste visuel. */
     .s08c-cell--linkedin { background: {{COLOR_CELL_LINKEDIN}}; }
@@ -1238,7 +1249,7 @@
     .bk-icons-treatments:empty,
     .bk-icons-mockup:empty { display: none; }
 
-    /* Section Identité reste en fond CLAIR (Brume) — c'est sur fond clair que
+    /* Section Identité reste en fond CLAIR (surface claire) — c'est sur fond clair que
        les lockups sortent le mieux (typo en noir/sombre, accent foyer).
        Les variantes ctx--dark / mono / oled ont leur fond batch2 sombre qui
        contraste naturellement avec le fond clair de la section. Seul
@@ -1344,7 +1355,7 @@
       color: var(--brand-color-positive-text) !important;
     }
 
-    /* RÈGLE 11 §CONTRASTE — Section Identité en fond clair (Brume) :
+    /* RÈGLE 11 §CONTRASTE — Section Identité en fond clair (surface claire) :
        seules les cards qui ont aussi un fond clair (ctx--light, ou lockups
        sans fond batch2 sur la même nuance) risquent le "fond sur fond".
        Bordure subtile uniquement sur ces cas-là, pour matérialiser sans
@@ -1631,45 +1642,47 @@
         </div>
 
         <!-- PALETTE 6 COULEURS (col 3, rows 3-6) — grille 2 cols × 3 rows
-             6 blocs nommés par rôle (fond profond, fond surface, détail froid,
-             surface claire, accent signal, accent chaud). -->
+             6 blocs paramétrables par rôle fonctionnel UNIVERSEL (refondu 2026-06-02) :
+             Primaire / Secondaire / Accent / Surface / Texte / Bord (ou variante adaptée à la marque).
+             Background + color de CHAQUE bloc fournis via INLINE STYLE par le sub-agent
+             (couleurs RÉELLES de la marque + texte calculé par luminance WCAG). -->
         <div class="bv4-palette">
-          <div class="bv4-palette__bloc bv4-palette__bloc--nuit">
+          <div class="bv4-palette__bloc" style="background-color: {{COLOR_1_HEX}}; color: {{COLOR_1_TEXT}};">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_1_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_1_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_1_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--night">
+          <div class="bv4-palette__bloc" style="background-color: {{COLOR_2_HEX}}; color: {{COLOR_2_TEXT}};">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_2_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_2_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_2_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--marine">
+          <div class="bv4-palette__bloc" style="background-color: {{COLOR_3_HEX}}; color: {{COLOR_3_TEXT}};">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_3_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_3_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_3_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--mist">
+          <div class="bv4-palette__bloc" style="background-color: {{COLOR_4_HEX}}; color: {{COLOR_4_TEXT}};">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_4_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_4_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_4_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--foyer">
+          <div class="bv4-palette__bloc" style="background-color: {{COLOR_5_HEX}}; color: {{COLOR_5_TEXT}};">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_5_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_5_NAME}}</span>
             </div>
             <div class="bv4-palette__bloc-foot">{{COLOR_5_HEX}}</div>
           </div>
-          <div class="bv4-palette__bloc bv4-palette__bloc--foyer-warm">
+          <div class="bv4-palette__bloc" style="background-color: {{COLOR_6_HEX}}; color: {{COLOR_6_TEXT}};">
             <div class="bv4-palette__bloc-head">
               <span class="bv4-palette__bloc-role">{{COLOR_6_ROLE}}</span>
               <span class="bv4-palette__bloc-name">{{COLOR_6_NAME}}</span>
@@ -1961,7 +1974,7 @@
         </div>
       </div>
 
-      <!-- X — fond Nuit, mockup quasi-carré -->
+      <!-- X — fond surface sombre, mockup quasi-carré -->
       <div class="s08c-cell s08c-cell--x">
         <div class="s08c-inner">
           <figure class="s08c-mockup">
