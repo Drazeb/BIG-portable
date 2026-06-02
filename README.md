@@ -1,5 +1,7 @@
 # Brand Identity Generator (BIG)
 
+![BIG — brand pack overview: brand book, design system, palette, iconography](docs/assets/cover.webp)
+
 > **BIG** is a 12-step, AI-augmented and AI-accelerated Claude Code process that produces a complete, agency-grade brand identity from a company's strategic brief. The final deliverable is a pack including a brand book, a design system, a token catalog, a sign system (logo, iconography, data viz), and a photography & illustration direction.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
