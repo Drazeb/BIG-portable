@@ -54,6 +54,118 @@ Ce dossier DOIT contenir au minimum :
 
 ---
 
+## ⚠ MODE D — Aspiration de Brand (sanctuarisé 2026-06-02)
+
+Le skill brand-book peut être invoqué sur un pack produit en **mode aspiration** (Mode D du pipeline BIG). En mode D, la marque a été aspirée d'un site existant — il n'y a **PAS de pitch créatif**, donc plusieurs sections narratives ne peuvent pas être générées sans inventer des histoires que la marque ne reconnaîtrait pas.
+
+### Détection automatique du mode D
+
+À l'Étape 0 (identification de la session), vérifier :
+- `{brand}-extracted-dna.md` présent ➜ probable mode D
+- `{brand}-pitch.md` absent ➜ confirme mode D
+- Si les deux conditions sont vraies : `MODE_D = true`. Sinon : `MODE_D = false` (mode A/B/C standard).
+
+Logger explicitement au démarrage : `"Mode détecté : {A/B/C standard | D Aspiration}"`.
+
+### Sections SKIPPÉES en mode D
+
+| Section | Raison du skip | Alternative |
+|---------|---------------|-------------|
+| **01 BIG IDEA** | Section narrative qui raconte la métaphore fondatrice du concept. Sans pitch créatif, pas de Big Idea à raconter (la marque connaît sa Big Idea mieux que la machine). | Section retirée du sommaire et du HTML final. |
+| **02 CONCEPT** | Section narrative qui développe le concept et la tension résolue. Sans pitch, rien à narrer. | Section retirée. |
+| **07c Réseaux sociaux** | Mockups LinkedIn + X qui dépendent à la fois du tagline/about extrait du pitch ET des visuels de profil. En mode aspiration, les vrais comptes sociaux de la marque ont déjà leur identité réelle, on ne va pas la dupliquer en mockup. | Section retirée. Pas de capture mockup. |
+
+### Sections DÉGRADÉES en mode D
+
+| Section | Adaptation |
+|---------|-----------|
+| **00 INTRO Identity Card** | Le bento Identity Card est composé partiellement : <br>• `WORDMARK_*` ✅ généré (nom marque + overline générique) <br>• `BRAND_SIGNATURE_COORDS` / `_CADENCE` ⚠ remplacés par méta-data du DNA (ex: secteur + année si dispo dans DNA, sinon `"—"` / `"—"`) <br>• `MANIFESTO_LINE1` / `_LINE2` / `_SUB` ❌ skippés — le bloc manifesto du bento devient un bloc visuel placeholder (1 ligne courte type "Identité aspirée du site" + 1 ligne mono `"Mode D — Aspiration {date}"`) <br>• `IDENTITY_CARD_ICONS_4` ✅ extraites du batch2 <br>• `DATAVIZ_SIGNATURE_SVG` ✅ extraite du batch2 <br>• 6 jeux palette `COLOR_N_*` ✅ depuis DNA |
+| **07a Web** | ✅ Inchangée (capture du style-tile). |
+| **07b Pitch Deck** | ✅ **Génération possible** via construction préalable d'un **pitch synthétique Mode D** (cf. sous-section "Construction du pitch synthétique pour 07b" ci-dessous). Le mini-deck SPG produit ses 6 slides normalement — l'analyse visuelle (Étape 2 SPG) et les 6 archétypes (Étape 3 SPG) s'appuient sur le style-tile/batch2/batch3 et ne consomment pas le pitch. Seule l'Étape 4 SPG (content-mapper) utilise le pitch + design-specs, et la voice principale est dans le design-specs §01.4 (rempli en mode D par Phase 7). Le pitch synthétique Mode D fournit le complément "concept + vocabulaire signature" sans invention créative. |
+| **07c Réseaux sociaux** | ❌ Skip (voir section SKIPPÉES). |
+
+### Construction du pitch synthétique pour 07b (Mode D uniquement)
+
+À l'Étape 2d (avant d'invoquer le mini-deck SPG), construire un fichier temporaire `{brand}-pitch.md` dans `{pack_path}/` (ou un alias) au format suivant, **pure restitution depuis le DNA, AUCUNE invention narrative** :
+
+```
+# {brand} — Synthèse Mode D pour Pitch Deck
+
+**Mode** : Aspiration d'une brand existante (pas de pitch créatif)
+
+## Concept
+
+{nom de la marque} est {extrait section 6.3 du DNA — personnalité de marque en 1 phrase synthétique}.
+
+{1 paragraphe descriptif composé depuis sections 5.1 (ton de voix) et 5.4 (logo style) du DNA}
+
+## Voice
+
+{copie intégrale de la section 5.1 du DNA — Ton de voix : registre, exemples headlines, vocabulaire, personnalité}
+
+## Vocabulaire signature
+
+**Preferred words** : {extraits du DNA section 5.1 vocabulaire dominant — liste mots-clés}
+**Forbidden words** : (à laisser vide ou aligner sur design-specs §01.4 si présent)
+
+## Tonalité
+
+{extrait section 5.1 DNA — phrases caractéristiques + tonalité}
+```
+
+Ce fichier est **temporaire** (préfixe `.tmp-` recommandé : `{brand}-pitch.md.tmp-mode-d`) — il ne va PAS dans le pack final. Il sert uniquement à alimenter le mini-deck SPG en Étape 2d. Il peut être supprimé après génération des 6 PNG. **Alternative** : si SPG accepte un argument `pitch_override_content`, passer directement le contenu en mémoire sans créer de fichier.
+
+### Sections INCHANGÉES en mode D (génération normale)
+
+- Cover (painterly)
+- Sommaire (renuméroté pour refléter les sections 01, 02, 07c skippées)
+- **03 IDENTITÉ** (logo, lockups depuis batch2)
+- **04 PALETTE** (depuis DNA + style-tile)
+- **05 TYPOGRAPHIE** (depuis DNA + style-tile)
+- **06 SYSTÈME** (depuis batch2 — icônes, UI, charts)
+- **07a APPLICATIONS Web** (capture style-tile)
+- **07b APPLICATIONS Pitch Deck** (en mode dégradé — voir section DÉGRADÉES + pitch synthétique Mode D)
+- **08 PHOTO** (depuis batch3 + visual-final/)
+- Closing (statement visuel)
+
+### Variables Mustache en mode D
+
+Toutes les variables relatives aux sections skippées doivent être initialisées à des valeurs vides ou des placeholders explicites pour éviter les substitutions parasites :
+
+```
+BIG_IDEA_H1            = ""    (section skippée)
+BIG_IDEA_SUBTITLE      = ""
+BIG_IDEA_P1/2/3        = ""
+CONCEPT_*              = ""    (section skippée)
+PITCH_DECK_TITLE       = (rédiger depuis pitch synthétique Mode D — ex: "Pitch deck — {brand}")
+PITCH_DECK_SUBTITLE    = (rédiger depuis pitch synthétique Mode D — ex: "6 slides type B2B générées depuis l'identité aspirée")
+MANIFESTO_LINE1        = "Identité aspirée du site"
+MANIFESTO_LINE2        = ""
+MANIFESTO_SUB          = "Mode D — Aspiration {date_aspiration}"
+BRAND_SIGNATURE_COORDS = (méta DNA si dispo, sinon "—")
+BRAND_SIGNATURE_CADENCE = (méta DNA si dispo, sinon "—")
+TAGLINE                = ""    (utilisé par 07c — section skippée)
+```
+
+### Skip technique des étapes
+
+| Étape SKILL.md | Action en mode D |
+|----------------|-----------------|
+| **Étape 1** | Lire DNA au lieu du pitch. Substituer le contenu pitch par une mini-synthèse Mode D (même format que celui produit en Phase 6A — palette dominante, typo, atomes, personnalité 5.1, style photo 5.2, style icônes 5.3) |
+| **Étape 2b** Mockup LinkedIn | **SKIP** (07c skippée) |
+| **Étape 2c** Mockup X | **SKIP** (07c skippée) |
+| **Étape 2d** Mini-deck pitch SPG | **EXÉCUTÉ avec adaptation** : avant l'invocation SPG, construire un fichier `{brand}-pitch.md` synthétique temporaire (cf. sous-section "Construction du pitch synthétique pour 07b" ci-dessus). Puis lancer SPG normalement (Mode A pipeline OU Mode B standalone selon contexte). SPG produira ses 6 PNG normalement — l'analyse visuelle Sub0-A consomme uniquement les HTML, le content-mapper consomme le pitch synthétique + design-specs §01.4. |
+| **Étape 2e** Composition Identity Card | Composer en mode dégradé (cf. tableau "Sections DÉGRADÉES" ci-dessus) |
+| **Étape 3** Sub-agent générateur | Le prompt du sub-agent reçoit en plus de ses inputs habituels la variable `{MODE_D}` = true. Le sub-agent skippe les sections 01, 02, 07c et produit un sommaire renuméroté (07b restera présente avec les 6 PNG produites par SPG). |
+| **Étape 4** template-vars.json | Inclure toutes les variables avec leurs valeurs vides/placeholders pour mode D — le template gérera le skip via Mustache conditionnel. PITCH_DECK_TITLE et PITCH_DECK_SUBTITLE sont rédigées depuis le pitch synthétique. |
+| **Étape 4bis** Quality gate | Adapter — ne pas alerter sur l'absence des variables des sections skippées en mode D |
+
+### Pourquoi cette approche
+
+**Décision sanctuarisée avec Charles 2026-06-02** : en mode aspiration, la marque connaît son identité mieux que la machine. Inventer une métaphore, un Big Idea, un Concept narratif serait raconter une histoire que la marque ne reconnaîtrait pas. Mieux vaut un brand book **plus court mais 100% fidèle** à la marque réelle (style Carbon/Atlassian sur la partie visuelle, sans la couche éditoriale du concept). Le user qui aspire sa propre marque cherche un livrable pour ses **assets marketing**, pas une re-explication de qui il est.
+
+---
+
 ## OUTPUTS
 
 Dans `.claude/skills/brand-book/outputs/{brand}-test-v{N}/` :
@@ -118,13 +230,13 @@ Vérifier l'existence du dossier source et des fichiers attendus. Lister explici
 
 Lire dans l'ordre :
 1. `{brand}-design-specs.md` (intégralement — c'est la source de vérité)
-2. `{brand}-pitch.md` (intégralement)
+2. `{brand}-pitch.md` (intégralement) — ⚠ **Mode D** : ce fichier n'existe pas. Lire `{brand}-extracted-dna.md` à la place et noter les sections 5.1 (ton de voix), 5.2 (style photo), 5.3 (style icônes). Ne PAS chercher à extraire Big Idea / Concept / Manifesto — ces variables resteront vides (voir section "MODE D — Aspiration de Brand" ci-dessus).
 3. `{brand}-style-tile.html` (extraire le bloc `:root` et la liste des Google Fonts importés)
 4. `{brand}-batch2.html` (extraire les lockups, icônes, composants — pas réécrire, citer)
 5. `{brand}-batch3.html` (extraire les exemples de prompting MJ et les références photo)
 6. `ls visual-final/` (lister les visuels disponibles avec leurs noms canoniques)
 
-À l'issue de cette étape, tu as en mémoire : palette oklch complète, fonts, radius, wordmark, big idea, concept, manifesto (pour bento Identity Card), lockups, icônes canoniques (4 sélectionnées pour le bento + le set complet pour 06 Système), prompts MJ, et le mapping des visuels finaux.
+À l'issue de cette étape, tu as en mémoire : palette oklch complète, fonts, radius, wordmark, ~~big idea, concept, manifesto~~ (en mode A/B/C uniquement — en mode D ces 3 variables sont vides), lockups, icônes canoniques (4 sélectionnées pour le bento + le set complet pour 06 Système), prompts MJ (en mode A/B/C — en mode D ces prompts sont remplacés par les `inputs/visuals/` aspirés s'ils existent), et le mapping des visuels finaux.
 
 ### Étape 2 — Génération des assets sections 07 + composition Identity Card
 

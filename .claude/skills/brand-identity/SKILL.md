@@ -25,7 +25,7 @@ Tu es l'orchestrateur du système **Brand Identity Generator (BIG)**. Tu guides 
 3. **D3 Validation** — Présentation DNA, corrections utilisateur, gap-filling
 4. **D4 Style-Tile** — 1 style-tile fidèle aux tokens extraits
 5. **D5 Validation** — Vérification fidélité dans le navigateur
-→ Puis convergence vers **Batches 2 & 3** + **Zone 2** + **Packaging** (identique au mode création)
+→ Puis convergence vers **Batches 2 & 3** + **Zone 2 (Design Specs)** + **Phase 8 (Brand Book, optionnelle)** + **Phase 8b (Design System, optionnelle)** + **Packaging** (identique au mode création — les skills /brand-book et /design-system détectent automatiquement le mode D et adaptent leur output)
 
 ## RÔLE DE L'ORCHESTRATEUR
 
@@ -685,10 +685,89 @@ Le style-tile validé contient un `:root` au même format que le mode créatif. 
   - Mode créatif : `{skill_dir}/outputs/{session_dir}/{brand}-style-tile-concept-{chosen_concept_number}.html`
   - Mode D : `{skill_dir}/outputs/{session_dir}/{brand}-style-tile.html`
 
+**Adaptation `{pitch_extract}` pour le mode D** :
+En mode D, le fichier `{brand}-pitch.md` n'existe pas. L'orchestrateur construit à la place une **mini-synthèse Mode D** (~20 lignes) à partir du `{brand}-extracted-dna.md` validé en D3. Pure restitution structurée, **AUCUNE invention narrative**.
+
+Procédure (à exécuter en remplacement de la section "Extraction du concept du pitch" en Phase 6A) :
+
+1. Read le fichier `{skill_dir}/outputs/{session_dir}/{brand}-extracted-dna.md`
+2. Composer `{pitch_extract}` au format suivant :
+
+```
+# Synthèse Mode D — {brand}
+
+**Mode** : Aspiration d'une brand existante (pas de pitch créatif)
+**Curseurs inférés** : A={cursor_a} ({cursor_a_label}) × B={cursor_b} ({cursor_b_label})
+
+## Direction visuelle aspirée
+
+Palette dominante : {extraction synthétique de la section 1 du DNA — 1-2 lignes, primaires + neutres principales en HEX, sans data-viz}
+Typographie : {extraction synthétique de la section 2 du DNA — display + body + atmosphère}
+Atomes : {extraction synthétique de la section 3 du DNA — radius dominant, ombres, transitions}
+
+## Personnalité de marque aspirée
+
+{copie intégrale de la section 5.1 du DNA — Ton de voix — registre + vocabulaire + personnalité}
+
+## Style visuel aspiré
+
+{copie intégrale de la section 5.2 du DNA — Style photographique}
+{copie intégrale de la section 5.3 du DNA — Style d'icônes}
+```
+
+3. Stocker comme `{pitch_extract}` — utilisé identiquement par Phase 6A-1 et Phase 6B.
+
+**Adaptation `{ventre_mou_section}` pour le mode D** :
+En mode D, pas de scoping → pas de fichier `{brand}-scoping.md` → pas de Ventre Mou sectoriel. Substituer par le texte fixe :
+
+```
+## ASPIRATION MODE D — PAS DE VENTRE MOU SECTORIEL APPLICABLE
+
+Le mode aspiration restitue fidèlement les tokens existants de la marque.
+Le principe "éviter les clichés sectoriels" ne s'applique pas — la marque
+a déjà fait ses choix créatifs (palette, typo, style visuel), et le pipeline
+les respecte intégralement. Pas d'anti-pattern à éviter ici.
+```
+
+Cette substitution s'applique à `{ventre_mou_section}` ET `{ventre_mou_visuel_section}` (utilisée dans Phase 6B pour le bloc Direction Visuelle).
+
+**Adaptation Étape 6A-0 (Router Famille d'Icônes) pour le mode D** :
+En mode D, le router 6A-0 est **entièrement bypassé**. Raison : le router lit pitch + fiche styliste + brief pour choisir UNE famille parmi 8 — aucun de ces 3 inputs n'existe en mode D. De plus, en mode D, les icônes sont aspirées du site réel de la marque (cf. Bloc 3 du chantier mode D revival) — le choix d'une famille générative est non pertinent.
+
+**Stratégie Bloc 1 (en attendant l'aspiration des icônes du Bloc 3)** :
+- **Ne PAS lancer le subagent router 6A-0**
+- Substituer les 3 variables exportées par défaut :
+  - `{icon_family_id}` = `01-pictogramme-geo` (famille la plus neutre du catalogue, fait office de placeholder)
+  - `{icon_family_label}` = `Icônes aspirées (placeholder pictogramme géo en attendant Bloc 3)`
+  - `{router_justification}` = `Mode aspiration : les icônes seront aspirées du site réel de la marque dans une étape ultérieure. En attendant, un set d'icônes pictogramme géométrique neutre est généré comme placeholder.`
+- Phase 6A-1 (Batch 2) tourne normalement avec ces 3 substitutions — produira un set d'icônes pictogramme géo générique
+- **Avertir l'utilisateur en transition D5 → Phase 6A** : "Les icônes du Batch 2 sont des placeholders neutres. L'aspiration des vraies icônes de votre site sera implémentée dans un Bloc ultérieur."
+
+**Stratégie Bloc 3 (cible finale)** :
+- L'orchestrateur détecte la présence d'un dossier `aspirated/icons/` peuplé
+- Si présent : Phase 6A-1 reçoit `{icon_family_id}` = `aspirated` + chemins des icônes aspirées → le chapitre 06 du Batch 2 utilise les icônes aspirées directement (pas de génération CSS/SVG, juste embedding)
+- Si absent : retour au placeholder Bloc 1 (pictogramme géo générique)
+
 **Adaptation Phase 7 pour le mode D :**
 - L'orchestrateur lit `{brand}-style-tile.html` (au lieu de `{brand}-style-tile-concept-{n}.html`)
 - `{tension_summary}` → remplacer par "Aspiration d'une brand existante — pas de tension créative"
 - `{intention_summary}` → remplacer par un résumé de la personnalité de marque extraite du Brand DNA
+
+**Adaptation Phase 8 (Brand Book) pour le mode D :**
+
+Après la validation de la Phase 7 mode D, **proposer la Phase 8 (Brand Book) exactement comme en mode A/B/C** — la mécanique d'invocation est identique. Le skill `/brand-book` détecte automatiquement le mode D (présence de `{brand}-extracted-dna.md` + absence de `{brand}-pitch.md`) et **adapte son output** :
+- Skip des sections narratives 01 BIG IDEA, 02 CONCEPT, 07b Pitch Deck, 07c Réseaux sociaux
+- Section 00 Identity Card dégradée (bloc manifesto remplacé par placeholder "Identité aspirée du site")
+- Sections techniques 03 IDENTITÉ, 04 PALETTE, 05 TYPOGRAPHIE, 06 SYSTÈME, 07a Web, 08 PHOTO + Closing inchangées
+- Détail : voir section "MODE D — Aspiration de Brand" du SKILL.md de `/brand-book`
+
+Le brand book mode D produit donc un livrable **plus court mais 100% fidèle à la marque réelle** (style Carbon/Atlassian sur la partie visuelle), sans tenter d'inventer le récit éditorial.
+
+**Adaptation Phase 8b (Design System) pour le mode D :**
+
+Après Phase 8 (si exécutée), **proposer la Phase 8b (Design System) exactement comme en mode A/B/C**. Le skill `/design-system` traite déjà le pitch comme **input optionnel** (cf. SKILL.md design-system ligne 39) — la "mini-section Voice" issue du §01.4 design-specs est simplement skippée si le ton de voix n'est pas disponible. **Aucune adaptation supplémentaire nécessaire côté design-system pour le mode D.**
+
+Le design system mode D est donc identique au design system mode A (sauf la mini-section Voice qui peut être absente si le DNA n'a pas fourni la section 5.1).
 
 **Adaptation Packaging pour le mode D :**
 - Le fichier est déjà nommé `{brand}-style-tile.html` → pas de renommage
@@ -702,6 +781,50 @@ Le style-tile validé contient un `:root` au même format que le mode créatif. 
   ```
 - Le pitch.md n'existe pas en mode D → ne pas tenter de le copier
 - Le message final utilise "Brand DNA" au lieu de "Pitch stratégique"
+
+---
+
+## DÉTECTION DU MODE — Pré-condition pour les phases redémarrables en standalone
+
+**Pourquoi cette section existe** : le pipeline BIG est démarrable en autonome à partir de plusieurs phases via le skill `/test-big` (notamment Phase 4, 5D, 6A, 6B, 7, 8). Quand l'orchestrateur est invoqué directement à une phase intermédiaire (par exemple Phase 6A), il n'a PAS encore traversé la Phase 1 où l'utilisateur choisit son mode (A/B/C/D). Il doit donc **détecter automatiquement le mode actuel** depuis l'état du dossier de session, sinon les substitutions Mode D ne s'activent pas et le pipeline plante sur la lecture de fichiers inexistants (typiquement `{brand}-pitch.md`).
+
+**Quand exécuter cette détection** :
+- En **PRÉ-CONDITION** au démarrage de toute phase démarrable en standalone : Phase 4, Phase 5D, Phase 6A, Phase 6B, Phase 7, Phase 8, Phase 8b
+- **PAS nécessaire** si le pipeline a démarré naturellement par la Phase 1 (et donc passé par D1-D5 ou Phase 1-3 selon le choix) — dans ce cas, le mode est déjà connu en mémoire de session
+
+**Procédure de détection** :
+
+```
+À l'entrée d'une phase démarrable en standalone, exécuter ces tests dans l'ordre :
+
+1. Tester l'existence des fichiers caractéristiques dans {session_dir} :
+   - PITCH_PRESENT  = exists("{brand}-pitch.md") OR exists("{brand}-pitch-c1.md")
+   - DNA_PRESENT    = exists("{brand}-extracted-dna.md")
+   - SCOPING_PRESENT = exists("{brand}-scoping.md")
+
+2. Déterminer MODE :
+   - Si DNA_PRESENT == true ET PITCH_PRESENT == false : MODE = "D" (Mode aspiration)
+   - Si PITCH_PRESENT == true : MODE = "A/B/C" (Mode création)
+   - Sinon : ERROR "Session incohérente — ni pitch ni DNA trouvés dans {session_dir}"
+
+3. Stocker MODE en mémoire de session.
+
+4. Logger explicitement au début de chaque phase démarrable en standalone :
+   > "Mode détecté pour cette session : {MODE} ({A/B/C : création depuis brief | D : aspiration depuis site existant})"
+```
+
+**Effet de la détection** :
+- Si `MODE = "D"` : TOUTES les "Adaptations Mode D" décrites dans les sections "Adaptation Phase 6A/6B/7/8/Packaging pour le mode D" (cf. supra dans la section "MODE BRAND EXISTANTE") s'activent automatiquement. Cela inclut notamment :
+  - Substitution `{pitch_extract}` par mini-synthèse Mode D depuis DNA
+  - Substitution `{ventre_mou_section}` par texte fixe "non applicable"
+  - Bypass de l'Étape 6A-0 Router famille d'icônes + placeholders icônes
+  - Substitution `{tension_summary}` / `{intention_summary}` en Phase 7
+  - Activation des skips et dégradations dans /brand-book (Phase 8)
+- Si `MODE = "A/B/C"` : pipeline normal, aucune adaptation.
+
+**Référence depuis chaque phase démarrable** : chaque phase démarrable en standalone (Phase 4, 5D, 6A, 6B, 7, 8, 8b) doit, en **toute première instruction**, lire cette section "DÉTECTION DU MODE" et exécuter la procédure si le mode n'a pas encore été établi dans la session courante. Si le mode a déjà été établi (cas démarrage naturel depuis Phase 1), passer cette détection.
+
+**Marqueur de session optionnel (`.session-mode`)** : pour éviter de ré-détecter à chaque phase, l'orchestrateur peut, après la première détection, écrire un fichier `{session_dir}/.session-mode` contenant la valeur `A` ou `D`. Les phases suivantes lisent ce fichier en priorité avant de retomber sur la détection par fichiers. Ce marqueur est créé automatiquement à la première détection et persiste tout au long de la session.
 
 ---
 
@@ -855,9 +978,9 @@ Prompt du subagent extracteur :
 > Copie le contenu tel quel, sans modifier, sans résumer, sans ajouter.
 > N'inclus AUCUNE autre section (pas d'Avis du DA, pas de Diagnostic de Température, pas de Position ZAG).
 
-**Lancement — 2 subagents séquentiels (extraction → clustering) :**
+**Lancement — extraction (1 subagent) → clustering (2 subagents : vues éclatée + regroupée) :**
 
-L'extraction et le clustering sont faits par 2 subagents DISTINCTS. Le subagent de clustering ne lit PAS le brief — il ne reçoit QUE les qualités créatives extraites. Cela empêche le brief de contaminer le regroupement en territoires.
+L'extraction et le clustering sont faits par des subagents DISTINCTS. Les subagents de clustering ne lisent PAS le brief — ils ne reçoivent QUE les qualités créatives extraites. Cela empêche le brief de contaminer le regroupement en territoires.
 
 **Subagent 2C-A (extraction)** : lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-2d-extraction.md`.
 
@@ -868,41 +991,51 @@ Variables à remplacer :
 
 L'orchestrateur **attend le résultat** et **lit le fichier produit**.
 
-**Subagent 2C-B (clustering)** : lancer 1 subagent (Task tool, general-purpose) avec le prompt de `{skill_dir}/phases/phase-2d-clustering.md`.
+**Subagent 2C-B (clustering) — DEUX vues complémentaires** : le clustering est lancé **deux fois EN PARALLÈLE** (2 subagents Task general-purpose INDÉPENDANTS, l'un ne voit pas l'autre), tous deux avec le prompt de `{skill_dir}/phases/phase-2d-clustering.md`, mêmes `{creative_qualities}` et `{cursor_a}/{cursor_b}`. Seule la variable `{granularity_rule}` diffère. C'est une **boîte à outils** : la vue éclatée capte le détail fin, la vue regroupée capte les grands registres (ex l'écologie ou l'engagement réunis). On accepte les doublons — l'utilisateur piochera ce qui résonne.
 
-Variables à remplacer :
+Variables communes aux 2 subagents :
 - `{cursor_a}` et `{cursor_b}` → valeurs des curseurs
-- `{creative_qualities}` → contenu COMPLET du fichier `{brand}-qualites-v{version}.md` (les mots-clés avec leurs phrases de contexte, SANS le header "# Qualités Créatives")
-- `{output_path}` → `{skill_dir}/outputs/{session_dir}/{brand}-territoires-v{version}.md`
+- `{creative_qualities}` → contenu COMPLET du fichier `{brand}-qualites-v{version}.md` (mots-clés + phrases de contexte, SANS le header)
+
+**Subagent 2C-B1 — VUE ÉCLATÉE** : `{output_path}` → `{skill_dir}/outputs/{session_dir}/.tmp-territoires-eclatee.md` ; `{granularity_rule}` =
+> **Granularité — règle ANTI-FUSION (vue ÉCLATÉE)** : sépare les registres DISTINCTS au lieu de les fondre. Deux groupes de qualités qui répondent à des questions différentes restent DEUX territoires, même s'ils pourraient tenir sous une étiquette plus large. Quand la matière le permet, ne descends pas sous 6-7 territoires (vise 8-10). Ne découpe pas artificiellement : chaque territoire a une identité réelle et ≥2 mots-clés.
+
+**Subagent 2C-B2 — VUE REGROUPÉE** : `{output_path}` → `{skill_dir}/outputs/{session_dir}/.tmp-territoires-regroupee.md` ; `{granularity_rule}` =
+> **Granularité — REGROUPEMENT LARGE (vue REGROUPÉE)** : cherche les GRANDS registres, pas le détail. Fusionne généreusement les qualités qui partagent une même intention de fond en territoires LARGES, même de catégories différentes. Vise 4 à 6 territoires qui captent les grands thèmes (un grand thème = un territoire riche). N'aie pas peur de réunir des qualités qui pourraient être séparées : on veut les associations larges qui RASSEMBLENT. Un même mot-clé peut nourrir plusieurs territoires.
+
+**Assemblage (orchestrateur)** : lire les 2 fichiers temp, puis écrire le fichier final `{skill_dir}/outputs/{session_dir}/{brand}-territoires-v{version}.md` avec **numérotation CONTINUE sur l'ensemble** :
+```markdown
+# Territoires Créatifs
+
+## Vue éclatée — le détail
+### T1 — "{Label}"  … jusqu'à Tn (territoires de .tmp-territoires-eclatee.md, numéros conservés)
+
+## Vue regroupée — les grands registres
+### T{n+1} — "{Label}"  … (territoires de .tmp-territoires-regroupee.md, RENUMÉROTÉS en continu : leur T1 devient T{n+1}, etc.)
+```
+Si n = nombre de territoires de la vue éclatée, la vue regroupée commence à T{n+1}. Chaque territoire a ainsi un **ID unique sur les 2 vues** (« je veux T5 et T12 »). Supprimer les 2 fichiers temp après assemblage.
 
 **Présentation des résultats :**
 
-1. **Ouvrir les 2 fichiers dans TextEdit** :
-   ```bash
-   open -t {skill_dir}/outputs/{session_dir}/{brand}-qualites-v{version}.md
-   open -t {skill_dir}/outputs/{session_dir}/{brand}-territoires-v{version}.md
-   ```
+1. **Ouvrir dans TextEdit** : `open -t {skill_dir}/outputs/{session_dir}/{brand}-qualites-v{version}.md` et `{brand}-territoires-v{version}.md`
 
-2. **Afficher un résumé COURT dans le chat** (~200 tokens max, texte direct, PAS AskUserQuestion) :
+2. **Afficher un résumé COURT dans le chat** (texte direct, PAS AskUserQuestion) — les 2 vues, labels + 2-3 mots-clés chacun, numérotation continue :
 
-   > Les territoires créatifs sont prêts. Le détail est ouvert dans TextEdit.
+   > Territoires prêts (2 vues, le détail est ouvert dans TextEdit) :
    >
-   > **T1 — "{Label}"** : {3-4 mots-clés} · {phrase description tronquée}
-   > **T2 — "{Label}"** : {3-4 mots-clés} · {phrase description tronquée}
-   > **T3 — "{Label}"** : {3-4 mots-clés} · {phrase description tronquée}
-   > **T4 — "{Label}"** : {3-4 mots-clés} · {phrase description tronquée}
+   > **Vue éclatée (le détail)** : T1 "{Label}" · T2 "{Label}" · … · Tn "{Label}"
+   > **Vue regroupée (les grands registres)** : T{n+1} "{Label}" · … · T{n+m} "{Label}"
    >
-   > Consultez le fichier pour voir tous les mots-clés. **Composez votre mix** :
-   > Choisissez 1 territoire PRINCIPAL, 1 SECONDAIRE, et 1 TERTIAIRE.
-   > Ex: "Principal : T1, Secondaire : T3, Tertiaire : T4"
+   > **Composez votre mix** en piochant dans les DEUX vues (les doublons sont normaux) :
+   > 1 territoire PRINCIPAL, 1 SECONDAIRE, 1+ TERTIAIRE. Ex : "Principal : T5, Secondaire : T12, Tertiaire : T3"
 
-3. **Boucle d'itération** : l'utilisateur peut demander de re-clusteriser, changer des mots-clés, ajouter un axe → resume subagent avec feedback.
+3. **Boucle d'itération** : l'utilisateur peut demander de re-clusteriser une vue, changer des mots-clés, etc. → relancer le(s) subagent(s) concerné(s).
 
 ---
 
 <phase-intro>
 ▶ **Mix des territoires créatifs**
-· *Quoi* : J'ai extrait 15-20 mots-clés de ton brief et clusterisé en 4-5 territoires créatifs
+· *Quoi* : J'ai extrait les mots-clés de ton brief et clusterisé en 2 vues (éclatée = le détail, regroupée = les grands registres) — une boîte à outils où tu pioches
 · *Pourquoi* : Le rôle que tu attribues à chacun (Principal / Secondaire / Tertiaire) fixe le ton dominant du concept narratif retenu — c'est ce qui rend l'identité tienne et pas générique
 · *Tu vas* : attribuer 1 rôle à chaque territoire (1 Principal, 1 Secondaire, 1+ Tertiaire)
 · *En sortira* : un mix pondéré qui guide la génération des concepts narratifs
@@ -5601,6 +5734,8 @@ Les 5 autres SVG sont dérivés du chemin `{logo_svg}` par suffixe :
 
 ## PHASE 6A — Batch 2 (Système de Signes)
 
+> ⚠ **PRÉ-CONDITION (démarrage en standalone)** : Si cette phase est démarrée directement via `/test-big` ou par invocation directe (sans avoir traversé Phase 1), exécuter en TOUTE PREMIÈRE INSTRUCTION la procédure de détection du mode décrite dans la section "## DÉTECTION DU MODE" (cf. supra). La détection établit `MODE = "D"` ou `MODE = "A/B/C"` et active les substitutions correspondantes pour TOUTE la suite du pipeline aval (6A, 6B, 7, 8, 8b, Packaging). Si le mode a déjà été établi (démarrage naturel depuis Phase 1), passer cette détection.
+
 <phase-intro>
 ▶ **Batch 2 — Système de Signes**
 · *Quoi* : Je génère un HTML standalone qui documente Logotype + Iconographie + DataViz (+ éléments graphiques optionnels)
@@ -5622,6 +5757,8 @@ Générer un FICHIER SÉPARÉ pour le Système de Signes : Logotype (05) + Icono
 ---
 
 ### Étape 6A-0 — Router Famille d'Icônes (subagent isolé, AVANT le Batch 2 HTML)
+
+> ⚠ **Mode D (Aspiration)** : cette étape est **SAUTÉE intégralement**. L'orchestrateur substitue par défaut les 3 variables `{icon_family_id}`, `{icon_family_label}`, `{router_justification}` selon la stratégie décrite dans la section "Adaptation Étape 6A-0 (Router Famille d'Icônes) pour le mode D" (cf. Mode Aspiration § Point de convergence). En mode D, passer directement à l'Étape 6A-1.
 
 **Pourquoi un subagent séparé** : Le designer Batch 2 ne doit PAS choisir la famille. Si on le laisse faire, il converge systématiquement vers le pictogramme géométrique (Heroicons-like) — c'est l'autoroute statistique du LLM. En isolant le choix dans un routeur dédié, on force l'évaluation binaire COMPATIBLE/INCOMPATIBLE des 8 familles avec justification ancrée sur la fiche styliste, le concept et le ventre mou. Modèle copié du routeur chromatique 3B-0 (cf. Étape 3B-0).
 
@@ -5753,9 +5890,11 @@ Le fichier allégé conserve toute la structure CSS et HTML mais remplace les im
 
 ### Étape préalable (orchestrateur) : Extraction du concept du pitch
 
+> ⚠ **Mode D (Aspiration)** : cette procédure est **remplacée** par la construction d'une mini-synthèse Mode D à partir du DNA. Voir la section "Adaptation `{pitch_extract}` pour le mode D" (Point de convergence Mode D). Le pitch.md n'existe pas en mode aspiration.
+
 En mode mono D65, le pitch.md contient déjà 1 seul concept (= cp de pitch-c1.md), donc l'extraction est triviale. Le mécanisme historique de grep `## Concept N` est conservé pour rétro-compatibilité avec les sessions test-big partielles multi-concepts (pitch.md hérité d'une session pré-D65).
 
-**Construire `{pitch_extract}`** :
+**Construire `{pitch_extract}`** (mode A/B/C uniquement) :
 1. Read les 20 premières lignes du fichier `{skill_dir}/outputs/{session_dir}/{brand}-pitch.md` (header avec brand, tension, curseurs)
 2. Grep `## Concept {chosen_concept_number}` dans le pitch → noter la ligne N (en mode mono : N=1, donc grep `## Concept 1`)
 3. Grep `## Concept` pour trouver le début du concept suivant → ligne M (en mode mono : pas de concept suivant, M = fin de fichier)
@@ -6381,6 +6520,8 @@ Avant de procéder à Phase 7 (Zone 2 doc finale), exécuter la procédure HANDO
 
 ## PHASE 7 — Zone 2 (Documentation Finale — OPTIMISÉE)
 
+> ⚠ **PRÉ-CONDITION (démarrage en standalone)** : Si cette phase est démarrée directement (sans avoir traversé Phase 1), exécuter en première instruction la procédure de la section "## DÉTECTION DU MODE" (cf. supra). La détection établit `MODE = "D"` ou `MODE = "A/B/C"`. En mode D, les substitutions `{tension_summary}` et `{intention_summary}` s'activent automatiquement.
+
 <phase-intro>
 ▶ **Documentation Markdown (Design Specs)**
 · *Quoi* : Je génère un fichier Markdown de 45 sections qui documente exhaustivement l'identité — tokens, typo, palette, code civil de la marque, règles d'usage
@@ -6447,6 +6588,8 @@ Lire le fichier `{skill_dir}/phases/phase-7-specs.md` et utiliser son contenu co
 ---
 
 ## PHASE 8 — Brand Book éditorial (optionnelle)
+
+> ⚠ **PRÉ-CONDITION (démarrage en standalone)** : Si cette phase est démarrée directement (sans avoir traversé Phase 1), exécuter en première instruction la procédure de la section "## DÉTECTION DU MODE" (cf. supra). Le skill `/brand-book` invoqué détecte aussi le mode D de son côté (présence DNA + absence pitch) et adapte son output — la pré-condition ici sert à logger explicitement le mode pour l'utilisateur.
 
 <phase-intro>
 ▶ **Brand Book éditorial (optionnel)**

@@ -227,9 +227,14 @@ Le style-tile s'ouvre dans ton navigateur. Tu vérifies que tout correspond à t
 
 **Ensuite → Convergence avec le pipeline créatif**
 Les étapes suivantes sont identiques aux options A/B/C :
-  · Batch 2 — Signes (Logotype, Iconographie, Data Viz)
-  · Batch 3 — Narration (Photo, Composition, Illustration)
-  · Documentation & Packaging
+  · Batch 2 — Signes (Logotype, Iconographie, Data Viz) — *en mode D, les icônes sont des placeholders en attendant l'aspiration des vraies icônes du site*
+  · Batch 3 — Narration (Photo, Composition, Illustration) — *en mode D, les visuels sont des descriptions placeholder en attendant l'aspiration des vrais visuels*
+  · Documentation (Design Specs)
+  · Brand Book éditorial (optionnel) — *en mode D : sections narratives "Big Idea" / "Concept" / "Réseaux sociaux" skippées, le brand book reste centré sur les éléments visuels et techniques*
+  · Design System technique (optionnel) — *identique en mode A et D*
+  · Packaging du pack final
+
+**Limites actuelles du mode D** : les icônes du Batch 2 et les visuels du Batch 3 sont des placeholders (génériques). Le brand book skippe les sections narratives car la marque connaît son identité mieux que la machine. L'aspiration enrichie (vrais visuels du site, vraies icônes, logo HD) est un chantier en cours qui sera disponible dans une prochaine version.
 
 ---
 

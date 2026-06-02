@@ -175,7 +175,37 @@ Stocker dans `{session_label}`.
 
 Scanner `{source_dir}` et vérifier que les fichiers requis pour la phase demandée existent.
 
-### Table des prérequis par phase
+### Détection du mode de la session source (Mode A/B/C vs Mode D)
+
+**Pourquoi cette détection** : le pipeline BIG a deux modes radicalement différents — Mode A/B/C (création depuis un brief) et Mode D (aspiration depuis un site existant). Les fichiers prérequis et les substitutions de variables diffèrent. Test-big doit détecter le mode du `{source_dir}` avant de valider les prérequis.
+
+**Procédure** (à exécuter en première instruction de l'Étape 2) :
+
+```bash
+# Tester l'existence des fichiers caractéristiques dans le dossier source
+PITCH_PRESENT=$(test -f "{source_dir}"/*-pitch.md 2>/dev/null && echo "true" || echo "false")
+DNA_PRESENT=$(test -f "{source_dir}"/*-extracted-dna.md 2>/dev/null && echo "true" || echo "false")
+
+# Déterminer le mode
+if [ "$DNA_PRESENT" = "true" ] && [ "$PITCH_PRESENT" = "false" ]; then
+  MODE="D"
+elif [ "$PITCH_PRESENT" = "true" ]; then
+  MODE="A"
+else
+  echo "ERREUR: Session incohérente — ni pitch ni DNA trouvés dans {source_dir}"
+  exit 1
+fi
+
+echo "Mode source détecté : ${MODE} ({A/B/C : création | D : aspiration})"
+```
+
+**Stocker** `{source_mode}` = `A` ou `D`. Cette variable détermine quelle branche de la table des prérequis utiliser ci-dessous, et sera transmise au pipeline BIG cible.
+
+**Marquage de la session test** : à l'Étape 4.2 (création de `.session-id`), créer aussi un fichier `.session-mode` contenant `A` ou `D`. Cela permet à l'orchestrateur BIG (re-démarré à `{start_phase}`) de détecter le mode sans avoir à scanner les fichiers (cf. section "DÉTECTION DU MODE" du SKILL.md de brand-identity).
+
+### Table des prérequis par phase — Mode A/B/C (Création)
+
+> Cette table s'applique si `{source_mode} = "A"` (cas standard pré-existant). Pour Mode D, voir la table dédiée plus bas.
 
 | `{start_phase}` | Fichiers requis dans `{source_dir}` |
 |---|---|
@@ -213,7 +243,27 @@ Scanner `{source_dir}` et vérifier que les fichiers requis pour la phase demand
 | `8B` | + `{brand}-design-specs*.md` (de la Phase 7) — pack BIG complet en place dans `{session_dir}/` (les 5 fichiers + `visual-final/`) ; `{session_dir}/brand-book/` optionnel (Phase 8A recommandée mais pas obligatoire) ; Phase 8B invoque le skill /design-system qui lit ces fichiers et écrit dans `{session_dir}/design-system/` |
 | `9` | `8A` done OU Phase 8A skippée + `{brand}-design-specs*.md` (de la Phase 7) — toutes les briques pré-existantes (style-tile-concept-*, batch2-*, batch3-*, design-specs-*, logo-*) sont copiées et renommées dans `{brand}-identity-{slug}/`. Si Phase 8A exécutée, le sous-dossier `brand-book/` est aussi copié. |
 
-**Chaque phase inclut les prérequis de toutes les phases précédentes** (cumulatif).
+### Table des prérequis par phase — Mode D (Aspiration)
+
+> Cette table s'applique si `{source_mode} = "D"`. En mode D, le pipeline saute toutes les phases stratégiques (1, 2, 3A, 3B) et converge directement vers Phase 6A après D1-D5. Les phases démarrables en standalone via test-big en mode D sont donc : `6A`, `6B`, `7`, `8A`, `8B`, `9`.
+
+| `{start_phase}` | Fichiers requis dans `{source_dir}` |
+|---|---|
+| `D1` à `D5` | Phases mode D natives — non démarrables via test-big (elles sont interactives par essence : collecte URLs, génération DNA, validation user, génération style-tile). Si besoin de re-faire ces phases, lancer `/brand-identity` directement et choisir option D. |
+| `6A` (mode D) | `{brand}-extracted-dna.md` + `{brand}-style-tile.html` (UN seul fichier, pas de `-concept-{n}`). **NB** : pas de pitch, pas de scoping, pas de territoires, pas de concepts-narratifs, pas de ventre-mou, pas de style-choice — tous ces fichiers sont **inexistants en mode D**, c'est normal. L'orchestrateur BIG les remplace par les substitutions Mode D décrites dans la section "Adaptation Phase 6A/6B pour le mode D" du SKILL.md brand-identity (mini-synthèse Mode D depuis DNA, ventre mou texte fixe, bypass router icônes 6A-0). |
+| `6B` (mode D) | + au moins 1 fichier `{brand}-batch2.html` (produit par Phase 6A mode D, sans suffixe `-{slug}`) |
+| `7` (mode D) | + au moins 1 fichier `{brand}-batch3.html` |
+| `8A` (mode D) | + `{brand}-design-specs.md` (de la Phase 7) + `{brand}-extracted-dna.md` + `{brand}-style-tile.html` + `{brand}-batch2.html` + `{brand}-batch3.html` — le skill `/brand-book` détecte le mode D et adapte (sections 01, 02, 07c skippées + 00/07b dégradées) |
+| `8B` (mode D) | + idem `8A` mode D — le skill `/design-system` fonctionne identiquement en mode A et D (pitch est optionnel pour lui) |
+| `9` (mode D) | + `8A` done OU skippée + `{brand}-design-specs.md` — le packaging renomme/copie les fichiers du pack mode D (sans concept_slug — convention : `{brand}-identity/`) |
+
+**Différences clés mode D vs mode A pour la table** :
+- **Pas de pitch** en mode D — les substitutions mode D sont gérées par l'orchestrateur BIG (cf. section "DÉTECTION DU MODE" du SKILL.md brand-identity)
+- **Pas de multi-concept** en mode D — UN seul style-tile, UN seul batch2, UN seul batch3 (sans suffixe `-concept-{n}` ni `-{slug}`)
+- **Pas de scoping / territoires / concepts-narratifs / style-choice** en mode D — ces fichiers stratégiques sont propres au mode A/B/C
+- **Phases 5D et Logo non applicables** en mode D (on n'aspire pas d'animation, le logo réel de la marque est déjà disponible)
+
+**Chaque phase inclut les prérequis de toutes les phases précédentes** (cumulatif, dans son mode).
 
 **Algorithme :**
 
@@ -246,9 +296,9 @@ Extraire les variables nécessaires à l'exécution de la phase demandée. Quand
 | `{cursor_b}` | `{brand}-scoping.md` | Chercher "Curseur B" ou "cursor_b", extraire la valeur (1, 2, ou 3) | ≥ 2D |
 | `{territory_mix}` | `{brand}-scoping.md` | Chercher la section "## Mix de Territoires", extraire le bloc complet (Principal + Secondaire + Accent) | ≥ 3A1 |
 | `{example_level}` | Dérivé de `{cursor_a}` | Si `cursor_a` = 3 → `"rupture"`, sinon → `"standard"` | ≥ 4 |
-| `{chosen_concept_number}` | Demander à l'utilisateur | Numéro du concept choisi (1, 2, ou 3) | ≥ 6A |
-| `{chosen_concept_name}` | `{brand}-pitch.md` ou demander | Lire le nom du concept dans le pitch (mode mono D65 : 1 seul concept dans pitch.md), confirmer | ≥ 6A |
-| `{chosen_concept_slug}` | Dérivé de `{chosen_concept_name}` | Slugify : minuscules, espaces → tirets, suppression accents et caractères spéciaux | ≥ 6A |
+| `{chosen_concept_number}` | Demander à l'utilisateur **(mode A/B/C uniquement)**. En mode D : non applicable (1 seul "concept" = la marque aspirée). | Numéro du concept choisi (1, 2, ou 3) | ≥ 6A (mode A/B/C) |
+| `{chosen_concept_name}` | Mode A/B/C : `{brand}-pitch.md` ou demander. **Mode D** : `{chosen_concept_name}` = `{brand}` (nom de la marque, cf. SKILL.md brand-identity ligne 666). | Lire le nom du concept dans le pitch (mode mono D65) en mode A ; en mode D, utiliser directement le nom de la marque. | ≥ 6A |
+| `{chosen_concept_slug}` | Mode A/B/C : dérivé de `{chosen_concept_name}`. **Mode D** : non applicable (le pack final est nommé `{brand}-identity/` sans slug, cf. convention mode D). | Slugify pour mode A ; vide ou `{brand}` pour mode D. | ≥ 6A (mode A/B/C) |
 
 **Procédure :**
 
@@ -276,10 +326,15 @@ test -d "${TEST_DIR}" && echo "ERREUR: ce dossier existe déjà" || mkdir -p "${
 Stocker `{test_dir}` = chemin absolu du dossier créé.
 Stocker `{session_dir}` = `test-{brand}-{session_label}` (nom du dossier uniquement).
 
-### 4.2 Créer le .session-id
+### 4.2 Créer le .session-id et le .session-mode
 
 ```bash
 echo "{brand}|{session_label}|$(date +%s)" > "{test_dir}/.session-id"
+
+# Marquer le mode source dans la session test (cf. C1 patch 2026-06-02)
+# Permet à l'orchestrateur BIG (re-démarré à {start_phase}) de détecter le mode
+# sans avoir à scanner les fichiers du dossier.
+echo "{source_mode}" > "{test_dir}/.session-mode"
 ```
 
 ### 4.3 Copier les fichiers source (FILTRÉ par phase)
@@ -324,16 +379,47 @@ echo "{brand}|{session_label}|$(date +%s)" > "{test_dir}/.session-id"
 
 **Note `visual-final/`** : ce dossier est créé en 3B-7c (image-pivot du style-tile) mais peut aussi recevoir, plus tard et hors pipeline (skill `/visual-prompt`), une **librairie de visuels finaux dérivés** (`{brand}-c{N}-{paletteID}-{type}[-{variante}].{ext}`). Quand `{start_phase}` ≥ `3B-7d`, la copie filtrée doit reprendre **le dossier `visual-final/` complet** depuis le source (pas seulement `{brand}-visual-final.{ext}`) — il est consommé par Phase 4 (ancrage visuel), Batch 2 (cover band) et Batch 3 (ch08/ch10).
 
-**Algorithme :**
+### Table des outputs par phase — Mode D (D1-D5)
+
+> Les phases D1-D5 du mode aspiration produisent leurs propres outputs, distincts des phases du mode A/B/C. Cette table est utilisée par l'algorithme de copie filtrée quand `{source_mode} = "D"`.
+
+| Phase Mode D | Patterns de fichiers produits |
+|--------------|-------------------------------|
+| `D1` | `{brand}-capture-{n}.png` (screenshots des pages), `{brand}-page-{n}.html` (HTML brut des pages), `{brand}-extracted-css.txt` (CSS concaténé), `{brand_logo_path}` si fourni par user |
+| `D2` | `{brand}-extracted-dna.md` (Brand DNA complet — output du subagent extraction) |
+| `D3` | (aucun nouveau fichier — validation user en orchestrateur, modifie `{brand}-extracted-dna.md` in-place + stocke curseurs A×B) |
+| `D4` | `{brand}-style-tile.html` (1 seul fichier, pas de `-concept-{n}`) |
+| `D5` | (aucun nouveau fichier — validation user, modifie `{brand}-style-tile.html` in-place si itérations) |
+
+**Algorithme — Mode A/B/C :**
 
 ```
-phases_ordonnées = [1, 2A, 2B, 2C, 2D, 3A1, 3A2, 3B-1, 3B-2, 3B-3, 3B-4, 3B-7a-pre, 3B-7a, 3B-7b, 3B-7-checkpoint, 3B-7c, 3B-7d, 3B-7e, 4, 4-val, 4-art, 4B, 5, 5D, L, 6A, 6B, 7, 8A, 8B, 9]
+phases_ordonnées_A = [1, 2A, 2B, 2C, 2D, 3A1, 3A2, 3B-1, 3B-2, 3B-3, 3B-4, 3B-7a-pre, 3B-7a, 3B-7b, 3B-7-checkpoint, 3B-7c, 3B-7d, 3B-7e, 4, 4-val, 4-art, 4B, 5, 5D, L, 6A, 6B, 7, 8A, 8B, 9]
 
 fichiers_a_copier = []
-pour chaque phase P dans phases_ordonnées :
+pour chaque phase P dans phases_ordonnées_A :
     si P == {start_phase} : STOP
-    fichiers_a_copier += patterns de la table ci-dessus pour P
+    fichiers_a_copier += patterns de la table mode A/B/C pour P
+```
 
+**Algorithme — Mode D :**
+
+```
+phases_ordonnées_D = [D1, D2, D3, D4, D5, 6A, 6B, 7, 8A, 8B, 9]
+
+fichiers_a_copier = []
+pour chaque phase P dans phases_ordonnées_D :
+    si P == {start_phase} : STOP
+    fichiers_a_copier += patterns de la table mode D pour P (D1-D5 si P ∈ {D1..D5}, sinon utiliser la table mode A pour P avec adaptations mode D)
+```
+
+**Sélection de l'algorithme** : utiliser `phases_ordonnées_A` si `{source_mode} = "A"`, `phases_ordonnées_D` si `{source_mode} = "D"`.
+
+**Pour le test classique Mode D démarrant à `6A`** : l'algorithme copie les outputs de D1, D2, D3, D4, D5 — concrètement `{brand}-extracted-dna.md` + `{brand}-style-tile.html` + (optionnels) `{brand}-extracted-css.txt`, `{brand}-capture-*.png`, `{brand}-page-*.html`, `{brand_logo_path}`. Les 2 fichiers strictement nécessaires sont DNA + style-tile.
+
+**Algorithme commun (post-sélection) :**
+
+```
 # Copier uniquement ces fichiers
 pour chaque pattern dans fichiers_a_copier :
     cp "{source_dir}/"<pattern> "{test_dir}/"

@@ -4,6 +4,19 @@ Chaque décision architecturale est documentée ici avec son contexte et sa rais
 
 ---
 
+### D68. Clustering en 2 vues complémentaires (éclatée + regroupée) — boîte à outils anti-perte
+**Date** : 2 juin 2026
+**Choix** : Le clustering Phase 2C passe de **1 à 2 subagents parallèles indépendants** (l'un ne voit pas l'autre), même prompt `phase-2d-clustering.md` sauf la variable **`{granularity_rule}`** :
+- **Vue ÉCLATÉE** (anti-fusion, vise 8-10 territoires) = le détail fin (premium éclaté en facettes, couleur, etc.). C'est la règle anti-fusion D67, qui devient la consigne de cette vue.
+- **Vue REGROUPÉE** (fusion large, vise 4-6 territoires) = les grands registres (l'écologie réunie, l'engagement réuni).
+
+L'orchestrateur assemble les 2 dans le **même fichier `{brand}-territoires-v{version}.md`** (nom inchangé) en 2 sections, avec **numérotation CONTINUE** : la vue regroupée enchaîne au numéro suivant le dernier de l'éclatée (vue éclatée T1…Tn, vue regroupée T(n+1)…) → chaque territoire a un **ID unique sur l'ensemble** (« je veux T5 et T12 »). Doublons entre les 2 vues **assumés** (boîte à outils : l'utilisateur pioche ce qui résonne).
+**Pourquoi** : aucune granularité unique ne capte tout — la vue éclatée fait ressortir les facettes fines mais **disperse** les grands registres (écologie, engagement) ; la vue regroupée **réunit** les grands registres mais perd le détail. Test E2E Vermeil 1048 : l'engagement et l'écologie se perdaient selon le tirage du clustering (variance). Les 2 vues **se compensent** → on devient **robuste à la variance** (si une vue rate l'engagement, l'autre le rattrape). Inspiré du processus intellectuel humain (jongler entre dissocier et fusionner), et cohérent avec la philosophie « table de mixage » (l'utilisateur dose). **Les règles D63 (labels) et D67 (extraction « traduire ») sont strictement inchangées** — seule la granularité du regroupement varie.
+**Validation empirique** : mini-app `tools/extraction-fix-test/` sur les qualités du run 1048 — vue regroupée réunit l'écologie (T1, 7 mots vivant/cycle/terre) et l'engagement (T4) ; vue éclatée garde le détail (9 territoires) + un territoire d'engagement net (T7). La combinaison ne perd ni le grand registre ni le détail.
+**Risque aval** : nul. Le fichier `{brand}-territoires-v*.md` garde son nom (juste 2 sections + numérotation continue) ; le Mix (2D) pioche dans l'ensemble ; décontamination 2D-bis et Phase 3B inchangées ; test-big inchangé (nom de fichier identique) ; fichiers temp `.tmp-territoires-*` gitignorés.
+**Statut** : déployé en **sandbox uniquement** (test E2E utilisateur en cours avant publication GitHub portable).
+**Fichiers** : `phases/phase-2d-clustering.md` (granularité paramétrée `{granularity_rule}`), `SKILL.md` (étape 2C : 2 subagents + assemblage numérotation continue + présentation 2 vues + phase-intro), `ref/pipeline-overview.md`, `DECISIONS.md` (D68), `CHANGELOG.md`.
+
 ### D67. Extraction « traduire au lieu de jeter » + clustering anti-fusion (Phase 2C) — récupérer les deux pôles de la tension
 **Date** : 2 juin 2026
 **Choix** : Deux changements complémentaires, qui **absorbent et généralisent la Règle de remontée D66**.
