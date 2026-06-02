@@ -63,11 +63,21 @@ pas de verbes vaporeux (« diffuser / incarner / installer une paix de l'esprit 
 
 ### CLUSTERING
 
+**Granularité — règle ANTI-FUSION** : sépare les registres DISTINCTS au lieu de
+les fondre en un territoire fourre-tout. Deux groupes de qualités qui répondent
+à des questions différentes restent DEUX territoires, même s'ils pourraient
+tenir sous une étiquette plus large (ex de principe : « la rapidité d'exécution »
+et « la précision du résultat » sont deux registres ; « l'audace » et « la
+rigueur » sont deux registres — on ne les fond pas). Quand la matière le permet,
+**ne descends pas sous 6-7 territoires**. Mais ne découpe pas non plus
+artificiellement : chaque territoire doit avoir une identité réelle.
+
 **Chevauchement de mots-clés autorisé** : deux territoires PEUVENT partager des
 mots-clés. C'est naturel — un même mot peut nourrir deux registres créatifs
 différents (cf. modèle Mixing Desk de Wolff Olins).
 
-Si deux territoires ont trop de mots-clés en commun (>60%), les fusionner.
+Tu ne fusionnes deux territoires QUE s'ils partagent vraiment le même registre
+(>60% de mots-clés communs).
 
 L'utilisateur choisira son mix (Principal / Secondaire / Tertiaire) parmi ces
 territoires. Plus il y a de territoires distincts, plus le dosage est fin —

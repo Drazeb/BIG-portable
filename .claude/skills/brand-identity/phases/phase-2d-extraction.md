@@ -17,9 +17,11 @@ Lis le brief analysis et le scoping. Pour chaque question ci-dessous,
 extrais des QUALITÉS CRÉATIVES — pas des faits business.
 
 Un mot-clé créatif est une qualité qu'un directeur artistique qui ne connaît
-PAS le secteur comprendrait immédiatement et pourrait traduire en choix visuel.
-Un mot-clé créatif ne contient JAMAIS de chiffre, de nom propre, de jargon
-sectoriel, de statut juridique, ni de description de process technique.
+PAS le secteur comprendrait immédiatement et pourrait orienter en choix de
+design. Un mot-clé créatif ne contient JAMAIS de chiffre, de nom propre, de
+statut juridique. (Le jargon sectoriel, le process, les mots corporate et les
+mots trop larges ne s'écrivent pas tels quels — ils ne se jettent PAS non plus :
+ils se TRADUISENT. Voir la Règle de traduction plus bas.)
 
 Sois exhaustif — ne t'arrête pas tant que le brief contient encore des
 qualités exploitables.
@@ -59,29 +61,56 @@ Pour CHAQUE mot-clé, applique ces 2 tests AVANT de l'écrire :
 **Test 1 — Universalité** : "Un directeur artistique qui ne connaît PAS
 ce secteur comprendrait-il ce mot-clé ?"
 - OUI → passe au test 2
-- NON → c'est un fait sectoriel, pas une qualité créative. Remonte
-  au niveau de la qualité qu'il incarne.
+- NON → il est encore formulé en termes sectoriels. NE LE JETTE PAS :
+  traduis-le (voir Règle de traduction).
 
-**Test 2 — Exploitabilité visuelle** : "Ce mot-clé peut-il générer
-un choix visuel — une forme, une texture, une couleur, un mouvement ?"
+**Test 2 — Exploitabilité (en DESIGN, pas seulement en image)** : "Ce mot-clé
+peut-il orienter un choix de design — une forme/texture/couleur/mouvement, OU
+un ton, OU une composition, OU une posture éditoriale ?"
 - OUI → garde
-- NON → trop abstrait ou trop corporate. Cherche mieux.
+- NON → vraiment inexploitable (vague au point de ne rien guider). Cherche mieux.
 
-### CE QU'ON NE VEUT PAS
+### RÈGLE DE TRADUCTION (le cœur du travail)
+
+Certains éléments du brief ne se gardent JAMAIS tels quels — mais ne se
+jettent PAS non plus. Ils se **TRADUISENT** en la qualité créative universelle
+et exploitable qu'ils incarnent. Sont concernés :
+- le **jargon sectoriel** (termes techniques du métier) ;
+- les **process / équipements** (ce que la marque opère concrètement) ;
+- les **mots corporate** que toute marque revendique (innovation, excellence,
+  engagement, qualité, passion) ;
+- les **mots trop larges** (nature, écologie, humain, moderne, authentique) ;
+- les **dimensions conceptuelles ou relationnelles** sans image évidente (une
+  fiabilité, une manière de servir, une conviction, une cause).
+
+Pour chacun : remonte à ce que le mot IMPLIQUE concrètement pour CETTE marque,
+et formule-le en qualité créative. La traduction respecte 3 garde-fous :
+1. **Universelle** — un DA qui ne connaît pas le secteur la comprend. C'est
+   CELA, et seulement cela, qui protège du retour du jargon sectoriel.
+2. **Spécifique** — pas le mot générique reformulé (« excellent », « engagé »,
+   « écolo »), mais la forme CONCRÈTE qu'il prend ici (une exigence de
+   constance, une posture radicale, un geste de régénération…).
+3. **Réellement portée par le brief** — tu traduis ce qui est là, tu n'inventes
+   pas une qualité absente.
+
+Exemples du MÉCANISME (cas neutres, PAS cette marque, juste pour montrer le
+geste) : « rapidité » → cadence visible · « sécurité » → solidité ancrée ·
+« premium » → raffinement épuré · « durable » → permanence, matière qui dure.
+→ Fais exactement pareil pour les mots corporate / larges / jargon / process /
+conceptuels de CE brief.
+
+Si un élément n'a vraiment AUCUNE qualité créative traduisible (pur fait
+administratif), tu peux l'abandonner — mais c'est l'exception, pas le réflexe.
+
+### CE QU'ON JETTE (bruit pur — le SEUL « retirer »)
 - Chiffres, mesures, volumes, distances, pourcentages
 - Noms propres (personnes, lieux, marques, concurrents)
-- Jargon sectoriel (termes techniques propres au métier)
-- Statuts juridiques, certifications, labels
-- Descriptions de process ou d'équipements
-- Mots corporate vides : innovation, excellence, engagement, qualité, passion
-- Mots trop larges : nature, humain, moderne, authentique
+- Normes, lois, certifications, statuts juridiques, labels
 
 ### CE QU'ON VEUT
-- Qualités sensorielles : textures, matières, températures, rythmes
-- Qualités de posture : attitudes, comportements, rapports aux autres
-- Qualités d'action : la manière dont le geste est fait, pas le geste
-- Qualités distinctives : ce qui rend cette marque DIFFÉRENTE, formulé
-  comme une qualité créative utilisable dans n'importe quel secteur
+Des qualités universelles, distinctives et exploitables en design —
+sensorielles, de posture, d'action, de valeur, de ressenti. Ce qui rend cette
+marque DIFFÉRENTE, formulé comme une qualité utilisable dans n'importe quel secteur.
 
 ## FORMAT OUTPUT
 
