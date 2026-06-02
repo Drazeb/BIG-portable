@@ -44,6 +44,7 @@ Analyse les screenshots pour :
 - **Style photographique** : type dominant, traitement chromatique
 - **Style d'icônes** : outline/solid/duotone, épaisseur
 - **Densité / espace blanc** : ratio visuel
+- **Mode chromatique dominant (CRITIQUE)** : section 5.6 du DNA — déterminer `light` / `dark` / `mixed` selon le ratio surfaces claires/sombres dans les screenshots. Cette info pilote l'adaptation du brand book et des phases aval. Voir la procédure détaillée dans `extraction-guide.md` section "Détermination du mode chromatique dominant (section 5.6)". Inclure aussi la **surface dominante** (hex de la couleur de fond la plus utilisée).
 
 ### 3. ANALYSE TEXTUELLE — Ton de voix (confiance moyenne)
 Analyse le contenu textuel pour :

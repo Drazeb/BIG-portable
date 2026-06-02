@@ -377,18 +377,20 @@ Cette sous-étape ne produit pas de PNG : elle **compose en mémoire les variabl
 | `{{DATAVIZ_LABEL}}` | Label court mono pour la dataviz (ex: "Cadence · 32 milles" pour Camille). Doit refléter une métrique signature de la marque. |
 | `{{DATAVIZ_SIGNATURE_SVG}}` | **Bar chart SVG (6 barres dont 1 active en accent)**. Composer depuis batch2 (chercher un bar chart signature) ou utiliser le template par défaut : `<svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid meet">` avec 6 `<rect class="viz-bar">` dont 1 `is-active`, gridlines + axis + baseline + 6 labels d'axe (B1-B6 ou autre nomenclature brand). Voir le HTML Camille v4 §identity-card pour la structure exacte. |
 
-**Palette 6 couleurs** — le skill extrait 6 tokens couleur depuis le `:root` du style-tile et compose 6 jeux de variables `{{COLOR_N_ROLE}}` + `{{COLOR_N_NAME}}` + `{{COLOR_N_HEX}}` pour N de 1 à 6, dans cet ordre canonique :
+**Palette 6 couleurs — RÔLES AGNOSTIQUES (refondu 2026-06-02)** — le skill extrait 6 tokens couleur depuis le `:root` du style-tile et compose 6 jeux de variables `{{COLOR_N_ROLE}}` + `{{COLOR_N_NAME}}` + `{{COLOR_N_HEX}}` pour N de 1 à 6, dans cet ordre canonique **agnostique de l'univers de marque** (avant le 2 juin 2026, ces rôles étaient calibrés sur Camille — "Fond profond / Surface claire / Détail froid / Surface beige / Accent signal / Accent chaud" — ce qui produisait des incohérences sur les marques aux univers chromatiques différents, notamment les marques light-dominant comme les SaaS B2B) :
 
-| N | Rôle (mono caps) | Nom (display) | Source typique |
-|---|------------------|---------------|----------------|
-| 1 | "Fond profond" | Nuit d'Indigo (adapter par marque) | `--brand-color-dark-bg` |
-| 2 | "Fond surface" | Nuit Claire (adapter) | Variante claire de Nuit (lighten ~5%) ou token natif si présent |
-| 3 | "Détail froid" | Marine Cliff (adapter) | `--brand-color-accent-2` ou variable cliff/marine |
-| 4 | "Surface claire" | Brume de Plan (adapter) | `--brand-color-positive-bg` ou `--color-mist-cool` |
-| 5 | "Accent signal" | Foyer du Phare (adapter) | `--brand-color-accent` (= `--color-foyer`) |
-| 6 | "Accent chaud" | Foyer Chaud (adapter) | `--color-foyer-warm` (version chaude/claire de l'accent) |
+| N | Rôle (mono caps) | Nom (display) | Source CSS prioritaire |
+|---|------------------|---------------|------------------------|
+| 1 | "Primaire" | Nom poétique de la couleur primaire de la marque | `--brand-color-primary` ou `--color-primary` |
+| 2 | "Secondaire" | Nom poétique de la couleur secondaire | `--brand-color-secondary` ou `--color-secondary` |
+| 3 | "Accent" | Nom poétique de l'accent | `--brand-color-accent` ou `--color-accent` |
+| 4 | "Surface" | Nom de la surface dominante | `--brand-color-positive-bg` (si mode=light) ou `--brand-color-dark-bg` (si mode=dark) |
+| 5 | "Texte" | Nom du texte principal | `--brand-color-positive-text` ou `--color-text-primary` |
+| 6 | "Bord" | Nom du token de bord/séparateur | `--color-border` ou `--brand-color-positive-text` atténué |
 
-Les 6 noms (col "Nom") sont **propres à chaque marque** — le skill reprend les noms poétiques du pitch / design-specs s'ils existent, sinon il forge un nom court (1-3 mots, display) cohérent avec l'univers de la marque. Les rôles (col "Rôle") restent **canoniques et stables** — ils décrivent la fonction structurelle, pas l'univers.
+Les 6 noms (col "Nom") sont **propres à chaque marque** — le skill reprend les noms poétiques du pitch / design-specs / DNA s'ils existent, sinon il forge un nom court (1-3 mots, display) cohérent avec l'univers de la marque (ex pour Camille : "Foyer / Brume / Marine / Nuit / Brume Cool / Cliff" ; ex pour Brevo : "Forest / Mint / Iris / Surface / Charbon / Brume"). Les rôles (col "Rôle") restent **canoniques et stables, agnostiques de l'univers** — ils décrivent la fonction structurelle universelle (Primaire/Secondaire/Accent/Surface/Texte/Bord), pas l'imagerie de Camille.
+
+**Pourquoi ce refactor** : les anciens rôles ("Fond profond / Surface beige / Accent chaud") n'avaient de sens que pour des marques avec un univers chromatique riche en surfaces sombres + accent chaud (Camille, Vermeil, VoltaPilot). Pour une marque SaaS clair (Brevo : vert forêt + iris + mint), ces rôles forçaient des mappings absurdes. Les rôles agnostiques (Primaire/Secondaire/...) fonctionnent pour tous les univers chromatiques sans biais.
 
 **Variables :root alias à injecter** (Étape 4 — :root sacré) :
 
@@ -494,12 +496,15 @@ Pour CHAQUE slot non-BATCH2, produis une valeur en suivant les sources ci-dessou
 - `YEAR` : année courante (ex: `"2026"`)
 - `BRAND_THEME_COLOR` : hex `#RRGGBB` (couleur dominante palette, pour theme-color meta)
 - `GOOGLE_FONTS_LINK` : balise `<link>` complète copiée depuis le style-tile
+- **`MODE_CHROMATIQUE`** : valeur lue depuis le `:root` du style-tile (variable `--mode-chromatique`). Si absente : fallback `"dark"` (comportement legacy Camille). Valeurs possibles : `"light"`, `"dark"`, `"mixed"`. Pilote `<body data-mode="...">` qui active les overrides CSS adaptatifs du template (Cover, Closing, Photo s'adaptent à la luminance dominante de la marque).
+- **`HAS_COVER_VISUAL`** : `"true"` si un fichier hero existe dans `visual-final/` (chercher `{brand}-c{N}-{paletteID}-hero*.{png,jpg,jpeg,webp}`), `"false"` sinon. Pilote `<body data-has-cover-visual="...">` qui force le fond solide (sans image) selon le mode chromatique en cas d'absence.
+- **`HAS_CLOSING_VISUAL`** : idem pour le closing (chercher `{brand}-c{N}-{paletteID}-closing*` ou réutiliser le hero si absent).
 
 **Tokens design (~20 slots)** : extraits du `:root` du style-tile (`FONT_DISPLAY`, `FONT_BODY`, `FONT_MONO`, `FONT_DISPLAY_NAME`, `FONT_MONO_NAME`, `COLOR_PRIMARY`, `COLOR_ACCENT`, `COLOR_ACCENT_2`, `COLOR_SECONDARY`, `COLOR_DANGER`, `COLOR_DARK_BG`, `COLOR_DARK_TEXT`, `COLOR_POSITIVE_BG`, `COLOR_POSITIVE_TEXT`, `COLOR_SUCCESS`, `COLOR_WARNING`, `COLOR_FOYER`, `COLOR_FOYER_WARM`, `COLOR_MIST`, `COLOR_MIST_COOL`, `COLOR_MARINE_CLIFF`, `COLOR_NIGHT_CLEAR`, `RADIUS_XS/SM/MD/LG`). **Obligatoire** pour que le rendu visuel soit cohérent.
 
 **Sommaire (1 slot)** : `TOC_TITLE` (titre court H2 type "Le pack, chapitre par chapitre.")
 
-**Intro Identity Card v4 bento (~22 slots)** : composés en Étape 2e — `IDENTITY_CARD_TITLE` (toujours "Le pack en une vue."), `COVER_VISUAL` (path relatif vers le hero), `WORDMARK_OVERLINE`, `BRAND_SIGNATURE_COORDS`, `BRAND_SIGNATURE_CADENCE`, `MANIFESTO_LINE1` / `MANIFESTO_LINE2` / `MANIFESTO_SUB`, `ICONGRID_LABEL`, `IDENTITY_CARD_ICONS_4` (string HTML contenant 4 SVG 32px concaténés), `DATAVIZ_LABEL`, `DATAVIZ_SIGNATURE_SVG` (string HTML contenant 1 SVG bar chart composé), et **6 jeux** `COLOR_N_ROLE` / `COLOR_N_NAME` / `COLOR_N_HEX` pour N de 1 à 6 (rôles canoniques : Fond profond / Surface claire / Détail froid / Surface beige / Accent signal / Accent chaud).
+**Intro Identity Card v4 bento (~22 slots)** : composés en Étape 2e — `IDENTITY_CARD_TITLE` (toujours "Le pack en une vue."), `COVER_VISUAL` (path relatif vers le hero), `WORDMARK_OVERLINE`, `BRAND_SIGNATURE_COORDS`, `BRAND_SIGNATURE_CADENCE`, `MANIFESTO_LINE1` / `MANIFESTO_LINE2` / `MANIFESTO_SUB`, `ICONGRID_LABEL`, `IDENTITY_CARD_ICONS_4` (string HTML contenant 4 SVG 32px concaténés), `DATAVIZ_LABEL`, `DATAVIZ_SIGNATURE_SVG` (string HTML contenant 1 SVG bar chart composé), et **6 jeux** `COLOR_N_ROLE` / `COLOR_N_NAME` / `COLOR_N_HEX` pour N de 1 à 6 (**rôles agnostiques refondus 2026-06-02** : Primaire / Secondaire / Accent / Surface / Texte / Bord — cf. tableau détaillé dans la section "Palette 6 couleurs — RÔLES AGNOSTIQUES" plus haut).
 
 **Sections éditoriales (~10 slots)** :
 - `BIG_IDEA_H1`, `BIG_IDEA_SUBTITLE`, `BIG_IDEA_P1/2/3` (depuis pitch.md, suivre `editorial-patterns.md`)

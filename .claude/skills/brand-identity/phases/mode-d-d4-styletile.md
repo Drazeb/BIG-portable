@@ -78,6 +78,25 @@ Génère UN fichier HTML Style-Tile complet au format TRIPTYQUE :
 - Type-scale ratio INDEXÉ sur le Curseur A du Brand DNA
 - Le résultat doit être visuellement riche — privilégie qualité et variété des techniques CSS sur la quantité de code
 
+### Variables CHROMATIQUES sanctuarisées dans le :root (2026-06-02)
+
+En PLUS des tokens habituels, le `:root` DOIT contenir les 3 variables suivantes, dérivées de la section 5.6 du DNA :
+
+```css
+:root {
+  /* === MODE CHROMATIQUE DOMINANT (section 5.6 du DNA) === */
+  --mode-chromatique: light;         /* light | dark | mixed — recopie textuelle de DNA §5.6 Mode */
+  --brand-color-positive-bg: #XXXXXX; /* surface CLAIRE dominante — depuis DNA §1.3 Surface si mode=light, sinon proposer #EFF2F7 ou #F5F5F5 cohérent */
+  --brand-color-dark-bg: #XXXXXX;     /* surface SOMBRE dominante — depuis DNA §1.4 Text Primary (si mode=light) ou §1.3 Surface (si mode=dark), sinon proposer #1B1B1B cohérent */
+}
+```
+
+**Règles** :
+- **Si DNA §5.6 Mode = `light`** : `--brand-color-positive-bg` = surface dominante du DNA §1.3 (typiquement #FFFFFF ou #EFF2F7). `--brand-color-dark-bg` = la couleur la plus sombre disponible (typiquement DNA §1.4 Text Primary).
+- **Si DNA §5.6 Mode = `dark`** : `--brand-color-dark-bg` = surface dominante du DNA §1.3 (typiquement noir/anthracite/marine profond). `--brand-color-positive-bg` = couleur claire complémentaire (cohérente avec la palette, jamais #FFFFFF pur sauf si DNA le dit explicitement).
+- **Si DNA §5.6 Mode = `mixed`** : choisir 2 surfaces représentatives, l'une claire l'autre sombre, toutes deux issues du DNA.
+- Ces 3 variables sont LUES par le brand book et le design-system pour adapter leur mode chromatique. Sans elles, ils retombent sur des valeurs par défaut calibrées pour Camille (dark cinema).
+
 ## ⛔ INTERDICTION — NE PAS GÉNÉRER D'IMAGES
 Génère le Style-Tile en mode typographique/graphique pur : couleur, typographie, gradients CSS, formes géométriques simples et animations.
 

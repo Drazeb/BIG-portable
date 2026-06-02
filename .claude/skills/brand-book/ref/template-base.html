@@ -92,6 +92,16 @@
       --color-beacon-warm:          var(--brand-color-accent-2);
       --color-chart-mist:           color-mix(in srgb, var(--brand-color-positive-bg) 92%, var(--brand-color-positive-text));
 
+      /* === MODE CHROMATIQUE ADAPTATIF (sanctuarisé 2026-06-02) ===
+         Variables qui pilotent l'apparence des sections "immersives" (Cover, Closing, Photo).
+         Par défaut = comportement legacy Camille (Dark Cinema natif).
+         Override via [data-mode="light"] plus bas.
+       */
+      --bk-immersive-bg:          var(--brand-color-dark-bg);    /* fond des sections immersives */
+      --bk-immersive-text:        #fff;                          /* texte sur fond immersif */
+      --bk-cover-fallback-bg:     var(--brand-color-dark-bg);    /* fallback cover sans image */
+      --bk-closing-fallback-bg:   var(--brand-color-dark-bg);    /* fallback closing sans image */
+
       /* Spacing scale */
       --space-xs:  8px;
       --space-sm:  16px;
@@ -340,6 +350,52 @@
     }
     .wordmark__dot {
       color: var(--brand-wordmark-accent);
+    }
+
+    /* =========================================================
+       MODE CHROMATIQUE ADAPTATIF — OVERRIDES (sanctuarisé 2026-06-02)
+
+       Quand <body data-mode="light"> : les sections immersives (Cover, Closing,
+       sous-sections sombres du bento Identity Card, etc.) basculent vers la
+       couleur PRIMAIRE de la marque au lieu de --brand-color-dark-bg.
+       Évite l'imposition d'un Dark Cinema sur les marques light-dominant
+       (SaaS clair, corporate, etc.).
+
+       Quand <body data-mode="dark"> ou attribut absent : fallback comportement
+       legacy (Dark Cinema). Backward compatible pour Camille/Vermeil/etc.
+
+       Quand <body data-has-cover-visual="false"> : pas d'image hero → fond
+       solide selon mode (primary en light, dark-bg en dark).
+       ========================================================= */
+
+    body[data-mode="light"] .cover,
+    body[data-mode="light"] .closing {
+      background-color: var(--brand-color-primary);
+    }
+
+    body[data-mode="light"] .chapter--08,
+    body[data-mode="light"] .chapter--09 .chapter--bk-section[data-tone="dark"] {
+      /* La section 08 Photo et les sous-sections dark de 09 utilisent en light
+         un fond clair avec accents primary, pas un Dark Cinema. */
+      background-color: var(--brand-color-positive-bg);
+      color: var(--brand-color-positive-text, #1B1B1B);
+    }
+
+    body[data-has-cover-visual="false"] .cover {
+      /* Cover sans image hero : forcer le fond couleur primaire (mode light) ou dark-bg (mode dark) */
+      background-image: none !important;
+    }
+
+    body[data-has-closing-visual="false"] .closing {
+      background-image: none !important;
+    }
+
+    /* Bento Identity Card : en mode light, les blocs "dark cinema" du bento
+       deviennent des blocs primary, plus cohérents avec une marque claire */
+    body[data-mode="light"] .bv4-cover,
+    body[data-mode="light"] .bv4-wordmark {
+      background-color: var(--brand-color-primary);
+      color: #fff;
     }
 
     /* =========================================================
@@ -1446,11 +1502,21 @@
     } /* fin @layer brand-book */
   </style>
 </head>
-<body>
+<body data-mode="{{MODE_CHROMATIQUE}}" data-has-cover-visual="{{HAS_COVER_VISUAL}}" data-has-closing-visual="{{HAS_CLOSING_VISUAL}}">
+
+  <!-- =========================================================
+       MODE CHROMATIQUE (sanctuarisé 2026-06-02)
+       data-mode = "light" | "dark" | "mixed" (lu depuis style-tile :root --mode-chromatique)
+       data-has-cover-visual / data-has-closing-visual = "true" | "false"
+       Les sections Cover/Closing/Photo/Closing adaptent leur fond selon ces attributs.
+       Cf. règles CSS overrides dans la section <style> ci-dessus (chercher "[data-mode]").
+       Si MODE_CHROMATIQUE absent : fallback "dark" (= comportement legacy Camille).
+       ========================================================= -->
 
   <!-- =========================================================
        COVER FULLBLEED
        Source : visual-final/{brand}-c{N}-{paletteID}-hero-*.png
+       Si pas d'image hero : fallback fond couleur primaire (mode light) ou dark-bg (mode dark)
        ========================================================= -->
   <section class="cover" style="background-image: url('visual-final/{{COVER_VISUAL}}');">
     <div class="cover__inner">

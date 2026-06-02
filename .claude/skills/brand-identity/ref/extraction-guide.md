@@ -149,6 +149,11 @@ Le fichier `{brand}-extracted-dna.md` doit suivre EXACTEMENT cette structure :
 - Approche: {aéré/équilibré/dense}
 - Ratio espace blanc estimé: {élevé/moyen/faible}
 
+### 5.6 Mode chromatique dominant
+- Mode: {light | dark | mixed}
+- Justification: {1-2 phrases — ratio surfaces claires/sombres observé sur les screenshots, couleur de fond dominante du site, traitement chromatique général}
+- Surface dominante: {hex de la surface la plus utilisée — typiquement #FFFFFF pour light, #0A0A0A à #1B1B1B pour dark, ou une couleur de marque chaude/sombre pour mixed}
+
 ## 6. POSITIONNEMENT ESTIMÉ
 
 ### 6.1 Curseur A (Audace Créative): {1-3}
@@ -224,6 +229,25 @@ Chaque valeur extraite doit être annotée avec un niveau de confiance :
 2. Classer par intensité (blur radius + spread)
 3. Mapper sur subtle/sm/md/lg/elevated
 
+### Détermination du mode chromatique dominant (section 5.6)
+
+Étape critique : le brand book et les phases aval s'appuient sur cette information pour adapter leur mode chromatique (Dark Cinema vs Positif pur).
+
+**Procédure** :
+
+1. **Analyser les screenshots** : pour chaque screenshot, estimer le ratio (surface claire / surface totale). Une surface "claire" = surface dont la luminance perçue est > 0.7 (blanc, beige, gris très clair, pastels). Une surface "sombre" = luminance < 0.3 (noir, anthracite, marine profond, sombre saturé).
+
+2. **Compter les fonds de section** : combien de sections du site ont un fond `background-color` clair vs sombre dans le CSS extrait ? Pondérer par la hauteur estimée de chaque section.
+
+3. **Classifier** :
+   - **`light`** : > 70% des surfaces dominantes sont claires. Couleur de fond principale = blanc ou neutre clair. C'est typique des SaaS B2B modernes, sites e-commerce, sites corporates.
+   - **`dark`** : > 70% des surfaces dominantes sont sombres. Couleur de fond principale = noir/anthracite/marine profond. C'est typique des marques cinéma/luxe/luxury/édito/gaming.
+   - **`mixed`** : alternance équilibrée light/dark à l'échelle du site. Ni dominant clair, ni dominant sombre.
+
+4. **Surface dominante** : noter le hex exact de la surface qui couvre le plus de pixels visibles à travers les screenshots. C'est cette couleur qui sera la base du fond pour le brand book.
+
+5. **Niveau de confiance** : ✅ Analysé si déterminé visuellement de manière nette ; 💡 Proposé si ambigu (ratio proche de 50/50 → mode = `mixed`).
+
 ---
 
 ## 4. Règles de gap-filling
@@ -279,6 +303,7 @@ Avant de finaliser le Brand DNA, vérifier que TOUTES ces sections sont présent
 - [ ] 5.1 Ton de voix
 - [ ] 5.2 Style photographique
 - [ ] 5.3 Style d'icônes
+- [ ] 5.6 Mode chromatique dominant (light/dark/mixed) avec surface dominante
 - [ ] 6.1 Curseur A estimé avec justification
 - [ ] 6.2 Curseur B estimé avec justification
 - [ ] 6.3 Personnalité de marque

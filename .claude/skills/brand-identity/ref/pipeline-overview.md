@@ -202,7 +202,7 @@ Je te demande les URLs de ton site (2-5 pages), ton logo (optionnel), et le nom 
 ---
 
 **D2. Extraction du Brand DNA**
-J'analyse le CSS, le HTML, les screenshots et le contenu textuel pour extraire tous les design tokens de ta brand : palette, typo, radius, ombres, espacements, transitions. J'analyse aussi le ton de voix, le style visuel et je propose un positionnement.
+J'analyse le CSS, le HTML, les screenshots et le contenu textuel pour extraire tous les design tokens de ta brand : palette, typo, radius, ombres, espacements, transitions. J'analyse aussi le ton de voix, le style visuel et **le mode chromatique dominant de la marque** (light, dark, ou mixed) qui pilote ensuite l'adaptation du brand book et du design system. Je propose un positionnement.
 → Automatique (extraction)
 
 ---
