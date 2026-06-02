@@ -409,6 +409,34 @@
       color: #fff;
     }
 
+    /* Îlots Système (Iconographie / Composants UI / Charts) — sanctuarisé 2026-06-03
+
+       La règle "îlot dark" historique (ligne ~1230) part du principe que les composants
+       brand sont sur fond dark cinema natif (cas Camille/VoltaPilot). Pour une marque
+       light-dominant (cas Brevo SaaS), c'est l'INVERSE : les composants sont conçus pour
+       fond clair (#FFFFFF). Forcer un îlot dark casse le contraste (boutons illisibles,
+       icônes hachurées qui disparaissent, charts qui flottent).
+
+       En mode light, les îlots Système basculent sur la surface claire dominante de la
+       marque. Les composants restent ainsi dans leur "vrai contexte de production".
+       En mode dark/mixed/absent : comportement actuel préservé (îlot dark). */
+
+    body[data-mode="light"] .bk-subsection--icons,
+    body[data-mode="light"] .bk-subsection--ui,
+    body[data-mode="light"] .bk-subsection--charts {
+      background: var(--brand-color-positive-bg);
+      color: var(--brand-color-positive-text);
+    }
+    body[data-mode="light"] .bk-subsection--icons .bk-subsection__title,
+    body[data-mode="light"] .bk-subsection--icons .bk-subsection__caption,
+    body[data-mode="light"] .bk-subsection--ui .bk-subsection__title,
+    body[data-mode="light"] .bk-subsection--ui .bk-subsection__caption,
+    body[data-mode="light"] .bk-subsection--charts .bk-subsection__title,
+    body[data-mode="light"] .bk-subsection--charts .bk-subsection__caption {
+      color: var(--brand-color-positive-text);
+    }
+    /* Eyebrow accent garde sa visibilité (couleur primaire qui contraste avec fond clair) */
+
     /* =========================================================
        COVER FULLBLEED
        ========================================================= */
